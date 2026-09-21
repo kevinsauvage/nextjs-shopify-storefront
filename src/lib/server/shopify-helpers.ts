@@ -58,8 +58,3 @@ export const hasShopifySession = async (): Promise<boolean> => {
   return Boolean(cookieStore.get(config.cookies.shopifyToken)?.value);
 };
 
-export const getShopifyCartId = async () => {
-  const cookieStore = await cookies();
-  return cookieStore.get(config.cookies.cartId)?.value;
-};
-

@@ -8,7 +8,7 @@ import { X } from 'lucide-react';
 
 const DiscountCodes = () => {
   const { cart, updateDiscountCodes } = useCartContext();
-  const {discountCodes} = cart;
+  const discountCodes = cart?.discountCodes ?? [];
 
   const handleRemoveCode = async (code: string) => {
     const newCoupons = discountCodes
@@ -18,7 +18,7 @@ const DiscountCodes = () => {
     await updateDiscountCodes(newCoupons);
   };
 
-  if (discountCodes?.length === 0) {
+  if (discountCodes.length === 0) {
     return null;
   }
 

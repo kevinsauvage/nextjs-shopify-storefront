@@ -10,6 +10,8 @@ import LineItem from './LineItem';
 const CartItemsList = () => {
   const { cart } = useCartContext();
 
+  if (!cart) return null;
+
   return (
     <Card>
       <CardHeaderPattern className="pb-4 md:pb-6" title="Cart Items" size={3} as="h2" />

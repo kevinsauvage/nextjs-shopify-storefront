@@ -7,7 +7,7 @@ import { ShoppingCart } from 'lucide-react';
 
 const CartHeader = () => {
   const { cart } = useCartContext();
-  const itemCount = cart.totalQuantity || 0;
+  const itemCount = cart?.totalQuantity || 0;
   const itemText = itemCount === 1 ? 'Item' : 'Items';
 
   return (

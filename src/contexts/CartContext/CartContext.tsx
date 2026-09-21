@@ -1,15 +1,13 @@
 'use client';
 
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useMemo, useState } from 'react';
 
 import {
   addCartLinesAction,
-  createCartAction,
   removeCartLineAction,
   updateCartLinesAction,
   updateDiscountCodesAction,
 } from '@/actions/cartActions';
-import cartMock from '@/mocks/cart';
 import type { CartFieldsFragment } from '@/shopify/storefront';
 
 import { toast } from 'sonner';
@@ -17,7 +15,7 @@ import { toast } from 'sonner';
 type CartResponse = { data: CartFieldsFragment; message?: string };
 
 interface CartContextType {
-  cart: CartFieldsFragment;
+  cart: CartFieldsFragment | null;
   handleAddToCart: (variantId: string, quantity?: number) => Promise<void>;
   handleQuantityChange: (id: string, quantity: number) => Promise<void>;
   removeFromCart: (lineItemId: string) => Promise<void>;
@@ -25,7 +23,7 @@ interface CartContextType {
 }
 
 export const CartContext = createContext<CartContextType>({
-  cart: {} as CartFieldsFragment,
+  cart: null,
   handleAddToCart: async () => {},
   handleQuantityChange: async () => {},
   removeFromCart: async () => {},
@@ -43,18 +41,7 @@ export const CartProvider = ({
   children: React.ReactNode;
   initialCart: CartFieldsFragment | null;
 }) => {
-  const [cart, setCart] = useState<CartFieldsFragment>(initialCart || cartMock);
-
-  useEffect(() => {
-    if (!initialCart) {
-      createCartAction()
-        .then(setCart)
-        .catch((error) => {
-          console.error('Failed to create cart:', error);
-          toast.error('Failed to initialize cart');
-        });
-    }
-  }, [initialCart]);
+  const [cart, setCart] = useState<CartFieldsFragment | null>(initialCart);
 
   const handleResponse = useCallback((response: CartResponse) => {
     setCart(response.data);

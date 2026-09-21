@@ -9,6 +9,9 @@ import { formatPrice } from '@/utils/format';
 
 const CartSummary = () => {
   const { cart } = useCartContext();
+
+  if (!cart) return null;
+
   const subtotal = Number.parseFloat(cart.cost.subtotalAmount.amount);
   const total = Number.parseFloat(cart.cost.totalAmount.amount);
   const tax = Number.parseFloat(cart.cost.totalTaxAmount?.amount ?? '0');

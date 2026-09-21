@@ -20,7 +20,7 @@ complexity → performance → tests/docs.
 
 **Impact:** High
 
-### [ ] Make the cart reliable: never silently replace it, create it server-side
+### [x] Make the cart reliable: never silently replace it, create it server-side
 
 **Why:** `CartService.getCart` swallows every error and returns `null`; the layout then treats it as "no cart" and a new cart is created, **orphaning the existing cart and losing items** on any transient Shopify error. `CartProvider` also eagerly creates a cart client-side for every visitor (with a `cartMock` fallback), so a first-visit user can click Add-to-Cart before creation finishes and get "Cart not found".
 

@@ -9,6 +9,7 @@ import { Toaster } from '@/components/ui/sonner';
 import config from '@/config';
 import { CartProvider } from '@/contexts/CartContext/CartContext';
 import { UserProvider } from '@/contexts/UserContext/UserContext';
+import { reportError } from '@/lib/logger';
 import { hasShopifySession } from '@/lib/server/shopify-helpers';
 import { CartService } from '@/services/cart.service';
 import { storefrontSdk } from '@/shopify';
@@ -33,7 +34,17 @@ const playfair = Playfair_Display({
 
 const handleInitialCart = async () => {
   const cartId = await CartService.getCartId();
-  return cartId ? CartService.getCart(cartId) : null;
+
+  if (!cartId) return null;
+
+  try {
+    return await CartService.getCart(cartId);
+  } catch (error) {
+    // Transient Shopify failure: keep the cart cookie and render without a cart
+    // rather than replacing it. The next successful request will show it again.
+    reportError('layout.handleInitialCart', error);
+    return null;
+  }
 };
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {

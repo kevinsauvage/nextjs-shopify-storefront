@@ -12,10 +12,6 @@ export type CartActionResult = {
   message?: string;
 };
 
-export async function createCartAction(): Promise<CartFieldsFragment> {
-  return CartService.createCart();
-}
-
 export async function addCartLinesAction(lines: CartLineInput[]): Promise<CartActionResult> {
   const cart = await CartService.addLines(lines);
   return { data: cart, message: 'Product added successfully' };
