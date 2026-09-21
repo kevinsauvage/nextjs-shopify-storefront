@@ -1,72 +1,62 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
-const getAdminSchemaUrl = (): string => {
+/**
+ * The Admin API is optional for storefront-only deployments (see
+ * `src/shopify/admin-client.ts`), so Admin codegen must not block the pipeline
+ * when its credentials are absent. When they are missing we skip generation and
+ * keep the committed `src/shopify/admin/index.ts`.
+ */
+const getAdminEnv = (): { token: string; url: string } | null => {
   const url = process.env.SHOPIFY_ADMIN_URL;
+  const token = process.env.SHOPIFY_STORE_FRONT_ADMIN_TOKEN;
 
-  if (!url) {
-    throw new Error(
-      'Missing SHOPIFY_ADMIN_URL environment variable. ' +
-        'Set it to your Shopify Admin API endpoint (e.g., https://your-store.myshopify.com/admin/api/2025-01/graphql.json)',
-    );
-  }
+  if (!url || !token) return null;
 
-  return url;
+  return { token, url };
 };
 
-const getAccessToken = (): string => {
-  const accessToken = process.env.SHOPIFY_STORE_FRONT_ADMIN_TOKEN;
+const adminEnv = getAdminEnv();
 
-  if (!accessToken) {
-    throw new Error(
-      'Missing SHOPIFY_STORE_FRONT_ADMIN_TOKEN environment variable. ' +
-        'This is required for GraphQL schema introspection.',
-    );
-  }
-
-  return accessToken;
-};
-
-const adminSchemaUrl = getAdminSchemaUrl();
-const adminToken = getAccessToken();
-
-const config: CodegenConfig = {
-  config: {
-    fragmentMasking: false,
-    gqlTagName: 'gql',
-  },
-  documents: 'src/shopify/admin/**/*.graphql',
-  generates: {
-    'src/shopify/admin/index.ts': {
-      plugins: ['typescript', 'typescript-operations', 'typescript-graphql-request'],
+const config: CodegenConfig | null = adminEnv
+  ? {
       config: {
-        scalars: {
-          ARN: 'string',
-          BigInt: 'string',
-          Color: 'string',
-          Date: 'string',
-          DateTime: 'string',
-          Decimal: 'string',
-          FormattedString: 'string',
-          HTML: 'string',
-          JSON: 'any',
-          Money: 'string',
-          StorefrontID: 'string',
-          URL: 'string',
-          UnsignedInt64: 'string',
-          UtcOffset: 'string',
+        fragmentMasking: false,
+        gqlTagName: 'gql',
+      },
+      documents: 'src/shopify/admin/**/*.graphql',
+      generates: {
+        'src/shopify/admin/index.ts': {
+          plugins: ['typescript', 'typescript-operations', 'typescript-graphql-request'],
+          config: {
+            scalars: {
+              ARN: 'string',
+              BigInt: 'string',
+              Color: 'string',
+              Date: 'string',
+              DateTime: 'string',
+              Decimal: 'string',
+              FormattedString: 'string',
+              HTML: 'string',
+              JSON: 'any',
+              Money: 'string',
+              StorefrontID: 'string',
+              URL: 'string',
+              UnsignedInt64: 'string',
+              UtcOffset: 'string',
+            },
+          },
         },
       },
-    },
-  },
-  overwrite: true,
-  schema: {
-    [adminSchemaUrl]: {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Shopify-Access-Token': adminToken,
+      overwrite: true,
+      schema: {
+        [adminEnv.url]: {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Shopify-Access-Token': adminEnv.token,
+          },
+        },
       },
-    },
-  },
-};
+    }
+  : null;
 
 export default config;
