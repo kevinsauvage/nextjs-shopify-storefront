@@ -7,9 +7,11 @@ import { getWishlistProductsAction } from '@/actions/wishlistActions';
 import NoFavoriteIllustration from '@/assets/NoFavoriteIllustration.png';
 import CardHeaderPattern from '@/components/CardHeaderPattern';
 import EmptyState from '@/components/EmptyState';
+import ProductGridSkeleton from '@/components/ProductGridSkeleton';
 import ProductsList from '@/components/ProductsList';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import useUserContext from '@/contexts/UserContext/useUserContext';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
 
@@ -49,9 +51,13 @@ const WishlistContent = () => {
   if (!wishlistReady) {
     return (
       <Card>
-        <CardContent className="space-y-4 py-8">
-          <div className="h-6 w-40 animate-pulse rounded bg-muted" />
-          <div className="h-40 w-full animate-pulse rounded bg-muted" />
+        <CardHeaderPattern
+          title={<Skeleton className="h-8 w-40" />}
+          description={<Skeleton className="h-4 w-full" />}
+          actions={<Skeleton className="h-11 w-24" />}
+        />
+        <CardContent>
+          <ProductGridSkeleton count={4} className="mb-0" />
         </CardContent>
       </Card>
     );

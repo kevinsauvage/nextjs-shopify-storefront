@@ -2,32 +2,23 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/utils/cn';
 
 type ProductCardSkeletonProps = {
-  /**
-   * Show action buttons (wishlist/quick view) - typically for product grid cards
-   */
+  /** Show action buttons (wishlist / quick add) — product grid cards only. */
   showActions?: boolean;
-  /**
-   * Show badge (discount/sold out) - typically for product grid cards
-   */
+  /** Show a badge (discount / sold out) — product grid cards only. */
   showBadge?: boolean;
-  /**
-   * Custom className for the container
-   */
+  /** Extra classes for the root element. */
   className?: string;
-  /**
-   * Layout variant - 'card' for product cards, 'row' for cart items
-   */
+  /** `card` for the product grid, `row` for cart line items. */
   variant?: 'card' | 'row';
 };
 
 /**
- * Standardized product skeleton recipe:
- * - Image (aspect-square)
- * - Two text lines (title + price/subtitle)
- * - Optional badge
- * - Optional action buttons
+ * Loading placeholder that mirrors the real product card exactly: 3:4 media
+ * frame, vendor line, two-line title, price — so the swap to real content
+ * causes no layout shift.
  *
- * Used consistently across product cards, search results, and cart loading states.
+ * Renders only the card *content* (no `<li>`), because it is always placed by
+ * a parent that already owns the list element.
  */
 const ProductCardSkeleton = ({
   showActions = true,
@@ -36,14 +27,11 @@ const ProductCardSkeleton = ({
   variant = 'card',
 }: ProductCardSkeletonProps) => {
   if (variant === 'row') {
-    // Horizontal layout for cart items
-    // Matches cart item structure: image (120x120) + title + subtitle
+    // Horizontal layout for cart line items: image + two text lines.
     return (
       <div className={cn('flex gap-4', className)}>
-        <div className="shrink-0">
-          <Skeleton className="w-[120px] h-[120px] rounded-lg" />
-        </div>
-        <div className="flex-1 min-w-0 space-y-2">
+        <Skeleton className="h-[120px] w-[90px] shrink-0 rounded-[var(--radius)]" />
+        <div className="min-w-0 flex-1 space-y-2">
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-4 w-24" />
         </div>
@@ -51,30 +39,32 @@ const ProductCardSkeleton = ({
     );
   }
 
-  // Card layout for product grid
   return (
-    <li className={cn('relative overflow-hidden rounded-sm transition-all', className)}>
-      {/* Action Buttons (wishlist & quick view) */}
-      {showActions && (
-        <div className="absolute top-2 right-2 z-20 flex flex-col gap-2">
-          <Skeleton className="h-9 w-9 rounded-full" />
-          <Skeleton className="h-9 w-9 rounded-full" />
+    <div className={cn('relative flex flex-col', className)}>
+      <div className="media-frame skeleton-shimmer relative aspect-[3/4] w-full bg-muted" />
+
+      {/* Action affordances (wishlist + quick add) */}
+      {showActions ? (
+        <div className="absolute right-3 top-3 flex flex-col gap-2" aria-hidden="true">
+          <Skeleton className="size-11 rounded-full" />
         </div>
-      )}
+      ) : null}
 
-      {/* Product Image Skeleton */}
-      <div className="relative overflow-hidden">
-        <Skeleton className="aspect-square w-full" />
-        {/* Badge */}
-        {showBadge && <Skeleton className="absolute left-2 top-2 h-6 w-12 rounded" />}
-      </div>
+      {/* Badge */}
+      {showBadge ? (
+        <Skeleton className="absolute left-3 top-3 h-6 w-16 rounded-full" aria-hidden="true" />
+      ) : null}
 
-      {/* Text Content - Two lines: title + price */}
-      <div className="py-4 space-y-2">
-        <Skeleton className="h-5 w-3/4" />
-        <Skeleton className="h-4 w-1/3" />
+      {/* Meta: vendor + two-line title + price */}
+      <div className="flex flex-1 flex-col pt-4">
+        <Skeleton className="h-3 w-20" />
+        <div className="mt-2 space-y-2">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-2/3" />
+        </div>
+        <Skeleton className="mt-3 h-5 w-20" />
       </div>
-    </li>
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import CardHeaderPattern from '@/components/CardHeaderPattern';
-import ListDisplay from '@/components/ListDisplay';
+import ProductGridSkeleton from '@/components/ProductGridSkeleton';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -7,14 +7,12 @@ const Loading = () => {
   return (
     <Card>
       <CardHeaderPattern
-        title={<Skeleton className="h-6 w-32" />}
+        title={<Skeleton className="h-8 w-44" />}
         description={<Skeleton className="h-4 w-full" />}
-        actions={<Skeleton className="h-9 w-24" />}
+        actions={<Skeleton className="h-11 w-28" />}
       />
       <CardContent>
-        <ListDisplay layout="grid" loading={true}>
-          {null}
-        </ListDisplay>
+        <ProductGridSkeleton count={4} className="mb-0" />
       </CardContent>
     </Card>
   );

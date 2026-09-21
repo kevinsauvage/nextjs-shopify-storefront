@@ -84,7 +84,9 @@ const OptimizedImage = ({
 
   return (
     <div className={containerClassName}>
-      {imageLoading && !imageError && <Skeleton className="absolute inset-0 z-10" />}
+      {imageLoading && !imageError && (
+        <Skeleton className="absolute inset-0 z-10 rounded-none skeleton-shimmer" />
+      )}
       {blurDataURL && imageLoading && !imageError && (
         <Image
           key={`blur-${src}`}

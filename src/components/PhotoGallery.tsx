@@ -21,6 +21,20 @@ type PhotoGalleryProps = {
 const IMAGE_ASPECT_RATIO = 'aspect-[3/4]';
 
 /**
+ * On large screens a 3:4 frame sized by column width grows taller than the
+ * viewport (a ~700px-wide column becomes ~930px tall). The stage is therefore
+ * height-capped and its width derived from the ratio, so the gallery always
+ * fits above the fold alongside the sticky buy box.
+ *
+ * `w-full` is required: a `<button>` is inline-block and, because both images
+ * are `fill` (absolutely positioned), it has no intrinsic width — without it the
+ * button collapses to 0×0 and the image is invisible. `max-h` then clamps the
+ * ratio-derived height, and `object-contain` keeps the capped frame centred.
+ */
+const STAGE_SIZE = 'w-full aspect-[3/4] max-h-[clamp(26rem,72vh,44rem)]';
+const THUMB_RAIL_MAX_HEIGHT = 'lg:max-h-[clamp(26rem,72vh,44rem)]';
+
+/**
  * Product gallery.
  *
  * Shopify product images are portrait (1000×1333, a 3:4 ratio). The stage
@@ -106,7 +120,10 @@ const PhotoGallery = ({ images, className }: PhotoGalleryProps) => {
       {/* Thumbnail rail (vertical on desktop, horizontal scroll on mobile) */}
       {hasMultipleImages ? (
         <div
-          className="order-2 mt-3 flex gap-2 overflow-x-auto pb-1 lg:order-1 lg:mt-0 lg:max-h-[calc(100vh-9rem)] lg:flex-col lg:overflow-x-visible lg:overflow-y-auto lg:pb-0 lg:pr-1"
+          className={cn(
+            'order-2 mt-3 flex gap-2 overflow-x-auto pb-1 lg:order-1 lg:mt-0 lg:flex-col lg:overflow-x-visible lg:overflow-y-auto lg:pb-0 lg:pr-1',
+            THUMB_RAIL_MAX_HEIGHT,
+          )}
           role="tablist"
           aria-label="Product images"
         >
@@ -150,8 +167,8 @@ const PhotoGallery = ({ images, className }: PhotoGalleryProps) => {
           onClick={() => setIsLightboxOpen(true)}
           aria-label={`Open image ${selectedImageIndex + 1} in full screen`}
           className={cn(
-            'media-frame relative block w-full cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-            IMAGE_ASPECT_RATIO,
+            'media-frame relative block cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+            STAGE_SIZE,
           )}
         >
           {/* Blurred backdrop fills any space the contained image leaves. */}
@@ -162,7 +179,7 @@ const PhotoGallery = ({ images, className }: PhotoGalleryProps) => {
               alt=""
               aria-hidden="true"
               fill
-              sizes="(max-width: 1024px) 100vw, 45vw"
+              sizes="(max-width: 1024px) 100vw, 40vw"
               className="scale-110 object-cover blur-3xl"
             />
           ) : null}
@@ -176,7 +193,7 @@ const PhotoGallery = ({ images, className }: PhotoGalleryProps) => {
             fill
             priority={selectedImageIndex === 0}
             quality={85}
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 60vw, 45vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 60vw, 40vw"
             className="relative z-10 object-cover"
           />
 

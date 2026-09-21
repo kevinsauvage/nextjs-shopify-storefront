@@ -19,14 +19,18 @@ const CARD_SIZES = '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw';
 type ProductCardDefaultProps = {
   product: ProductFieldsFragment;
   priority: boolean;
-  asListItem?: boolean;
+  /** Classes applied to the card root (e.g. carousel item sizing). */
+  className?: string;
 };
 
 /**
  * Editorial product card: portrait media frame, secondary image cross-fade on
  * hover, wishlist + quick-add actions, and a restrained meta block.
+ *
+ * Renders only card *content* — the surrounding `<li>`/grid cell is owned by
+ * the parent (`ListDisplay`, `CarouselItem`), so no list element is nested.
  */
-const ProductCardDefault = ({ product, priority, asListItem = true }: ProductCardDefaultProps) => {
+const ProductCardDefault = ({ product, priority, className }: ProductCardDefaultProps) => {
   const { title, images, handle, variants, id, priceRange, vendor, availableForSale } = product;
   const firstVariant = variants?.edges?.[0]?.node;
   const price = firstVariant?.price ?? priceRange?.minVariantPrice ?? null;
@@ -48,11 +52,10 @@ const ProductCardDefault = ({ product, priority, asListItem = true }: ProductCar
     ? isWhatPercentOf(Number(price?.amount), Number(compareAtPrice?.amount))
     : null;
 
-  const Component = asListItem ? 'li' : 'div';
   const href = `${config.routes.collection}/products/${handle}`;
 
   return (
-    <Component className="group/card relative flex h-full flex-col">
+    <div className={cn('group/card relative flex h-full flex-col', className)}>
       <div className="media-frame relative shadow-none transition-shadow duration-300 group-hover/card:shadow-lg group-hover/card:shadow-black/5">
         <Link
           href={href}
@@ -142,7 +145,7 @@ const ProductCardDefault = ({ product, priority, asListItem = true }: ProductCar
           ) : null}
         </div>
       </div>
-    </Component>
+    </div>
   );
 };
 

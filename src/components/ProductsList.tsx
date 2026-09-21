@@ -12,17 +12,20 @@ const ProductsList = ({
   layout?: 'grid' | 'list';
   loading?: boolean;
 }) => {
-  const hasProducts = Array.isArray(products) && products.length > 0;
+  const shouldRender = loading || (Array.isArray(products) && products.length > 0);
+
+  if (!shouldRender) return null;
+
   return (
-    hasProducts && (
-      <div className="mb-12">
-        <ListDisplay layout={layout} loading={loading}>
-          {products.map((product, index) => (
-            <ProductCardDefault product={product} key={product.id} priority={index < 5} />
-          ))}
-        </ListDisplay>
-      </div>
-    )
+    <div className="mb-12">
+      <ListDisplay layout={layout} loading={loading}>
+        {(products ?? []).map((product, index) => (
+          <li key={product.id}>
+            <ProductCardDefault product={product} priority={index < 5} />
+          </li>
+        ))}
+      </ListDisplay>
+    </div>
   );
 };
 

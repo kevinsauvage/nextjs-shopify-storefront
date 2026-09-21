@@ -8,15 +8,24 @@ import { cn } from '@/utils/cn';
 
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui/sheet';
-import SpinnerLoader from './SpinnerLoader';
+import { Skeleton } from './ui/skeleton';
 
 import { Eye, ShoppingBag } from 'lucide-react';
 
 // Only load QuickBuyContent when sheet is opened
 const QuickBuyContent = dynamic(() => import('./QuickBuyContent'), {
   loading: () => (
-    <div className="flex items-center justify-center h-full min-h-[50vh]">
-      <SpinnerLoader />
+    <div className="flex flex-col">
+      <Skeleton className="aspect-[3/4] w-full rounded-none bg-muted" />
+      <div className="space-y-4 p-4">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-7 w-3/4" />
+        <Skeleton className="h-5 w-1/3" />
+        <div className="space-y-2 pt-4">
+          <Skeleton className="h-11 w-full" />
+          <Skeleton className="h-11 w-full" />
+        </div>
+      </div>
     </div>
   ),
 });

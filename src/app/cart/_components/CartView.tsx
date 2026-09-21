@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 
+import CartLoading from '@/app/cart/loading';
 import PageBanner from '@/components/PageBanner';
-import { Skeleton } from '@/components/ui/skeleton';
 import useCartContext from '@/contexts/CartContext/useCartContext';
 
 import CartEmptyState from './CartEmptyState';
@@ -16,19 +16,16 @@ import { ChevronLeft } from 'lucide-react';
 
 /**
  * Cart page body. The cart is owned by `CartProvider`, so the page renders from
- * context instead of fetching the cart a second time on the server.
+ * context instead of fetching the cart a second time on the server. While the
+ * cart is resolving client-side it reuses the route's `loading.tsx` skeleton,
+ * so there is a single cart skeleton to maintain.
  */
 const CartView = () => {
   const { cart, isLoading } = useCartContext();
   const isEmpty = !cart?.lines?.edges?.length;
 
   if (isLoading) {
-    return (
-      <div className="mx-auto max-w-7xl space-y-6 px-4 py-8 md:px-6 md:py-12">
-        <Skeleton className="h-24 w-full" />
-        <Skeleton className="h-64 w-full" />
-      </div>
-    );
+    return <CartLoading />;
   }
 
   return (
