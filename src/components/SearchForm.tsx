@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useEffect, useState } from 'react';
+import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 
 import { searchAction } from '@/actions/searchActions';
@@ -26,23 +26,13 @@ const SubmitButton = ({ ...properties }: React.ComponentProps<'button'>) => {
 };
 
 const SearchForm = ({
-  searchQuery,
+  value,
   onChange,
 }: {
-  searchQuery: string;
+  value: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 }) => {
-  const [value, setValue] = useState(searchQuery || '');
-  const [, action] = useActionState(() => searchAction(value), searchQuery);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
-    onChange(event);
-  };
-
-  useEffect(() => {
-    setValue(searchQuery);
-  }, [searchQuery]);
+  const [, action] = useActionState(() => searchAction(value), value);
 
   return (
     <form action={action} className="relative w-full max-w-2xl mx-auto">
@@ -57,7 +47,7 @@ const SearchForm = ({
           autoCorrect="off"
           autoCapitalize="off"
           spellCheck="false"
-          onChange={handleChange}
+          onChange={onChange}
           value={value}
         />
       </Label>

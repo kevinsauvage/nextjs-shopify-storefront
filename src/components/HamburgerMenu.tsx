@@ -28,7 +28,6 @@ import {
   ShoppingBag,
   User,
 } from 'lucide-react';
-import { v4 as uuid } from 'uuid';
 
 const HamburgerMenu = ({
   headerMenu,
@@ -50,20 +49,20 @@ const HamburgerMenu = ({
   };
 
   const userMenuItems = [
-    { icon: <Home className="text-secondary group-hover:text-primary transition-colors" />, id: uuid(), link: '/', text: 'Home' },
-    { icon: <Search className="text-secondary group-hover:text-primary transition-colors" />, id: uuid(), link: config.routes.search, text: 'Search' },
+    { icon: <Home className="text-secondary group-hover:text-primary transition-colors" />, id: 'home', link: '/', text: 'Home' },
+    { icon: <Search className="text-secondary group-hover:text-primary transition-colors" />, id: 'search', link: config.routes.search, text: 'Search' },
 
     {
       icon: <User className="text-secondary group-hover:text-primary transition-colors" />,
-      id: uuid(),
+      id: 'account',
       link: isLoggedIn ? config.routes.account : config.routes.login,
       text: isLoggedIn ? 'Account' : 'Login',
     },
-    { icon: <Heart className="text-secondary group-hover:text-primary transition-colors" />, id: uuid(), link: config.routes.wishlist, text: 'Wishlist' },
-    { icon: <ShoppingBag className="text-secondary group-hover:text-primary transition-colors" />, id: uuid(), link: config.routes.cart, text: 'Cart' },
+    { icon: <Heart className="text-secondary group-hover:text-primary transition-colors" />, id: 'wishlist', link: config.routes.wishlist, text: 'Wishlist' },
+    { icon: <ShoppingBag className="text-secondary group-hover:text-primary transition-colors" />, id: 'cart', link: config.routes.cart, text: 'Cart' },
     isLoggedIn && {
       icon: <LogOut className="text-secondary group-hover:text-primary transition-colors" />,
-      id: uuid(),
+      id: 'logout',
       link: config.routes.logout,
       text: 'Logout',
     },

@@ -149,6 +149,7 @@ const CollectionSlugPage = async ({
   const safeSearchParameters = {
     after: searchParameters?.after,
     before: searchParameters?.before,
+    filters: searchParameters?.filters,
     sort_key: searchParameters?.sort_key,
   };
 

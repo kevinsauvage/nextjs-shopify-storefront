@@ -3,9 +3,13 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
+import {
+  addToWishlistAction,
+  getWishlistAction,
+  removeFromWishlistAction,
+} from '@/actions/wishlistActions';
 import config from '@/config';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
-import { addToWishlist, getWishlist, removeFromWishlist } from '@/utils/wishlist-client';
 
 import { toast } from 'sonner';
 
@@ -41,7 +45,7 @@ export const UserProvider = ({
 
     let cancelled = false;
 
-    getWishlist()
+    getWishlistAction()
       .then((items) => {
         if (!cancelled) setUserWishlist(items);
       })
@@ -64,8 +68,8 @@ export const UserProvider = ({
 
       try {
         const result = isWishlisted
-          ? await removeFromWishlist(product.id)
-          : await addToWishlist(product.id);
+          ? await removeFromWishlistAction(product.id)
+          : await addToWishlistAction(product.id);
 
         if (result?.success && result.data) {
           setUserWishlist(result.data);

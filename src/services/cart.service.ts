@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import config from '@/config';
 import { storefrontSdk } from '@/shopify';
 import { adjustPaginationVariables } from '@/shopify/helpers';
-import type { CartFieldsFragment } from '@/shopify/storefront';
+import type { CartFieldsFragment, CartLineInput, CartLineUpdateInput } from '@/shopify/storefront';
 import { mapShopifyUserErrors, safeLogError } from '@/utils/api-responses';
 import { getSecureCookieOptions } from '@/utils/cookie-security';
 
@@ -99,6 +99,115 @@ export class CartService {
     const cookieStore = await cookies();
     const cartId = cookieStore.get(config.cookies.cartId)?.value;
     return cartId || null;
+  }
+
+  /**
+   * Require an existing cart ID or fail explicitly.
+   */
+  private static async requireCartId(): Promise<string> {
+    const cartId = await this.getCartId();
+    if (!cartId) {
+      throw new Error('Cart not found');
+    }
+    return cartId;
+  }
+
+  /**
+   * Validate a Shopify cart mutation payload and return the cart.
+   */
+  private static handleCartMutation(
+    payload:
+      | {
+          cart?: CartFieldsFragment | null;
+          userErrors?: Array<{ message?: string }> | null;
+        }
+      | null
+      | undefined,
+    fallbackMessage: string,
+  ): CartFieldsFragment {
+    const { cart, userErrors } = payload || {};
+
+    if (userErrors?.length) {
+      throw new Error(userErrors[0]?.message || fallbackMessage);
+    }
+
+    if (!cart) {
+      throw new Error(fallbackMessage);
+    }
+
+    this.revalidate();
+    return cart;
+  }
+
+  /**
+   * Add lines to the cart
+   */
+  static async addLines(lines: CartLineInput[]): Promise<CartFieldsFragment> {
+    const cartId = await this.requireCartId();
+
+    const response = await storefrontSdk('no-store').cartLinesAdd({
+      cartId,
+      lines,
+      ...adjustPaginationVariables({ first: 100 }),
+    });
+
+    return this.handleCartMutation(response?.cartLinesAdd, 'Failed to add product');
+  }
+
+  /**
+   * Update cart line quantities
+   */
+  static async updateLines(lines: CartLineUpdateInput[]): Promise<CartFieldsFragment> {
+    const cartId = await this.requireCartId();
+
+    const response = await storefrontSdk('no-store').cartLinesUpdate({
+      cartId,
+      lines,
+      ...adjustPaginationVariables({ first: 100 }),
+    });
+
+    return this.handleCartMutation(response?.cartLinesUpdate, 'Failed to update cart');
+  }
+
+  /**
+   * Remove a line from the cart
+   */
+  static async removeLine(lineId: string): Promise<CartFieldsFragment> {
+    const cartId = await this.requireCartId();
+
+    const response = await storefrontSdk('no-store').cartLinesRemove({
+      cartId,
+      lineIds: [lineId],
+      ...adjustPaginationVariables({ first: 100 }),
+    });
+
+    return this.handleCartMutation(response?.cartLinesRemove, 'Failed to remove product');
+  }
+
+  /**
+   * Update the cart discount codes
+   */
+  static async updateDiscountCodes(discountCodes: string[]): Promise<CartFieldsFragment> {
+    const cartId = await this.requireCartId();
+
+    const response = await storefrontSdk('no-store').cartDiscountCodesUpdate({
+      cartId,
+      discountCodes,
+      ...adjustPaginationVariables({ first: 100 }),
+    });
+
+    const { cart, userErrors } = response?.cartDiscountCodesUpdate || {};
+
+    if (userErrors?.length) {
+      throw new Error(userErrors[0]?.message || 'Failed to update discount codes');
+    }
+
+    if (!cart) {
+      throw new Error('Failed to update discount codes');
+    }
+
+    this.revalidate();
+    return cart;
   }
 
   /**

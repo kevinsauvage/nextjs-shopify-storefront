@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -22,12 +22,17 @@ const Sort = ({
   sortingOptions: { label: string; name: string }[];
 }) => {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParameters = useSearchParams();
 
   const handleChange = (value: string) => {
-    const {pathname} = window.location;
-    const searchParameters = new URLSearchParams();
-    searchParameters.set('sort_key', value);
-    router.push(`${pathname}?${searchParameters.toString()}`);
+    const parameters = new URLSearchParams(searchParameters.toString());
+    parameters.set('sort_key', value);
+    // A different sort order invalidates the current cursor.
+    parameters.delete('after');
+    parameters.delete('before');
+
+    router.push(`${pathname}?${parameters.toString()}`);
   };
 
   return (

@@ -16,7 +16,6 @@ import type {
 import { formatPrice } from '@/utils/format';
 
 import { ChevronDown, ChevronUp, Package } from 'lucide-react';
-import { v4 as uuidv4 } from 'uuid';
 
 function formatStatus(status?: OrderFulfillmentStatus | OrderFinancialStatus | null) {
   return status
@@ -255,7 +254,10 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                     if (!trackingInfo || trackingInfo.length === 0) return null;
 
                     return (
-                      <div key={uuidv4()} className="space-y-2">
+                      <div
+                        key={`${fulfillment.trackingCompany ?? 'carrier'}-${index}`}
+                        className="space-y-2"
+                      >
                         <div className={`flex justify-between py-1 border-b border-border `}>
                           <span className="text-body-sm text-secondary">
                             {trackingCompany || DEFAULTS.carrier}
@@ -266,9 +268,9 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                           </span>
                         </div>
 
-                        {trackingInfo.map((trackInfo) => (
+                        {trackingInfo.map((trackInfo, trackingIndex) => (
                           <div
-                            key={uuidv4()}
+                            key={trackInfo.number ?? `tracking-${trackingIndex}`}
                             className="flex justify-between py-1 border-b border-border"
                           >
                             <span className="text-body-sm text-secondary">

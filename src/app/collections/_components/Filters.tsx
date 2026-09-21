@@ -41,16 +41,22 @@ const Filters = ({
   query: {
     after?: string;
     before?: string;
-    filters?: string;
+    filters?: string | string[];
     sort_key?: string;
   };
 }) => {
   const [selectedFilters, setSelectedFilters] = useState<{ filterId: string; input: string }[]>([]);
   const [open, setOpen] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 200]);
+  const [priceTouched, setPriceTouched] = useState(false);
 
   const pathname = usePathname();
   const router = useRouter();
+
+  const toSearchParameters = useCallback(
+    () => new URLSearchParams(query as Record<string, string>),
+    [query],
+  );
 
   const isSelected = useCallback(
     (filterId: string, input: string) =>
@@ -75,24 +81,38 @@ const Filters = ({
   );
 
   const handlePriceChange = (value: number[]) => {
+    setPriceTouched(true);
     setPriceRange(value);
   };
 
-  const resetFilters = () => {
-    const newSearchParameters = new URLSearchParams(query);
+  const resetFilters = useCallback(() => {
+    const newSearchParameters = toSearchParameters();
     newSearchParameters.delete('filters');
+    newSearchParameters.delete('after');
+    newSearchParameters.delete('before');
+    setPriceTouched(false);
     router.push(`${pathname}?${newSearchParameters.toString()}`);
-  };
+  }, [pathname, router, toSearchParameters]);
 
-  const applyFilters = () => {
-    const newSearchParameters = new URLSearchParams(query);
+  const applyFilters = useCallback(() => {
+    const newSearchParameters = toSearchParameters();
     newSearchParameters.delete('filters');
+    newSearchParameters.delete('after');
+    newSearchParameters.delete('before');
 
-    selectedFilters.forEach((filter) => {
-      newSearchParameters.append('filters', `${filter.filterId}:${filter.input}`);
-    });
+    const priceFilterId = filters?.find((filter) => filter.type === FILTER_TYPE.priceRange)?.id;
+    const hasExistingPriceFilter = selectedFilters.some(
+      (filter) => filter.filterId === priceFilterId,
+    );
 
-    if (priceRange) {
+    selectedFilters
+      .filter((filter) => filter.filterId !== priceFilterId)
+      .forEach((filter) => {
+        newSearchParameters.append('filters', `${filter.filterId}:${filter.input}`);
+      });
+
+    // Only emit the price filter when it is meaningful (changed or already applied).
+    if (priceFilterId && (priceTouched || hasExistingPriceFilter)) {
       newSearchParameters.append(
         'filters',
         `price:${JSON.stringify({ price: { max: priceRange[1], min: priceRange[0] } })}`,
@@ -100,7 +120,15 @@ const Filters = ({
     }
 
     router.push(`${pathname}?${newSearchParameters.toString()}`);
-  };
+  }, [
+    filters,
+    pathname,
+    priceRange,
+    priceTouched,
+    router,
+    selectedFilters,
+    toSearchParameters,
+  ]);
 
   useEffect(() => {
     const currentFilters_ = typeof query.filters === 'string' ? [query.filters] : query.filters;

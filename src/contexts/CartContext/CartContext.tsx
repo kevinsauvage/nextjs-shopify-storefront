@@ -2,10 +2,15 @@
 
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { createCartAction } from '@/actions/cartActions';
+import {
+  addCartLinesAction,
+  createCartAction,
+  removeCartLineAction,
+  updateCartLinesAction,
+  updateDiscountCodesAction,
+} from '@/actions/cartActions';
 import cartMock from '@/mocks/cart';
 import type { CartFieldsFragment } from '@/shopify/storefront';
-import { api } from '@/utils/api-client';
 
 import { toast } from 'sonner';
 
@@ -26,28 +31,6 @@ export const CartContext = createContext<CartContextType>({
   removeFromCart: async () => {},
   updateDiscountCodes: async () => {},
 });
-
-const DEFAULT_PAGINATION = {
-  first: 100,
-  last: 0,
-  after: '',
-  before: '',
-};
-
-const buildCartLinesUrl = (params?: { lineItemId?: string }): string => {
-  const searchParams = new URLSearchParams({
-    first: String(DEFAULT_PAGINATION.first),
-    last: String(DEFAULT_PAGINATION.last),
-    after: DEFAULT_PAGINATION.after,
-    before: DEFAULT_PAGINATION.before,
-  });
-
-  if (params?.lineItemId) {
-    searchParams.set('lineItemId', params.lineItemId);
-  }
-
-  return `/api/cart/lines?${searchParams.toString()}`;
-};
 
 const getErrorMessage = (error: unknown, defaultMessage: string): string => {
   return error instanceof Error ? error.message : defaultMessage;
@@ -88,7 +71,7 @@ export const CartProvider = ({
       }
 
       try {
-        const response = await api.delete<CartResponse>(buildCartLinesUrl({ lineItemId }));
+        const response = await removeCartLineAction(lineItemId);
         handleResponse(response);
       } catch (error) {
         toast.error(getErrorMessage(error, 'Failed to remove item'));
@@ -105,10 +88,7 @@ export const CartProvider = ({
       }
 
       try {
-        const response = await api.patch<CartResponse>(buildCartLinesUrl(), {
-          lines: [{ id, quantity }],
-          operation: 'update',
-        });
+        const response = await updateCartLinesAction([{ id, quantity }]);
         handleResponse(response);
       } catch (error) {
         toast.error(getErrorMessage(error, 'Failed to update cart'));
@@ -125,10 +105,7 @@ export const CartProvider = ({
       }
 
       try {
-        const response = await api.patch<CartResponse>(buildCartLinesUrl(), {
-          addLines: [{ merchandiseId: variantId, quantity }],
-          operation: 'add',
-        });
+        const response = await addCartLinesAction([{ merchandiseId: variantId, quantity }]);
         handleResponse(response);
       } catch (error) {
         toast.error(getErrorMessage(error, 'Failed to add to cart'));
@@ -149,9 +126,7 @@ export const CartProvider = ({
         .filter((code) => code.length > 0);
 
       try {
-        const response = await api.patch<CartResponse>('/api/cart/discount-codes', {
-          discountCodes: validCodes,
-        });
+        const response = await updateDiscountCodesAction(validCodes);
         handleResponse(response);
       } catch (error) {
         toast.error(getErrorMessage(error, 'Failed to update discount codes'));

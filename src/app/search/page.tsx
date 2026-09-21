@@ -82,7 +82,10 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
     <div>
       <PageBanner title={seo.search.title} description={seo.search.description}>
         <Breadcrumbs />
-        <Search searchQuery={searchParameters.searchQuery} />
+        <Search
+          key={searchParameters.searchQuery ?? ''}
+          searchQuery={searchParameters.searchQuery ?? ''}
+        />
       </PageBanner>
       {products.length > 0 ? (
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 space-y-6">

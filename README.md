@@ -4,9 +4,9 @@ A modern, full-featured e-commerce application built with Next.js and Shopify St
 
 ## Tech Stack
 
-- **Framework**: [Next.js 15.3.1](https://nextjs.org/) (App Router)
-- **React**: 19.0.0
-- **Language**: TypeScript 5.3.3
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **React**: 19.2
+- **Language**: TypeScript 5.9.3
 - **E-commerce Backend**: [Shopify Storefront API](https://shopify.dev/api/storefront)
 - **Styling**: Tailwind CSS 4.1.4, SCSS
 - **UI Components**: Radix UI, shadcn/ui
@@ -30,7 +30,7 @@ A modern, full-featured e-commerce application built with Next.js and Shopify St
 
 ## Prerequisites
 
-- Node.js 18+ (recommended: 22+)
+- Node.js 20.9+ (recommended: 22+)
 - npm or yarn
 - Shopify store with Storefront API access
 - Shopify Storefront API access token
@@ -61,6 +61,9 @@ Create a `.env.local` file in the root directory with the following variables:
 SHOPIFY_STORE_FRONT_ACCESS_TOKEN=your_storefront_access_token
 NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL=https://your-store.myshopify.com/api/2025-01/graphql.json
 
+# Required: canonical site URL
+NEXT_PUBLIC_BASE_URL=https://yourdomain.com
+
 # Optional: Shopify Admin API (for admin operations)
 SHOPIFY_STORE_FRONT_ADMIN_TOKEN=your_admin_access_token
 SHOPIFY_ADMIN_URL=https://your-store.myshopify.com/admin/api/2025-01/graphql.json
@@ -70,7 +73,6 @@ SHOPIFY_SCOPE=unauthenticated_read_product_listings,unauthenticated_read_product
 
 # Optional: Site configuration
 NEXT_PUBLIC_SITE_DOMAIN=yourdomain.com
-NEXT_PUBLIC_BASE_URL=https://yourdomain.com
 
 # Optional: Google Tag Manager (GTM)
 # Note: GTM IDs start with "GTM-" (e.g., GTM-XXXXXXX)
@@ -185,17 +187,21 @@ This project uses [GraphQL Code Generator](https://the-guild.dev/graphql/codegen
 | ------------------------------------ | ------------------------------------------- |
 | `SHOPIFY_STORE_FRONT_ACCESS_TOKEN`   | Shopify Storefront API access token         |
 | `NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL` | Shopify Storefront API GraphQL endpoint URL |
+| `NEXT_PUBLIC_BASE_URL`               | Canonical site URL (metadata, sitemap, etc.) |
+
+These are validated at server startup by `src/config/env.ts`; the app fails fast if they are missing or malformed.
 
 ### Optional
 
 | Variable                          | Description                                             |
 | --------------------------------- | ------------------------------------------------------- |
-| `SHOPIFY_STORE_FRONT_ADMIN_TOKEN` | Shopify Admin API access token (for admin operations)   |
+| `SHOPIFY_STORE_FRONT_ADMIN_TOKEN` | Shopify Admin API access token (set with `SHOPIFY_ADMIN_URL`) |
 | `SHOPIFY_ADMIN_URL`               | Shopify Admin API GraphQL endpoint URL                  |
 | `SHOPIFY_SCOPE`                   | Comma-separated list of delegate token scopes           |
 | `NEXT_PUBLIC_SITE_DOMAIN`         | Your site domain (for cookie settings)                  |
-| `NEXT_PUBLIC_BASE_URL`            | Base URL for the application (for robots.txt, sitemap)  |
 | `NEXT_PUBLIC_GTM_ID`              | Google Tag Manager container ID (format: `GTM-XXXXXXX`) |
+| `EMAIL_ADDRESS` / `EMAIL_PASSWORD` | Sending mailbox used by the contact form                |
+| `CONTACT_EMAIL`                   | Recipient of contact submissions (defaults to `EMAIL_ADDRESS`) |
 
 ## Deployment
 
@@ -241,15 +247,16 @@ Make sure to set all required environment variables in your deployment platform'
 
 ## Configuration
 
-Application configuration is centralized in `src/config/index.ts`. Currently, some values are hardcoded (see TODO.md for externalization task).
+Application configuration is centralized in `src/config/index.ts` (routes, cookie names, pagination,
+revalidation, site metadata). Environment variables are validated once at boot by `src/config/env.ts`
+via the Next.js instrumentation hook (`src/instrumentation.ts`).
 
 Key configuration includes:
 
-- Base URLs (development vs production)
-- Cookie names
-- Route definitions
-- User feedback messages
-- Shopify domain
+- Route definitions and cookie names
+- Pagination and cache revalidation windows
+- Site metadata / SEO defaults
+- Shopify API endpoints (from validated env vars)
 
 ## Development Notes
 
