@@ -5,20 +5,22 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import config from '@/config';
-import useUserContext from '@/contexts/UserContext/useUserContext';
 import useProductSelection from '@/hooks/useProductSelection';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
 import { formatPrice } from '@/utils/format';
 import { mapShopifyImagesToImageFields } from '@/utils/images';
+import { getQuantityCap } from '@/utils/inventory';
 
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
 import { SheetFooter } from './ui/sheet';
 import Options from './Options';
+import ProductActions from './ProductActions';
+import ProductQuantitySelector from './ProductQuantitySelector';
 
-import { ChevronLeft, ChevronRight, Heart, Minus, Plus, ShoppingBag } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 type QuickBuyContentProps = {
   product: ProductFieldsFragment;
@@ -40,10 +42,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
     isOptionOutOfStock,
   } = useProductSelection({ product });
 
-  const { userWishlist, handleSetWishlist } = useUserContext();
-
   const productImages = mapShopifyImagesToImageFields(product.images?.edges);
-  const isWishlisted = userWishlist?.find((item) => item.id === product.id);
 
   const selectedVariantData = selectedVariant as
     | {
@@ -55,10 +54,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
     | undefined;
 
   const { quantityAvailable, availableForSale, price, compareAtPrice } = selectedVariantData || {};
-
-  const handleWishlist = useCallback(async () => {
-    await handleSetWishlist(!!isWishlisted, product);
-  }, [handleSetWishlist, isWishlisted, product]);
+  const quantityCap = getQuantityCap(quantityAvailable);
 
   const nextImage = useCallback(() => {
     setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
@@ -252,61 +248,24 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
             <label htmlFor="quantity" className="text-label">
               Quantity
             </label>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center border rounded-lg">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-10 w-10 rounded-r-none"
-                  onClick={() => handleChangeInput(Math.max(1, quantity - 1))}
-                  disabled={quantity <= 1}
-                  aria-label="Decrease quantity"
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
-                <span className="w-12 text-center text-body font-medium">{quantity}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-10 w-10 rounded-l-none"
-                  onClick={() => handleChangeInput(quantity + 1)}
-                  disabled={quantityAvailable ? quantity >= quantityAvailable : false}
-                  aria-label="Increase quantity"
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              {quantityAvailable && (
-                <span className="text-body-sm text-secondary">{quantityAvailable} available</span>
-              )}
-            </div>
+            <ProductQuantitySelector
+              quantity={quantity}
+              onChange={handleChangeInput}
+              quantityAvailable={quantityAvailable}
+              showAvailable
+            />
           </div>
         </div>
       </div>
 
       <SheetFooter className="flex-shrink-0 border-t">
-        <div className="flex gap-2 w-full">
-          <Button
-            className="flex-1 h-12 text-body-lg font-semibold gap-2"
-            size="lg"
-            disabled={
-              !availableForSale || (quantityAvailable ? quantity > quantityAvailable : false)
-            }
-            onClick={handleAddToCartAndClose}
-          >
-            <ShoppingBag className="h-5 w-5" />
-            {availableForSale ? 'Add to Cart' : 'Sold Out'}
-          </Button>
-          <Button
-            variant={isWishlisted ? 'default' : 'outline'}
-            size="lg"
-            className="h-12 w-12"
-            onClick={() => handleWishlist().catch(console.error)}
-            aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-          >
-            <Heart className={cn('h-5 w-5', isWishlisted && 'fill-current')} />
-          </Button>
-        </div>
+        <ProductActions
+          productId={product.id}
+          availableForSale={!!availableForSale}
+          disabled={quantityCap !== undefined && quantity > quantityCap}
+          onAddToCart={handleAddToCartAndClose}
+          compact
+        />
 
         <Link
           href={`${config.routes.collection}/products/${product.handle}`}

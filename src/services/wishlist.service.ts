@@ -1,6 +1,3 @@
-import { revalidatePath } from 'next/cache';
-
-import config from '@/config';
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { adminSdk, storefrontSdk } from '@/shopify';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
@@ -8,62 +5,63 @@ import { safeLogError } from '@/utils/api-responses';
 
 export const WISHLIST_MAX_ITEMS = 100;
 
-export type WishlistIds = string[];
+const WISHLIST_METAFIELD = { key: 'wishlist', namespace: 'custom' } as const;
+
+export type WishlistState = {
+  customerId: string | null;
+  ids: string[];
+};
+
+const parseWishlistValue = (value?: string | null): string[] => {
+  if (typeof value !== 'string') return [];
+
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed.filter((id): id is string => typeof id === 'string') : [];
+  } catch (error) {
+    safeLogError('WishlistService - parse error', error);
+    return [];
+  }
+};
 
 /**
  * Wishlist service
- * Handles all wishlist-related business logic
+ *
+ * The wishlist is a `custom.wishlist` JSON metafield on the customer. Storefront
+ * customer metafields are read-only, so writes go through the optional Shopify
+ * Admin API (`SHOPIFY_ADMIN_URL` + `SHOPIFY_STORE_FRONT_ADMIN_TOKEN`). When the
+ * Admin API is not configured, writes fail with a clear message instead of
+ * crashing.
  */
 export class WishlistService {
   /**
-   * Require authentication for wishlist operations
+   * Read the wishlist ids and the customer id in a single Storefront request.
    */
-  static async requireAuth(): Promise<string> {
-    const shopifyToken = await getShopifyToken();
-    if (!shopifyToken) {
-      throw new Error('User not authenticated');
-    }
-    return shopifyToken;
-  }
+  static async getWishlistState(): Promise<WishlistState> {
+    const customerAccessToken = await getShopifyToken();
 
-  /**
-   * Get wishlist product IDs from metafield
-   */
-  static async getWishlistIds(): Promise<WishlistIds> {
-    const shopifyToken = await getShopifyToken();
+    if (!customerAccessToken) return { customerId: null, ids: [] };
 
-    if (!shopifyToken) return [];
-
-    const wishlistResponse = await storefrontSdk('private').getCustomerMetafields({
-      customerAccessToken: shopifyToken,
-      metafields: [{ key: 'wishlist', namespace: 'custom' }],
+    const response = await storefrontSdk('private').getCustomer({
+      customerAccessToken,
+      metafields: [WISHLIST_METAFIELD],
     });
 
-    const metafields = wishlistResponse?.customer?.metafields;
-    const wishlistValue = metafields?.[0]?.value;
+    const customer = response?.customer;
 
-    if (typeof wishlistValue === 'string') {
-      try {
-        const parsed = JSON.parse(wishlistValue);
+    if (!customer) return { customerId: null, ids: [] };
 
-        if (Array.isArray(parsed)) {
-          return parsed.filter((id): id is string => typeof id === 'string');
-        }
-      } catch (error) {
-        safeLogError('WishlistService.getWishlistIds - parse error', error);
-        return [];
-      }
-    }
+    return { customerId: customer.id, ids: parseWishlistValue(customer.metafields?.[0]?.value) };
+  }
 
-    return [];
+  static async getWishlistIds(): Promise<string[]> {
+    return (await this.getWishlistState()).ids;
   }
 
   /**
-   * Resolve product IDs to full product fragments
+   * Resolve product IDs to full product fragments.
    */
-  private static async resolveProductsByIds(
-    productIds: string[],
-  ): Promise<ProductFieldsFragment[]> {
+  static async resolveProductsByIds(productIds: string[]): Promise<ProductFieldsFragment[]> {
     if (productIds.length === 0) return [];
 
     try {
@@ -72,9 +70,7 @@ export class WishlistService {
         identifiers: [],
       });
 
-      if (!response.nodes || response.nodes.length === 0) {
-        return [];
-      }
+      if (!response.nodes || response.nodes.length === 0) return [];
 
       const productMap = new Map(
         response.nodes
@@ -87,7 +83,7 @@ export class WishlistService {
 
       return productIds
         .map((id) => productMap.get(id))
-        .filter((p): p is ProductFieldsFragment => p !== undefined);
+        .filter((product): product is ProductFieldsFragment => product !== undefined);
     } catch (error) {
       safeLogError('WishlistService.resolveProductsByIds', error);
       return [];
@@ -95,130 +91,42 @@ export class WishlistService {
   }
 
   /**
-   * Get wishlist with resolved product data
-   */
-  static async getWishlist(): Promise<ProductFieldsFragment[]> {
-    const productIds = await this.getWishlistIds();
-    return this.resolveProductsByIds(productIds);
-  }
-
-  /**
-   * Create metafield payload for wishlist
-   */
-  private static createWishlistMetafields(productIds: WishlistIds, userId: string) {
-    const limitedIds = productIds.slice(0, WISHLIST_MAX_ITEMS);
-
-    return {
-      metafields: [
-        {
-          key: 'wishlist',
-          namespace: 'custom',
-          ownerId: userId,
-          type: 'json',
-          value: JSON.stringify(limitedIds),
-        },
-      ],
-    };
-  }
-
-  /**
-   * Update wishlist metafield with product IDs
+   * Persist the wishlist in a single Admin call. Returns a friendly message when
+   * the Admin API is not configured.
    */
   static async updateWishlist(
-    productIds: WishlistIds,
-    userId: string,
-  ): Promise<{ success: boolean; data?: WishlistIds; message?: string }> {
-    const limitedIds = productIds.slice(0, WISHLIST_MAX_ITEMS);
-    const uniqueIds = Array.from(new Set(limitedIds));
+    productIds: string[],
+    customerId: string,
+  ): Promise<{ success: boolean; data?: string[]; message?: string }> {
+    const uniqueIds = Array.from(new Set(productIds)).slice(0, WISHLIST_MAX_ITEMS);
 
-    const { metafields } = this.createWishlistMetafields(uniqueIds, userId);
+    let responseMetafield;
+    try {
+      responseMetafield = await adminSdk().MetafieldsSet({
+        metafields: [
+          {
+            key: WISHLIST_METAFIELD.key,
+            namespace: WISHLIST_METAFIELD.namespace,
+            ownerId: customerId,
+            type: 'json',
+            value: JSON.stringify(uniqueIds),
+          },
+        ],
+      });
+    } catch (error) {
+      safeLogError('WishlistService.updateWishlist - admin unavailable', error);
+      return {
+        success: false,
+        message: 'Wishlist is unavailable: the Shopify Admin API is not configured.',
+      };
+    }
 
-    const responseMetafield = await adminSdk().MetafieldsSet({ metafields });
     const errors = responseMetafield?.metafieldsSet?.userErrors;
-
     if (errors && errors.length > 0) {
       safeLogError('WishlistService.updateWishlist - MetafieldsSet errors', errors);
-      return {
-        success: false,
-        message: 'Something went wrong updating the wishlist',
-      };
+      return { success: false, message: 'Something went wrong updating the wishlist' };
     }
 
-    const value = responseMetafield?.metafieldsSet?.metafields?.filter(
-      (field) => field.key === 'wishlist',
-    )?.[0]?.value;
-
-    if (value) {
-      try {
-        const parsed = JSON.parse(value) as WishlistIds;
-        this.revalidate();
-        return {
-          success: true,
-          data: parsed,
-        };
-      } catch (error) {
-        safeLogError('WishlistService.updateWishlist - parse response error', error);
-        return {
-          success: false,
-          message: "Couldn't parse wishlist response",
-        };
-      }
-    }
-
-    return {
-      success: false,
-      message: "Couldn't update user wishlist",
-    };
-  }
-
-  /**
-   * Add product to wishlist
-   */
-  static async addProduct(productId: string, userId: string) {
-    const currentIds = await this.getWishlistIds();
-
-    if (currentIds.includes(productId)) {
-      return { success: true, data: currentIds, message: 'Product already in wishlist' };
-    }
-
-    const newIds = [...currentIds, productId];
-    return this.updateWishlist(newIds, userId);
-  }
-
-  /**
-   * Remove product from wishlist
-   */
-  static async removeProduct(productId: string, userId: string) {
-    const currentIds = await this.getWishlistIds();
-    const newIds = currentIds.filter((id) => id !== productId);
-
-    if (currentIds.length === newIds.length) {
-      return {
-        success: false,
-        message: 'Product not found in wishlist',
-      };
-    }
-
-    return this.updateWishlist(newIds, userId);
-  }
-
-  /**
-   * Revalidate wishlist cache
-   */
-  static revalidate(): void {
-    revalidatePath(config.routes.wishlist);
-    revalidatePath('/', 'layout');
-  }
-
-  /**
-   * Get error status code from error
-   */
-  static getErrorStatus(error: unknown): number {
-    if (error instanceof Error) {
-      if (error.message === 'User not authenticated') return 401;
-      if (error.message.includes('not found')) return 404;
-    }
-    return 500;
+    return { success: true, data: uniqueIds };
   }
 }
-

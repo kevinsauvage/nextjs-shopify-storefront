@@ -17,15 +17,15 @@ type ProductCardActionsProps = {
 };
 
 const ProductCardActions = ({ product, productId }: ProductCardActionsProps) => {
-  const { userWishlist, handleSetWishlist } = useUserContext();
+  const { wishlistIds, handleSetWishlist } = useUserContext();
   const [loading, setLoading] = useState(false);
 
-  const isWishlisted = userWishlist?.find((item) => item.id === productId);
+  const isWishlisted = wishlistIds.includes(productId);
 
   const handleWishlist = async () => {
     setLoading(true);
     try {
-      await handleSetWishlist(!!isWishlisted, product);
+      await handleSetWishlist(isWishlisted, productId);
     } catch (error) {
       console.error('Error updating wishlist:', error);
     } finally {

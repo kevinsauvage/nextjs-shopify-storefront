@@ -6,7 +6,7 @@ import EmptyState from '@/components/EmptyState';
 import ListingHeader from '@/components/ListingHeader';
 import PageBanner from '@/components/PageBanner';
 import PageInfoPagination from '@/components/PageInfoPagination';
-import ProductEdgeList from '@/components/ProductsEdgeList';
+import ProductsList from '@/components/ProductsList';
 import { Button } from '@/components/ui/button';
 import config from '@/config';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
@@ -225,7 +225,7 @@ const CollectionSlugPage = async ({
           <Filters filters={safeFilters} query={safeSearchParameters} />
         </ListingHeader>
 
-        <ProductEdgeList products={edges} layout="grid" />
+        <ProductsList products={edges.map((edge) => edge.node)} layout="grid" />
         <PageInfoPagination pageInfo={safePageInfo} searchParameters={safeSearchParameters} />
       </div>
     </div>

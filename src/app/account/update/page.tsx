@@ -4,10 +4,8 @@ import AccountStats from '@/app/account/_components/AccountStats';
 import CardHeaderPattern from '@/components/CardHeaderPattern';
 import { Card, CardContent } from '@/components/ui/card';
 import seo from '@/data/seo';
+import { getAccountStats } from '@/lib/server/account';
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
-import { WishlistService } from '@/services/wishlist.service';
-import { storefrontSdk } from '@/shopify/index';
-import { LanguageCode, OrderSortKeys } from '@/shopify/storefront';
 import { getUser } from '@/utils/users';
 
 import BackButton from '../_components/BackButton';
@@ -25,29 +23,9 @@ const Page = async () => {
   const shopifyToken = await getShopifyToken();
   const user = await getUser();
 
-  // Fetch stats in parallel
-  const [ordersResponse, addressesResponse, wishlist] = await Promise.all([
-    shopifyToken
-      ? storefrontSdk('private').getCustomerOrders({
-          customerAccessToken: shopifyToken,
-          first: 1,
-          identifiers: [],
-          language: LanguageCode.En,
-          sortKey: OrderSortKeys.ProcessedAt,
-        })
-      : Promise.resolve(null),
-    shopifyToken
-      ? storefrontSdk('private').getCustomerAddresses({
-          customerAccessToken: shopifyToken,
-          first: 1,
-        })
-      : Promise.resolve(null),
-    WishlistService.getWishlist(),
-  ]);
-
-  const ordersCount = Number(ordersResponse?.customer?.orders?.totalCount || 0);
-  const addressesCount = addressesResponse?.customer?.addresses?.edges?.length || 0;
-  const wishlistCount = wishlist?.length || 0;
+  const stats = shopifyToken
+    ? await getAccountStats(shopifyToken)
+    : { addressesCount: 0, ordersCount: 0, recentOrders: [] };
 
   return (
     <div className="space-y-6">
@@ -72,9 +50,8 @@ const Page = async () => {
           />
           <CardContent>
             <AccountStats
-              ordersCount={ordersCount}
-              addressesCount={addressesCount}
-              wishlistCount={wishlistCount}
+              ordersCount={stats.ordersCount}
+              addressesCount={stats.addressesCount}
               memberSince={user.createdAt}
             />
           </CardContent>

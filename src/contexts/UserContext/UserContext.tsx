@@ -6,18 +6,18 @@ import { usePathname, useRouter } from 'next/navigation';
 import { getSessionAction } from '@/actions/sessionActions';
 import {
   addToWishlistAction,
-  getWishlistAction,
+  getWishlistIdsAction,
   removeFromWishlistAction,
 } from '@/actions/wishlistActions';
 import config from '@/config';
-import type { ProductFieldsFragment } from '@/shopify/storefront';
 
 import { toast } from 'sonner';
 
 type UserContextValue = {
-  handleSetWishlist: (isWishlisted: boolean, product: ProductFieldsFragment) => Promise<void>;
+  handleSetWishlist: (isWishlisted: boolean, productId: string) => Promise<void>;
   isLoggedIn: boolean;
-  userWishlist: ProductFieldsFragment[];
+  wishlistIds: string[];
+  wishlistReady: boolean;
 };
 
 export const UserContext = createContext<UserContextValue>({
@@ -25,14 +25,17 @@ export const UserContext = createContext<UserContextValue>({
     // noop
   },
   isLoggedIn: false,
-  userWishlist: [],
+  wishlistIds: [],
+  wishlistReady: false,
 });
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userWishlist, setUserWishlist] = useState<ProductFieldsFragment[]>([]);
+  const [sessionResolved, setSessionResolved] = useState(false);
+  const [wishlistIds, setWishlistIds] = useState<string[]>([]);
+  const [wishlistLoaded, setWishlistLoaded] = useState(false);
 
   // The session lives in an httpOnly cookie, so it is resolved client-side to
   // keep the root layout (and the catalog) statically renderable. Re-checking on
@@ -42,7 +45,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
     getSessionAction()
       .then((loggedIn) => {
-        if (!cancelled) setIsLoggedIn(loggedIn);
+        if (cancelled) return;
+        setIsLoggedIn(loggedIn);
+        setSessionResolved(true);
       })
       .catch((error) => {
         console.error('Failed to resolve session:', error);
@@ -53,16 +58,18 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [pathname]);
 
-  // Load the wishlist client-side so the root layout does not block every page
+  // Load wishlist ids client-side so the root layout does not block every page
   // render on a customer-specific Shopify request.
   useEffect(() => {
     if (!isLoggedIn) return;
 
     let cancelled = false;
 
-    getWishlistAction()
-      .then((items) => {
-        if (!cancelled) setUserWishlist(items);
+    getWishlistIdsAction()
+      .then((ids) => {
+        if (cancelled) return;
+        setWishlistIds(ids);
+        setWishlistLoaded(true);
       })
       .catch((error) => {
         console.error('Failed to load wishlist:', error);
@@ -74,31 +81,38 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   }, [isLoggedIn]);
 
   const handleSetWishlist = useCallback(
-    async (isWishlisted: boolean, product: ProductFieldsFragment) => {
+    async (isWishlisted: boolean, productId: string) => {
       if (!isLoggedIn) {
         toast.info('You need to login to add products to your wishlist');
         router.push(`${config.routes.login}?redirect=${pathname}`);
         return;
       }
 
+      const previousIds = wishlistIds;
+      // Update optimistically; revert if the write fails.
+      setWishlistIds(
+        isWishlisted ? previousIds.filter((id) => id !== productId) : [...previousIds, productId],
+      );
+
       try {
         const result = isWishlisted
-          ? await removeFromWishlistAction(product.id)
-          : await addToWishlistAction(product.id);
+          ? await removeFromWishlistAction(productId)
+          : await addToWishlistAction(productId);
 
         if (result?.success && result.data) {
-          setUserWishlist(result.data);
+          setWishlistIds(result.data);
           toast.success(result.message);
-          router.refresh();
         } else {
+          setWishlistIds(previousIds);
           toast.error(result?.message || 'Something went wrong');
         }
       } catch (error) {
+        setWishlistIds(previousIds);
         console.error('Wishlist operation error:', error);
         toast.error(error instanceof Error ? error.message : 'Something went wrong');
       }
     },
-    [isLoggedIn, pathname, router],
+    [isLoggedIn, pathname, router, wishlistIds],
   );
 
   const values = useMemo(
@@ -106,9 +120,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       handleSetWishlist,
       isLoggedIn,
       // Never expose a stale wishlist once the session ends.
-      userWishlist: isLoggedIn ? userWishlist : [],
+      wishlistIds: isLoggedIn ? wishlistIds : [],
+      wishlistReady: sessionResolved && (!isLoggedIn || wishlistLoaded),
     }),
-    [handleSetWishlist, isLoggedIn, userWishlist],
+    [handleSetWishlist, isLoggedIn, sessionResolved, wishlistIds, wishlistLoaded],
   );
 
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;

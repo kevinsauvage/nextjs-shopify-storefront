@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { Card, CardContent } from '@/components/ui/card';
 import config from '@/config';
+import useUserContext from '@/contexts/UserContext/useUserContext';
 import { cn } from '@/utils/cn';
 
 import { Calendar, Heart, MapPin, Package } from 'lucide-react';
@@ -49,7 +50,6 @@ const StatCard = ({ title, value, icon, href, description, className }: StatCard
 type AccountStatsProps = {
   ordersCount?: number;
   addressesCount?: number;
-  wishlistCount?: number;
   memberSince?: string;
   className?: string;
 };
@@ -57,10 +57,13 @@ type AccountStatsProps = {
 const AccountStats = ({
   ordersCount = 0,
   addressesCount = 0,
-  wishlistCount = 0,
   memberSince,
   className,
 }: AccountStatsProps) => {
+  // The wishlist lives in localStorage-backed client state, so read it from the
+  // context rather than fetching it again on the server.
+  const { wishlistIds } = useUserContext();
+
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
@@ -87,7 +90,7 @@ const AccountStats = ({
       />
       <StatCard
         title="Wishlist Items"
-        value={wishlistCount}
+        value={wishlistIds.length}
         icon={<Heart size={24} className="shrink-0" />}
         href={config.routes.wishlist}
         description="View saved items"

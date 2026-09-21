@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { cookies } from 'next/headers';
 
 import config from '@/config';
@@ -33,14 +34,14 @@ export const setShopifyToken = async (customerAccessToken: CustomerAccessToken):
 /**
  * Reads the stored customer access token. This is intentionally read-only:
  * renewal happens in `src/proxy.ts`, because `cookies().set()` is not allowed
- * while rendering server components.
+ * while rendering server components. Memoized per request.
  */
-export const getShopifyToken = async (): Promise<
-  CustomerAccessToken['accessToken'] | undefined
-> => {
-  const cookieStore = await cookies();
-  return cookieStore.get(config.cookies.shopifyToken)?.value;
-};
+export const getShopifyToken = cache(
+  async (): Promise<CustomerAccessToken['accessToken'] | undefined> => {
+    const cookieStore = await cookies();
+    return cookieStore.get(config.cookies.shopifyToken)?.value;
+  },
+);
 
 export const clearShopifyToken = async (): Promise<void> => {
   const cookieStore = await cookies();

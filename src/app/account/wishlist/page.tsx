@@ -1,16 +1,8 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
-import NoFavoriteIllustration from '@/assets/NoFavoriteIllustration.png';
-import CardHeaderPattern from '@/components/CardHeaderPattern';
-import EmptyState from '@/components/EmptyState';
-import ProductsList from '@/components/ProductsList';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import seo from '@/data/seo';
-import { WishlistService } from '@/services/wishlist.service';
 
-import BackButton from '../_components/BackButton';
+import WishlistContent from './_components/WishlistContent';
 
 export const dynamic = 'force-dynamic'; // Wishlist is user-specific
 
@@ -19,48 +11,6 @@ export const metadata: Metadata = {
   title: seo.account.wishlist.title,
 };
 
-const Wishlist = async () => {
-  const userWishlist = await WishlistService.getWishlist();
-
-  if (!userWishlist?.length) {
-    return (
-      <Card>
-        <CardContent>
-          <EmptyState
-            variant="wishlist"
-            image={NoFavoriteIllustration}
-            title="Your wishlist is empty"
-            subtitle="Save your favorite items for later. Click the heart icon on any product to add it to your wishlist."
-            altText="Empty wishlist"
-            primaryAction={
-              <Button variant="default" asChild>
-                <Link href="/">Start Shopping</Link>
-              </Button>
-            }
-            secondaryAction={
-              <Link href="/collections" className="link">
-                Browse collections
-              </Link>
-            }
-          />
-        </CardContent>
-      </Card>
-    );
-  }
-
-  return (
-    <Card>
-      <CardHeaderPattern
-        title={`Wishlist (${userWishlist.length})`}
-        size={3}
-        actions={<BackButton />}
-        description={`You have ${userWishlist.length} ${userWishlist.length === 1 ? 'item' : 'items'} saved in your wishlist.`}
-      />
-      <CardContent>
-        <ProductsList loading={false} layout="grid" products={userWishlist} />
-      </CardContent>
-    </Card>
-  );
-};
+const Wishlist = () => <WishlistContent />;
 
 export default Wishlist;

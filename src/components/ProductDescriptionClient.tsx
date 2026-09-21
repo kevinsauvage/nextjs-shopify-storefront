@@ -2,22 +2,21 @@
 
 import { useState } from 'react';
 
-import QuantityUpdater from '@/components/QuantityUpdater';
-import useUserContext from '@/contexts/UserContext/useUserContext';
 import useProductSelection from '@/hooks/useProductSelection';
 import type { GetProductByHandleQuery } from '@/shopify/storefront';
 import { formatPrice } from '@/utils/format';
 import { getQuantityCap } from '@/utils/inventory';
 
 import { Badge } from './ui/badge';
-import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Separator } from './ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import Options from './Options';
+import ProductActions from './ProductActions';
+import ProductQuantitySelector from './ProductQuantitySelector';
 
-import { Heart, Info, ShoppingBag } from 'lucide-react';
+import { Info } from 'lucide-react';
 
 type ProductDescriptionClientProps = {
   product: NonNullable<GetProductByHandleQuery['product']>;
@@ -53,10 +52,7 @@ const ProductDescriptionClient = ({
     isOptionSelected,
     isOptionOutOfStock,
   } = useProductSelection({ product });
-  const { userWishlist, handleSetWishlist } = useUserContext();
   const [activeTab, setActiveTab] = useState('details');
-
-  const isWishlisted = userWishlist?.find((item) => item.id === productId);
 
   const selectedVariantData = selectedVariant as
     | {
@@ -90,10 +86,6 @@ const ProductDescriptionClient = ({
     compareAtPrice &&
     price &&
     Number(compareAtPrice.amount) > Number(price.amount);
-
-  const handleWishlist = async () => {
-    await handleSetWishlist(!!isWishlisted, product);
-  };
 
   return (
     <div className="flex flex-col gap-6 lg:col-span-5 lg:sticky lg:top-24 lg:self-start">
@@ -226,43 +218,23 @@ const ProductDescriptionClient = ({
                   </TooltipProvider>
                 )}
               </div>
-              <QuantityUpdater
-                originalQuantity={quantity || 1}
+              <ProductQuantitySelector
+                quantity={quantity}
+                onChange={handleChangeInput}
                 quantityAvailable={quantityAvailable}
-                productId={productId}
                 disabled={!availableForSale}
-                onChange={(_id, q) => {
-                  handleChangeInput(q);
-                }}
               />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <div className="flex gap-3">
-        <Button
-          className="flex-1 gap-2"
-          size="lg"
-          disabled={!availableForSale || (quantityCap !== undefined && quantity > quantityCap)}
-          onClick={handleAddToCart}
-        >
-          <ShoppingBag className="h-5 w-5" color="currentColor" />
-          {availableForSale ? 'Add to Cart' : 'Sold Out'}
-        </Button>
-
-        <Button
-          variant={isWishlisted ? 'default' : 'outline'}
-          size="lg"
-          className="gap-2"
-          onClick={() => {
-            handleWishlist().catch((error) => console.error(error));
-          }}
-        >
-          <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-primary-foreground' : ''}`} />
-          <span className="sr-only md:not-sr-only">{isWishlisted ? 'Saved' : 'Save'}</span>
-        </Button>
-      </div>
+      <ProductActions
+        productId={productId}
+        availableForSale={!!availableForSale}
+        disabled={quantityCap !== undefined && quantity > quantityCap}
+        onAddToCart={handleAddToCart}
+      />
     </div>
   );
 };

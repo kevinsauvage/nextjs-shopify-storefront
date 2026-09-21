@@ -1,57 +1,5 @@
 # Global Project Audit — Prioritized TODO
 
-Audited the actual codebase (212 source files) with Graft wiring + end-to-end flow tracing
-(catalog → product → cart → checkout, auth → account, search, wishlist). The app is
-functionally rich but was built AI-first, so several core flows have real correctness bugs,
-the whole app is forced dynamic, and there is notable duplicate/dead code.
-
-Prioritized: correctness → missing core → security/data → reliability → architecture →
-complexity → performance → tests/docs.
-
-## P1 — High
-
-### [ ] Collapse duplicate product list + product detail implementations
-
-**Why:** `ProductsEdgeList` and `ProductsList` are the same component with different input shapes; `QuickBuyContent` and `ProductDescriptionClient` independently reimplement variant selection, add-to-cart, wishlist, badges and quantity UI — and have already diverged (the null-quantity bug exists in one path but not the other). Every product UX change must be made twice.
-
-**Where:** `src/components/ProductsEdgeList.tsx`, `src/components/ProductsList.tsx`, `src/components/QuickBuyContent.tsx`, `src/components/ProductDescriptionClient.tsx`, `src/hooks/useProductSelection.ts`.
-
-**Change:** Keep one list component (accept `ProductFieldsFragment[]`, derive from edges at the call site). Extract one shared product purchase block (options + quantity + add-to-cart + wishlist) consumed by both the PDP and the quick-view sheet.
-
-**Impact:** Medium
-
-### [ ] Rework the wishlist: fewer round-trips, single write, no hard Admin dependency
-
-**Why:** Each add/remove makes 4–5 sequential Shopify calls (`requireAuth` → `getUser` network call → `getWishlistIds` → `addProduct` → `getWishlistIds` again → `getWishlist`), stores state as one JSON metafield with read-modify-write (lost updates under concurrency), and hard-requires the optional Admin API. It also `router.refresh()`es the whole page on every toggle.
-
-**Where:** `src/services/wishlist.service.ts`, `src/actions/wishlistActions.ts`, `src/contexts/UserContext/UserContext.tsx`.
-
-**Change:** Read IDs once, compute the new set, write once; take the customer id from the session instead of a `getUser` fetch; use optimistic client state instead of `router.refresh()`; and either use Storefront customer metafields or document the Admin requirement explicitly. Consider localStorage for anonymous users.
-
-**Impact:** Medium
-
-### [ ] Simplify product variant selection
-
-**Why:** `useProductSelection` schedules three `setTimeout(..., 0)` calls inside one effect to dodge hydration issues and calls `selectVariantByOptions` from inside a state updater (a side effect in an updater, double-invoked under StrictMode). Option availability is computed with inverted naming. This is the most bug-prone logic in the app.
-
-**Where:** `src/hooks/useProductSelection.ts`.
-
-**Change:** Derive selected variant/options from props + a single state value with `useMemo`; remove timers and side effects from updaters; rename the availability helper to match its return value.
-
-**Impact:** Medium
-
-### [ ] Remove dead code and eliminate duplicated account fetching
-
-**Why:** Confirmed-unused exports (`CartService.getOrCreateCart`, `getCartById`; `getShopifyCartId`; `WishlistService.getErrorStatus`; `getOptimizedImageUrl`/`generateImageSrcSet`/`getImageSizeForViewport`; `analytics` default). `account/page.tsx` fetches customer orders twice (`first: 1` then `first: 3`), and the same stats/orders are re-fetched on `/account/update` and in `UserContext` (wishlist fetched again client-side).
-
-**Where:** `src/services/cart.service.ts`, `src/services/wishlist.service.ts`, `src/lib/server/shopify-helpers.ts`, `src/utils/images.ts`, `src/lib/client/analytics.ts`, `src/app/account/page.tsx`, `src/app/account/update/page.tsx`.
-
-**Change:** Delete dead code; fetch recent orders once (`first: 3`) and derive the count; share a single stats loader; stop double-loading the wishlist.
-
-**Impact:** Medium
-
-### [ ] Memoize per-request user/token lookups
-
 **Why:** `getUser()` and `getShopifyToken()` are called repeatedly within a single request (account layout, page, and each service), each triggering Shopify network calls. `/account` alone resolves the customer several times.
 
 **Where:** `src/utils/users.ts`, `src/lib/server/shopify-helpers.ts`, account pages/services.
@@ -105,23 +53,3 @@ complexity → performance → tests/docs.
 **Impact:** Low
 
 ---
-
-## Biggest Wins
-
-1. **Fix the null-`quantityAvailable` buy path** — restores checkout for untracked-inventory products (a core, currently broken flow).
-2. **Decouple public reads from cookies and restore ISR/static rendering** — the single largest performance and architecture improvement.
-3. **Make the cart reliable** — no more silently orphaned carts / lost items / first-visit race.
-4. **Fix render-time cookie writes on token renewal** — removes an intermittent account-page crash.
-5. **Collapse the duplicated product UI + rework the wishlist** — removes the biggest source of divergent bugs and the highest per-action network cost.
-
-## Target State
-
-- Catalog pages (home, collections, products) are statically rendered / ISR and fast, with cart and session data hydrated client-side.
-- Every product can be added to the cart regardless of inventory tracking, and quantity controls behave consistently on the PDP, quick view and cart.
-- Cart state is created server-side, preserved across transient errors, and never silently replaced.
-- Account pages never crash on token renewal; per-request user/customer lookups are memoized.
-- One product-card list and one shared purchase UI serve the catalog, PDP and quick view.
-- Wishlist updates in one Shopify call with optimistic UI and no hard Admin dependency.
-- User-supplied query params can never crash a page.
-- Security posture: nonce-based CSP and trusted-header-only buyer IP.
-- Core flows (cart, auth, wishlist, filter parsing) are covered by tests, and dead code is gone.

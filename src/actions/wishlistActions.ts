@@ -3,19 +3,31 @@
 import { WISHLIST_MAX_ITEMS, WishlistService } from '@/services/wishlist.service';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
 import { safeLogError } from '@/utils/api-responses';
-import { getUser } from '@/utils/users';
 
 export type WishlistActionResult = {
   success: boolean;
-  data?: ProductFieldsFragment[];
+  data?: string[];
   message?: string;
 };
 
-export async function getWishlistAction(): Promise<ProductFieldsFragment[]> {
+export async function getWishlistIdsAction(): Promise<string[]> {
   try {
-    return await WishlistService.getWishlist();
+    return await WishlistService.getWishlistIds();
   } catch (error) {
-    safeLogError('getWishlistAction', error);
+    safeLogError('getWishlistIdsAction', error);
+    return [];
+  }
+}
+
+export async function getWishlistProductsAction(
+  productIds: string[],
+): Promise<ProductFieldsFragment[]> {
+  if (!Array.isArray(productIds) || productIds.length === 0) return [];
+
+  try {
+    return await WishlistService.resolveProductsByIds(productIds);
+  } catch (error) {
+    safeLogError('getWishlistProductsAction', error);
     return [];
   }
 }
@@ -26,78 +38,69 @@ export async function addToWishlistAction(productId: string): Promise<WishlistAc
   }
 
   try {
-    await WishlistService.requireAuth();
+    const { customerId, ids } = await WishlistService.getWishlistState();
 
-    const user = await getUser();
-    if (!user?.id) {
-      return { success: false, message: 'User not found' };
+    if (!customerId) {
+      return { success: false, message: 'User not authenticated' };
     }
 
-    const currentIds = await WishlistService.getWishlistIds();
-
-    if (currentIds.includes(productId)) {
-      return {
-        data: await WishlistService.getWishlist(),
-        message: 'Product already in wishlist',
-        success: true,
-      };
+    if (ids.includes(productId)) {
+      return { success: true, data: ids, message: 'Product already in wishlist' };
     }
 
-    if (currentIds.length >= WISHLIST_MAX_ITEMS) {
+    if (ids.length >= WISHLIST_MAX_ITEMS) {
       return {
-        message: `Wishlist is full. Maximum ${WISHLIST_MAX_ITEMS} items allowed.`,
         success: false,
+        message: `Wishlist is full. Maximum ${WISHLIST_MAX_ITEMS} items allowed.`,
       };
     }
 
-    const result = await WishlistService.addProduct(productId, user.id);
+    const result = await WishlistService.updateWishlist([...ids, productId], customerId);
 
     if (!result.success) {
-      return { message: result.message || "Couldn't add product to wishlist", success: false };
+      return { success: false, message: result.message || "Couldn't add product to wishlist" };
     }
 
-    return {
-      data: await WishlistService.getWishlist(),
-      message: 'Product added to wishlist',
-      success: true,
-    };
+    return { success: true, data: result.data, message: 'Product added to wishlist' };
   } catch (error) {
     safeLogError('addToWishlistAction', error);
     return {
-      message: error instanceof Error ? error.message : 'An unexpected error occurred',
       success: false,
+      message: error instanceof Error ? error.message : 'An unexpected error occurred',
     };
   }
 }
 
 export async function removeFromWishlistAction(productId: string): Promise<WishlistActionResult> {
   try {
-    await WishlistService.requireAuth();
+    const { customerId, ids } = await WishlistService.getWishlistState();
 
-    const user = await getUser();
-    if (!user?.id) {
-      return { success: false, message: 'User not found' };
+    if (!customerId) {
+      return { success: false, message: 'User not authenticated' };
     }
 
-    const result = await WishlistService.removeProduct(productId, user.id);
+    if (!ids.includes(productId)) {
+      return { success: false, message: 'Product not found in wishlist' };
+    }
+
+    const result = await WishlistService.updateWishlist(
+      ids.filter((id) => id !== productId),
+      customerId,
+    );
 
     if (!result.success) {
       return {
-        message: result.message || 'Something went wrong removing the product from the wishlist',
         success: false,
+        message: result.message || 'Something went wrong removing the product from the wishlist',
       };
     }
 
-    return {
-      data: await WishlistService.getWishlist(),
-      message: 'Product removed from wishlist',
-      success: true,
-    };
+    return { success: true, data: result.data, message: 'Product removed from wishlist' };
   } catch (error) {
     safeLogError('removeFromWishlistAction', error);
     return {
-      message: error instanceof Error ? error.message : 'An unexpected error occurred',
       success: false,
+      message: error instanceof Error ? error.message : 'An unexpected error occurred',
     };
   }
 }
