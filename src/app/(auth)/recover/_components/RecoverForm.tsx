@@ -8,8 +8,8 @@ import FormFieldError from '@/components/FormFieldError';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useFormStatesEffect } from '@/hooks/useFormStatesEffect';
-import type { CustomerUserError } from '@/shopify/storefront';
+import { useFormToast } from '@/hooks/useFormToast';
+import { emptyFormState,type FormState } from '@/types/formActions';
 
 import Form from '../../_components/Form';
 
@@ -28,24 +28,12 @@ const RecoverForm = () => {
     return recoverPasswordAction({ email });
   };
 
-  const [states, action, isPending] = useActionState<
-    {
-      email?: string | string[];
-      error?: string;
-      customerUserErrors?: CustomerUserError[];
-      success?: string;
-    },
-    FormData
-  >(handleSubmit, {
-    email: '',
-  });
+  const [state, action, isPending] = useActionState<FormState, FormData>(
+    handleSubmit,
+    emptyFormState,
+  );
 
-  useFormStatesEffect({
-    states,
-    userFeedback: {
-      error: 'An error occurred while recovering the password.',
-    },
-  });
+  useFormToast(state);
 
   return (
     <Form action={action} className="space-y-5">
@@ -58,13 +46,13 @@ const RecoverForm = () => {
           placeholder="name@company.com"
           required={true}
           disabled={isPending}
-          aria-invalid={!!states.email?.at(-1)}
-          aria-describedby={states.email?.at(-1) ? 'email-error' : undefined}
+          aria-invalid={!!state.errors?.email?.at(-1)}
+          aria-describedby={state.errors?.email?.at(-1) ? 'email-error' : undefined}
         />
         <p className="text-body-sm text-secondary">
           We&apos;ll email you a secure link to reset your password.
         </p>
-        <FormFieldError error={states.email} fieldId="email" />
+        <FormFieldError error={state.errors?.email} fieldId="email" />
       </div>
 
       <SubmitButton />

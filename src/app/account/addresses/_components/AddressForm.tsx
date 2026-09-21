@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { useFormStatesEffect } from '@/hooks/useFormStatesEffect';
-import type { CustomerUserError } from '@/shopify/storefront';
+import { useFormToast } from '@/hooks/useFormToast';
+import { emptyFormState,type FormState } from '@/types/formActions';
 
 const SubmitButton = ({ buttonText }: { buttonText: string }) => {
   const status = useFormStatus();
@@ -32,21 +32,7 @@ type AddressAction = (input: {
   phone?: string;
   province?: string;
   zip: string;
-}) => Promise<{
-  address1?: string | string[];
-  address2?: string | string[];
-  city?: string | string[];
-  company?: string | string[];
-  country?: string | string[];
-  customerUserErrors?: CustomerUserError[];
-  error?: string;
-  firstName?: string | string[];
-  id?: string | string[];
-  lastName?: string | string[];
-  phone?: string | string[];
-  province?: string | string[];
-  zip?: string | string[];
-}>;
+}) => Promise<FormState>;
 
 const AddressFormUI = ({
   action,
@@ -60,8 +46,6 @@ const AddressFormUI = ({
     city?: string;
     company?: string;
     country?: string;
-    customerUserErrors?: CustomerUserError[];
-    error?: string;
     firstName?: string;
     id?: string;
     lastName?: string;
@@ -101,28 +85,12 @@ const AddressFormUI = ({
     });
   };
 
-  const [states, actionState, isPending] = useActionState<
-    {
-      address1?: string | string[];
-      address2?: string | string[];
-      city?: string | string[];
-      company?: string | string[];
-      country?: string | string[];
-      customerUserErrors?: CustomerUserError[];
-      error?: string;
-      firstName?: string | string[];
-      id?: string | string[];
-      lastName?: string | string[];
-      phone?: string | string[];
-      province?: string | string[];
-      zip?: string | string[];
-    },
-    FormData
-  >(handleSubmit, {});
+  const [state, actionState, isPending] = useActionState<FormState, FormData>(
+    handleSubmit,
+    emptyFormState,
+  );
 
-  useFormStatesEffect({
-    states,
-  });
+  useFormToast(state);
 
   return (
     <form action={actionState} className="space-y-6">
@@ -140,10 +108,10 @@ const AddressFormUI = ({
                 type="text"
                 defaultValue={address?.firstName}
                 disabled={isPending}
-                aria-invalid={!!states?.firstName?.length}
-                aria-describedby={states?.firstName?.length ? 'firstName-error' : undefined}
+                aria-invalid={!!state.errors?.firstName?.length}
+                aria-describedby={state.errors?.firstName?.length ? 'firstName-error' : undefined}
               />
-              <FormFieldError error={states?.firstName} fieldId="firstName" />
+              <FormFieldError error={state.errors?.firstName} fieldId="firstName" />
             </div>
 
             <div className="space-y-2">
@@ -156,10 +124,10 @@ const AddressFormUI = ({
                 type="text"
                 defaultValue={address?.lastName}
                 disabled={isPending}
-                aria-invalid={!!states?.lastName?.length}
-                aria-describedby={states?.lastName?.length ? 'lastName-error' : undefined}
+                aria-invalid={!!state.errors?.lastName?.length}
+                aria-describedby={state.errors?.lastName?.length ? 'lastName-error' : undefined}
               />
-              <FormFieldError error={states?.lastName} fieldId="lastName" />
+              <FormFieldError error={state.errors?.lastName} fieldId="lastName" />
             </div>
 
             <div className="space-y-2">
@@ -171,10 +139,10 @@ const AddressFormUI = ({
                 type="text"
                 defaultValue={address?.company}
                 disabled={isPending}
-                aria-invalid={!!states?.company?.length}
-                aria-describedby={states?.company?.length ? 'company-error' : undefined}
+                aria-invalid={!!state.errors?.company?.length}
+                aria-describedby={state.errors?.company?.length ? 'company-error' : undefined}
               />
-              <FormFieldError error={states?.company} fieldId="company" />
+              <FormFieldError error={state.errors?.company} fieldId="company" />
             </div>
 
             <div className="space-y-2">
@@ -186,10 +154,10 @@ const AddressFormUI = ({
                 type="text"
                 defaultValue={address?.phone}
                 disabled={isPending}
-                aria-invalid={!!states?.phone?.length}
-                aria-describedby={states?.phone?.length ? 'phone-error' : undefined}
+                aria-invalid={!!state.errors?.phone?.length}
+                aria-describedby={state.errors?.phone?.length ? 'phone-error' : undefined}
               />
-              <FormFieldError error={states?.phone} fieldId="phone" />
+              <FormFieldError error={state.errors?.phone} fieldId="phone" />
             </div>
           </div>
         </div>
@@ -206,10 +174,10 @@ const AddressFormUI = ({
                 type="text"
                 defaultValue={address?.address1}
                 disabled={isPending}
-                aria-invalid={!!states?.address1?.length}
-                aria-describedby={states?.address1?.length ? 'address1-error' : undefined}
+                aria-invalid={!!state.errors?.address1?.length}
+                aria-describedby={state.errors?.address1?.length ? 'address1-error' : undefined}
               />
-              <FormFieldError error={states?.address1} fieldId="address1" />
+              <FormFieldError error={state.errors?.address1} fieldId="address1" />
             </div>
             <div className="space-y-2 w-full">
               <Label htmlFor="address2">Address 2</Label>
@@ -220,10 +188,10 @@ const AddressFormUI = ({
                 type="text"
                 defaultValue={address?.address2}
                 disabled={isPending}
-                aria-invalid={!!states?.address2?.length}
-                aria-describedby={states?.address2?.length ? 'address2-error' : undefined}
+                aria-invalid={!!state.errors?.address2?.length}
+                aria-describedby={state.errors?.address2?.length ? 'address2-error' : undefined}
               />
-              <FormFieldError error={states?.address2} fieldId="address2" />
+              <FormFieldError error={state.errors?.address2} fieldId="address2" />
             </div>
 
             <div className="space-y-2 w-full">
@@ -236,10 +204,10 @@ const AddressFormUI = ({
                 type="text"
                 defaultValue={address?.city}
                 disabled={isPending}
-                aria-invalid={!!states?.city?.length}
-                aria-describedby={states?.city?.length ? 'city-error' : undefined}
+                aria-invalid={!!state.errors?.city?.length}
+                aria-describedby={state.errors?.city?.length ? 'city-error' : undefined}
               />
-              <FormFieldError error={states?.city} fieldId="city" />
+              <FormFieldError error={state.errors?.city} fieldId="city" />
             </div>
             <div className="space-y-2 w-full">
               <Label htmlFor="province">Province</Label>
@@ -251,10 +219,10 @@ const AddressFormUI = ({
                 type="text"
                 defaultValue={address?.province}
                 disabled={isPending}
-                aria-invalid={!!states?.province?.length}
-                aria-describedby={states?.province?.length ? 'province-error' : undefined}
+                aria-invalid={!!state.errors?.province?.length}
+                aria-describedby={state.errors?.province?.length ? 'province-error' : undefined}
               />
-              <FormFieldError error={states?.province} fieldId="province" />
+              <FormFieldError error={state.errors?.province} fieldId="province" />
             </div>
 
             <div className="space-y-2 w-full">
@@ -267,10 +235,10 @@ const AddressFormUI = ({
                 type="text"
                 defaultValue={address?.country}
                 disabled={isPending}
-                aria-invalid={!!states?.country?.length}
-                aria-describedby={states?.country?.length ? 'country-error' : undefined}
+                aria-invalid={!!state.errors?.country?.length}
+                aria-describedby={state.errors?.country?.length ? 'country-error' : undefined}
               />
-              <FormFieldError error={states?.country} fieldId="country" />
+              <FormFieldError error={state.errors?.country} fieldId="country" />
             </div>
             <div className="space-y-2 w-full">
               <Label htmlFor="zip">Zip</Label>
@@ -282,10 +250,10 @@ const AddressFormUI = ({
                 type="text"
                 defaultValue={address?.zip}
                 disabled={isPending}
-                aria-invalid={!!states?.zip?.length}
-                aria-describedby={states?.zip?.length ? 'zip-error' : undefined}
+                aria-invalid={!!state.errors?.zip?.length}
+                aria-describedby={state.errors?.zip?.length ? 'zip-error' : undefined}
               />
-              <FormFieldError error={states?.zip} fieldId="zip" />
+              <FormFieldError error={state.errors?.zip} fieldId="zip" />
             </div>
           </div>
         </div>

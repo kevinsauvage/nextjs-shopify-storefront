@@ -1,8 +1,8 @@
 'use server';
 
 import { UserService } from '@/services/user.service';
-import type { FormActionResult } from '@/types/formActions';
-import { zodErrorsToFormActionResult } from '@/utils/form-actions';
+import type { FormState } from '@/types/formActions';
+import { formSuccess, serviceErrorsToFormState, zodErrorsToFormState } from '@/utils/form-actions';
 
 import { z } from 'zod';
 
@@ -17,41 +17,24 @@ const userSchema = z.object({
 
 type UpdateUserInput = z.infer<typeof userSchema>;
 
-type UpdateUserFieldErrors = {
-  email?: string | string[];
-  firstName?: string | string[];
-  lastName?: string | string[];
-  phone?: string | string[];
-  company?: string | string[];
-  acceptsMarketing?: string | string[];
-};
-
-export async function updateUserAction(
-  input: UpdateUserInput,
-): Promise<FormActionResult<UpdateUserFieldErrors> & UpdateUserFieldErrors> {
+export async function updateUserAction(input: UpdateUserInput): Promise<FormState> {
   const result = userSchema.safeParse(input);
-
-  if (!result?.success) {
-    const fieldErrors = result.error.formErrors.fieldErrors as UpdateUserFieldErrors;
-    return { ...zodErrorsToFormActionResult(result.error), ...fieldErrors };
+  if (!result.success) {
+    return zodErrorsToFormState(result.error);
   }
 
   const { email, firstName, lastName, acceptsMarketing, company, phone } = result.data;
-
   const serviceResult = await UserService.updateUser({
+    acceptsMarketing,
+    company,
     email,
     firstName,
     lastName,
-    acceptsMarketing,
-    company,
     phone,
   });
 
-  if ('error' in serviceResult) {
-    return serviceResult;
-  }
+  const errorState = serviceErrorsToFormState(serviceResult, 'Failed to update user');
+  if (errorState) return errorState;
 
-  return {
-    success: serviceResult.success || 'User updated successfully',
-  };
+  return formSuccess('User updated successfully');
 }

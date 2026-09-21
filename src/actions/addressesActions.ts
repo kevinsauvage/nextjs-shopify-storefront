@@ -4,7 +4,8 @@ import { redirect } from 'next/navigation';
 
 import config from '@/config';
 import { AddressService } from '@/services/address.service';
-import { zodErrorsToFormActionResult } from '@/utils/form-actions';
+import type { FormState } from '@/types/formActions';
+import { serviceErrorsToFormState, zodErrorsToFormState } from '@/utils/form-actions';
 
 import { z } from 'zod';
 
@@ -24,52 +25,48 @@ const addressSchema = z.object({
 
 type AddressInput = z.infer<typeof addressSchema>;
 
-export async function createAddressAction(input: AddressInput) {
+export async function createAddressAction(input: AddressInput): Promise<FormState> {
   const result = addressSchema.safeParse(input);
-  if (!result?.success) {
-    return zodErrorsToFormActionResult(result.error);
+  if (!result.success) {
+    return zodErrorsToFormState(result.error);
   }
 
   const serviceResult = await AddressService.createAddress(result.data);
 
-  if ('error' in serviceResult) {
-    return serviceResult;
-  }
+  const errorState = serviceErrorsToFormState(serviceResult);
+  if (errorState) return errorState;
 
-  return redirect(config.routes.addresses);
+  redirect(config.routes.addresses);
 }
 
-export async function deleteAddressAction(addressId: string) {
+export async function deleteAddressAction(addressId: string): Promise<FormState> {
   const serviceResult = await AddressService.deleteAddress(addressId);
 
-  if ('error' in serviceResult) {
-    return serviceResult;
-  }
+  const errorState = serviceErrorsToFormState(serviceResult);
+  if (errorState) return errorState;
 
-  return redirect(config.routes.addresses);
+  redirect(config.routes.addresses);
 }
 
-export async function setDefaultAddressAction(addressId: string) {
+export async function setDefaultAddressAction(addressId: string): Promise<FormState> {
   const serviceResult = await AddressService.setDefaultAddress(addressId);
 
-  if ('error' in serviceResult) {
-    return serviceResult;
-  }
+  const errorState = serviceErrorsToFormState(serviceResult);
+  if (errorState) return errorState;
 
-  return redirect(config.routes.addresses);
+  redirect(config.routes.addresses);
 }
 
-export async function updateAddressAction(input: AddressInput) {
+export async function updateAddressAction(input: AddressInput): Promise<FormState> {
   const result = addressSchema.safeParse(input);
-  if (!result?.success) {
-    return zodErrorsToFormActionResult(result.error);
+  if (!result.success) {
+    return zodErrorsToFormState(result.error);
   }
 
   const serviceResult = await AddressService.updateAddress(result.data);
 
-  if ('error' in serviceResult) {
-    return serviceResult;
-  }
+  const errorState = serviceErrorsToFormState(serviceResult);
+  if (errorState) return errorState;
 
-  return redirect(config.routes.addresses);
+  redirect(config.routes.addresses);
 }

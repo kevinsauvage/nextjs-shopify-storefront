@@ -6,6 +6,8 @@ const validEnv = {
   NEXT_PUBLIC_BASE_URL: 'https://shop.example.com',
   NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL: 'https://shop.example.com/api/2025-01/graphql.json',
   SHOPIFY_STORE_FRONT_ACCESS_TOKEN: 'storefront-token',
+  UPSTASH_REDIS_REST_URL: 'https://example.upstash.io',
+  UPSTASH_REDIS_REST_TOKEN: 'upstash-rest-token',
 };
 
 describe('validateEnv', () => {

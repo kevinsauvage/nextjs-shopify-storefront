@@ -1,15 +1,15 @@
-import type { CustomerUserError, UserError } from '@/shopify/storefront';
+export type FormFieldErrors = Partial<Record<string, string[]>>;
 
 /**
- * Standardized return type for all form actions
- * Ensures consistent error handling and state management across all forms
+ * Standardized result/state for every form action.
+ *
+ * A single shape keeps server actions and client forms in sync: field-level
+ * validation errors live in `errors`, everything user-facing lives in `message`.
  */
-export type FormActionResult<
-  TFieldErrors extends Record<string, string | string[]> = Record<string, string | string[]>,
-> = {
-  error?: string;
-  success?: string;
-  customerUserErrors?: CustomerUserError[];
-  userErrors?: UserError[];
-  fieldErrors?: TFieldErrors;
+export type FormState = {
+  ok: boolean;
+  errors?: FormFieldErrors;
+  message?: string;
 };
+
+export const emptyFormState: FormState = { ok: true };

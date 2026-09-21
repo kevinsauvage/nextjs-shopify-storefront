@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 
 import config from '@/config';
+import { DEFAULTS } from '@/config/constants';
 import { getDelegateAccessToken } from '@/lib/server/delegate-token';
 import { getCurrentUrlWithoutParameters } from '@/lib/server/url-helpers';
 
@@ -66,10 +67,11 @@ export const buildExtraHeaders = async (
   const cookiesStore = await cookies();
 
   const userIp = cookiesStore.get(config.cookies.userIp)?.value;
+  const buyerIp = userIp && userIp !== DEFAULTS.ip ? userIp : undefined;
   const delegateToken = await getDelegateAccessToken();
 
   const extraHeaders: Record<string, string> = {
-    'Shopify-Storefront-Buyer-IP': userIp || '',
+    ...(buyerIp ? { 'Shopify-Storefront-Buyer-IP': buyerIp } : {}),
     ...(delegateToken ? { 'Shopify-Storefront-Private-Token': delegateToken } : {}),
   };
 

@@ -8,9 +8,8 @@ import FormFieldError from '@/components/FormFieldError';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { userFeedback } from '@/data/userFeedback';
-import { useFormStatesEffect } from '@/hooks/useFormStatesEffect';
-import type { CustomerUserError } from '@/shopify/storefront';
+import { useFormToast } from '@/hooks/useFormToast';
+import { emptyFormState,type FormState } from '@/types/formActions';
 
 import Form from '../../_components/Form';
 import PasswordField from '../../_components/PasswordField';
@@ -52,29 +51,12 @@ const RegisterForm = () => {
     setFormData((previous) => ({ ...previous, [name]: value || '' }));
   };
 
-  const [states, action, isPending] = useActionState<
-    {
-      email?: string | string[];
-      firstName?: string | string[];
-      lastName?: string | string[];
-      name?: string | string[];
-      password?: string | string[];
-      passwordConfirm?: string | string[];
-      error?: string;
-      username?: string | string[];
-      company?: string | string[];
-      customerUserErrors?: CustomerUserError[];
-      userErrors?: Array<{ message: string }>;
-    },
-    FormData
-  >(handleSubmit, initialStates);
+  const [state, action, isPending] = useActionState<FormState, FormData>(
+    handleSubmit,
+    emptyFormState,
+  );
 
-  useFormStatesEffect({
-    states,
-    userFeedback: {
-      error: userFeedback.register.error,
-    },
-  });
+  useFormToast(state);
 
   return (
     <Form action={action} autoComplete="off" className="space-y-5">
@@ -90,10 +72,10 @@ const RegisterForm = () => {
           onChange={handleChange}
           value={formData.email}
           disabled={isPending}
-          aria-invalid={!!states.email?.at(-1)}
-          aria-describedby={states.email?.at(-1) ? 'email-error' : undefined}
+          aria-invalid={!!state.errors?.email?.at(-1)}
+          aria-describedby={state.errors?.email?.at(-1) ? 'email-error' : undefined}
         />
-        <FormFieldError error={states.email} fieldId="email" />
+        <FormFieldError error={state.errors?.email} fieldId="email" />
       </div>
       <div className="space-y-2">
         <PasswordField
@@ -106,7 +88,7 @@ const RegisterForm = () => {
           onChange={handleChange}
           value={formData.password}
           disabled={isPending}
-          error={states.password}
+          error={state.errors?.password}
         />
       </div>
 
@@ -121,7 +103,7 @@ const RegisterForm = () => {
           onChange={handleChange}
           value={formData.passwordConfirm}
           disabled={isPending}
-          error={states.passwordConfirm}
+          error={state.errors?.passwordConfirm}
         />
       </div>
 
@@ -136,10 +118,10 @@ const RegisterForm = () => {
           onChange={handleChange}
           value={formData.firstName}
           disabled={isPending}
-          aria-invalid={!!states.firstName?.at(-1)}
-          aria-describedby={states.firstName?.at(-1) ? 'firstName-error' : undefined}
+          aria-invalid={!!state.errors?.firstName?.at(-1)}
+          aria-describedby={state.errors?.firstName?.at(-1) ? 'firstName-error' : undefined}
         />
-        <FormFieldError error={states.firstName} fieldId="firstName" />
+        <FormFieldError error={state.errors?.firstName} fieldId="firstName" />
       </div>
 
       <div className="space-y-2">
@@ -153,10 +135,10 @@ const RegisterForm = () => {
           onChange={handleChange}
           value={formData.lastName}
           disabled={isPending}
-          aria-invalid={!!states.lastName?.at(-1)}
-          aria-describedby={states.lastName?.at(-1) ? 'lastName-error' : undefined}
+          aria-invalid={!!state.errors?.lastName?.at(-1)}
+          aria-describedby={state.errors?.lastName?.at(-1) ? 'lastName-error' : undefined}
         />
-        <FormFieldError error={states.lastName} fieldId="lastName" />
+        <FormFieldError error={state.errors?.lastName} fieldId="lastName" />
       </div>
       <SubmitButton />
     </Form>

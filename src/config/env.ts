@@ -19,6 +19,10 @@ const envSchema = z
     NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL: requiredUrl,
     SHOPIFY_STORE_FRONT_ACCESS_TOKEN: z.string().min(1),
 
+    // Required: durable contact-form rate limiting (Upstash for Redis)
+    UPSTASH_REDIS_REST_URL: requiredUrl,
+    UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
+
     // Optional: Shopify Admin (needed for wishlist metafields + delegate tokens)
     SHOPIFY_ADMIN_URL: optionalUrl,
     SHOPIFY_STORE_FRONT_ADMIN_TOKEN: optionalString,

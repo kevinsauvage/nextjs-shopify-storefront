@@ -6,11 +6,28 @@ import { renewCustomerToken, shouldRenewToken } from './lib/token-renewal';
 import { getSecureCookieOptions, getStandardCookieOptions } from './utils/cookie-security';
 import globalConfig from './config';
 
+/**
+ * Best-effort client IP used for the Shopify buyer-IP header (market/currency
+ * localization). `x-forwarded-for` is client-spoofable, so prefer platform-set
+ * headers (`x-real-ip`, `x-vercel-forwarded-for`) and only fall back to the
+ * first `x-forwarded-for` hop. The deployment platform must provide a trusted
+ * header; otherwise the value is best-effort and must not be trusted.
+ */
+const getClientIp = (headers: Headers): string => {
+  const trusted =
+    headers.get('x-real-ip')?.trim() ||
+    headers.get('x-vercel-forwarded-for')?.split(',')[0]?.trim();
+
+  if (trusted) return trusted;
+
+  return headers.get('x-forwarded-for')?.split(',')[0]?.trim() || DEFAULTS.ip;
+};
+
 async function proxy(request: NextRequest) {
   const { nextUrl, cookies, headers, url } = request;
   const { searchParams, pathname } = nextUrl;
 
-  const userIp = headers.get('x-forwarded-for')?.split(',')[0] || DEFAULTS.ip;
+  const userIp = getClientIp(headers);
 
   const cookieShopify = cookies.get(globalConfig.cookies.shopifyToken);
   const tokenExpiresAt = cookies.get(globalConfig.cookies.shopifyTokenExpire)?.value;

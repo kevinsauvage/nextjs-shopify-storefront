@@ -39,6 +39,8 @@
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^25.0.8",
     "@types/react": "^19.2.8",
+    "@upstash/ratelimit": "^2.1.0",
+    "@upstash/redis": "^1.39.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.6.0",

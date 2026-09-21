@@ -9,8 +9,15 @@ const nextConfig: NextConfig = {
     const isProduction = process.env.NODE_ENV === 'production';
 
     // `unsafe-eval` is only needed by the dev toolchain (HMR / React Refresh).
-    // `unsafe-inline` remains because Next.js bootstraps with inline scripts and
-    // GTM injects an inline snippet; tightening that requires a nonce setup.
+    //
+    // `unsafe-inline` is an accepted, documented trade-off. A nonce/hash-based
+    // `script-src` needs a unique nonce per response that is baked into the
+    // HTML, which is impossible for the statically pre-rendered catalog (ISR).
+    // Next.js's hydration bootstrap and the GTM snippet are inline, so removing
+    // `unsafe-inline` would either break the app or force every page dynamic.
+    // The other directives stay strict (`object-src 'none'`, `base-uri 'self'`,
+    // `form-action 'self'`, `frame-ancestors 'self'`, explicit
+    // `connect-src`/`img-src`), and no user HTML is injected without escaping.
     const scriptSource = [
       "'self'",
       "'unsafe-inline'",

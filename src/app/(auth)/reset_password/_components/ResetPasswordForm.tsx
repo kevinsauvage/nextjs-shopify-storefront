@@ -5,8 +5,8 @@ import { useFormStatus } from 'react-dom';
 
 import { resetPasswordAction } from '@/actions/authActions';
 import { Button } from '@/components/ui/button';
-import { userFeedback } from '@/data/userFeedback';
-import { useFormStatesEffect } from '@/hooks/useFormStatesEffect';
+import { useFormToast } from '@/hooks/useFormToast';
+import { emptyFormState,type FormState } from '@/types/formActions';
 
 import Form from '../../_components/Form';
 import PasswordField from '../../_components/PasswordField';
@@ -32,27 +32,17 @@ const ResetForm = ({ resetUrl }: { resetUrl: string }) => {
     return resetPasswordAction({ password, resetUrl });
   };
 
-  const [states, action, isPending] = useActionState<
-    {
-      password?: string | string[];
-      resetUrl?: string | string[];
-      customerUserErrors?: { message?: string }[];
-      error?: string;
-    },
-    FormData
-  >(handleSubmit, initialStates);
+  const [state, action, isPending] = useActionState<FormState, FormData>(
+    handleSubmit,
+    emptyFormState,
+  );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormData((previous) => ({ ...previous, [name]: value || '' }));
   };
 
-  useFormStatesEffect({
-    states,
-    userFeedback: {
-      error: userFeedback.resetPassword.error,
-    },
-  });
+  useFormToast(state);
 
   return (
     <Form action={action} autoComplete="off" className="space-y-5">
@@ -66,7 +56,7 @@ const ResetForm = ({ resetUrl }: { resetUrl: string }) => {
         onChange={handleChange}
         value={formData.password}
         disabled={isPending}
-        error={states.password}
+        error={state.errors?.password}
       />
       <p className="text-body-sm text-secondary">
         Use at least 8 characters. Consider mixing letters, numbers, and symbols.

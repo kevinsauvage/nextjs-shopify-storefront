@@ -39,14 +39,8 @@ const Address = ({
 
     const response = await deleteAddressAction(id);
 
-    if (response.error) {
-      toast.error(response.error);
-      return;
-    }
-    if (response?.customerUserErrors?.length) {
-      response.customerUserErrors.forEach((error) => {
-        toast.error(error.message);
-      });
+    if (response && !response.ok) {
+      toast.error(response.message || 'Failed to delete address');
       return;
     }
     toast.success('Address deleted successfully');
@@ -60,15 +54,8 @@ const Address = ({
 
     const response = await setDefaultAddressAction(id);
 
-    if (response.error) {
-      toast.error(response.error);
-      return;
-    }
-
-    if (response?.customerUserErrors?.length) {
-      response.customerUserErrors.forEach((error) => {
-        toast.error(error.message);
-      });
+    if (response && !response.ok) {
+      toast.error(response.message || 'Failed to set default address');
       return;
     }
     toast.success('Address set as default successfully');

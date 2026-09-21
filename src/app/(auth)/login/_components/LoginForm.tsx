@@ -9,9 +9,8 @@ import FormFieldError from '@/components/FormFieldError';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { userFeedback } from '@/data/userFeedback';
-import { useFormStatesEffect } from '@/hooks/useFormStatesEffect';
-import type { CustomerUserError } from '@/shopify/storefront';
+import { useFormToast } from '@/hooks/useFormToast';
+import { emptyFormState, type FormState } from '@/types/formActions';
 
 import Form from '../../_components/Form';
 import PasswordField from '../../_components/PasswordField';
@@ -37,29 +36,12 @@ const LoginForm = () => {
     return loginAction({ email, password, redirectUrl });
   };
 
-  const [states, action, isPending] = useActionState<
-    {
-      email?: string | string[];
-      password?: string | string[];
-      customerUserErrors?: CustomerUserError[];
-      error?: string;
-      success?: string;
-    },
-    FormData
-  >(handleSubmit, {
-    customerUserErrors: [],
-    email: [],
-    error: '',
-    password: [],
-    success: '',
-  });
+  const [state, action, isPending] = useActionState<FormState, FormData>(
+    handleSubmit,
+    emptyFormState,
+  );
 
-  useFormStatesEffect({
-    states,
-    userFeedback: {
-      error: userFeedback.login.error,
-    },
-  });
+  useFormToast(state);
 
   return (
     <Form action={action} className="space-y-5">
@@ -73,10 +55,10 @@ const LoginForm = () => {
           required={true}
           autoComplete="username"
           disabled={isPending}
-          aria-invalid={!!states.email?.at(-1)}
-          aria-describedby={states.email?.at(-1) ? 'email-error' : undefined}
+          aria-invalid={!!state.errors?.email?.at(-1)}
+          aria-describedby={state.errors?.email?.at(-1) ? 'email-error' : undefined}
         />
-        <FormFieldError error={states.email} fieldId="email" />
+        <FormFieldError error={state.errors?.email} fieldId="email" />
       </div>
       <PasswordField
         id="password"
@@ -86,7 +68,7 @@ const LoginForm = () => {
         autoComplete="current-password"
         required={true}
         disabled={isPending}
-        error={states.password}
+        error={state.errors?.password}
       />
       <LoginButton />
     </Form>

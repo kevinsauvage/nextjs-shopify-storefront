@@ -9,9 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { userFeedback } from '@/data/userFeedback';
-import { useFormStatesEffect } from '@/hooks/useFormStatesEffect';
-import type { CustomerUserError, GetCustomerQuery } from '@/shopify/storefront';
+import { useFormToast } from '@/hooks/useFormToast';
+import type { GetCustomerQuery } from '@/shopify/storefront';
+import { emptyFormState,type FormState } from '@/types/formActions';
+import { formError } from '@/utils/form-actions';
 
 const SubmitButton = () => {
   const status = useFormStatus();
@@ -28,7 +29,7 @@ const UpdateUserForm = ({
   user: GetCustomerQuery['customer'] | null | undefined;
 }) => {
   const handleSubmit = async (_previousState: unknown, formData: FormData) => {
-    if (!user) return { error: 'User not found' };
+    if (!user) return formError('User not found');
 
     const email = formData.get('email') as string;
     const firstName = formData.get('firstName') as string;
@@ -39,29 +40,14 @@ const UpdateUserForm = ({
     return updateUserAction({ acceptsMarketing, email, firstName, lastName, phone });
   };
 
-  const [states, action, isPending] = useActionState<
-    {
-      firstName?: string | string[];
-      lastName?: string | string[];
-      phone?: string | string[];
-      company?: string | string[];
-      acceptsMarketing?: string | string[];
-      customerUserErrors?: CustomerUserError[];
-      error?: string;
-      success?: string;
-    },
-    FormData
-  >(handleSubmit, {});
+  const [state, action, isPending] = useActionState<FormState, FormData>(
+    handleSubmit,
+    emptyFormState,
+  );
 
   const [acceptsMarketing, setAcceptsMarketing] = useState(() => user?.acceptsMarketing ?? false);
 
-  useFormStatesEffect({
-    states: states || {},
-    userFeedback: {
-      error: userFeedback.login.error,
-      success: userFeedback.login.success,
-    },
-  });
+  useFormToast(state);
 
   return (
     <form action={action} className="space-y-8">
@@ -77,10 +63,10 @@ const UpdateUserForm = ({
                 name="firstName"
                 defaultValue={user.firstName ?? ''}
                 disabled={isPending}
-                aria-invalid={!!states?.firstName?.length}
-                aria-describedby={states?.firstName?.length ? 'firstName-error' : undefined}
+                aria-invalid={!!state.errors?.firstName?.length}
+                aria-describedby={state.errors?.firstName?.length ? 'firstName-error' : undefined}
               />
-              <FormFieldError error={states?.firstName} fieldId="firstName" />
+              <FormFieldError error={state.errors?.firstName} fieldId="firstName" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="lastName">Last Name</Label>
@@ -90,10 +76,10 @@ const UpdateUserForm = ({
                 name="lastName"
                 defaultValue={user.lastName ?? ''}
                 disabled={isPending}
-                aria-invalid={!!states?.lastName?.length}
-                aria-describedby={states?.lastName?.length ? 'lastName-error' : undefined}
+                aria-invalid={!!state.errors?.lastName?.length}
+                aria-describedby={state.errors?.lastName?.length ? 'lastName-error' : undefined}
               />
-              <FormFieldError error={states?.lastName} fieldId="lastName" />
+              <FormFieldError error={state.errors?.lastName} fieldId="lastName" />
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -109,10 +95,10 @@ const UpdateUserForm = ({
                 name="phone"
                 defaultValue={user.phone ?? ''}
                 disabled={isPending}
-                aria-invalid={!!states?.phone?.length}
-                aria-describedby={states?.phone?.length ? 'phone-error' : undefined}
+                aria-invalid={!!state.errors?.phone?.length}
+                aria-describedby={state.errors?.phone?.length ? 'phone-error' : undefined}
               />
-              <FormFieldError error={states?.phone} fieldId="phone" />
+              <FormFieldError error={state.errors?.phone} fieldId="phone" />
             </div>
           </div>
         </>

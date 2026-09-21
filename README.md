@@ -40,8 +40,8 @@ A modern, full-featured e-commerce application built with Next.js and Shopify St
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
-cd nextjs-strapi-ecommerce
+git clone https://github.com/kevinsauvage/nextjs-shopify-storefront.git
+cd nextjs-shopify-storefront
 ```
 
 ### 2. Install dependencies
@@ -188,6 +188,7 @@ This project uses [GraphQL Code Generator](https://the-guild.dev/graphql/codegen
 | `SHOPIFY_STORE_FRONT_ACCESS_TOKEN`   | Shopify Storefront API access token         |
 | `NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL` | Shopify Storefront API GraphQL endpoint URL |
 | `NEXT_PUBLIC_BASE_URL`               | Canonical site URL (metadata, sitemap, etc.) |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Upstash for Redis creds; durable contact-form rate limiter |
 
 These are validated at server startup by `src/config/env.ts`; the app fails fast if they are missing or malformed.
 
@@ -202,6 +203,7 @@ These are validated at server startup by `src/config/env.ts`; the app fails fast
 | `NEXT_PUBLIC_GTM_ID`              | Google Tag Manager container ID (format: `GTM-XXXXXXX`) |
 | `EMAIL_ADDRESS` / `EMAIL_PASSWORD` | Sending mailbox used by the contact form                |
 | `CONTACT_EMAIL`                   | Recipient of contact submissions (defaults to `EMAIL_ADDRESS`) |
+| `ERROR_REPORTING_URL`             | Optional webhook that receives logged errors            |
 
 ## Deployment
 

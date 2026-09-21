@@ -1,9 +1,11 @@
 import {
-  createErrorResult,
-  createSuccessResult,
+  formError,
+  formSuccess,
   handleCustomerUserErrors,
   handleUserErrors,
-  zodErrorsToFormActionResult,
+  serviceErrorsToFormState,
+  shopifyErrorsToFormState,
+  zodErrorsToFormState,
 } from './form-actions';
 
 import { describe, expect, it } from 'vitest';
@@ -17,28 +19,48 @@ describe('form-actions', () => {
     expect(parsed.success).toBe(false);
     if (parsed.success) return;
 
-    expect(zodErrorsToFormActionResult(parsed.error).fieldErrors).toEqual({
-      email: ['Invalid email'],
+    expect(zodErrorsToFormState(parsed.error)).toEqual({
+      errors: { email: ['Invalid email'] },
+      ok: false,
     });
   });
 
-  it('returns customer user errors only when present', () => {
+  it('builds error and success states', () => {
+    expect(formError('boom')).toEqual({ message: 'boom', ok: false });
+    expect(formSuccess('ok')).toEqual({ message: 'ok', ok: true });
+    expect(formSuccess()).toEqual({ message: undefined, ok: true });
+  });
+
+  it('collapses Shopify errors into a single message', () => {
+    expect(shopifyErrorsToFormState([{ message: 'Bad' }, { message: 'Worse' }])).toEqual({
+      message: 'Bad Worse',
+      ok: false,
+    });
+    expect(shopifyErrorsToFormState([])).toBeNull();
+    expect(shopifyErrorsToFormState(undefined)).toBeNull();
+  });
+
+  it('maps service results to form state', () => {
+    expect(serviceErrorsToFormState({ error: 'Nope' })).toEqual({ message: 'Nope', ok: false });
+    expect(serviceErrorsToFormState({ customerUserErrors: [{ message: 'Bad' }] })).toEqual({
+      message: 'Bad',
+      ok: false,
+    });
+    expect(serviceErrorsToFormState({ userErrors: [{ message: 'Bad' }] })).toEqual({
+      message: 'Bad',
+      ok: false,
+    });
+    expect(serviceErrorsToFormState({ success: true })).toBeNull();
+  });
+
+  it('returns customer/user errors only when present', () => {
     const errors = [{ code: 'INVALID', field: null, message: 'Bad' }] as never[];
 
     expect(handleCustomerUserErrors(errors)).toEqual({ customerUserErrors: errors });
     expect(handleCustomerUserErrors([])).toBeNull();
     expect(handleCustomerUserErrors(undefined)).toBeNull();
-  });
-
-  it('returns user errors only when present', () => {
-    const errors = [{ code: 'INVALID', field: null, message: 'Bad' }] as never[];
 
     expect(handleUserErrors(errors)).toEqual({ userErrors: errors });
     expect(handleUserErrors([])).toBeNull();
-  });
-
-  it('creates standardized results', () => {
-    expect(createErrorResult('boom')).toEqual({ error: 'boom' });
-    expect(createSuccessResult('ok')).toEqual({ success: 'ok' });
   });
 });

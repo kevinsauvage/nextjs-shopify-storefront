@@ -8,9 +8,9 @@ import { userFeedback } from '@/data/userFeedback';
 import { clearShopifyToken, getShopifyToken } from '@/lib/server/shopify-helpers';
 import { AuthService } from '@/services/auth.service';
 import { storefrontSdk } from '@/shopify';
-import type { FormActionResult } from '@/types/formActions';
+import type { FormState } from '@/types/formActions';
 import { safeLogError } from '@/utils/api-responses';
-import { zodErrorsToFormActionResult } from '@/utils/form-actions';
+import { formSuccess, serviceErrorsToFormState, zodErrorsToFormState } from '@/utils/form-actions';
 
 import { z } from 'zod';
 
@@ -35,35 +35,17 @@ const registerSchema = z
 
 type RegisterInput = z.infer<typeof registerSchema>;
 
-type RegisterFieldErrors = {
-  email?: string | string[];
-  firstName?: string | string[];
-  lastName?: string | string[];
-  password?: string | string[];
-  passwordConfirm?: string | string[];
-};
-
-export async function registerAction(
-  input: RegisterInput,
-): Promise<FormActionResult<RegisterFieldErrors> & RegisterFieldErrors> {
+export async function registerAction(input: RegisterInput): Promise<FormState> {
   const result = registerSchema.safeParse(input);
-  if (!result?.success) {
-    const fieldErrors = result.error.formErrors.fieldErrors as RegisterFieldErrors;
-    return { ...zodErrorsToFormActionResult(result.error), ...fieldErrors };
+  if (!result.success) {
+    return zodErrorsToFormState(result.error);
   }
 
   const { email, password, firstName, lastName } = result.data;
+  const serviceResult = await AuthService.register({ email, password, firstName, lastName });
 
-  const serviceResult = await AuthService.register({
-    email,
-    password,
-    firstName,
-    lastName,
-  });
-
-  if ('error' in serviceResult) {
-    return serviceResult;
-  }
+  const errorState = serviceErrorsToFormState(serviceResult, 'Failed to create account');
+  if (errorState) return errorState;
 
   redirect(config.routes.account);
 }
@@ -76,27 +58,17 @@ const loginSchema = z.object({
 
 type LoginInput = z.infer<typeof loginSchema>;
 
-type LoginFieldErrors = {
-  email?: string | string[];
-  password?: string | string[];
-};
-
-export async function loginAction(
-  input: LoginInput,
-): Promise<FormActionResult<LoginFieldErrors> & LoginFieldErrors> {
+export async function loginAction(input: LoginInput): Promise<FormState> {
   const result = loginSchema.safeParse(input);
-  if (!result?.success) {
-    const fieldErrors = result.error.formErrors.fieldErrors as LoginFieldErrors;
-    return { ...zodErrorsToFormActionResult(result.error), ...fieldErrors };
+  if (!result.success) {
+    return zodErrorsToFormState(result.error);
   }
 
   const { email, password, redirectUrl } = result.data;
-
   const serviceResult = await AuthService.login({ email, password });
 
-  if ('error' in serviceResult) {
-    return serviceResult;
-  }
+  const errorState = serviceErrorsToFormState(serviceResult, 'Invalid email or password');
+  if (errorState) return errorState;
 
   redirect(redirectUrl || config.routes.account);
 }
@@ -107,28 +79,23 @@ const recoverSchema = z.object({
 
 type RecoverPasswordInput = z.infer<typeof recoverSchema>;
 
-type RecoverFieldErrors = {
-  email?: string | string[];
-};
-
 export const recoverPasswordAction = async (
   input: RecoverPasswordInput,
-): Promise<FormActionResult<RecoverFieldErrors> & RecoverFieldErrors> => {
+): Promise<FormState> => {
   const result = recoverSchema.safeParse(input);
   if (!result.success) {
-    const fieldErrors = result.error.formErrors.fieldErrors as RecoverFieldErrors;
-    return { ...zodErrorsToFormActionResult(result.error), ...fieldErrors };
+    return zodErrorsToFormState(result.error);
   }
 
-  const { email } = result.data;
+  const serviceResult = await AuthService.recoverPassword({ email: result.data.email });
 
-  const serviceResult = await AuthService.recoverPassword({ email });
+  const errorState = serviceErrorsToFormState(
+    serviceResult,
+    'An error occurred while recovering the password.',
+  );
+  if (errorState) return errorState;
 
-  if ('error' in serviceResult) {
-    return serviceResult;
-  }
-
-  return { success: userFeedback.sendRecoverEmail.success };
+  return formSuccess(userFeedback.sendRecoverEmail.success);
 };
 
 const resetSchema = z.object({
@@ -138,30 +105,19 @@ const resetSchema = z.object({
 
 type ResetPasswordInput = z.infer<typeof resetSchema>;
 
-type ResetFieldErrors = {
-  password?: string | string[];
-};
-
 export const resetPasswordAction = async (
   input: ResetPasswordInput,
-): Promise<FormActionResult<ResetFieldErrors> & ResetFieldErrors> => {
+): Promise<FormState> => {
   const result = resetSchema.safeParse(input);
   if (!result.success) {
-    const fieldErrors = result.error.formErrors.fieldErrors as ResetFieldErrors;
-    return { ...zodErrorsToFormActionResult(result.error), ...fieldErrors };
+    return zodErrorsToFormState(result.error);
   }
 
   const { password, resetUrl } = result.data;
+  const serviceResult = await AuthService.resetPassword({ password, resetToken: resetUrl });
 
-  const serviceResult = await AuthService.resetPassword({
-    password,
-    resetToken: resetUrl,
-  });
-
-  if ('error' in serviceResult) {
-    const errorMessage = serviceResult.error || userFeedback.resetPassword.error;
-    return { error: errorMessage };
-  }
+  const errorState = serviceErrorsToFormState(serviceResult, userFeedback.resetPassword.error);
+  if (errorState) return errorState;
 
   redirect(config.routes.account);
 };
