@@ -6,6 +6,7 @@ import Link from 'next/link';
 import NotFoundIllustration from '@/assets/NotFoundIllustration.png';
 import EmptyState from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
+import { reportError } from '@/lib/logger';
 
 const GlobalError = ({
   error,
@@ -15,7 +16,7 @@ const GlobalError = ({
   reset: () => void;
 }) => {
   useEffect(() => {
-    console.error('Global application error:', error);
+    reportError('app/global-error-boundary', error, { digest: error.digest });
   }, [error]);
 
   return (

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+import { reportError } from '@/lib/logger';
 import type { CartUserError, CustomerUserError, UserError } from '@/shopify/storefront';
 
 export type ApiErrorResponse = {
@@ -36,27 +37,12 @@ const NO_CACHE_HEADERS = {
   Expires: '0',
 } as const;
 
-function sanitizeErrorMessage(message: string): string {
-  return message
-    .replace(/[a-zA-Z0-9]{32,}/g, '[REDACTED]')
-    .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[EMAIL_REDACTED]')
-    .replace(/password[=:]\s*[^\s]+/gi, 'password=[REDACTED]')
-    .replace(/(api[_-]?key|access[_-]?token|secret)[=:]\s*[^\s]+/gi, '$1=[REDACTED]');
-}
-
-export function safeLogError(context: string, error: unknown): void {
-  const errorMessage =
-    error instanceof Error
-      ? sanitizeErrorMessage(error.message)
-      : typeof error === 'string'
-        ? sanitizeErrorMessage(error)
-        : 'Unknown error';
-
-  console.error(`[${context}]`, errorMessage);
-
-  if (process.env.NODE_ENV === 'development' && error instanceof Error && error.stack) {
-    console.error(`[${context}] Stack:`, error.stack);
-  }
+export function safeLogError(
+  context: string,
+  error: unknown,
+  meta?: Record<string, unknown>,
+): void {
+  reportError(context, error, meta);
 }
 
 export function createErrorResponse(

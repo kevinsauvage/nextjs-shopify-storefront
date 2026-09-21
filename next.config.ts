@@ -8,6 +8,18 @@ const nextConfig: NextConfig = {
   headers() {
     const isProduction = process.env.NODE_ENV === 'production';
 
+    // `unsafe-eval` is only needed by the dev toolchain (HMR / React Refresh).
+    // `unsafe-inline` remains because Next.js bootstraps with inline scripts and
+    // GTM injects an inline snippet; tightening that requires a nonce setup.
+    const scriptSource = [
+      "'self'",
+      "'unsafe-inline'",
+      ...(isProduction ? [] : ["'unsafe-eval'"]),
+      'https://www.googletagmanager.com',
+      'https://www.google-analytics.com',
+      'https://vercel.live',
+    ].join(' ');
+
     const securityHeaders = [
       {
         key: 'X-Content-Type-Options',
@@ -36,7 +48,7 @@ const nextConfig: NextConfig = {
         key: 'Content-Security-Policy',
         value: [
           "default-src 'self'",
-          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://vercel.live",
+          `script-src ${scriptSource}`,
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
           "img-src 'self' data: blob: https://cdn.shopify.com https://res.cloudinary.com https://www.googletagmanager.com https://www.google-analytics.com",
           "font-src 'self' data: https://fonts.gstatic.com https://cdn.shopify.com",

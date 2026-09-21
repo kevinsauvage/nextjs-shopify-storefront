@@ -1,11 +1,15 @@
 'use server';
 
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import config from '@/config';
 import { userFeedback } from '@/data/userFeedback';
+import { clearShopifyToken, getShopifyToken } from '@/lib/server/shopify-helpers';
 import { AuthService } from '@/services/auth.service';
+import { storefrontSdk } from '@/shopify';
 import type { FormActionResult } from '@/types/formActions';
+import { safeLogError } from '@/utils/api-responses';
 import { zodErrorsToFormActionResult } from '@/utils/form-actions';
 
 import { z } from 'zod';
@@ -162,3 +166,27 @@ export const resetPasswordAction = async (
   redirect(config.routes.account);
 };
 
+/**
+ * Log out: revoke the customer access token, clear the session cookies and
+ * redirect to the login page. Meant to be invoked as a form action.
+ */
+export async function logoutAction(): Promise<void> {
+  const token = await getShopifyToken();
+
+  if (token) {
+    try {
+      await storefrontSdk('no-store').customerAccessTokenDelete({
+        customerAccessToken: token,
+      });
+    } catch (error) {
+      safeLogError('logoutAction - token revocation', error);
+    }
+  }
+
+  await clearShopifyToken();
+
+  const cookieStore = await cookies();
+  cookieStore.delete(config.cookies.delegateToken);
+
+  redirect(config.routes.login);
+}

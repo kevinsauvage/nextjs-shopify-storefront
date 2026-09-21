@@ -1,41 +1,21 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
-import config from '@/config';
+import { logoutAction } from '@/actions/authActions';
 
-import { toast } from 'sonner';
-
+/**
+ * Submits the logout server action on mount. Using a form action lets Next.js
+ * handle the redirect from the server action natively.
+ */
 const LogoutClientEffect = () => {
+  const formReference = useRef<HTMLFormElement>(null);
+
   useEffect(() => {
-    const handleLogout = async () => {
-      try {
-        const response = await fetch('/api/logout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        const result = await response.json();
-
-        if (result?.success) {
-          toast.success(result.success);
-        }
-        // This ensures a full page reload and clears all cached state
-        setTimeout(() => {
-          window.location.href = config.routes.login;
-        }, 2000);
-      } catch (error) {
-        console.error('Logout error:', error);
-        window.location.href = config.routes.login;
-      }
-    };
-
-    handleLogout();
+    formReference.current?.requestSubmit();
   }, []);
 
-  return <></>;
+  return <form ref={formReference} action={logoutAction} />;
 };
 
 export default LogoutClientEffect;

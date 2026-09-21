@@ -7,10 +7,11 @@ import NotFoundIllustration from '@/assets/NotFoundIllustration.png';
 import EmptyState from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
 import config from '@/config';
+import { reportError } from '@/lib/logger';
 
 const Error = ({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) => {
   useEffect(() => {
-    console.error('Application error:', error);
+    reportError('app/error-boundary', error, { digest: error.digest });
   }, [error]);
 
   return (

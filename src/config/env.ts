@@ -32,6 +32,9 @@ const envSchema = z
     // Optional: site configuration
     NEXT_PUBLIC_SITE_DOMAIN: optionalString,
     NEXT_PUBLIC_GTM_ID: optionalString,
+
+    // Optional: error reporting drain
+    ERROR_REPORTING_URL: optionalUrl,
   })
   .superRefine((environment, context) => {
     const hasAdminUrl = Boolean(environment.SHOPIFY_ADMIN_URL);
