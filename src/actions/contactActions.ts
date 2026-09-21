@@ -1,23 +1,15 @@
 'use server';
 
-import { headers } from 'next/headers';
-
+import { getClientIp } from '@/lib/server/client-ip';
+import { isRateLimited } from '@/lib/server/rate-limit';
 import type { FormState } from '@/types/formActions';
 import { safeLogError } from '@/utils/api-responses';
 import { formError, formSuccess, zodErrorsToFormState } from '@/utils/form-actions';
 
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
 import nodemailer from 'nodemailer';
 import { z } from 'zod';
 
-// Durable sliding-window limiter shared across serverless instances. Upstash is
-// required (see `src/config/env.ts`), so there is no in-memory fallback.
-const ratelimit = new Ratelimit({
-  limiter: Ratelimit.slidingWindow(5, '10 m'),
-  prefix: 'contact',
-  redis: Redis.fromEnv(),
-});
+const CONTACT_RATE_LIMIT = { key: 'contact', tokens: 5, window: '10 m' } as const;
 
 const contactSchema = z.object({
   email: z.string().email(),
@@ -43,22 +35,6 @@ const contactSchema = z.object({
 
 type ContactInput = z.infer<typeof contactSchema>;
 
-const getClientIp = async (): Promise<string> => {
-  const headerStore = await headers();
-
-  return (
-    headerStore.get('x-real-ip')?.trim() ||
-    headerStore.get('x-vercel-forwarded-for')?.split(',')[0]?.trim() ||
-    headerStore.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-    'unknown'
-  );
-};
-
-const isRateLimited = async (key: string): Promise<boolean> => {
-  const { success } = await ratelimit.limit(key);
-  return !success;
-};
-
 export const contactAction = async (input: ContactInput): Promise<FormState> => {
   const formData = contactSchema.safeParse(input);
   if (!formData.success) {
@@ -73,7 +49,7 @@ export const contactAction = async (input: ContactInput): Promise<FormState> => 
   }
 
   const ip = await getClientIp();
-  if (await isRateLimited(ip)) {
+  if (await isRateLimited(CONTACT_RATE_LIMIT.key, ip, CONTACT_RATE_LIMIT.tokens, CONTACT_RATE_LIMIT.window)) {
     return formError('Too many messages sent. Please try again later.');
   }
 

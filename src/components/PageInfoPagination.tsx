@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { getNextPath, getPreviousPath } from '@/shopify/helpers';
 import type { PageInfo } from '@/shopify/storefront';
 
-const PageInfoPagination = async ({
+const PageInfoPagination = ({
   pageInfo,
   searchParameters,
+  basePath,
 }: {
   pageInfo: PageInfo;
   searchParameters: {
@@ -14,9 +15,10 @@ const PageInfoPagination = async ({
     before?: string;
     sort_key?: string;
   };
+  basePath: string;
 }) => {
-  const previousPath = await getPreviousPath(pageInfo, searchParameters);
-  const nextPath = await getNextPath(pageInfo, searchParameters);
+  const previousPath = getPreviousPath(pageInfo, searchParameters, basePath);
+  const nextPath = getNextPath(pageInfo, searchParameters, basePath);
   return (
     <div className="flex items-center justify-between gap-2">
       <Link

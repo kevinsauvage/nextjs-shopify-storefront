@@ -12,6 +12,7 @@ type ProductActionsProps = {
   availableForSale: boolean;
   onAddToCart: () => void;
   disabled?: boolean;
+  loading?: boolean;
   compact?: boolean;
 };
 
@@ -24,6 +25,7 @@ const ProductActions = ({
   availableForSale,
   onAddToCart,
   disabled,
+  loading = false,
   compact = false,
 }: ProductActionsProps) => {
   const { wishlistIds, handleSetWishlist } = useUserContext();
@@ -34,6 +36,7 @@ const ProductActions = ({
       <Button
         className={cn('flex-1', compact ? 'h-12 text-body-lg font-semibold gap-2' : 'gap-2')}
         size="lg"
+        loading={loading}
         disabled={disabled || !availableForSale}
         onClick={onAddToCart}
       >

@@ -11,6 +11,18 @@ export function shouldUseSecureCookies(): boolean {
   return process.env.NODE_ENV === 'production';
 }
 
+/**
+ * Options for deleting a cookie that was set with {@link getCookieDomain}.
+ *
+ * A cookie set with a `Domain` attribute is NOT removed by a host-only delete,
+ * so callers must pass the same domain/path to `cookies().delete(...)` or the
+ * cookie (e.g. the session token) survives logout.
+ */
+export function getCookieDeleteOptions(): { domain?: string; path: string } {
+  const domain = getCookieDomain();
+  return domain ? { domain, path: '/' } : { path: '/' };
+}
+
 export function getSecureCookieOptions(
   options: {
     maxAge?: number;

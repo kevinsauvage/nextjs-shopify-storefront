@@ -55,3 +55,18 @@ export const normalizeMenuHref = (url?: string | null): string => {
     return url;
   }
 };
+
+/**
+ * Returns a same-origin relative path, or `fallback` when the value is not one.
+ *
+ * Rejects absolute URLs, protocol-relative (`//host`) and backslash
+ * (`/\host`) values so a `?redirect=` query cannot bounce an authenticated
+ * user off-site.
+ */
+export const safeInternalPath = (value: string | null | undefined, fallback: string): string => {
+  if (value?.startsWith('/') && !value.startsWith('//') && !value.startsWith('/\\')) {
+    return value;
+  }
+
+  return fallback;
+};

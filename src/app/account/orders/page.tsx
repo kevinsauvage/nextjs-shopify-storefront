@@ -109,7 +109,11 @@ const Page = async ({
       />
       <CardContent>
         <Orders orders={response.customer} />
-        <PageInfoPagination pageInfo={pageInfo} searchParameters={searchParameters} />
+        <PageInfoPagination
+          pageInfo={pageInfo}
+          searchParameters={searchParameters}
+          basePath={config.routes.orders}
+        />
       </CardContent>
     </Card>
   );

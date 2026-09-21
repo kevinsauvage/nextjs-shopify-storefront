@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 
 import config from '@/config';
 import type { CustomerAccessToken } from '@/shopify/storefront';
-import { getSecureCookieOptions } from '@/utils/cookie-security';
+import { getCookieDeleteOptions, getSecureCookieOptions } from '@/utils/cookie-security';
 
 /**
  * Shopify token management helpers
@@ -45,8 +45,9 @@ export const getShopifyToken = cache(
 
 export const clearShopifyToken = async (): Promise<void> => {
   const cookieStore = await cookies();
-  cookieStore.delete(config.cookies.shopifyToken);
-  cookieStore.delete(config.cookies.shopifyTokenExpire);
+  const options = getCookieDeleteOptions();
+  cookieStore.delete({ name: config.cookies.shopifyToken, ...options });
+  cookieStore.delete({ name: config.cookies.shopifyTokenExpire, ...options });
 };
 
 /**

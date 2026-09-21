@@ -35,6 +35,7 @@ const useProductSelection = ({
   const { handleAddToCart: handleAddToCartContext } = useCartContext();
   const [selection, setSelection] = useState<OptionSelection>(() => getInitialSelection(product));
   const [quantity, setQuantity] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
 
   const variants = useMemo(
     () => product?.variants.edges.map((edge) => edge.node) ?? [],
@@ -83,17 +84,19 @@ const useProductSelection = ({
   }, [quantity, selectedVariant]);
 
   const handleAddToCart = useCallback(() => {
-    if (!selectedVariant?.id) return;
+    if (!selectedVariant?.id || isAdding) return;
 
-    handleAddToCartContext(String(selectedVariant.id), quantity).catch((error) => {
-      console.error('Error adding to cart:', error);
+    setIsAdding(true);
+    handleAddToCartContext(String(selectedVariant.id), quantity).finally(() => {
+      setIsAdding(false);
     });
-  }, [handleAddToCartContext, quantity, selectedVariant]);
+  }, [handleAddToCartContext, isAdding, quantity, selectedVariant]);
 
   return {
     handleAddToCart,
     handleChangeInput,
     handleSetSelectedProductOption,
+    isAdding,
     isOptionOutOfStock,
     isOptionSelected,
     quantity,

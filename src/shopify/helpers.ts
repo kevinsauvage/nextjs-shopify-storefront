@@ -1,9 +1,5 @@
-import { cookies } from 'next/headers';
-
-import config from '@/config';
-import { DEFAULTS } from '@/config/constants';
+import { getClientIp, UNKNOWN_IP } from '@/lib/server/client-ip';
 import { getDelegateAccessToken } from '@/lib/server/delegate-token';
-import { getCurrentUrlWithoutParameters } from '@/lib/server/url-helpers';
 
 import type { PageInfo, ProductFilter } from './storefront';
 
@@ -64,10 +60,8 @@ export const parseFiltersQuery = (filters: string | Array<string> | undefined): 
 export const buildExtraHeaders = async (
   headers: Record<string, string>,
 ): Promise<Record<string, string>> => {
-  const cookiesStore = await cookies();
-
-  const userIp = cookiesStore.get(config.cookies.userIp)?.value;
-  const buyerIp = userIp && userIp !== DEFAULTS.ip ? userIp : undefined;
+  const userIp = await getClientIp();
+  const buyerIp = userIp !== UNKNOWN_IP ? userIp : undefined;
   const delegateToken = await getDelegateAccessToken();
 
   const extraHeaders: Record<string, string> = {
@@ -95,45 +89,46 @@ export const buildShopifySearchQuery = (query: string) => {
   return `${trimmed}*`;
 };
 
-export const getNextPath = async (
+export const getNextPath = (
   pageInfo: PageInfo,
   searchParameters: {
     after?: string;
     before?: string;
     sort_key?: string;
   },
-) => {
+  basePath: string,
+): string => {
   if (!pageInfo.hasNextPage) {
     return '';
   }
 
-  const currentUrl = await getCurrentUrlWithoutParameters();
   const newSearchParameters = new URLSearchParams(searchParameters);
   if (pageInfo.endCursor) {
     newSearchParameters.set('after', pageInfo.endCursor);
   }
   newSearchParameters.delete('before');
 
-  return `${currentUrl}?${newSearchParameters.toString()}`;
+  return `${basePath}?${newSearchParameters.toString()}`;
 };
 
-export const getPreviousPath = async (
+export const getPreviousPath = (
   pageInfo: PageInfo,
   searchParameters: {
     after?: string;
     before?: string;
     sort_key?: string;
   },
-) => {
+  basePath: string,
+): string => {
   if (!pageInfo.hasPreviousPage) {
     return '';
   }
-  const currentUrl = await getCurrentUrlWithoutParameters();
+
   const newSearchParameters = new URLSearchParams(searchParameters);
   if (pageInfo.startCursor) {
     newSearchParameters.set('before', pageInfo.startCursor);
   }
   newSearchParameters.delete('after');
 
-  return `${currentUrl}?${newSearchParameters.toString()}`;
+  return `${basePath}?${newSearchParameters.toString()}`;
 };

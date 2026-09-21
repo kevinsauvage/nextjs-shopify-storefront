@@ -1,11 +1,8 @@
 export const COOKIES = {
   cartId: 'x-cart-id',
   delegateToken: 'shopify-delegate-token',
-  searchParams: 'x-search-params',
   shopifyToken: 'shopify-storefront-access-token',
   shopifyTokenExpire: 'shopify-access-token-expire',
-  url: 'x-url',
-  userIp: 'x-user-ip',
 };
 
 export const LOCAL_STORAGE_KEYS = {

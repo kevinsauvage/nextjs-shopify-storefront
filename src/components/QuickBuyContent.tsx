@@ -38,6 +38,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
     handleSetSelectedProductOption,
     quantity,
     handleChangeInput,
+    isAdding,
     isOptionSelected,
     isOptionOutOfStock,
   } = useProductSelection({ product });
@@ -89,7 +90,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
       <div className="flex-1 overflow-y-auto min-h-0">
         {/* Image Carousel */}
         <div className="relative bg-muted/30">
-          <div className="aspect-square relative overflow-hidden">
+          <div className="aspect-[3/4] relative overflow-hidden">
             {productImages.length > 0 && (
               <Image
                 src={
@@ -100,7 +101,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
                 alt={productImages[currentImageIndex]?.altText || product.title}
                 fill
                 quality={75}
-                className="object-contain transition-opacity duration-300"
+                className="object-cover transition-opacity duration-300"
                 sizes="(max-width: 640px) 100vw, 500px"
                 priority
               />
@@ -263,6 +264,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
           productId={product.id}
           availableForSale={!!availableForSale}
           disabled={quantityCap !== undefined && quantity > quantityCap}
+          loading={isAdding}
           onAddToCart={handleAddToCartAndClose}
           compact
         />

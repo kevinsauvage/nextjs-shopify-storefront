@@ -29,8 +29,9 @@ const Search = ({ searchQuery }: { searchQuery: string }) => {
         throw new Error('Failed to fetch search results');
       }
 
-      const data = await response.json();
-      setResults(data?.predictiveSearch || null);
+      // The API wraps payloads in a `{ data, success }` envelope.
+      const payload = await response.json();
+      setResults(payload?.data?.predictiveSearch || null);
     } catch (error) {
       console.error('Search error:', error);
       setResults(null);

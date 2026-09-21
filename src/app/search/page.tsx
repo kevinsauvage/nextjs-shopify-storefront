@@ -24,8 +24,6 @@ import { SearchSortKeys } from '@/shopify/storefront';
 import Filters from '../collections/_components/Filters';
 import Sort from '../collections/_components/Sort';
 
-export const revalidate = 300;
-
 export const metadata: Metadata = generateMetadataUtil({
   title: seo.search.title,
   description: seo.search.description,
@@ -97,7 +95,11 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
             <Filters filters={filters} query={searchParameters} />
           </ListingHeader>
           <ProductsList layout="grid" products={products} />
-          <PageInfoPagination pageInfo={pageInfo} searchParameters={searchParameters} />
+          <PageInfoPagination
+            pageInfo={pageInfo}
+            searchParameters={searchParameters}
+            basePath={config.routes.search}
+          />
         </div>
       ) : (
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 space-y-6">

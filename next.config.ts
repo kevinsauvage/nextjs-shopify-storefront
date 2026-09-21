@@ -101,7 +101,6 @@ const nextConfig: NextConfig = {
         protocol: 'https',
       },
     ],
-    unoptimized: true,
   },
   reactStrictMode: true,
 };

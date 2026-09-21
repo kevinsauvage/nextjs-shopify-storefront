@@ -178,9 +178,9 @@ const Filters = ({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="secondary">
-          <p className="hidden md:block">Filters</p>
-          <FilterIcon className="h-4 w-4" />
+        <Button variant="outline" className="gap-2">
+          <span className="hidden md:inline">Filters</span>
+          <FilterIcon className="h-4 w-4" aria-hidden="true" />
           <span className="sr-only">Open filters</span>
         </Button>
       </SheetTrigger>

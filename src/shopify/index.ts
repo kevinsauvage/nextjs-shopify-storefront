@@ -17,7 +17,7 @@ type GraphQLClientOptions = ConstructorParameters<typeof GraphQLClient>[1];
  *   statically rendered and cached.
  * - `private`: customer-specific operations. Attaches the buyer IP + delegate
  *   token and bypasses the cache. Only safe from Server Actions, Route Handlers
- *   or dynamic routes, because it reads cookies.
+ *   or dynamic routes, because it reads request headers.
  */
 type StorefrontMode = 'public' | 'private';
 

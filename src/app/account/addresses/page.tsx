@@ -115,7 +115,11 @@ const Addresses = async ({
             <Address key={item.id} address={item} isDefault={isDefault(item)} />
           ))}
         </div>
-        <PageInfoPagination pageInfo={pageInfo} searchParameters={searchParameters} />
+        <PageInfoPagination
+          pageInfo={pageInfo}
+          searchParameters={searchParameters}
+          basePath={config.routes.addresses}
+        />
       </CardContent>
     </Card>
   );

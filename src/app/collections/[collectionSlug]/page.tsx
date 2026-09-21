@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import EmptyState from '@/components/EmptyState';
 import ListingHeader from '@/components/ListingHeader';
-import PageBanner from '@/components/PageBanner';
 import PageInfoPagination from '@/components/PageInfoPagination';
 import ProductsList from '@/components/ProductsList';
 import { Button } from '@/components/ui/button';
@@ -18,8 +18,6 @@ import { ProductCollectionSortKeys } from '@/shopify/storefront';
 import CollectionNav, { type CollectionNavItem } from '../_components/CollectionNav';
 import Filters from '../_components/Filters';
 import Sort from '../_components/Sort';
-
-export const revalidate = 3600; // Revalidate every hour
 
 type parametersType = { collectionSlug: string };
 
@@ -139,6 +137,9 @@ const CollectionSlugPage = async ({
   const { products } = collection || {};
   const { filters, pageInfo, edges } = products || {};
 
+  const collectionImage = collection?.image;
+  const basePath = `${config.routes.collection}/${collectionSlug}`;
+
   const safeFilters = filters || [];
   const safePageInfo = pageInfo || {
     endCursor: null,
@@ -153,44 +154,10 @@ const CollectionSlugPage = async ({
     sort_key: searchParameters?.sort_key,
   };
 
-  const banner = (
-    <PageBanner
-      title={collection?.title || 'Collection'}
-      description={collection?.description ?? undefined}
-    >
-      <Breadcrumbs />
-      <CollectionNav
-        collectionSlug={collectionSlug}
-        items={getCollectionNavItems(menuResponse?.menu, collectionSlug)}
-      />
-    </PageBanner>
-  );
-
-  if (!edges?.length) {
-    return (
-      <div>
-        {banner}
-        <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
-          <EmptyState
-            variant="default"
-            title="Collection not found"
-            subtitle="This collection doesn't exist or has been removed. Browse our other collections to find what you're looking for."
-            altText="Collection Not Found"
-            primaryAction={
-              <Link href={config.routes.collection}>
-                <Button variant="default">Browse Collections</Button>
-              </Link>
-            }
-            secondaryAction={
-              <Link href="/" className="link">
-                Go home
-              </Link>
-            }
-          />
-        </div>
-      </div>
-    );
-  }
+  const navItems = getCollectionNavItems(menuResponse?.menu, collectionSlug);
+  const activeFilterCount = parseFiltersQuery(searchParameters?.filters).length;
+  const safeEdges = edges ?? [];
+  const pageCount = safeEdges.length;
 
   const sortingOptions = [
     {
@@ -210,23 +177,120 @@ const CollectionSlugPage = async ({
   ];
 
   return (
-    <div>
-      {banner}
-      <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 space-y-6">
-        <ListingHeader>
-          <Sort
-            query={
-              searchParameters?.sort_key
-                ? searchParameters
-                : { sort_key: ProductCollectionSortKeys.BestSelling }
-            }
-            sortingOptions={sortingOptions}
-          />
-          <Filters filters={safeFilters} query={safeSearchParameters} />
-        </ListingHeader>
+    <div className="pb-16 md:pb-24">
+      {/* Breadcrumb bar */}
+      <div className="border-b border-border/60 bg-secondary/30">
+        <div className="container mx-auto px-4 py-3 md:px-6">
+          <Breadcrumbs lastElement={collection?.title} />
+        </div>
+      </div>
 
-        <ProductsList products={edges.map((edge) => edge.node)} layout="grid" />
-        <PageInfoPagination pageInfo={safePageInfo} searchParameters={safeSearchParameters} />
+      {/* Hero */}
+      {collectionImage?.src ? (
+        <section className="relative isolate overflow-hidden">
+          <div className="relative h-[40vh] min-h-[300px] w-full md:h-[52vh] md:min-h-[420px]">
+            <Image
+              src={collectionImage.src}
+              alt={collectionImage.altText || collection?.title || 'Collection image'}
+              fill
+              priority
+              quality={82}
+              sizes="100vw"
+              placeholder={collectionImage.blurDataURL ? 'blur' : 'empty'}
+              blurDataURL={collectionImage.blurDataURL || undefined}
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
+          </div>
+          <div className="absolute inset-0 flex items-end">
+            <div className="container mx-auto px-4 pb-10 md:px-6 md:pb-14">
+              <span className="text-eyebrow text-white/80">Collection</span>
+              <h1 className="mt-3 max-w-3xl text-white">{collection?.title || 'Collection'}</h1>
+              {collection?.description ? (
+                <p className="mt-4 max-w-2xl text-body-lg text-white/85">{collection.description}</p>
+              ) : null}
+            </div>
+          </div>
+        </section>
+      ) : (
+        <section className="border-b border-border/60">
+          <div className="container mx-auto px-4 py-14 text-center md:px-6 md:py-20">
+            <span className="text-eyebrow">Collection</span>
+            <h1 className="mt-4 text-balance">{collection?.title || 'Collection'}</h1>
+            {collection?.description ? (
+              <p className="mx-auto mt-5 max-w-2xl text-pretty text-body-lg text-secondary">
+                {collection.description}
+              </p>
+            ) : null}
+          </div>
+        </section>
+      )}
+
+      {/* Sibling collection navigation */}
+      {navItems.length > 0 ? (
+        <div className="border-b border-border/60">
+          <div className="container mx-auto px-4 py-4 md:px-6">
+            <CollectionNav collectionSlug={collectionSlug} items={navItems} />
+          </div>
+        </div>
+      ) : null}
+
+      <div className="container mx-auto px-4 py-8 md:px-6 md:py-12">
+        {pageCount > 0 ? (
+          <>
+            <div className="sticky top-16 z-30 -mx-4 mb-8 border-b border-border/60 bg-background/85 px-4 py-3 backdrop-blur-md md:top-20 md:-mx-6 md:px-6">
+              <ListingHeader className="mb-0 items-center">
+                <span className="text-caption-sm uppercase tracking-widest text-muted">
+                  Showing {pageCount}
+                  {safePageInfo.hasNextPage ? '+' : ''} {pageCount === 1 ? 'piece' : 'pieces'}
+                </span>
+                <div className="flex items-center gap-2">
+                  {activeFilterCount > 0 ? (
+                    <Link
+                      href={basePath}
+                      className="link-underline text-caption-sm font-medium text-secondary"
+                    >
+                      Clear filters
+                    </Link>
+                  ) : null}
+                  <Sort
+                    query={
+                      searchParameters?.sort_key
+                        ? searchParameters
+                        : { sort_key: ProductCollectionSortKeys.BestSelling }
+                    }
+                    sortingOptions={sortingOptions}
+                  />
+                  <Filters filters={safeFilters} query={safeSearchParameters} />
+                </div>
+              </ListingHeader>
+            </div>
+
+            <ProductsList products={safeEdges.map((edge) => edge.node)} layout="grid" />
+            <PageInfoPagination
+              pageInfo={safePageInfo}
+              searchParameters={safeSearchParameters}
+              basePath={basePath}
+            />
+          </>
+        ) : (
+          <EmptyState
+            variant="default"
+            title="Collection not found"
+            subtitle="This collection doesn't exist or has been removed. Browse our other collections to find what you're looking for."
+            altText="Collection Not Found"
+            primaryAction={
+              <Link href={config.routes.collection}>
+                <Button variant="default">Browse Collections</Button>
+              </Link>
+            }
+            secondaryAction={
+              <Link href={config.routes.home} className="link">
+                Go home
+              </Link>
+            }
+          />
+        )}
       </div>
     </div>
   );

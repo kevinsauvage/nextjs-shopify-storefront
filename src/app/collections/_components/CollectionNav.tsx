@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-import { Button } from '@/components/ui/button';
+import { cn } from '@/utils/cn';
 import { normalizeMenuHref } from '@/utils/url';
 
 export type CollectionNavItem = {
@@ -18,37 +18,35 @@ const CollectionNav = ({
   items: CollectionNavItem[] | null | undefined;
   collectionSlug: string;
 }) => {
-  const menuItems = items || [];
+  const menuItems = (items || []).filter((item) => typeof item.url === 'string');
+
+  if (menuItems.length === 0) return null;
 
   return (
-    <div className="container mx-auto">
-      <nav>
-        <ul className="flex items-center flex-wrap gap-4">
-          {Array.isArray(menuItems) &&
-            menuItems.map(
-              (menuItem) =>
-                typeof menuItem.url === 'string' && (
-                  <li key={menuItem.id}>
-                    <Button
-                      variant={
-                        menuItem?.url?.toLowerCase().includes(collectionSlug?.toLowerCase())
-                          ? 'default'
-                          : 'secondary'
-                      }
-                      asChild
-                    >
-                      <Link
-                        href={normalizeMenuHref(menuItem?.url)}
-                      >
-                        {menuItem?.title}
-                      </Link>
-                    </Button>
-                  </li>
-                ),
-            )}
-        </ul>
-      </nav>
-    </div>
+    <nav
+      aria-label="Collections"
+      className="-mx-4 overflow-x-auto px-4 [scrollbar-width:none] md:-mx-6 md:px-6"
+    >
+      <ul className="flex items-center gap-6 whitespace-nowrap">
+        {menuItems.map((menuItem) => {
+          const isActive = menuItem.url?.toLowerCase().includes(collectionSlug?.toLowerCase());
+          return (
+            <li key={menuItem.id}>
+              <Link
+                href={normalizeMenuHref(menuItem.url)}
+                aria-current={isActive ? 'page' : undefined}
+                className={cn(
+                  'link-underline text-body-sm font-medium transition-colors',
+                  isActive ? 'text-foreground' : 'text-secondary hover:text-foreground',
+                )}
+              >
+                {menuItem.title}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
 };
 

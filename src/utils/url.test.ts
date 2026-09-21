@@ -1,4 +1,4 @@
-import { normalizeMenuHref } from './url';
+import { normalizeMenuHref, safeInternalPath } from './url';
 
 import { describe, expect, it } from 'vitest';
 
@@ -50,5 +50,22 @@ describe('normalizeMenuHref', () => {
     expect(normalizeMenuHref(undefined)).toBe('');
     expect(normalizeMenuHref(null)).toBe('');
     expect(normalizeMenuHref('')).toBe('');
+  });
+});
+
+describe('safeInternalPath', () => {
+  const FALLBACK = '/account';
+
+  it('keeps same-origin relative paths', () => {
+    expect(safeInternalPath('/collections/sale', FALLBACK)).toBe('/collections/sale');
+    expect(safeInternalPath('/account/orders?after=1', FALLBACK)).toBe('/account/orders?after=1');
+  });
+
+  it('falls back for absolute, protocol-relative and backslash URLs', () => {
+    expect(safeInternalPath('https://evil.com', FALLBACK)).toBe(FALLBACK);
+    expect(safeInternalPath('//evil.com', FALLBACK)).toBe(FALLBACK);
+    expect(safeInternalPath('/\\evil.com', FALLBACK)).toBe(FALLBACK);
+    expect(safeInternalPath(undefined, FALLBACK)).toBe(FALLBACK);
+    expect(safeInternalPath('', FALLBACK)).toBe(FALLBACK);
   });
 });

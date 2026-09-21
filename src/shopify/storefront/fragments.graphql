@@ -388,11 +388,11 @@ fragment ImageFields on Image {
   url
   src
   altText
-  small: url(transform: { maxHeight: 100, maxWidth: 100, crop: CENTER, preferredContentType: WEBP })
+  small: url(transform: { maxHeight: 240, maxWidth: 240, crop: CENTER, preferredContentType: WEBP })
   medium: url(
-    transform: { maxHeight: 400, maxWidth: 400, crop: CENTER, preferredContentType: WEBP }
+    transform: { maxHeight: 600, maxWidth: 600, crop: CENTER, preferredContentType: WEBP }
   )
-  large: url(transform: { maxHeight: 600, maxWidth: 600, crop: CENTER, preferredContentType: WEBP })
+  large: url(transform: { maxHeight: 1400, maxWidth: 1400, preferredContentType: WEBP })
   blurDataURL: url(
     transform: { maxHeight: 4, maxWidth: 4, crop: CENTER, preferredContentType: WEBP }
   )

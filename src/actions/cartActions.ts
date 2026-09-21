@@ -1,5 +1,7 @@
 'use server';
 
+import { getClientIp } from '@/lib/server/client-ip';
+import { isRateLimited } from '@/lib/server/rate-limit';
 import { CartService } from '@/services/cart.service';
 import type {
   CartFieldsFragment,
@@ -7,48 +9,112 @@ import type {
   CartLineUpdateInput,
 } from '@/shopify/storefront';
 
+import { z } from 'zod';
+
 export type CartActionResult = {
   data: CartFieldsFragment;
   message?: string;
 };
 
+const MAX_LINES_PER_REQUEST = 50;
+const MAX_QUANTITY = 99;
+const MAX_DISCOUNT_CODES = 20;
+
+const quantitySchema = z.number().int().min(1).max(MAX_QUANTITY);
+
+const addLinesSchema = z
+  .array(
+    z.object({
+      merchandiseId: z.string().min(1).max(255),
+      quantity: quantitySchema,
+    }),
+  )
+  .min(1)
+  .max(MAX_LINES_PER_REQUEST);
+
+const updateLinesSchema = z
+  .array(
+    z.object({
+      id: z.string().min(1).max(255),
+      quantity: quantitySchema,
+    }),
+  )
+  .min(1)
+  .max(MAX_LINES_PER_REQUEST);
+
+const lineIdSchema = z.string().min(1).max(255);
+
+const discountCodesSchema = z.array(z.string().trim().min(1).max(64)).max(MAX_DISCOUNT_CODES);
+
+/** Throttle public cart writes per client IP. */
+const assertNotRateLimited = async (): Promise<void> => {
+  const ip = await getClientIp();
+  if (await isRateLimited('cart:write', ip, 60, '1 m')) {
+    throw new Error('Too many cart updates. Please slow down and try again.');
+  }
+};
+
 /**
- * Read the current cart for client-side hydration. Returns `null` when there is
- * no cart yet or Shopify is temporarily unavailable; it never creates a cart or
- * clears the stored id.
+ * Read the current cart for client-side hydration. Returns `null` only when
+ * there is no cart yet. Transient/network failures throw so the UI can surface
+ * the outage instead of showing a silently empty cart.
  */
 export async function getCartAction(): Promise<CartFieldsFragment | null> {
   const cartId = await CartService.getCartId();
 
   if (!cartId) return null;
 
-  try {
-    return await CartService.getCart(cartId);
-  } catch {
-    return null;
-  }
+  return CartService.getCart(cartId);
 }
 
 export async function addCartLinesAction(lines: CartLineInput[]): Promise<CartActionResult> {
-  const cart = await CartService.addLines(lines);
+  const parsed = addLinesSchema.safeParse(lines);
+  if (!parsed.success) {
+    throw new Error('Invalid cart item');
+  }
+
+  await assertNotRateLimited();
+
+  const cart = await CartService.addLines(parsed.data);
   return { data: cart, message: 'Product added successfully' };
 }
 
 export async function updateCartLinesAction(
   lines: CartLineUpdateInput[],
 ): Promise<CartActionResult> {
-  const cart = await CartService.updateLines(lines);
+  const parsed = updateLinesSchema.safeParse(lines);
+  if (!parsed.success) {
+    throw new Error('Invalid cart update');
+  }
+
+  await assertNotRateLimited();
+
+  const cart = await CartService.updateLines(parsed.data);
   return { data: cart, message: 'Cart updated successfully' };
 }
 
 export async function removeCartLineAction(lineId: string): Promise<CartActionResult> {
-  const cart = await CartService.removeLine(lineId);
+  const parsed = lineIdSchema.safeParse(lineId);
+  if (!parsed.success) {
+    throw new Error('Invalid cart line');
+  }
+
+  await assertNotRateLimited();
+
+  const cart = await CartService.removeLine(parsed.data);
   return { data: cart, message: 'Product removed successfully' };
 }
 
 export async function updateDiscountCodesAction(
   discountCodes: string[],
 ): Promise<CartActionResult> {
-  const cart = await CartService.updateDiscountCodes(discountCodes);
+  const parsed = discountCodesSchema.safeParse(discountCodes);
+  if (!parsed.success) {
+    throw new Error('Invalid discount code');
+  }
+
+  await assertNotRateLimited();
+
+  const cart = await CartService.updateDiscountCodes(parsed.data);
   return { data: cart, message: 'Discount codes updated successfully' };
 }

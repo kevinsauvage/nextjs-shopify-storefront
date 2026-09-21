@@ -110,22 +110,26 @@ const ProductPage = async ({ params }: PageProperties) => {
     recommendations?.productRecommendations && recommendations.productRecommendations.length > 0;
 
   return (
-    <div className="min-h-[calc(100vh-76px)]">  
-      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8">
-        <Breadcrumbs lastElement={title} />
+    <div className="min-h-[calc(100vh-76px)]">
+      <div className="border-b border-border/60 bg-secondary/30">
+        <div className="container mx-auto px-4 py-3 md:px-6">
+          <Breadcrumbs lastElement={title} />
+        </div>
       </div>
 
-      <section className="container mx-auto px-4 md:px-6 pb-8 md:pb-12">
+      <section className="container mx-auto px-4 py-8 md:px-6 md:py-12">
         <ProductDescription product={product} isModal={false} />
       </section>
 
-      {hasRecommendations && (
-        <section className="container mx-auto px-4 md:px-6 pb-12 md:pb-16">
-          <HomeSection title="Recommended Products">
-            <ProductRecommendations recommendations={recommendations} />
-          </HomeSection>
+      {hasRecommendations ? (
+        <section className="border-t border-border/60">
+          <div className="container mx-auto px-4 py-12 md:px-6 md:py-16">
+            <HomeSection eyebrow="Curated" title="You may also like">
+              <ProductRecommendations recommendations={recommendations} />
+            </HomeSection>
+          </div>
         </section>
-      )}
+      ) : null}
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import useUserContext from '@/contexts/UserContext/useUserContext';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
+import { cn } from '@/utils/cn';
 
 import { Button } from './ui/button';
 import QuickBuy from './QuickBuy';
@@ -16,6 +17,11 @@ type ProductCardActionsProps = {
   productId: string;
 };
 
+/**
+ * Card overlay actions: a wishlist toggle (top-right) and a quick-add button
+ * (bottom) that both reveal on hover / keyboard focus on pointer devices and
+ * stay visible on touch.
+ */
 const ProductCardActions = ({ product, productId }: ProductCardActionsProps) => {
   const { wishlistIds, handleSetWishlist } = useUserContext();
   const [loading, setLoading] = useState(false);
@@ -34,29 +40,44 @@ const ProductCardActions = ({ product, productId }: ProductCardActionsProps) => 
   };
 
   return (
-    <div className="absolute right-3 top-3 z-20 flex flex-col gap-2.5 opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100">
-      <Button
-        variant="ghost"
-        aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-        disabled={loading}
-        className={`flex min-h-11 min-w-11 items-center justify-center rounded-full border border-border/60 bg-background/90 text-secondary shadow-sm backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-background hover:text-foreground ${
-          isWishlisted ? 'text-destructive' : ''
-        } ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
-        type="button"
-        onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-          event.stopPropagation();
-          event.preventDefault();
-          handleWishlist();
-        }}
-      >
-        {loading ? (
-          <SpinnerLoader size="sm" />
-        ) : (
-          <Heart color="currentColor" className={isWishlisted ? 'fill-destructive' : ''} />
-        )}
-      </Button>
+    <div className="pointer-events-none absolute inset-0 z-20">
+      <div className="absolute right-3 top-3">
+        <Button
+          variant="ghost"
+          type="button"
+          aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+          aria-pressed={isWishlisted}
+          disabled={loading}
+          onClick={(event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            handleWishlist();
+          }}
+          className={cn(
+            'pointer-events-auto flex size-11 items-center justify-center rounded-full border border-border/50 bg-background/85 text-secondary shadow-sm backdrop-blur-md transition-all duration-300',
+            'hover:scale-105 hover:bg-background hover:text-foreground',
+            'md:translate-y-1 md:opacity-0 md:group-hover/card:translate-y-0 md:group-hover/card:opacity-100 md:focus-visible:translate-y-0 md:focus-visible:opacity-100',
+            isWishlisted && 'text-destructive hover:text-destructive',
+          )}
+        >
+          {loading ? (
+            <SpinnerLoader size="sm" />
+          ) : (
+            <Heart className={cn('h-4 w-4', isWishlisted && 'fill-current')} />
+          )}
+        </Button>
+      </div>
 
-      <QuickBuy product={product} />
+      <div className="absolute inset-x-3 bottom-3">
+        <QuickBuy
+          product={product}
+          triggerLabel="Quick add"
+          triggerClassName={cn(
+            'pointer-events-auto w-full',
+            'md:translate-y-2 md:opacity-0 md:group-hover/card:translate-y-0 md:group-hover/card:opacity-100 md:focus-visible:translate-y-0 md:focus-visible:opacity-100',
+          )}
+        />
+      </div>
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { storefrontSdk } from '@/shopify';
 import { adjustPaginationVariables } from '@/shopify/helpers';
 import type { CartFieldsFragment, CartLineInput, CartLineUpdateInput } from '@/shopify/storefront';
 import { mapShopifyUserErrors, safeLogError } from '@/utils/api-responses';
-import { getSecureCookieOptions } from '@/utils/cookie-security';
+import { getCookieDeleteOptions, getSecureCookieOptions } from '@/utils/cookie-security';
 
 type CartMutationPayload =
   | {
@@ -26,6 +26,13 @@ type CartMutationPayload =
  * client used to work around with an eager `createCartAction` effect.
  */
 export class CartService {
+  /**
+   * In-flight cart creation promise. Concurrent first-time mutations (e.g. a
+   * double-clicked add-to-cart) would otherwise each create a cart and orphan
+   * all but the last; sharing the promise keeps exactly one.
+   */
+  private static createCartInFlight: Promise<CartFieldsFragment> | null = null;
+
   /**
    * Read a cart from Shopify.
    *
@@ -94,13 +101,19 @@ export class CartService {
     const cartId = await this.getCartId();
     if (cartId) return cartId;
 
-    const cart = await this.createCart();
+    if (!this.createCartInFlight) {
+      this.createCartInFlight = this.createCart().finally(() => {
+        this.createCartInFlight = null;
+      });
+    }
+
+    const cart = await this.createCartInFlight;
     return cart.id;
   }
 
   private static async clearCartId(): Promise<void> {
     const cookieStore = await cookies();
-    cookieStore.delete(config.cookies.cartId);
+    cookieStore.delete({ name: config.cookies.cartId, ...getCookieDeleteOptions() });
   }
 
   /**

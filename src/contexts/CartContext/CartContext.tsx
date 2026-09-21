@@ -17,6 +17,8 @@ type CartResponse = { data: CartFieldsFragment; message?: string };
 
 interface CartContextType {
   cart: CartFieldsFragment | null;
+  error: string | null;
+  isLoading: boolean;
   handleAddToCart: (variantId: string, quantity?: number) => Promise<void>;
   handleQuantityChange: (id: string, quantity: number) => Promise<void>;
   removeFromCart: (lineItemId: string) => Promise<void>;
@@ -25,6 +27,8 @@ interface CartContextType {
 
 export const CartContext = createContext<CartContextType>({
   cart: null,
+  error: null,
+  isLoading: true,
   handleAddToCart: async () => {},
   handleQuantityChange: async () => {},
   removeFromCart: async () => {},
@@ -37,6 +41,8 @@ const getErrorMessage = (error: unknown, defaultMessage: string): string => {
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartFieldsFragment | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // The cart id lives in an httpOnly cookie, so the cart is hydrated client-side
   // to keep the root layout (and the catalog) statically renderable. A cart is
@@ -48,8 +54,14 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       .then((initialCart) => {
         if (!cancelled) setCart(initialCart);
       })
-      .catch((error) => {
-        console.error('Failed to load cart:', error);
+      .catch((loadError) => {
+        if (cancelled) return;
+        const message = getErrorMessage(loadError, 'Failed to load your cart');
+        setError(message);
+        toast.error(message);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
       });
 
     return () => {
@@ -59,6 +71,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleResponse = useCallback((response: CartResponse) => {
     setCart(response.data);
+    setError(null);
     if (response.message) {
       toast.success(response.message);
     }
@@ -74,8 +87,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const response = await removeCartLineAction(lineItemId);
         handleResponse(response);
-      } catch (error) {
-        toast.error(getErrorMessage(error, 'Failed to remove item'));
+      } catch (caughtError) {
+        toast.error(getErrorMessage(caughtError, 'Failed to remove item'));
       }
     },
     [handleResponse],
@@ -91,8 +104,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const response = await updateCartLinesAction([{ id, quantity }]);
         handleResponse(response);
-      } catch (error) {
-        toast.error(getErrorMessage(error, 'Failed to update cart'));
+      } catch (caughtError) {
+        toast.error(getErrorMessage(caughtError, 'Failed to update cart'));
       }
     },
     [handleResponse],
@@ -108,8 +121,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const response = await addCartLinesAction([{ merchandiseId: variantId, quantity }]);
         handleResponse(response);
-      } catch (error) {
-        toast.error(getErrorMessage(error, 'Failed to add to cart'));
+      } catch (caughtError) {
+        toast.error(getErrorMessage(caughtError, 'Failed to add to cart'));
       }
     },
     [handleResponse],
@@ -129,8 +142,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const response = await updateDiscountCodesAction(validCodes);
         handleResponse(response);
-      } catch (error) {
-        toast.error(getErrorMessage(error, 'Failed to update discount codes'));
+      } catch (caughtError) {
+        toast.error(getErrorMessage(caughtError, 'Failed to update discount codes'));
       }
     },
     [handleResponse],
@@ -139,12 +152,14 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const value = useMemo<CartContextType>(
     () => ({
       cart,
+      error,
+      isLoading,
       handleAddToCart,
       handleQuantityChange,
       removeFromCart,
       updateDiscountCodes,
     }),
-    [cart, handleAddToCart, handleQuantityChange, removeFromCart, updateDiscountCodes],
+    [cart, error, isLoading, handleAddToCart, handleQuantityChange, removeFromCart, updateDiscountCodes],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

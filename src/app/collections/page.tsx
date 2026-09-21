@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 import CollectionGrid from '@/components/CollectionGrid/CollectionGrid';
 import PageBanner from '@/components/PageBanner';
+import { Button } from '@/components/ui/button';
 import config from '@/config';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
 import { storefrontSdk } from '@/shopify/index';
@@ -26,8 +28,9 @@ const CollectionsPage = async () => {
   const collections = response.collections.edges;
 
   return (
-    <div className="pb-12 md:pb-16">
+    <div className="pb-16 md:pb-24">
       <PageBanner
+        eyebrow="Explore"
         title="Collections"
         description="Browse all of our collections to find the products you love."
       />
@@ -36,9 +39,15 @@ const CollectionsPage = async () => {
         {collections.length > 0 ? (
           <CollectionGrid collections={collections} />
         ) : (
-          <p className="text-center text-body text-secondary">
-            No collections are available right now. Please check back soon.
-          </p>
+          <div className="rounded-[var(--radius)] border border-dashed border-border py-16 text-center">
+            <h2 className="text-heading-3">Nothing here yet</h2>
+            <p className="mx-auto mt-2 max-w-md px-4 text-body text-secondary">
+              No collections are available right now. Please check back soon.
+            </p>
+            <Button asChild className="mt-6">
+              <Link href={config.routes.home}>Back to home</Link>
+            </Button>
+          </div>
         )}
       </div>
     </div>

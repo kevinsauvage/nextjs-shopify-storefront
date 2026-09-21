@@ -111,7 +111,9 @@ describe('CartService', () => {
 
       const cart = await CartService.addLines([{ merchandiseId: VARIANT_ID, quantity: 1 }]);
 
-      expect(cookieDelete).toHaveBeenCalledWith(CART_ID_COOKIE);
+      expect(cookieDelete).toHaveBeenCalledWith(
+        expect.objectContaining({ name: CART_ID_COOKIE }),
+      );
       expect(sdk.cartCreate).toHaveBeenCalledTimes(1);
       expect(cart).toEqual({ id: FRESH_CART });
     });
