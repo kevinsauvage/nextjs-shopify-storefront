@@ -13,7 +13,7 @@ import type {
   OrderFinancialStatus,
   OrderFulfillmentStatus,
 } from '@/shopify/storefront';
-import { formatPrice } from '@/utils/format';
+import { formatDate, formatPrice } from '@/utils/format';
 
 import { ChevronDown, ChevronUp, Package } from 'lucide-react';
 
@@ -42,17 +42,6 @@ const getStatusBadgeVariant = (
   }
 
   return 'outline';
-};
-
-const getDate = (timestamp: string | number | Date | undefined | null = new Date()) => {
-  const options: Intl.DateTimeFormatOptions = {
-    day: 'numeric',
-    month: 'long',
-    weekday: 'long',
-    year: 'numeric',
-  };
-  const date = new Date(timestamp ?? new Date());
-  return date.toLocaleDateString('en-US', options);
 };
 
 const Row = ({ label, value }: { label: string; value: string | number | null }) => (
@@ -111,7 +100,7 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                   </div>
                   <div className="flex items-center gap-4 flex-wrap text-body-sm text-secondary">
                     {typeof order.processedAt === 'string' && (
-                      <span>{getDate(order.processedAt)}</span>
+                      <span>{formatDate(order.processedAt)}</span>
                     )}
                     {totalPrice && (
                       <span className="font-medium text-foreground">
@@ -229,7 +218,7 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                 <Row label="Email" value={email || DEFAULTS.na} />
                 {phone && <Row label="Phone" value={phone} />}
                 {typeof order?.processedAt === 'string' && (
-                  <Row label="Processed At" value={getDate(order.processedAt)} />
+                  <Row label="Processed At" value={formatDate(order.processedAt)} />
                 )}
 
                 {shippingAddress?.name && (
@@ -239,7 +228,7 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                 {typeof order?.canceledAt === 'string' && typeof cancelReason === 'string' && (
                   <>
                     <Row label="Cancel Reason" value={cancelReason} />
-                    <Row label="Canceled At" value={getDate(order.canceledAt)} />
+                    <Row label="Canceled At" value={formatDate(order.canceledAt)} />
                   </>
                 )}
               </div>

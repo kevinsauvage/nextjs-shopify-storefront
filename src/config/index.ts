@@ -1,18 +1,14 @@
  
 import type { MetadataRoute } from 'next';
 
-import { COOKIES, LOCAL_STORAGE_KEYS } from './constants';
+import { COOKIES } from './constants';
 
 const config = {
   cookies: COOKIES,
-  localStorageKeys: LOCAL_STORAGE_KEYS,
-  name: process.env.NEXT_PUBLIC_SITE_NAME,
   constants: {
     cookieExpiryDays: 182,
     delegateTokenExpirySeconds: 24 * 60 * 60, // 24 hours
     revalidate: {
-      search: 300, // 5 minutes
-      product: 3600, // 1 hour
       shopify: 600, // 10 minutes
     },
     pagination: {
@@ -36,7 +32,6 @@ const config = {
     addresses: '/account/addresses',
     updateAccount: '/account/update',
     wishlist: '/account/wishlist',
-    updateAddress: '/account/addresses',
     createAddress: '/account/addresses/create',
     editAddress: '/account/addresses/edit',
     emailResetPassword: '/recover',
@@ -45,7 +40,6 @@ const config = {
     privacy: '/privacy',
     refund: '/refund',
     register: '/register',
-    resetPassword: '/reset_password',
     search: '/search',
     shipping: '/shipping',
     terms: '/terms',

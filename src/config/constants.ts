@@ -5,10 +5,6 @@ export const COOKIES = {
   shopifyTokenExpire: 'shopify-access-token-expire',
 };
 
-export const LOCAL_STORAGE_KEYS = {
-  cartIdStorageKey: 'shopify-cart-id',
-};
-
 export const DEFAULTS = {
   carrier: 'Unknown Carrier',
   ip: 'Unknown',

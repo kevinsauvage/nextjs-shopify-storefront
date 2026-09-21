@@ -29,40 +29,6 @@ or move to a nonce-based `script-src`.
 
 **Impact:** Medium
 
-### [ ] Remove dead code, unused dependencies and stale artifacts
-
-**Why:** Verified-unused files, exports, config and deps add noise and maintenance cost for a
-project that should stay small.
-
-**Where (verified zero references):** `src/components/layout/` (`ListSpacing.tsx`,
-`SpacingContainer.tsx`, `index.ts`); `src/app/account/_components/Title.tsx`; 4 of 5 functions in
-`src/lib/server/url-helpers.ts`; `logWarn` (`src/lib/logger.ts:65`); `ProductSelection` type
-(`src/hooks/useProductSelection.ts:105`); `LOCAL_STORAGE_KEYS`/`config.localStorageKeys`;
-`config.name`; unused `revalidate.search/product`; `routes.updateAddress`, `routes.resetPassword`;
-dep `tailwindcss-animate`; 9 unreferenced devDeps in `package.json`; stale `TODO-ASSESSMENT-FLOW.md`;
-`components.json` alias `@/lib/utils` (does not exist).
-
-**Change:** Delete the dead files/exports/deps and the stale TODO artifact; keep only the one
-used URL helper. Re-run lint/tsc/tests after.
-
-**Impact:** Medium
-
-### [ ] Consolidate duplicated UI and business logic
-
-**Why:** Near-duplicate implementations drift and slow every change.
-
-**Where:** Two quantity steppers — `src/components/QuantityUpdater.tsx` vs
-`src/components/ProductQuantitySelector.tsx`; PDP vs QuickBuy variant view —
-`src/components/ProductDescriptionClient.tsx:45-88` vs `src/components/QuickBuyContent.tsx:34-57`
-(both re-derive the same price/stock/options from `useProductSelection`); date formatting copied
-3× (`AccountStats.tsx:67`, `RecentOrdersPreview.tsx:16`, `OrderCard.tsx:55`); local `SectionTitle`
-in `src/components/SearchResults.tsx:101` duplicates `src/components/SectionTitle.tsx`.
-
-**Change:** Unify into one quantity stepper and one shared `useProductVariantView`/panel; add a
-`formatDate` to `src/utils/format.ts`; reuse the shared `SectionTitle`.
-
-**Impact:** Medium
-
 ### P2 — Medium
 
 ### [ ] Add a 404 page and fix Suspense boundaries

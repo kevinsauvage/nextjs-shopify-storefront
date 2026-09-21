@@ -6,7 +6,7 @@ import useCartContext from '@/contexts/CartContext/useCartContext';
 import type { GetProductByHandleQuery, ProductFieldsFragment } from '@/shopify/storefront';
 
 type Product = NonNullable<GetProductByHandleQuery['product']>;
-type ProductVariant = Product['variants']['edges'][number]['node'];
+export type ProductVariant = Product['variants']['edges'][number]['node'];
 type OptionValue = ProductFieldsFragment['options'][number]['optionValues'][number];
 
 /** Option name -> selected value name. */
@@ -104,7 +104,5 @@ const useProductSelection = ({
     totalPrice,
   };
 };
-
-export type ProductSelection = ReturnType<typeof useProductSelection>;
 
 export default useProductSelection;

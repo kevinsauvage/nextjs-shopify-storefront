@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import config from '@/config';
 import type { GetCustomerOrdersQuery } from '@/shopify/storefront';
-import { formatPrice } from '@/utils/format';
+import { formatDate, formatPrice } from '@/utils/format';
 
 import { ArrowRight, Package } from 'lucide-react';
 
@@ -13,11 +13,6 @@ type RecentOrdersPreviewProps = {
 };
 
 const RecentOrdersPreview = ({ orders }: RecentOrdersPreviewProps) => {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
-
   if (!orders || orders.length === 0) {
     return null;
   }
@@ -52,7 +47,7 @@ const RecentOrdersPreview = ({ orders }: RecentOrdersPreviewProps) => {
                         <p className="text-body font-medium">Order {node.name}</p>
                       </div>
                       <p className="text-body-sm text-secondary">
-                        {orderDate ? formatDate(orderDate) : 'N/A'}
+                        {formatDate(orderDate, { day: 'numeric', month: 'short', year: 'numeric' })}
                       </p>
                     </div>
                     {orderTotal && (

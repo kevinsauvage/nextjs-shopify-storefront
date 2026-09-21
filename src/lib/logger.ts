@@ -1,13 +1,11 @@
 /**
  * Shared logging + error-reporting helper usable from both server and client
- * code. Emits structured JSON on error/warn (these survive the production
+ * code. Emits structured JSON on error (these survive the production
  * `removeConsole` config) and forwards errors to an optional reporter.
  *
  * Register a reporter (e.g. Sentry) with `setErrorReporter`; the server wires
  * up an optional webhook drain in `src/lib/server/error-reporter.ts`.
  */
-
-type LogLevel = 'warn' | 'error';
 
 export type ErrorReport = {
   context: string;
@@ -47,23 +45,15 @@ const toError = (error: unknown): Error => {
   }
 };
 
-const write = (level: LogLevel, message: string, meta?: Record<string, unknown>): void => {
+const write = (message: string, meta?: Record<string, unknown>): void => {
   const entry = JSON.stringify({
-    level,
+    level: 'error',
     message,
     timestamp: new Date().toISOString(),
     ...meta,
   });
 
-  if (level === 'error') {
-    console.error(entry);
-  } else {
-    console.warn(entry);
-  }
-};
-
-export const logWarn = (message: string, meta?: Record<string, unknown>): void => {
-  write('warn', sanitizeErrorMessage(message), meta);
+  console.error(entry);
 };
 
 export const reportError = (
@@ -74,7 +64,7 @@ export const reportError = (
   const normalized = toError(error);
   const message = sanitizeErrorMessage(normalized.message);
 
-  write('error', context, { ...meta, error: message });
+  write(context, { ...meta, error: message });
 
   if (process.env.NODE_ENV === 'development' && normalized.stack) {
     console.error(`[${context}] Stack:`, normalized.stack);

@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import config from '@/config';
 import useUserContext from '@/contexts/UserContext/useUserContext';
 import { cn } from '@/utils/cn';
+import { formatDate } from '@/utils/format';
 
 import { Calendar, Heart, MapPin, Package } from 'lucide-react';
 
@@ -64,12 +65,6 @@ const AccountStats = ({
   // context rather than fetching it again on the server.
   const { wishlistIds } = useUserContext();
 
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-  };
-
   return (
     <div
       className={cn('grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr', className)}
@@ -97,7 +92,7 @@ const AccountStats = ({
       />
       <StatCard
         title="Member Since"
-        value={formatDate(memberSince)}
+        value={formatDate(memberSince, { month: 'short', year: 'numeric' })}
         icon={<Calendar size={24} className="shrink-0" />}
         description="Account created"
       />

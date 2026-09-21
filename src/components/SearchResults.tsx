@@ -5,6 +5,7 @@ import { formatPrice } from '@/utils/format';
 
 import { Button } from './ui/button';
 import OptimizedImage from './OptimizedImage';
+import SectionTitle from './SectionTitle';
 
 import { Search } from 'lucide-react';
 
@@ -98,10 +99,6 @@ const Query = ({ query }: { query: { text: string } }) => {
   );
 };
 
-const SectionTitle = ({ title }: { title: string }) => {
-  return <div className="px-4 pt-4 text-label-sm text-secondary">{title}</div>;
-};
-
 const SearchResults = ({
   results,
 }: {
@@ -127,7 +124,9 @@ const SearchResults = ({
       <div className="p-2">
         {queries.length > 0 && (
           <>
-            <SectionTitle title="Suggestions" />
+            <SectionTitle className="px-4 pt-4 text-label-sm text-secondary">
+              Suggestions
+            </SectionTitle>
             <div className="pb-4">
               {queries.map((q) => (
                 <Query key={q.text} query={{ text: q.text }} />
@@ -138,7 +137,9 @@ const SearchResults = ({
 
         {products.length > 0 && (
           <>
-            <SectionTitle title="Products" />
+            <SectionTitle className="px-4 pt-4 text-label-sm text-secondary">
+              Products
+            </SectionTitle>
             <div className="pb-4">
               {products.map((product) => (
                 <Product key={product.id} product={product as ProductSearchItem} />

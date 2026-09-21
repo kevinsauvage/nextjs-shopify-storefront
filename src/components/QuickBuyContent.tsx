@@ -6,11 +6,11 @@ import Link from 'next/link';
 
 import config from '@/config';
 import useProductSelection from '@/hooks/useProductSelection';
+import useProductVariantView from '@/hooks/useProductVariantView';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
 import { formatPrice } from '@/utils/format';
 import { mapShopifyImagesToImageFields } from '@/utils/images';
-import { getQuantityCap } from '@/utils/inventory';
 
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -18,7 +18,7 @@ import { Separator } from './ui/separator';
 import { SheetFooter } from './ui/sheet';
 import Options from './Options';
 import ProductActions from './ProductActions';
-import ProductQuantitySelector from './ProductQuantitySelector';
+import QuantityStepper from './QuantityStepper';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -45,17 +45,8 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
 
   const productImages = mapShopifyImagesToImageFields(product.images?.edges);
 
-  const selectedVariantData = selectedVariant as
-    | {
-        quantityAvailable?: number | null;
-        availableForSale?: boolean;
-        price?: { amount: string; currencyCode: string };
-        compareAtPrice?: { amount: string; currencyCode: string } | null;
-      }
-    | undefined;
-
-  const { quantityAvailable, availableForSale, price, compareAtPrice } = selectedVariantData || {};
-  const quantityCap = getQuantityCap(quantityAvailable);
+  const { quantityAvailable, availableForSale, price, compareAtPrice, quantityCap } =
+    useProductVariantView(selectedVariant);
 
   const nextImage = useCallback(() => {
     setCurrentImageIndex((prev) => (prev + 1) % productImages.length);
@@ -249,7 +240,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
             <label htmlFor="quantity" className="text-label">
               Quantity
             </label>
-            <ProductQuantitySelector
+            <QuantityStepper
               quantity={quantity}
               onChange={handleChangeInput}
               quantityAvailable={quantityAvailable}

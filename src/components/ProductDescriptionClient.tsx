@@ -4,17 +4,17 @@ import Link from 'next/link';
 
 import config from '@/config';
 import useProductSelection from '@/hooks/useProductSelection';
+import useProductVariantView from '@/hooks/useProductVariantView';
 import type { GetProductByHandleQuery } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
 import { formatPrice } from '@/utils/format';
-import { getQuantityCap } from '@/utils/inventory';
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import Options from './Options';
 import ProductActions from './ProductActions';
-import ProductQuantitySelector from './ProductQuantitySelector';
+import QuantityStepper from './QuantityStepper';
 
 import { RotateCcw, ShieldCheck } from 'lucide-react';
 
@@ -97,19 +97,6 @@ const ProductDescriptionClient = ({
     isOptionOutOfStock,
   } = useProductSelection({ product });
 
-  const selectedVariantData = selectedVariant as
-    | {
-        quantityAvailable?: number | null;
-        availableForSale?: boolean;
-        price?: { amount: string; currencyCode: string };
-        compareAtPrice?: { amount: string; currencyCode: string } | null;
-        sku?: string | null;
-        title?: string;
-        weight?: number | null;
-        weightUnit?: string;
-      }
-    | undefined;
-
   const {
     quantityAvailable,
     availableForSale,
@@ -119,13 +106,9 @@ const ProductDescriptionClient = ({
     title: variantTitle,
     weight,
     weightUnit,
-  } = selectedVariantData || defaultVariant;
-
-  // Inventory is often untracked (quantityAvailable === null), which means
-  // "unlimited" rather than "out of stock".
-  const quantityCap = getQuantityCap(quantityAvailable);
-
-  const hasDiscount = !!compareAtPrice && !!price && Number(compareAtPrice.amount) > Number(price.amount);
+    quantityCap,
+    hasDiscount,
+  } = useProductVariantView(selectedVariant, defaultVariant);
 
   return (
     <div className="flex flex-col gap-8 lg:col-span-5 lg:sticky lg:top-24 lg:self-start">
@@ -227,7 +210,7 @@ const ProductDescriptionClient = ({
                 <span className="text-caption-sm text-muted">{quantityAvailable} available</span>
               ) : null}
             </div>
-            <ProductQuantitySelector
+            <QuantityStepper
               quantity={quantity}
               onChange={handleChangeInput}
               quantityAvailable={quantityAvailable}

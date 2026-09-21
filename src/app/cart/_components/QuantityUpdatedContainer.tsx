@@ -1,6 +1,8 @@
 'use client';
 
-import QuantityUpdater from '@/components/QuantityUpdater';
+import { useCallback } from 'react';
+
+import QuantityStepper from '@/components/QuantityStepper';
 import useCartContext from '@/contexts/CartContext/useCartContext';
 
 const QuantityUpdatedContainer = ({
@@ -16,12 +18,16 @@ const QuantityUpdatedContainer = ({
 }) => {
   const { handleQuantityChange } = useCartContext();
 
+  const handleChange = useCallback(
+    (quantity: number) => handleQuantityChange(id, quantity),
+    [handleQuantityChange, id],
+  );
+
   return (
-    <QuantityUpdater
-      originalQuantity={originalQuantity}
+    <QuantityStepper
+      quantity={originalQuantity}
+      onChange={handleChange}
       quantityAvailable={quantityAvailable}
-      productId={id}
-      onChange={handleQuantityChange}
       disabled={disabled}
     />
   );
