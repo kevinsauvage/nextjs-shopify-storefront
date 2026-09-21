@@ -3,29 +3,24 @@ import { cn } from '@/utils/cn';
 type PageBannerProps = {
   title: string;
   description?: string;
+  eyebrow?: string;
   children?: React.ReactNode;
   className?: string;
 };
 
-const PageBanner = ({
-  title,
-  description,
-  children,
-  className,
-}: PageBannerProps) => (
+const PageBanner = ({ title, description, eyebrow, children, className }: PageBannerProps) => (
   <div
     className={cn(
-      'container mx-auto flex flex-col items-center justify-center text-center py-12 md:py-16 px-4 md:px-6 space-y-6 md:space-y-8',
+      'container mx-auto flex flex-col items-center justify-center px-4 py-14 text-center md:px-6 md:py-20',
       className,
     )}
   >
-    <h1 className="text-heading-1 font-bold">{title}</h1>
+    {eyebrow && <span className="text-eyebrow mb-4">{eyebrow}</span>}
+    <h1 className="text-balance">{title}</h1>
     {description && (
-      <p className="text-body-lg text-secondary max-w-2xl mx-auto leading-relaxed">
-        {description}
-      </p>
+      <p className="text-body-lg mx-auto mt-5 max-w-2xl text-secondary">{description}</p>
     )}
-    {children}
+    {children && <div className="mt-8 flex w-full flex-col items-center gap-6">{children}</div>}
   </div>
 );
 

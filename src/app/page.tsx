@@ -46,23 +46,25 @@ const Home = async () => {
   const newArrivalProducts = newArrival.products.edges.map((edge) => edge.node);
 
   return (
-    <div className="space-y-12 md:space-y-16">
+    <div className="pb-16 md:pb-24">
       <PageBanner
+        eyebrow="New Season"
         title="Shop the Latest Trends"
         description="Discover the latest trends and exclusive collections that will elevate your style. Shop now and enjoy a seamless shopping experience with us. From fashion to home decor, we have something for everyone."
       />
 
       {featuredCollections.length > 0 && (
         <div className="container mx-auto px-4 md:px-6">
-          <HomeSection title="Explore our collections">
+          <HomeSection eyebrow="Curated" title="Explore our collections">
             <CollectionGrid collections={featuredCollections} />
           </HomeSection>
         </div>
       )}
 
-      <div className="container mx-auto px-4 md:px-6 space-y-12 md:space-y-16">
+      <div className="container mx-auto space-y-4 px-4 md:space-y-8 md:px-6">
         {bestSellingProducts.length > 0 && (
           <ProductSection
+            eyebrow="Best Sellers"
             title="Featured Products"
             products={bestSellingProducts}
             viewAllLabel="View all featured"
@@ -71,6 +73,7 @@ const Home = async () => {
 
         {newArrivalProducts.length > 0 && (
           <ProductSection
+            eyebrow="Just In"
             title="New Arrivals"
             products={newArrivalProducts}
             viewAllLabel="View all new arrivals"

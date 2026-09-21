@@ -33,15 +33,15 @@ const ProductCardDefault = ({ product, priority, asListItem = true }: ProductCar
   const Component = asListItem ? 'li' : 'div';
 
   return (
-    <Component className="relative group overflow-hidden rounded-sm transition-all hover:shadow-lg">
+    <Component className="group relative">
       <ProductCardActions product={product} productId={id} />
 
       <Link
-        className="block cursor-pointer"
+        className="block cursor-pointer focus-visible:outline-none"
         href={`${config.routes.collection}/products/${handle}`}
         scroll
       >
-        <div className="relative overflow-hidden aspect-square">
+        <div className="media-frame relative aspect-square">
           <OptimizedImage
             src={primaryImage?.medium || primaryImage?.small || primaryImage?.src || ''}
             alt={primaryImage?.altText || title}
@@ -51,16 +51,13 @@ const ProductCardDefault = ({ product, priority, asListItem = true }: ProductCar
             priority={priority}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw, 25vw"
             quality={75}
-            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             aria-label={`Image of ${title}`}
           />
 
           {/* Discount Badge */}
           {compareAtPrice && price?.amount !== compareAtPrice?.amount && (
-            <Badge
-              variant="destructive"
-              className="absolute left-2 top-2 z-10 text-body-sm font-bold px-2.5 py-1 shadow-lg backdrop-blur-sm bg-destructive/95 border-2 border-white/20"
-            >
+            <Badge variant="destructive" className="absolute left-3 top-3 z-10">
               -{isWhatPercentOf(Number(price?.amount), Number(compareAtPrice?.amount))}%
             </Badge>
           )}
@@ -68,27 +65,24 @@ const ProductCardDefault = ({ product, priority, asListItem = true }: ProductCar
           {/* Availability Indicators */}
           {isSoldOut && (
             <Badge
-              variant="destructive"
-              className="absolute right-2 top-2 z-10 text-body-sm font-bold px-2.5 py-1 shadow-lg backdrop-blur-sm bg-destructive/95 border-2 border-white/20"
+              variant="secondary"
+              className="absolute left-3 top-3 z-10 border border-border/50"
             >
               Sold Out
             </Badge>
           )}
           {isLowStock && !isSoldOut && (
-            <Badge
-              variant="secondary"
-              className="absolute right-2 top-2 z-10 text-body-sm font-bold px-2.5 py-1 shadow-lg backdrop-blur-sm bg-secondary/95 border-2 border-white/20"
-            >
+            <Badge variant="secondary" className="absolute left-3 top-3 z-10">
               Low Stock
             </Badge>
           )}
         </div>
 
-        <div className="py-4">
-          <h3 className="text-heading-4 mb-2 line-clamp-2">{title}</h3>
-          <div>
-            <Price compareAtPrice={compareAtPrice} priceRange={priceRange} price={price} />
-          </div>
+        <div className="flex flex-col gap-1.5 pt-4">
+          <h3 className="text-body font-medium leading-snug text-foreground line-clamp-2">
+            {title}
+          </h3>
+          <Price compareAtPrice={compareAtPrice} priceRange={priceRange} price={price} />
         </div>
       </Link>
     </Component>

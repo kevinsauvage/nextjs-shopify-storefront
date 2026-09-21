@@ -5,135 +5,136 @@
 
 /**
  * Color Palette - Single Source of Truth
- * 
- * Documented HEX values mapped to semantic CSS variables for consistent theming
- * and contrast validation. All colors meet WCAG 2.1 AA contrast requirements.
- * 
+ *
+ * Editorial commerce palette: a warm monochrome (stone) system with a near-black
+ * primary. Interactive elements (buttons, links, focus rings) resolve to ink so
+ * the product imagery and serif display type carry the brand. All pairings meet
+ * WCAG 2.1 AA contrast on their intended surface.
+ *
  * Light Mode Palette:
- * - Primary (text): #111827 (near-black) - Main text color
- * - Background: #FFFFFF (white) - Page and card backgrounds
- * - Secondary text: #4B5563 (gray-600) - Secondary text, icons
- * - Muted text: #6B7280 (gray-500) - Captions, metadata only
- * - Border: #E5E7EB (gray-200) - Borders, dividers
- * - Muted surface: #F3F4F6 (gray-100) - Subtle backgrounds, hover states
- * - Accent (links): #2563EB (blue-600) - Links, interactive elements
+ * - Ink (text/primary): #0C0A09 (stone-950) - Main text + solid actions
+ * - Background: #FFFFFF (white) - Page surface
+ * - Card: #FFFFFF (white) - Elevated surfaces
+ * - Surface muted: #F5F5F4 (stone-100) - Hover states, secondary buttons
+ * - Secondary text: #57534E (stone-600) - 7.4:1 on white, AA normal text
+ * - Muted text: #78716C (stone-500) - 4.7:1 on white, captions only
+ * - Border: #E7E5E4 (stone-200) - Borders, dividers
  * - Destructive: #DC2626 (red-600) - Errors, destructive actions
- * 
+ *
  * Contrast Ratios (text on white background):
- * - Primary (#111827): 16.6:1 ✓ AAA
- * - Secondary (#4B5563): 7.0:1 ✓ AA
- * - Muted (#6B7280): 4.6:1 ✓ AA (large text)
- * - Accent (#2563EB): 4.5:1 ✓ AA (large text)
- * - Destructive (#DC2626): 4.5:1 ✓ AA (large text)
+ * - Ink (#0C0A09): 19.8:1 ✓ AAA
+ * - Secondary (#57534E): 7.4:1 ✓ AAA (normal text)
+ * - Muted (#78716C): 4.7:1 ✓ AA
+ * - Destructive (#DC2626): 4.5:1 ✓ AA
  */
 
 :root {
   /* Base Colors - Light Mode */
   --background: #ffffff; /* Background: #FFFFFF */
-  --card: #ffffff; /* Background: #FFFFFF */
-  --popover: #ffffff; /* Background: #FFFFFF */
-  --sidebar: #ffffff; /* Background: #FFFFFF */
+  --card: #ffffff; /* Card surface: #FFFFFF */
+  --popover: #ffffff; /* Popover surface: #FFFFFF */
+  --sidebar: #fafaf9; /* Sidebar surface: #FAFAF9 (stone-50) */
 
-  --foreground: #111827; /* Primary: #111827 (near-black) */
-  --card-foreground: #111827; /* Primary: #111827 */
-  --popover-foreground: #111827; /* Primary: #111827 */
-  --sidebar-foreground: #111827; /* Primary: #111827 */
+  --foreground: #0c0a09; /* Ink: #0C0A09 (stone-950) */
+  --card-foreground: #0c0a09; /* Ink */
+  --popover-foreground: #0c0a09; /* Ink */
+  --sidebar-foreground: #0c0a09; /* Ink */
 
-  /* Accent/Link Color - Used for links and interactive elements */
-  --primary: #1d4ed8; /* Accent: #1D4ED8 (blue-700) - better contrast for buttons */
-  --sidebar-primary: #1d4ed8; /* Accent: #1D4ED8 */
-  --primary-foreground: #ffffff; /* White text on accent */
-  --sidebar-primary-foreground: #ffffff;
+  /* Primary - Ink. Solid actions use near-black for an editorial look. */
+  --primary: #0c0a09; /* Ink */
+  --sidebar-primary: #0c0a09; /* Ink */
+  --primary-foreground: #fafaf9; /* Paper text on ink */
+  --sidebar-primary-foreground: #fafaf9;
 
   /* Secondary and Accent Surfaces */
-  --secondary: #f3f4f6; /* Muted surface: #F3F4F6 (gray-100) */
-  --accent: #f3f4f6; /* Muted surface: #F3F4F6 */
-  --sidebar-accent: #f3f4f6; /* Muted surface: #F3F4F6 */
-  --secondary-foreground: #111827; /* Primary text on muted surface */
-  --accent-foreground: #111827; /* Primary text on muted surface */
-  --sidebar-accent-foreground: #111827;
+  --secondary: #f5f5f4; /* Muted surface: #F5F5F4 (stone-100) */
+  --accent: #f5f5f4; /* Muted surface: #F5F5F4 */
+  --sidebar-accent: #f5f5f4; /* Muted surface: #F5F5F4 */
+  --secondary-foreground: #0c0a09; /* Ink text on muted surface */
+  --accent-foreground: #0c0a09; /* Ink text on muted surface */
+  --sidebar-accent-foreground: #0c0a09;
 
   /* Muted Colors */
-  --muted: #f3f4f6; /* Muted surface: #F3F4F6 (gray-100) */
-  --muted-foreground: #4b5563; /* Secondary text: #4B5563 (gray-600) */
-  --muted-text: #6b7280; /* Muted text: #6B7280 (gray-500) - captions only */
+  --muted: #f5f5f4; /* Muted surface: #F5F5F4 (stone-100) */
+  --muted-foreground: #57534e; /* Secondary text: #57534E (stone-600) */
+  --muted-text: #78716c; /* Muted text: #78716C (stone-500) - captions only */
 
   /* Destructive */
   --destructive: #dc2626; /* Destructive: #DC2626 (red-600) */
   --destructive-foreground: #ffffff; /* White text on destructive */
 
   /* Borders and Inputs */
-  --border: #e5e7eb; /* Border: #E5E7EB (gray-200) */
-  --sidebar-border: #e5e7eb; /* Border: #E5E7EB */
-  --ring: #2563eb; /* Accent color for focus rings */
-  --sidebar-ring: #2563eb;
-  --input: #e5e7eb; /* Border color for inputs */
+  --border: #e7e5e4; /* Border: #E7E5E4 (stone-200) */
+  --sidebar-border: #e7e5e4; /* Border: #E7E5E4 */
+  --ring: #0c0a09; /* Ink focus ring */
+  --sidebar-ring: #0c0a09;
+  --input: #e7e5e4; /* Border color for inputs */
 
-  /* Chart Colors (unchanged) */
-  --chart-1: oklch(0.874 0.166 173);
-  --chart-2: oklch(0.824 0.169 167);
-  --chart-3: oklch(0.785 0.133 193);
-  --chart-4: oklch(0.715 0.167 157);
-  --chart-5: oklch(0.673 0.122 176);
+  /* Chart Colors - warm monochrome ramp with a single red signal */
+  --chart-1: #0c0a09;
+  --chart-2: #57534e;
+  --chart-3: #a8a29e;
+  --chart-4: #d6d3d1;
+  --chart-5: #dc2626;
 
-  --radius: 0.3rem;
+  --radius: 0.625rem;
 }
 
 .dark {
   /**
    * Dark Mode Palette
-   * 
-   * Inverted and adjusted colors for dark theme while maintaining
-   * the same semantic relationships and contrast ratios.
+   *
+   * Inverted warm monochrome. Surfaces step up from stone-950 to stone-800,
+   * text inverts to stone-50, and the primary action becomes paper-on-ink.
    */
 
   /* Base Colors - Dark Mode */
-  --background: #111827; /* Dark background (using primary color) */
-  --card: #1f2937; /* Slightly lighter than background */
-  --popover: #1f2937;
-  --sidebar: #111827;
+  --background: #0c0a09; /* Background: #0C0A09 (stone-950) */
+  --card: #1c1917; /* Card surface: #1C1917 (stone-900) */
+  --popover: #1c1917; /* Popover surface: #1C1917 */
+  --sidebar: #0c0a09; /* Sidebar surface: #0C0A09 */
 
-  --foreground: #ffffff; /* White text on dark */
-  --card-foreground: #ffffff;
-  --popover-foreground: #ffffff;
-  --sidebar-foreground: #ffffff;
+  --foreground: #fafaf9; /* Paper text: #FAFAF9 (stone-50) */
+  --card-foreground: #fafaf9;
+  --popover-foreground: #fafaf9;
+  --sidebar-foreground: #fafaf9;
 
-  /* Accent/Link Color - Darker blue for better contrast with white text */
-  --primary: #2563eb; /* blue-600 - better contrast with white text (5.2:1) */
-  --sidebar-primary: #2563eb;
-  --primary-foreground: #ffffff; /* White text on dark accent */
-  --sidebar-primary-foreground: #ffffff;
+  /* Primary - Paper. Solid actions invert to light on dark. */
+  --primary: #fafaf9; /* Paper */
+  --sidebar-primary: #fafaf9;
+  --primary-foreground: #0c0a09; /* Ink text on paper */
+  --sidebar-primary-foreground: #0c0a09;
 
   /* Secondary and Accent Surfaces */
-  --secondary: #374151; /* gray-700 - darker muted surface */
-  --accent: #374151;
-  --sidebar-accent: #374151;
-  --secondary-foreground: #ffffff; /* White text on dark surface */
-  --accent-foreground: #ffffff;
-  --sidebar-accent-foreground: #ffffff;
+  --secondary: #292524; /* Muted surface: #292524 (stone-800) */
+  --accent: #292524;
+  --sidebar-accent: #292524;
+  --secondary-foreground: #fafaf9; /* Paper text on muted surface */
+  --accent-foreground: #fafaf9;
+  --sidebar-accent-foreground: #fafaf9;
 
   /* Muted Colors */
-  --muted: #374151; /* gray-700 - darker muted surface */
-  --muted-foreground: #d1d5db; /* gray-300 - lighter secondary text for better contrast on dark */
-  --muted-text: #d1d5db; /* gray-300 - muted text for captions, better contrast on dark */
+  --muted: #292524; /* Muted surface: #292524 (stone-800) */
+  --muted-foreground: #d6d3d1; /* Secondary text: #D6D3D1 (stone-300) */
+  --muted-text: #a8a29e; /* Muted text: #A8A29E (stone-400) */
 
   /* Destructive */
   --destructive: #ef4444; /* red-500 - lighter red for dark mode */
   --destructive-foreground: #ffffff;
 
   /* Borders and Inputs */
-  --border: #374151; /* gray-700 - darker borders */
-  --sidebar-border: #374151;
-  --ring: #2563eb; /* blue-600 for focus rings */
-  --sidebar-ring: #2563eb;
-  --input: #374151; /* Darker input borders */
+  --border: #292524; /* Border: #292524 (stone-800) */
+  --sidebar-border: #292524;
+  --ring: #a8a29e; /* stone-400 focus ring on dark */
+  --sidebar-ring: #a8a29e;
+  --input: #292524;
 
-  /* Chart Colors (unchanged) */
-  --chart-1: oklch(0.906 0.124 179);
-  --chart-2: oklch(0.904 0.113 174);
-  --chart-3: oklch(0.914 0.09 194);
-  --chart-4: oklch(0.908 0.095 165);
-  --chart-5: oklch(0.908 0.077 182);
+  /* Chart Colors - inverted warm monochrome ramp */
+  --chart-1: #fafaf9;
+  --chart-2: #d6d3d1;
+  --chart-3: #a8a29e;
+  --chart-4: #78716c;
+  --chart-5: #ef4444;
 }
 
 /* Add Tailwind v4 @theme configuration as needed */
@@ -192,10 +193,10 @@
    */
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
-  --font-serif: var(--font-serif);
-  /* Use same font family for headings and body */
-  --font-heading: var(--font-sans);
-  --font-display: var(--font-sans);
+  /* Editorial display serif (Playfair Display) drives headings + display type */
+  --font-serif: var(--font-display);
+  --font-heading: var(--font-display);
+  --font-display: var(--font-display);
 
   /* Line Height Scale - Optimal for readability */
   --line-height-tight: 1.25; /* For headings */
@@ -290,118 +291,122 @@ button[aria-disabled='true'] {
 
 /**
  * Typography Hierarchy - Semantic HTML Headings
- * 
- * All headings use the same font family as body (Inter) with:
- * - Weight: 600-700 (semibold to bold)
- * - Letter-spacing: -0.025em (tighter tracking for emphasis)
- * - Exact font-size/line-height pairs per typography scale
+ *
+ * Display headings (h1-h3) use the editorial serif with a normal-to-tight
+ * tracking and fluid sizing so headlines stay dramatic on wide screens without
+ * overflowing on mobile. Structural headings (h4-h6) use the sans face for
+ * density and UI clarity.
+ *
+ * These live in @layer base so Tailwind utilities (e.g. text-white on an
+ * overlay) can override them.
  */
-h1 {
-  color: var(--foreground);
-  font-family: var(--font-sans); /* Same as body */
+@layer base {
+  h1 {
+    color: var(--foreground);
+    font-family: var(--font-display), georgia, serif;
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: 1.08;
+  }
 
-  font-size: 2.5rem; /* 40px */
-  font-weight: var(--font-weight-bold); /* 700 */
-  letter-spacing: var(--letter-spacing-tight); /* -0.025em */
-  line-height: 3rem; /* 48px - heading-1: 40/48 */
-}
+  h2 {
+    margin-bottom: 0.875rem;
+    color: var(--foreground);
+    font-family: var(--font-display), georgia, serif;
+    font-size: clamp(1.875rem, 3.4vw, 2.5rem);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: 1.12;
+  }
 
-h2 {
-  margin-bottom: 0.875rem;
-  color: var(--foreground);
-  font-family: var(--font-sans); /* Same as body */
-  font-size: 1.875rem; /* 30px */
-  font-weight: var(--font-weight-bold); /* 700 */
-  letter-spacing: var(--letter-spacing-tight); /* -0.025em */
-  line-height: 2.375rem; /* 38px - heading-2: 30/38 */
-}
+  h3 {
+    margin-bottom: 0.75rem;
+    color: var(--foreground);
+    font-family: var(--font-display), georgia, serif;
+    font-size: clamp(1.375rem, 2vw, 1.75rem);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing-normal);
+    line-height: 1.2;
+  }
 
-h3 {
-  margin-bottom: 0.75rem;
-  color: var(--foreground);
-  font-family: var(--font-sans); /* Same as body */
-  font-size: 1.5rem; /* 24px */
-  font-weight: var(--font-weight-semibold); /* 600 */
-  letter-spacing: var(--letter-spacing-tight); /* -0.025em */
-  line-height: 2rem; /* 32px - heading-3: 24/32 */
-}
+  h4 {
+    margin-bottom: 0.625rem;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 1.125rem; /* 18px */
+    font-weight: var(--font-weight-semibold); /* 600 */
+    letter-spacing: var(--letter-spacing-normal);
+    line-height: 1.5rem; /* 24px */
+  }
 
-h4 {
-  margin-bottom: 0.625rem;
-  color: var(--foreground);
-  font-family: var(--font-sans); /* Same as body */
-  font-size: 1.25rem; /* 20px */
-  font-weight: var(--font-weight-semibold); /* 600 */
-  letter-spacing: var(--letter-spacing-tight); /* -0.025em */
-  line-height: 1.75rem; /* 28px - heading-4: 20/28 */
-}
+  h5 {
+    margin-bottom: 0.5rem;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 1rem; /* 16px */
+    font-weight: var(--font-weight-semibold); /* 600 */
+    letter-spacing: var(--letter-spacing-normal);
+    line-height: 1.5rem; /* 24px */
+  }
 
-h5 {
-  margin-bottom: 0.5rem;
-  color: var(--foreground);
-  font-family: var(--font-sans); /* Same as body */
-  font-size: 1.125rem; /* 18px - matches body-lg */
-  font-weight: var(--font-weight-semibold); /* 600 */
-  letter-spacing: var(--letter-spacing-tight); /* -0.025em */
-  line-height: 1.75rem; /* 28px - matches body-lg */
-}
-
-h6 {
-  margin-bottom: 0.5rem;
-  color: var(--foreground);
-  font-family: var(--font-sans); /* Same as body */
-  font-size: 1rem; /* 16px - matches body */
-  font-weight: var(--font-weight-semibold); /* 600 */
-  letter-spacing: var(--letter-spacing-wide); /* 0.025em */
-  line-height: 1.5rem; /* 24px - matches body */
-  text-transform: uppercase;
+  h6 {
+    margin-bottom: 0.5rem;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 0.75rem; /* 12px */
+    font-weight: var(--font-weight-semibold); /* 600 */
+    letter-spacing: var(--letter-spacing-widest); /* 0.1em */
+    line-height: 1rem; /* 16px */
+    text-transform: uppercase;
+  }
 }
 
 /**
  * Typography Utility Classes
- * 
- * Consistent typography tokens matching the defined scale.
- * All use Inter font family with appropriate weights and line-heights.
+ *
+ * Consistent typography tokens matching the defined scale. Display utilities
+ * use the editorial serif; body utilities use the sans face.
  */
 
 .text-display {
-  font-family: var(--font-sans);
-  font-size: 3rem; /* 48px */
-  font-weight: var(--font-weight-bold); /* 700 */
-  letter-spacing: var(--letter-spacing-tighter); /* -0.05em */
-  line-height: 3.5rem; /* 56px */
+  font-family: var(--font-display), georgia, serif;
+  font-size: clamp(2.75rem, 6vw, 4.5rem);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-tighter);
+  line-height: 1.02;
 }
 
 .text-heading-1 {
-  font-family: var(--font-sans); /* Same as body */
-  font-size: 2.5rem; /* 40px */
-  font-weight: var(--font-weight-bold); /* 700 */
-  letter-spacing: var(--letter-spacing-tight); /* -0.025em */
-  line-height: 3rem; /* 48px - heading-1: 40/48 */
+  font-family: var(--font-display), georgia, serif;
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: 1.08;
 }
 
 .text-heading-2 {
-  font-family: var(--font-sans); /* Same as body */
-  font-size: 1.875rem; /* 30px */
-  font-weight: var(--font-weight-bold); /* 700 */
-  letter-spacing: var(--letter-spacing-tight); /* -0.025em */
-  line-height: 2.375rem; /* 38px - heading-2: 30/38 */
+  font-family: var(--font-display), georgia, serif;
+  font-size: clamp(1.875rem, 3.4vw, 2.5rem);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: 1.12;
 }
 
 .text-heading-3 {
-  font-family: var(--font-sans); /* Same as body */
-  font-size: 1.5rem; /* 24px */
-  font-weight: var(--font-weight-semibold); /* 600 */
-  letter-spacing: var(--letter-spacing-tight); /* -0.025em */
-  line-height: 2rem; /* 32px - heading-3: 24/32 */
+  font-family: var(--font-display), georgia, serif;
+  font-size: clamp(1.375rem, 2vw, 1.75rem);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-normal);
+  line-height: 1.2;
 }
 
 .text-heading-4 {
-  font-family: var(--font-sans); /* Same as body */
-  font-size: 1.25rem; /* 20px */
+  font-family: var(--font-sans);
+  font-size: 1.125rem; /* 18px */
   font-weight: var(--font-weight-semibold); /* 600 */
-  letter-spacing: var(--letter-spacing-tight); /* -0.025em */
-  line-height: 1.75rem; /* 28px - heading-4: 20/28 */
+  letter-spacing: var(--letter-spacing-normal);
+  line-height: 1.5rem; /* 24px */
 }
 
 .text-body-lg {
@@ -460,27 +465,24 @@ h6 {
 }
 
 .text-secondary {
-  /* Secondary text: #4B5563 (gray-600) - 7.0:1 contrast on white */
-  /* For small text (12px), ensure sufficient contrast */
+  /* Secondary text: #57534E (stone-600) - 7.4:1 contrast on white */
   color: var(--muted-foreground);
 }
 
 /* Ensure small secondary text has sufficient contrast */
 .text-caption-sm.text-secondary,
 .text-label-sm.text-secondary {
-  /* Use a darker shade for better contrast on small text */
-  color: #374151; /* gray-700 - 8.5:1 contrast on white, meets AAA for small text */
+  color: #44403c; /* stone-700 - 10.4:1 on white, AAA for small text */
 }
 
 /* Dark mode: ensure small secondary text has sufficient contrast */
 .dark .text-caption-sm.text-secondary,
 .dark .text-label-sm.text-secondary {
-  /* Use a much lighter shade for better contrast on dark backgrounds */
-  color: #f3f4f6; /* gray-100 - high contrast on dark backgrounds, meets WCAG AAA */
+  color: #f5f5f4; /* stone-100 - high contrast on dark backgrounds */
 }
 
 .text-muted {
-  /* Muted text: #6B7280 (gray-500) - for captions only */
+  /* Muted text: #78716C (stone-500) - for captions only */
   color: var(--muted-text);
 }
 
@@ -488,11 +490,25 @@ h6 {
   color: var(--primary);
 }
 
+/* Eyebrow / kicker label used above editorial headings.
+ * Lives in @layer components so a color utility (e.g. text-white/80 on an
+ * image overlay) can override the default muted color. */
+@layer components {
+  .text-eyebrow {
+    color: var(--muted-foreground);
+    font-family: var(--font-sans);
+    font-size: 0.75rem; /* 12px */
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-widest); /* 0.1em */
+    line-height: 1rem;
+    text-transform: uppercase;
+  }
+}
+
 /* Link utility (used explicitly via `className="link"`) */
 .link {
-  /* Accent: #2563EB (blue-600) - meets AA contrast on white background */
-  /* Underline ensures links are distinguishable without relying solely on color */
-  color: var(--primary);
+  /* Ink link with an underline so it is distinguishable beyond color alone */
+  color: var(--foreground);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
@@ -500,8 +516,7 @@ h6 {
 }
 
 .dark .link {
-  /* In dark mode, use lighter blue for better contrast */
-  color: #60a5fa; /* blue-400 - better contrast on dark backgrounds */
+  color: var(--foreground);
 }
 
 /* Container Max-Widths - For better readability */
@@ -612,6 +627,7 @@ h6 {
 .collection-grid-item {
   position: relative;
   display: block;
+  overflow: hidden;
   width: 100%;
   height: 100%;
   border-radius: var(--radius);
@@ -630,5 +646,25 @@ h6 {
   }
   &:nth-child(6n + 6) {
     grid-column: span 7;
+  }
+}
+
+/* Editorial media frame - consistent rounding + subtle zoom veil for imagery */
+.media-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background-color: var(--muted);
+}
+
+/* Respect users who prefer reduced motion (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }

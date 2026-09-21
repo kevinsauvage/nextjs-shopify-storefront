@@ -7,8 +7,11 @@ import type { ProductFieldsFragment } from '@/shopify/storefront';
 
 import HomeSection from './HomeSection';
 
+import { ArrowRight } from 'lucide-react';
+
 type ProductSectionProps = {
   title: string;
+  eyebrow?: string;
   products: ProductFieldsFragment[];
   viewAllLink?: string;
   viewAllLabel?: string;
@@ -17,6 +20,7 @@ type ProductSectionProps = {
 
 const ProductSection = ({
   title,
+  eyebrow,
   products,
   viewAllLink = config.routes.collection,
   viewAllLabel = 'View all products',
@@ -29,10 +33,14 @@ const ProductSection = ({
   return (
     <HomeSection
       title={title}
+      eyebrow={eyebrow}
       className={className}
       action={
-        <Button variant="ghost" size="sm" asChild>
-          <Link href={viewAllLink}>{viewAllLabel}</Link>
+        <Button variant="outline" size="sm" className="group" asChild>
+          <Link href={viewAllLink}>
+            {viewAllLabel}
+            <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+          </Link>
         </Button>
       }
     >

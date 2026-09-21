@@ -6,7 +6,7 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive active:scale-[0.98] touch-manipulation",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive active:scale-[0.98] touch-manipulation",
   {
     defaultVariants: {
       size: 'default',
@@ -16,21 +16,20 @@ const buttonVariants = cva(
       size: {
         default: 'min-h-11 h-11 px-4 py-2 has-[>svg]:px-3',
         icon: 'min-h-11 min-w-11 size-11',
-        lg: 'min-h-12 h-12 rounded-md px-6 has-[>svg]:px-4',
-        sm: 'min-h-11 h-11 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5',
+        lg: 'min-h-12 h-12 rounded-lg px-6 text-base has-[>svg]:px-4',
+        sm: 'min-h-11 h-11 rounded-lg gap-1.5 px-3 has-[>svg]:px-2.5',
       },
       variant: {
-        default:
-          'bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 hover:shadow-sm active:bg-primary/95 active:shadow-xs dark:bg-blue-600 dark:hover:bg-blue-700',
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/95',
         destructive:
-          'bg-destructive text-white shadow-xs hover:bg-destructive/90 hover:shadow-sm active:bg-destructive/95 active:shadow-xs focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
+          'bg-destructive text-white hover:bg-destructive/90 active:bg-destructive/95 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         ghost:
           'hover:bg-accent hover:text-accent-foreground active:bg-accent/80 dark:hover:bg-accent/50 dark:active:bg-accent/40',
-        link: 'text-accent underline-offset-4 hover:underline hover:opacity-90 focus-visible:ring-ring/50 focus-visible:ring-[3px]',
+        link: 'text-foreground underline-offset-4 hover:underline focus-visible:ring-ring/50 focus-visible:ring-2',
         outline:
-          'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground hover:shadow-sm active:bg-accent/80 active:shadow-xs dark:bg-input/30 dark:border-input dark:hover:bg-input/50 dark:active:bg-input/40',
+          'border border-border bg-background hover:bg-accent hover:text-accent-foreground active:bg-accent/80 dark:bg-input/30 dark:border-input dark:hover:bg-input/50 dark:active:bg-input/40',
         secondary:
-          'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80 hover:shadow-sm active:bg-secondary/70 active:shadow-xs',
+          'bg-secondary text-secondary-foreground hover:bg-secondary/70 active:bg-secondary/60',
       },
     },
   },

@@ -5,6 +5,7 @@ import { cn } from '@/utils/cn';
 
 type HomeSectionProps = {
   title: string;
+  eyebrow?: string;
   children: ReactNode;
   className?: string;
   titleClassName?: string;
@@ -13,15 +14,19 @@ type HomeSectionProps = {
 
 const HomeSection = ({
   title,
+  eyebrow,
   children,
   className,
   titleClassName,
   action,
 }: HomeSectionProps) => {
   return (
-    <section className={cn('py-8 md:py-12', className)}>
-      <div className="flex items-center justify-between gap-4 mb-6 md:mb-8">
-        <SectionTitle className={titleClassName}>{title}</SectionTitle>
+    <section className={cn('py-10 md:py-16', className)}>
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4 md:mb-10">
+        <div>
+          {eyebrow && <span className="text-eyebrow mb-3 block">{eyebrow}</span>}
+          <SectionTitle className={titleClassName}>{title}</SectionTitle>
+        </div>
         {action && <div className="shrink-0">{action}</div>}
       </div>
       {children}
@@ -30,4 +35,3 @@ const HomeSection = ({
 };
 
 export default HomeSection;
-

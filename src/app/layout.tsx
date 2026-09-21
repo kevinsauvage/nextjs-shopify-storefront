@@ -1,4 +1,4 @@
-import { Inter } from 'next/font/google';
+import { Inter, Playfair_Display } from 'next/font/google';
 
 import CookieBanner from '@/components/CookieBanner';
 import Footer from '@/components/Footer';
@@ -23,6 +23,14 @@ const inter = Inter({
   weight: ['400', '500', '600', '700'], // Body: 400-500, Headings: 600-700
 });
 
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+  preload: true,
+  weight: ['400', '500', '600', '700'], // Editorial display serif
+});
+
 const handleInitialCart = async () => {
   const cartId = await CartService.getCartId();
   return cartId ? CartService.getCart(cartId) : null;
@@ -39,7 +47,7 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <html
       lang="en"
-      className={`${inter.variable} font-sans scroll-smooth antialiased`}
+      className={`${inter.variable} ${playfair.variable} font-sans scroll-smooth antialiased`}
       suppressHydrationWarning
       data-scroll-behavior="smooth"
     >
@@ -59,7 +67,9 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
           <CartProvider initialCart={initialCart}>
             <UserProvider isLoggedIn={isLoggedIn}>
               <Header headerMenu={headerMenu?.menu || null} isLoggedIn={isLoggedIn} />
-              <main className="min-h-[calc(100vh-76px)]">{children}</main>
+              <main className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)]">
+                {children}
+              </main>
               <Toaster richColors />
               <Footer menuItems={footerMenu?.menu?.items} />
             </UserProvider>

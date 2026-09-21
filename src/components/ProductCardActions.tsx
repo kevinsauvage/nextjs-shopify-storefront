@@ -34,14 +34,14 @@ const ProductCardActions = ({ product, productId }: ProductCardActionsProps) => 
   };
 
   return (
-    <div className="absolute top-2 right-2 z-20 flex flex-col gap-2.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+    <div className="absolute right-3 top-3 z-20 flex flex-col gap-2.5 opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100">
       <Button
         variant="ghost"
         aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         disabled={loading}
-        className={`flex min-h-11 min-w-11 items-center justify-center rounded-full border border-border bg-background/95 backdrop-blur-sm text-secondary transition-all duration-200 hover:bg-muted hover:scale-110 shadow-md ${
+        className={`flex min-h-11 min-w-11 items-center justify-center rounded-full border border-border/60 bg-background/90 text-secondary shadow-sm backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-background hover:text-foreground ${
           isWishlisted ? 'text-destructive' : ''
-        } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        } ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
         type="button"
         onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
           event.stopPropagation();
