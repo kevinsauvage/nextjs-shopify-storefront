@@ -26,7 +26,8 @@ const ContactForm = () => {
     const email = formData.get('email') as string;
     const name = formData.get('name') as string;
     const message = formData.get('message') as string;
-    return contactAction({ email, message, name });
+    const website = formData.get('website') as string;
+    return contactAction({ email, message, name, website: website || undefined });
   };
 
   const [states, action, isPending] = useActionState<
@@ -97,6 +98,17 @@ const ContactForm = () => {
           aria-describedby={states.message?.at(-1) ? 'message-error' : undefined}
         />
         <FormFieldError error={states.message} fieldId="message" />
+      </div>
+      <div className="hidden" aria-hidden="true">
+        <Label htmlFor="website">Website</Label>
+        <Input
+          id="website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          disabled={isPending}
+        />
       </div>
       <SubmitButton />
     </form>

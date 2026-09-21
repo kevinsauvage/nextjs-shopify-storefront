@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import siteMetadata from '@/data/siteMetadata';
 import type { GetMenuByHandleQuery } from '@/shopify/storefront';
+import { normalizeMenuHref } from '@/utils/url';
 
 type MenuItem = NonNullable<GetMenuByHandleQuery['menu']>['items'][number];
 
@@ -27,7 +28,7 @@ const Footer = ({ menuItems }: FooterProps) => {
                     <li className="mb-1" key={element.id}>
                       {typeof element?.url === 'string' && (
                         <Link
-                          href={new URL(element?.url)?.pathname}
+                          href={normalizeMenuHref(element?.url)}
                           className="text-body-sm text-secondary hover:text-primary transition-colors"
                         >
                           {element?.title}

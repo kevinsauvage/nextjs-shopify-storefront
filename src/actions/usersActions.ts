@@ -1,11 +1,8 @@
 'use server';
 
-import config from '@/config';
 import { UserService } from '@/services/user.service';
 import type { FormActionResult } from '@/types/formActions';
 import { zodErrorsToFormActionResult } from '@/utils/form-actions';
-
-import { delCookieAction } from './cookiesActions';
 
 import { z } from 'zod';
 
@@ -58,10 +55,3 @@ export async function updateUserAction(
     success: serviceResult.success || 'User updated successfully',
   };
 }
-
-export const logoutAction = async () => {
-  await delCookieAction(config.cookies.shopifyToken);
-  return {
-    success: 'Logged out successfully',
-  };
-};

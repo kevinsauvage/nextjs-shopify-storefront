@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import config from '@/config';
 import { DEFAULTS } from '@/config/constants';
 import type {
   OrderFieldsFragment,
@@ -145,7 +146,6 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                       if (!item) return null;
                       const product = item.variant?.product;
                       const productHandle = product?.handle;
-                      const collectionHandle = product?.collections?.nodes?.[0]?.handle;
 
                       return (
                         <div
@@ -163,9 +163,9 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                               </div>
                             )}
                             <div className="flex-1 min-w-0">
-                              {productHandle && collectionHandle ? (
+                              {productHandle ? (
                                 <Link
-                                  href={`/collections/${collectionHandle}/products/${productHandle}`}
+                                  href={`${config.routes.collection}/products/${productHandle}`}
                                   className="font-medium hover:underline line-clamp-1"
                                 >
                                   {item.title}

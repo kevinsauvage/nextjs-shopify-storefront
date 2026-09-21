@@ -1,7 +1,9 @@
 import { setShopifyToken } from '@/lib/server/shopify-helpers';
+import { CartService } from '@/services/cart.service';
 import { storefrontSdk } from '@/shopify';
+import { adjustPaginationVariables } from '@/shopify/helpers';
 import type { CustomerAccessToken } from '@/shopify/storefront';
-import { api } from '@/utils/api-client';
+import { safeLogError } from '@/utils/api-responses';
 import { handleCustomerUserErrors, handleUserErrors } from '@/utils/form-actions';
 import { getUser } from '@/utils/users';
 
@@ -147,101 +149,41 @@ export class AuthService {
   }
 
   /**
-   * Update cart buyer identity after login/register
-   * Uses retry logic with exponential backoff
+   * Attach the current cart to the customer after login/register.
+   * Runs server-side against the Shopify SDK so the request context (and thus
+   * the cart cookie) is available; failures are logged but never block auth.
    */
   private static async updateCartBuyerIdentity(
     token: CustomerAccessToken['accessToken'],
     user: NonNullable<Awaited<ReturnType<typeof getUser>>>,
-    retries = 3,
   ) {
-    let lastError: unknown = null;
+    const cartId = await CartService.getCartId();
 
-    for (let attempt = 1; attempt <= retries; attempt++) {
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        const response = await api.patch('/api/cart/buyer-identity', {
+    if (!cartId) return;
+
+    try {
+      const response = await storefrontSdk('no-store').cartBuyerIdentityUpdate({
+        buyerIdentity: {
           customerAccessToken: token,
-          user: {
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-          },
-        });
+          email: user.email,
+          phone: user.phone,
+        },
+        cartId,
+        ...adjustPaginationVariables({ first: 100 }),
+      });
 
-        if (this.isSuccessResponse(response)) {
-          return;
-        }
+      const { cart, userErrors } = response?.cartBuyerIdentityUpdate || {};
 
-        lastError = new Error(this.extractErrorMessage(response));
-        this.handleFailedAttempt(attempt, retries, lastError, response);
-
-        if (attempt === retries) {
-          return;
-        }
-      } catch (error) {
-        lastError = error;
-        this.handleFailedAttempt(attempt, retries, error);
-
-        if (attempt === retries) {
-          return;
-        }
+      if (userErrors && userErrors.length > 0) {
+        safeLogError('AuthService.updateCartBuyerIdentity - user errors', userErrors);
+        return;
       }
 
-      if (attempt < retries) {
-        // eslint-disable-next-line no-await-in-loop
-        await this.waitForBackoff(attempt - 1);
+      if (cart) {
+        CartService.revalidate();
       }
-    }
-  }
-
-  private static isSuccessResponse(response: unknown): response is { data: unknown } {
-    return (
-      response !== null &&
-      response !== undefined &&
-      typeof response === 'object' &&
-      'data' in response
-    );
-  }
-
-  private static extractErrorMessage(response: unknown): string {
-    if (
-      response &&
-      typeof response === 'object' &&
-      'error' in response &&
-      typeof (response as { error: unknown }).error === 'string'
-    ) {
-      return (response as { error: string }).error;
-    }
-    return 'Unexpected response format: missing data property';
-  }
-
-  private static async waitForBackoff(attempt: number): Promise<void> {
-    const delay = Math.min(100 * Math.pow(2, attempt - 1), 1000);
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, delay);
-    });
-  }
-
-  private static handleFailedAttempt(
-    attempt: number,
-    retries: number,
-    error: unknown,
-    response?: unknown,
-  ): void {
-    const isLastAttempt = attempt === retries;
-    const errorMessage = error instanceof Error ? error.message : String(error);
-
-    const context = isLastAttempt
-      ? `AuthService.updateCartBuyerIdentity - failed after ${retries} attempts`
-      : `AuthService.updateCartBuyerIdentity - attempt ${attempt}/${retries} failed`;
-
-    // Only log in development or if it's the last attempt
-    if (isLastAttempt || process.env.NODE_ENV === 'development') {
-       
-      console.warn(context, response ? { error: errorMessage, response } : error);
+    } catch (error) {
+      safeLogError('AuthService.updateCartBuyerIdentity', error);
     }
   }
 }

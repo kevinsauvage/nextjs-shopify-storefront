@@ -15,6 +15,7 @@ import {
 import config from '@/config/index';
 import type { GetMenuByHandleQuery, MenuItem } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
+import { normalizeMenuHref } from '@/utils/url';
 
 import {
   ChevronDown,
@@ -82,18 +83,14 @@ const HamburgerMenu = ({
             level === 0 ? 'font-medium' : '',
             'hover:bg-muted hover:text-foreground',
             isExpanded ? 'bg-muted text-foreground' : '',
-            pathname === new URL(typeof item.url === 'string' ? item.url : '').pathname
-              ? 'border'
-              : '',
+            pathname === normalizeMenuHref(item.url) ? 'border' : '',
           )}
           style={{ paddingLeft: `${level * 12 + 16}px` }}
           onClick={() => {
             if (hasChildren) {
               toggleMenu(item.id);
             } else if (typeof item.url === 'string') {
-              const path = new URL(item.url).pathname;
-              const parameters = new URL(item.url).searchParams;
-              router.push(`${path}?${parameters.toString()}`);
+              router.push(normalizeMenuHref(item.url));
               setOpen(false);
             }
           }}

@@ -1,7 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import { setDelegateTokenAction } from './actions/delegateTokenActions';
 import { DEFAULTS } from './config/constants';
 import { getStandardCookieOptions } from './utils/cookie-security';
 import globalConfig from './config';
@@ -18,8 +17,6 @@ async function proxy(request: NextRequest) {
   response.cookies.set(globalConfig.cookies.userIp, userIp, cookieOptions);
   response.cookies.set(globalConfig.cookies.url, url, cookieOptions);
   response.cookies.set(globalConfig.cookies.searchParams, searchParams.toString(), cookieOptions);
-
-  await setDelegateTokenAction();
 
   const cookieShopify = cookies.get(globalConfig.cookies.shopifyToken);
 

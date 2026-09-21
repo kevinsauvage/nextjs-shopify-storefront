@@ -1,12 +1,22 @@
 'use server';
 
+import { headers } from 'next/headers';
+
 import type { FormActionResult } from '@/types/formActions';
+import { safeLogError } from '@/utils/api-responses';
 import { zodErrorsToFormActionResult } from '@/utils/form-actions';
 
 import nodemailer from 'nodemailer';
 import { z } from 'zod';
 
-const { EMAIL_ADDRESS, EMAIL_PASSWORD } = process.env;
+const RATE_LIMIT = {
+  max: 5,
+  windowMs: 10 * 60 * 1000, // 10 minutes
+} as const;
+
+// Best-effort in-memory rate limit. On serverless this is per-instance, but it
+// still removes the trivial "one request per email" spam vector.
+const attempts = new Map<string, number[]>();
 
 const contactSchema = z.object({
   email: z.string().email(),
@@ -26,6 +36,8 @@ const contactSchema = z.object({
     .max(255, {
       message: 'Name must be at most 255 characters long',
     }),
+  // Honeypot: real visitors never fill this field.
+  website: z.string().nullish(),
 });
 
 type ContactInput = z.infer<typeof contactSchema>;
@@ -34,6 +46,29 @@ type ContactFieldErrors = {
   email?: string | string[];
   name?: string | string[];
   message?: string | string[];
+};
+
+const getClientIp = async (): Promise<string> => {
+  const headerStore = await headers();
+  return headerStore.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+};
+
+const isRateLimited = (key: string): boolean => {
+  if (attempts.size > 10_000) {
+    attempts.clear();
+  }
+
+  const now = Date.now();
+  const recent = (attempts.get(key) || []).filter((time) => now - time < RATE_LIMIT.windowMs);
+
+  if (recent.length >= RATE_LIMIT.max) {
+    attempts.set(key, recent);
+    return true;
+  }
+
+  recent.push(now);
+  attempts.set(key, recent);
+  return false;
 };
 
 export const contactAction = async (
@@ -45,28 +80,44 @@ export const contactAction = async (
     return { ...zodErrorsToFormActionResult(formData.error), ...fieldErrors };
   }
 
-  const { name, email, message } = formData.data;
+  const { name, email, message, website } = formData.data;
+
+  // Silently accept honeypot submissions so bots do not learn they were caught.
+  if (website) {
+    return { success: 'Email sent successfully' };
+  }
+
+  const ip = await getClientIp();
+  if (isRateLimited(ip)) {
+    return { error: 'Too many messages sent. Please try again later.' };
+  }
+
+  const { EMAIL_ADDRESS, EMAIL_PASSWORD, NEXT_PUBLIC_SITE_NAME, NEXT_PUBLIC_SITE_EMAIL, CONTACT_EMAIL } =
+    process.env;
+  const recipient = CONTACT_EMAIL || NEXT_PUBLIC_SITE_EMAIL || EMAIL_ADDRESS;
+
+  if (!EMAIL_ADDRESS || !EMAIL_PASSWORD || !recipient) {
+    safeLogError('contactAction', new Error('Contact email is not configured'));
+    return { error: 'The contact form is temporarily unavailable. Please try again later.' };
+  }
 
   const transporter = nodemailer.createTransport({
     auth: { pass: EMAIL_PASSWORD, user: EMAIL_ADDRESS },
     service: 'gmail',
   });
 
-  const mailOptions = {
-    from: { address: email, name },
-    subject: 'Request ECommerce _ {name shop}',
-    text: message,
-    to: 'kevinsauvage@outlook.com',
-  };
-
   try {
-    await transporter.sendMail(mailOptions);
-    return {
-      success: 'Email sent successfully',
-    };
-  } catch {
-    return {
-      error: 'An error occurred while sending the email',
-    };
+    await transporter.sendMail({
+      from: { address: EMAIL_ADDRESS, name: NEXT_PUBLIC_SITE_NAME || 'Website' },
+      replyTo: { address: email, name },
+      subject: `New contact message from ${name}`,
+      text: `From: ${name} <${email}>\n\n${message}`,
+      to: recipient,
+    });
+
+    return { success: 'Email sent successfully' };
+  } catch (error) {
+    safeLogError('contactAction', error);
+    return { error: 'An error occurred while sending the email' };
   }
 };

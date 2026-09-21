@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import type { GetMenuByHandleQuery } from '@/shopify/storefront';
+import { normalizeMenuHref } from '@/utils/url';
 
 const CollectionNav = ({
   items,
@@ -36,10 +37,7 @@ const CollectionNav = ({
                       asChild
                     >
                       <Link
-                        href={
-                          new URL(menuItem?.url).pathname +
-                          new URL(menuItem?.url).searchParams.toString()
-                        }
+                        href={normalizeMenuHref(menuItem?.url)}
                       >
                         {menuItem?.title}
                       </Link>

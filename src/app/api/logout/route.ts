@@ -1,6 +1,6 @@
+import { cookies } from 'next/headers';
 import { type NextRequest } from 'next/server';
 
-import { delCookieAction } from '@/actions/cookiesActions';
 import config from '@/config';
 import { clearShopifyToken, getShopifyToken } from '@/lib/server/shopify-helpers';
 import { storefrontSdk } from '@/shopify';
@@ -22,7 +22,9 @@ export async function POST(_request: NextRequest) {
     }
 
     await clearShopifyToken();
-    await delCookieAction(config.cookies.delegateToken);
+
+    const cookieStore = await cookies();
+    cookieStore.delete(config.cookies.delegateToken);
 
     return createSuccessResponse({ success: 'Logged out successfully' });
   } catch (error) {
