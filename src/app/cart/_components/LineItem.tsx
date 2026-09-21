@@ -100,7 +100,7 @@ const LineItem: React.FC<{
         <div className="flex items-center gap-4 sm:flex-col sm:items-end sm:gap-3">
           <QuantityUpdatedContainer
             originalQuantity={node.quantity}
-            quantityAvailable={node.merchandise.quantityAvailable ?? 0}
+            quantityAvailable={node.merchandise.quantityAvailable}
             id={node.id}
             disabled={finalPrice <= 0}
           />

@@ -10,7 +10,7 @@ const QuantityUpdatedContainer = ({
   disabled = false,
 }: {
   originalQuantity: number;
-  quantityAvailable: number;
+  quantityAvailable?: number | null;
   id: string;
   disabled?: boolean;
 }) => {

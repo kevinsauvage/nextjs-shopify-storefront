@@ -2,34 +2,55 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 import { DEFAULTS } from './config/constants';
-import { getStandardCookieOptions } from './utils/cookie-security';
+import { renewCustomerToken, shouldRenewToken } from './lib/token-renewal';
+import { getSecureCookieOptions, getStandardCookieOptions } from './utils/cookie-security';
 import globalConfig from './config';
 
 async function proxy(request: NextRequest) {
   const { nextUrl, cookies, headers, url } = request;
   const { searchParams, pathname } = nextUrl;
 
-  const response = NextResponse.next();
-
   const userIp = headers.get('x-forwarded-for')?.split(',')[0] || DEFAULTS.ip;
+
+  const cookieShopify = cookies.get(globalConfig.cookies.shopifyToken);
+  const tokenExpiresAt = cookies.get(globalConfig.cookies.shopifyTokenExpire)?.value;
+
+  // Renew here rather than during render: `cookies().set()` is only allowed in
+  // middleware, Server Actions and Route Handlers.
+  const renewedToken =
+    cookieShopify?.value && shouldRenewToken(tokenExpiresAt)
+      ? await renewCustomerToken(cookieShopify.value)
+      : null;
+
+  let response: NextResponse;
+
+  if (!cookieShopify && pathname.startsWith(globalConfig.routes.account)) {
+    response = NextResponse.redirect(new URL(globalConfig.routes.login, url));
+  } else if (
+    cookieShopify &&
+    (pathname.startsWith(globalConfig.routes.login) ||
+      pathname.startsWith(globalConfig.routes.register))
+  ) {
+    response = NextResponse.redirect(new URL(globalConfig.routes.account, url));
+  } else {
+    response = NextResponse.next();
+  }
 
   const cookieOptions = getStandardCookieOptions({ httpOnly: false });
   response.cookies.set(globalConfig.cookies.userIp, userIp, cookieOptions);
   response.cookies.set(globalConfig.cookies.url, url, cookieOptions);
   response.cookies.set(globalConfig.cookies.searchParams, searchParams.toString(), cookieOptions);
 
-  const cookieShopify = cookies.get(globalConfig.cookies.shopifyToken);
+  if (renewedToken) {
+    const expiresAt = new Date(renewedToken.expiresAt);
+    const tokenOptions = getSecureCookieOptions({ expires: expiresAt });
 
-  if (!cookieShopify && pathname.startsWith(globalConfig.routes.account)) {
-    return NextResponse.redirect(new URL(globalConfig.routes.login, url));
-  }
-
-  if (
-    cookieShopify &&
-    (pathname.startsWith(globalConfig.routes.login) ||
-      pathname.startsWith(globalConfig.routes.register))
-  ) {
-    return NextResponse.redirect(new URL(globalConfig.routes.account, url));
+    response.cookies.set(globalConfig.cookies.shopifyToken, renewedToken.accessToken, tokenOptions);
+    response.cookies.set(
+      globalConfig.cookies.shopifyTokenExpire,
+      expiresAt.toISOString(),
+      tokenOptions,
+    );
   }
 
   return response;

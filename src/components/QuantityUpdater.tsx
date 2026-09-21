@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react';
 
 import SpinnerLoader from '@/components/SpinnerLoader';
+import { getQuantityCap } from '@/utils/inventory';
 
 import { Button } from './ui/button';
 
@@ -16,7 +17,7 @@ const QuantityUpdater = ({
   disabled,
 }: {
   originalQuantity: number;
-  quantityAvailable: number;
+  quantityAvailable?: number | null;
   productId: string;
   disabled?: boolean;
   onChange:
@@ -25,6 +26,7 @@ const QuantityUpdater = ({
 }) => {
   const [quantity, setQuantity] = useState(originalQuantity);
   const [loading, setLoading] = useState(false);
+  const quantityCap = getQuantityCap(quantityAvailable);
 
   const removeOne = useCallback(async () => {
     if (quantity <= 1) return;
@@ -39,7 +41,7 @@ const QuantityUpdater = ({
   }, [onChange, productId, quantity]);
 
   const addOne = useCallback(async () => {
-    if (quantity >= quantityAvailable) return;
+    if (quantityCap !== undefined && quantity >= quantityCap) return;
     const newQuantity = quantity + 1;
     setQuantity(newQuantity);
     setLoading(true);
@@ -48,7 +50,7 @@ const QuantityUpdater = ({
     } finally {
       setLoading(false);
     }
-  }, [onChange, productId, quantity, quantityAvailable]);
+  }, [onChange, productId, quantity, quantityCap]);
 
   return (
     <div className="flex items-center space-x-2">
@@ -74,7 +76,7 @@ const QuantityUpdater = ({
         onClick={() => {
           addOne();
         }}
-        disabled={loading || disabled || originalQuantity >= quantityAvailable}
+        disabled={loading || disabled || (quantityCap !== undefined && originalQuantity >= quantityCap)}
         aria-label="Increase quantity"
       >
         {loading ? <SpinnerLoader size="sm" /> : <Plus className="h-3 w-3" />}

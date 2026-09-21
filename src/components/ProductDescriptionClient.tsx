@@ -7,6 +7,7 @@ import useUserContext from '@/contexts/UserContext/useUserContext';
 import useProductSelection from '@/hooks/useProductSelection';
 import type { GetProductByHandleQuery } from '@/shopify/storefront';
 import { formatPrice } from '@/utils/format';
+import { getQuantityCap } from '@/utils/inventory';
 
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -80,6 +81,10 @@ const ProductDescriptionClient = ({
     weight,
     weightUnit,
   } = selectedVariantData || defaultVariant;
+
+  // Inventory is often untracked (quantityAvailable === null), which means
+  // "unlimited" rather than "out of stock".
+  const quantityCap = getQuantityCap(quantityAvailable);
 
   const hasDiscount =
     compareAtPrice &&
@@ -223,7 +228,7 @@ const ProductDescriptionClient = ({
               </div>
               <QuantityUpdater
                 originalQuantity={quantity || 1}
-                quantityAvailable={quantityAvailable ?? 0}
+                quantityAvailable={quantityAvailable}
                 productId={productId}
                 disabled={!availableForSale}
                 onChange={(_id, q) => {
@@ -239,7 +244,7 @@ const ProductDescriptionClient = ({
         <Button
           className="flex-1 gap-2"
           size="lg"
-          disabled={!availableForSale || (quantityAvailable ?? 0) < quantity}
+          disabled={!availableForSale || (quantityCap !== undefined && quantity > quantityCap)}
           onClick={handleAddToCart}
         >
           <ShoppingBag className="h-5 w-5" color="currentColor" />

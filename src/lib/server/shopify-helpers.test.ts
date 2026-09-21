@@ -1,23 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { cookieGet, cookieSet, cookieDelete, renew } = vi.hoisted(() => ({
+const { cookieGet, cookieSet, cookieDelete } = vi.hoisted(() => ({
   cookieDelete: vi.fn(),
   cookieGet: vi.fn(),
   cookieSet: vi.fn(),
-  renew: vi.fn(),
 }));
 
 vi.mock('next/headers', () => ({
   cookies: async () => ({ delete: cookieDelete, get: cookieGet, set: cookieSet }),
 }));
 
-vi.mock('@/shopify', () => ({
-  storefrontSdk: () => ({ customerAccessTokenRenew: renew }),
-}));
-
-vi.mock('@/utils/api-responses', () => ({ safeLogError: vi.fn() }));
-
 import config from '@/config';
+import { shouldRenewToken } from '@/lib/token-renewal';
 
 import { getShopifyToken, hasShopifySession } from './shopify-helpers';
 
@@ -36,7 +30,6 @@ describe('shopify-helpers', () => {
     cookieGet.mockReset();
     cookieSet.mockReset();
     cookieDelete.mockReset();
-    renew.mockReset();
   });
 
   it('returns undefined when there is no token cookie', async () => {
@@ -44,27 +37,19 @@ describe('shopify-helpers', () => {
     await expect(getShopifyToken()).resolves.toBeUndefined();
   });
 
-  it('returns the stored token when it is not expiring', async () => {
+  it('returns the stored token without mutating cookies', async () => {
     mockTokens('token-1', new Date(Date.now() + HOUR_MS).toISOString());
 
     await expect(getShopifyToken()).resolves.toBe('token-1');
-    expect(renew).not.toHaveBeenCalled();
+    expect(cookieSet).not.toHaveBeenCalled();
+    expect(cookieDelete).not.toHaveBeenCalled();
   });
 
-  it('renews and returns a fresh token when the stored one is expiring', async () => {
+  it('returns the stored token even when it is expiring (renewal moved to proxy)', async () => {
     mockTokens('token-1', new Date(Date.now() - HOUR_MS).toISOString());
-    renew.mockResolvedValue({
-      customerAccessTokenRenew: {
-        customerAccessToken: {
-          accessToken: 'token-2',
-          expiresAt: new Date(Date.now() + HOUR_MS).toISOString(),
-        },
-        userErrors: [],
-      },
-    });
 
-    await expect(getShopifyToken()).resolves.toBe('token-2');
-    expect(renew).toHaveBeenCalledWith({ customerAccessToken: 'token-1' });
+    await expect(getShopifyToken()).resolves.toBe('token-1');
+    expect(cookieSet).not.toHaveBeenCalled();
   });
 
   it('reports session presence from the token cookie', async () => {
@@ -73,5 +58,19 @@ describe('shopify-helpers', () => {
 
     cookieGet.mockReturnValue(undefined);
     await expect(hasShopifySession()).resolves.toBe(false);
+  });
+});
+
+describe('shouldRenewToken', () => {
+  it('does not renew a missing or invalid expiry', () => {
+    expect(shouldRenewToken(undefined)).toBe(false);
+    expect(shouldRenewToken(null)).toBe(false);
+    expect(shouldRenewToken('not-a-date')).toBe(false);
+  });
+
+  it('renews only when the token is close to expiring', () => {
+    expect(shouldRenewToken(new Date(Date.now() + HOUR_MS).toISOString())).toBe(false);
+    expect(shouldRenewToken(new Date(Date.now() + 60_000).toISOString())).toBe(true);
+    expect(shouldRenewToken(new Date(Date.now() - HOUR_MS).toISOString())).toBe(true);
   });
 });

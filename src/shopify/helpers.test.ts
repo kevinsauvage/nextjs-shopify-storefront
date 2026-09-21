@@ -63,4 +63,11 @@ describe('parseFiltersQuery', () => {
   it('parses an array of filter strings and drops malformed entries', () => {
     expect(parseFiltersQuery(['size:{"size":"M"}', 'broken'])).toEqual([{ size: 'M' }]);
   });
+
+  it('does not throw on malformed user-supplied filters', () => {
+    expect(parseFiltersQuery('broken')).toEqual([]);
+    expect(parseFiltersQuery('price:{not-json}')).toEqual([]);
+    expect(parseFiltersQuery(['price:{not-json}', 'size:{"size":"M"}'])).toEqual([{ size: 'M' }]);
+    expect(parseFiltersQuery('')).toEqual([]);
+  });
 });

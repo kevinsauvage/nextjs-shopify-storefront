@@ -35,20 +35,28 @@ export const adjustPaginationVariables = ({
   return variables;
 };
 
+const parseFilterValue = (value: string | undefined): ProductFilter | undefined => {
+  if (!value) return undefined;
+
+  const [, jsonPart] = value.split(/:(.+)/);
+  if (!jsonPart) return undefined;
+
+  try {
+    const parsed = JSON.parse(jsonPart);
+    return parsed && typeof parsed === 'object' ? (parsed as ProductFilter) : undefined;
+  } catch {
+    // Ignore malformed user-supplied filters instead of crashing the page.
+    return undefined;
+  }
+};
+
 export const parseFiltersQuery = (filters: string | Array<string> | undefined): ProductFilter[] => {
   if (!filters) return [];
 
-  if (!Array.isArray(filters) && typeof filters === 'string') {
-    const [, jsonPart] = filters.split(/:(.+)/);
-    return [JSON.parse(jsonPart || '') as ProductFilter];
-  }
+  const values = Array.isArray(filters) ? filters : [filters];
 
-  return filters
-    .map((item): ProductFilter | undefined => {
-      const [, jsonPart] = item.split(/:(.+)/);
-      if (!jsonPart) return undefined;
-      return JSON.parse(jsonPart) as ProductFilter;
-    })
+  return values
+    .map(parseFilterValue)
     .filter((filter): filter is ProductFilter => filter !== undefined);
 };
 

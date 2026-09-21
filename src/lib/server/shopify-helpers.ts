@@ -1,9 +1,7 @@
 import { cookies } from 'next/headers';
 
 import config from '@/config';
-import { storefrontSdk } from '@/shopify';
 import type { CustomerAccessToken } from '@/shopify/storefront';
-import { safeLogError } from '@/utils/api-responses';
 import { getSecureCookieOptions } from '@/utils/cookie-security';
 
 /**
@@ -32,53 +30,16 @@ export const setShopifyToken = async (customerAccessToken: CustomerAccessToken):
   });
 };
 
-const isTokenExpiredOrExpiringSoon = (expiresAt: string): boolean => {
-  const expiryDate = new Date(expiresAt);
-  const now = new Date();
-  const fiveMinutesFromNow = new Date(now.getTime() + 5 * 60 * 1000);
-  return expiryDate <= fiveMinutesFromNow;
-};
-
-const renewTokenIfNeeded = async (token: string): Promise<CustomerAccessToken | null> => {
-  try {
-    const response = await storefrontSdk('no-store').customerAccessTokenRenew({
-      customerAccessToken: token,
-    });
-
-    const { customerAccessToken, userErrors } = response?.customerAccessTokenRenew || {};
-
-    if (userErrors && userErrors.length > 0) {
-      safeLogError('renewTokenIfNeeded - user errors', userErrors);
-      return null;
-    }
-
-    if (customerAccessToken) {
-      await setShopifyToken(customerAccessToken);
-      return customerAccessToken;
-    }
-
-    return null;
-  } catch (error) {
-    safeLogError('renewTokenIfNeeded', error);
-    return null;
-  }
-};
-
+/**
+ * Reads the stored customer access token. This is intentionally read-only:
+ * renewal happens in `src/proxy.ts`, because `cookies().set()` is not allowed
+ * while rendering server components.
+ */
 export const getShopifyToken = async (): Promise<
   CustomerAccessToken['accessToken'] | undefined
 > => {
   const cookieStore = await cookies();
-  const token = cookieStore.get(config.cookies.shopifyToken)?.value;
-  const expiresAt = cookieStore.get(config.cookies.shopifyTokenExpire)?.value;
-
-  if (!token) return undefined;
-
-  if (expiresAt && isTokenExpiredOrExpiringSoon(expiresAt)) {
-    const renewedToken = await renewTokenIfNeeded(token);
-    return renewedToken?.accessToken;
-  }
-
-  return token;
+  return cookieStore.get(config.cookies.shopifyToken)?.value;
 };
 
 export const clearShopifyToken = async (): Promise<void> => {
