@@ -42,10 +42,6 @@ jobs:
       - name: Run tests
         run: yarn test
 
-      - name: Run codegen
-        run: yarn codegen
-        env:
-          NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL: ${{ secrets.NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL }}
-          SHOPIFY_STORE_FRONT_ACCESS_TOKEN: ${{ secrets.SHOPIFY_STORE_FRONT_ACCESS_TOKEN }}
-          SHOPIFY_STORE_FRONT_ADMIN_TOKEN: ${{ secrets.SHOPIFY_STORE_FRONT_ADMIN_TOKEN }}
-          SHOPIFY_ADMIN_URL: ${{ secrets.SHOPIFY_ADMIN_URL }}
+      # Codegen is intentionally not run here: it introspects the live Shopify
+      # schema (which needs secrets) and the generated SDK is committed.
+      # Vercel regenerates it during `yarn build`.
