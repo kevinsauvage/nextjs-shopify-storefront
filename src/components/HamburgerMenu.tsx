@@ -32,10 +32,10 @@ import { v4 as uuid } from 'uuid';
 
 const HamburgerMenu = ({
   headerMenu,
-  shopifyToken,
+  isLoggedIn,
 }: {
   headerMenu: GetMenuByHandleQuery['menu'] | null | undefined;
-  shopifyToken: string | null;
+  isLoggedIn: boolean;
 }) => {
   const [open, setOpen] = useState(false);
   const [expandedMenus, setExpandedMenus] = useState<{ [key: string]: boolean }>({});
@@ -56,12 +56,12 @@ const HamburgerMenu = ({
     {
       icon: <User className="text-secondary group-hover:text-primary transition-colors" />,
       id: uuid(),
-      link: shopifyToken ? config.routes.account : config.routes.login,
-      text: shopifyToken ? 'Account' : 'Login',
+      link: isLoggedIn ? config.routes.account : config.routes.login,
+      text: isLoggedIn ? 'Account' : 'Login',
     },
     { icon: <Heart className="text-secondary group-hover:text-primary transition-colors" />, id: uuid(), link: config.routes.wishlist, text: 'Wishlist' },
     { icon: <ShoppingBag className="text-secondary group-hover:text-primary transition-colors" />, id: uuid(), link: config.routes.cart, text: 'Cart' },
-    shopifyToken && {
+    isLoggedIn && {
       icon: <LogOut className="text-secondary group-hover:text-primary transition-colors" />,
       id: uuid(),
       link: config.routes.logout,

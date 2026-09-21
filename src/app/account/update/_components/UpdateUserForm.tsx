@@ -9,10 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import useUserContext from '@/contexts/UserContext/useUserContext';
 import { userFeedback } from '@/data/userFeedback';
 import { useFormStatesEffect } from '@/hooks/useFormStatesEffect';
-import type { CustomerUserError } from '@/shopify/storefront';
+import type { CustomerUserError, GetCustomerQuery } from '@/shopify/storefront';
 
 const SubmitButton = () => {
   const status = useFormStatus();
@@ -23,9 +22,11 @@ const SubmitButton = () => {
   );
 };
 
-const UpdateUserForm = () => {
-  const { user } = useUserContext();
-
+const UpdateUserForm = ({
+  user,
+}: {
+  user: GetCustomerQuery['customer'] | null | undefined;
+}) => {
   const handleSubmit = async (_previousState: unknown, formData: FormData) => {
     if (!user) return { error: 'User not found' };
 

@@ -1,9 +1,6 @@
-'use client';
+import type { GetCustomerQuery } from '@/shopify/storefront';
 
-import useUserContext from '@/contexts/UserContext/useUserContext';
-
-const UserFullName = () => {
-  const { user } = useUserContext();
+const UserFullName = ({ user }: { user: GetCustomerQuery['customer'] | null | undefined }) => {
   const { firstName, lastName } = user || {};
 
   return (

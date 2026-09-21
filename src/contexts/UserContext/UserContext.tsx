@@ -1,37 +1,62 @@
 'use client';
 
-import { createContext, useCallback, useMemo } from 'react';
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import config from '@/config';
-import type { GetCustomerQuery, ProductFieldsFragment } from '@/shopify/storefront';
-import { addToWishlist, removeFromWishlist } from '@/utils/wishlist-client';
+import type { ProductFieldsFragment } from '@/shopify/storefront';
+import { addToWishlist, getWishlist, removeFromWishlist } from '@/utils/wishlist-client';
 
 import { toast } from 'sonner';
 
-export const UserContext = createContext({
-  handleSetWishlist: async (_isWishlisted: boolean, _product: ProductFieldsFragment) => {
+type UserContextValue = {
+  handleSetWishlist: (isWishlisted: boolean, product: ProductFieldsFragment) => Promise<void>;
+  isLoggedIn: boolean;
+  userWishlist: ProductFieldsFragment[];
+};
+
+export const UserContext = createContext<UserContextValue>({
+  handleSetWishlist: async () => {
     // noop
   },
-  user: undefined as GetCustomerQuery['customer'] | null,
-  userWishlist: [] as Array<ProductFieldsFragment>,
+  isLoggedIn: false,
+  userWishlist: [],
 });
 
 export const UserProvider = ({
   children,
-  user,
-  userWishlist = [],
+  isLoggedIn,
 }: {
   children: React.ReactNode;
-  user: GetCustomerQuery['customer'] | null;
-  userWishlist: Array<ProductFieldsFragment>;
+  isLoggedIn: boolean;
 }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const [userWishlist, setUserWishlist] = useState<ProductFieldsFragment[]>([]);
+
+  // Load the wishlist client-side so the root layout does not block every page
+  // render on a customer-specific Shopify request.
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    let cancelled = false;
+
+    getWishlist()
+      .then((items) => {
+        if (!cancelled) setUserWishlist(items);
+      })
+      .catch((error) => {
+        console.error('Failed to load wishlist:', error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoggedIn]);
 
   const handleSetWishlist = useCallback(
     async (isWishlisted: boolean, product: ProductFieldsFragment) => {
-      if (!user) {
+      if (!isLoggedIn) {
         toast.info('You need to login to add products to your wishlist');
         router.push(`${config.routes.login}?redirect=${pathname}`);
         return;
@@ -43,6 +68,7 @@ export const UserProvider = ({
           : await addToWishlist(product.id);
 
         if (result?.success && result.data) {
+          setUserWishlist(result.data);
           toast.success(result.message);
           router.refresh();
         } else {
@@ -53,12 +79,12 @@ export const UserProvider = ({
         toast.error(error instanceof Error ? error.message : 'Something went wrong');
       }
     },
-    [pathname, router, user],
+    [isLoggedIn, pathname, router],
   );
 
   const values = useMemo(
-    () => ({ handleSetWishlist, user, userWishlist }),
-    [user, userWishlist, handleSetWishlist],
+    () => ({ handleSetWishlist, isLoggedIn, userWishlist }),
+    [handleSetWishlist, isLoggedIn, userWishlist],
   );
 
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;

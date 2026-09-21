@@ -16,6 +16,14 @@ type WishlistResponse = {
  */
 
 /**
+ * Fetch the current wishlist (used to hydrate client-side wishlist state).
+ */
+export const getWishlist = async (): Promise<ProductFieldsFragment[]> => {
+  const response = await api.get<WishlistResponse>('/api/wishlist');
+  return response?.data ?? [];
+};
+
+/**
  * Add a product to wishlist by sending only the product ID
  */
 export const addToWishlist = async (productId: string): Promise<WishlistResponse> => {

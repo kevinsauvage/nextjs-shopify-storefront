@@ -3,21 +3,22 @@
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
-import type { GetMenuByHandleQuery } from '@/shopify/storefront';
 import { normalizeMenuHref } from '@/utils/url';
+
+export type CollectionNavItem = {
+  id: string;
+  title: string;
+  url?: string | null;
+};
 
 const CollectionNav = ({
   items,
   collectionSlug,
 }: {
-  items: GetMenuByHandleQuery['menu'] | null | undefined;
+  items: CollectionNavItem[] | null | undefined;
   collectionSlug: string;
 }) => {
-  const menuItems = (items?.items || []) as Array<{
-    id: string;
-    title: string;
-    url?: string | null;
-  }>;
+  const menuItems = items || [];
 
   return (
     <div className="container mx-auto">

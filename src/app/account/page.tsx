@@ -105,7 +105,7 @@ const Page = async () => {
           size={3}
           description={
             <>
-              Welcome <UserFullName />, your account dashboard provides access to all of your
+              Welcome <UserFullName user={user} />, your account dashboard provides access to all of your
               important account information and features.
             </>
           }

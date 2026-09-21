@@ -59,7 +59,7 @@ const Page = async () => {
           description="Update your account information and preferences."
         />
         <CardContent className="space-y-6">
-          <UpdateUserForm />
+          <UpdateUserForm user={user} />
         </CardContent>
       </Card>
 
