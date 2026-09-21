@@ -13,6 +13,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import config from '@/config/index';
+import useUserContext from '@/contexts/UserContext/useUserContext';
 import type { GetMenuByHandleQuery, MenuItem } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
 import { normalizeMenuHref } from '@/utils/url';
@@ -31,13 +32,12 @@ import {
 
 const HamburgerMenu = ({
   headerMenu,
-  isLoggedIn,
 }: {
   headerMenu: GetMenuByHandleQuery['menu'] | null | undefined;
-  isLoggedIn: boolean;
 }) => {
   const [open, setOpen] = useState(false);
   const [expandedMenus, setExpandedMenus] = useState<{ [key: string]: boolean }>({});
+  const { isLoggedIn } = useUserContext();
   const router = useRouter();
   const pathname = usePathname();
 

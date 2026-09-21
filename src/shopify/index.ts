@@ -9,6 +9,18 @@ import { GraphQLClient } from 'graphql-request';
 
 type GraphQLClientOptions = ConstructorParameters<typeof GraphQLClient>[1];
 
+/**
+ * Storefront SDK access mode.
+ *
+ * - `public`: catalog reads. No request context (cookies, buyer IP, delegate
+ *   token) is attached, so routes that only use these operations can be
+ *   statically rendered and cached.
+ * - `private`: customer-specific operations. Attaches the buyer IP + delegate
+ *   token and bypasses the cache. Only safe from Server Actions, Route Handlers
+ *   or dynamic routes, because it reads cookies.
+ */
+type StorefrontMode = 'public' | 'private';
+
 const ACCESS_TOKEN = process.env.SHOPIFY_STORE_FRONT_ACCESS_TOKEN;
 const SHOPIFY_URL = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL;
 
@@ -54,29 +66,56 @@ const createStorefrontClient = (cacheOption: 'default' | 'no-store' = 'default')
 
 const storefrontClient = createStorefrontClient('default');
 
-const defaultWrapper: SdkFunctionWrapper = async (
-  action,
-  _operationName,
-  _operationType,
-  _variables: Record<string, unknown>,
+const logRequestError = (
+  operationName: string,
+  operationType: string | undefined,
+  variables: Record<string, unknown> | undefined,
+  error: unknown,
 ) => {
-  const extraHeader = await buildExtraHeaders({});
+  safeLogError(`GraphQL request - ${operationName}`, {
+    operationType,
+    variables,
+    error: error instanceof Error ? error.message : String(error),
+  });
+};
 
+/** Public catalog reads — context-free so they stay cacheable/static. */
+const publicWrapper: SdkFunctionWrapper = async (
+  action,
+  operationName,
+  operationType,
+  variables: Record<string, unknown>,
+) => {
   try {
-    return await action(extraHeader);
+    return await action({});
   } catch (error) {
-    safeLogError(`GraphQL request - ${_operationName}`, {
-      operationType: _operationType,
-      variables: _variables,
-      error: error instanceof Error ? error.message : String(error),
-    });
+    logRequestError(operationName, operationType, variables, error);
     throw error;
   }
 };
 
-export const storefrontSdk = (cacheOption: 'default' | 'no-store' = 'default') => {
-  const client = cacheOption === 'no-store' ? createStorefrontClient('no-store') : storefrontClient;
-  return getStorefrontSdk(client, defaultWrapper);
+/** Customer-specific reads/mutations — needs the request context. */
+const privateWrapper: SdkFunctionWrapper = async (
+  action,
+  operationName,
+  operationType,
+  variables: Record<string, unknown>,
+) => {
+  const extraHeaders = await buildExtraHeaders({});
+
+  try {
+    return await action(extraHeaders);
+  } catch (error) {
+    logRequestError(operationName, operationType, variables, error);
+    throw error;
+  }
+};
+
+export const storefrontSdk = (mode: StorefrontMode = 'public') => {
+  const isPrivate = mode === 'private';
+  const client = isPrivate ? createStorefrontClient('no-store') : storefrontClient;
+
+  return getStorefrontSdk(client, isPrivate ? privateWrapper : publicWrapper);
 };
 
 export { adminSdk } from './admin-client';

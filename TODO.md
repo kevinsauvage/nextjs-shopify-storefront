@@ -10,26 +10,6 @@ complexity → performance → tests/docs.
 
 ## P1 — High
 
-### [ ] Make the catalog statically renderable (decouple request context from public reads)
-
-**Why:** The root layout reads cookies three ways — `hasShopifySession()`, `handleInitialCart()`, and every `storefrontSdk()` call (its wrapper always awaits `buildExtraHeaders()` → `cookies()` + delegate token). Because the layout touches cookies, **the entire app is server-rendered per request**; the `revalidate` exports on home/product/collection never produce ISR. This hurts TTFB/caching and masks a latent `useSearchParams`-without-`Suspense` build error on `/login`.
-
-**Where:** `src/app/layout.tsx`, `src/shopify/index.ts` (`defaultWrapper`), `src/shopify/helpers.ts` (`buildExtraHeaders`).
-
-**Change:** Only attach buyer/delegate headers for genuinely private operations (a separate `storefrontSdk('private')`), keep public catalog reads context-free, and move cart/session-dependent UI into client components hydrated from server actions/route handlers. Then wrap `useSearchParams` consumers in `<Suspense>` and verify home/product/collection are ISR/static.
-
-**Impact:** High
-
-### [x] Make the cart reliable: never silently replace it, create it server-side
-
-**Why:** `CartService.getCart` swallows every error and returns `null`; the layout then treats it as "no cart" and a new cart is created, **orphaning the existing cart and losing items** on any transient Shopify error. `CartProvider` also eagerly creates a cart client-side for every visitor (with a `cartMock` fallback), so a first-visit user can click Add-to-Cart before creation finishes and get "Cart not found".
-
-**Where:** `src/services/cart.service.ts` (`getCart`, `getOrCreateCart`), `src/contexts/CartContext/CartContext.tsx`, `src/app/layout.tsx`, `src/mocks/cart.ts`.
-
-**Change:** Distinguish "cart missing/invalid" (create) from "request failed" (surface/retry, keep existing cookie). Create the cart once server-side and pass it as `initialCart`; drop the mock-cart initial state and the client-side create effect.
-
-**Impact:** High
-
 ### [ ] Collapse duplicate product list + product detail implementations
 
 **Why:** `ProductsEdgeList` and `ProductsList` are the same component with different input shapes; `QuickBuyContent` and `ProductDescriptionClient` independently reimplement variant selection, add-to-cart, wishlist, badges and quantity UI — and have already diverged (the null-quantity bug exists in one path but not the other). Every product UX change must be made twice.

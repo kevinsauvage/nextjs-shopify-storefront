@@ -12,6 +12,23 @@ export type CartActionResult = {
   message?: string;
 };
 
+/**
+ * Read the current cart for client-side hydration. Returns `null` when there is
+ * no cart yet or Shopify is temporarily unavailable; it never creates a cart or
+ * clears the stored id.
+ */
+export async function getCartAction(): Promise<CartFieldsFragment | null> {
+  const cartId = await CartService.getCartId();
+
+  if (!cartId) return null;
+
+  try {
+    return await CartService.getCart(cartId);
+  } catch {
+    return null;
+  }
+}
+
 export async function addCartLinesAction(lines: CartLineInput[]): Promise<CartActionResult> {
   const cart = await CartService.addLines(lines);
   return { data: cart, message: 'Product added successfully' };

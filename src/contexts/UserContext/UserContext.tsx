@@ -3,6 +3,7 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
+import { getSessionAction } from '@/actions/sessionActions';
 import {
   addToWishlistAction,
   getWishlistAction,
@@ -27,16 +28,30 @@ export const UserContext = createContext<UserContextValue>({
   userWishlist: [],
 });
 
-export const UserProvider = ({
-  children,
-  isLoggedIn,
-}: {
-  children: React.ReactNode;
-  isLoggedIn: boolean;
-}) => {
+export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userWishlist, setUserWishlist] = useState<ProductFieldsFragment[]>([]);
+
+  // The session lives in an httpOnly cookie, so it is resolved client-side to
+  // keep the root layout (and the catalog) statically renderable. Re-checking on
+  // navigation keeps the header correct right after login/logout redirects.
+  useEffect(() => {
+    let cancelled = false;
+
+    getSessionAction()
+      .then((loggedIn) => {
+        if (!cancelled) setIsLoggedIn(loggedIn);
+      })
+      .catch((error) => {
+        console.error('Failed to resolve session:', error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
 
   // Load the wishlist client-side so the root layout does not block every page
   // render on a customer-specific Shopify request.
@@ -87,7 +102,12 @@ export const UserProvider = ({
   );
 
   const values = useMemo(
-    () => ({ handleSetWishlist, isLoggedIn, userWishlist }),
+    () => ({
+      handleSetWishlist,
+      isLoggedIn,
+      // Never expose a stale wishlist once the session ends.
+      userWishlist: isLoggedIn ? userWishlist : [],
+    }),
     [handleSetWishlist, isLoggedIn, userWishlist],
   );
 

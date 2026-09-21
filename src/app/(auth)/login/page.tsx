@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
@@ -37,7 +38,9 @@ const LoginPage = () => {
         </div>
       }
     >
-      <LoginForm />
+      <Suspense fallback={<div className="h-64" aria-hidden="true" />}>
+        <LoginForm />
+      </Suspense>
     </AuthShell>
   );
 };

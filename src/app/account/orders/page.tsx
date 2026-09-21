@@ -37,7 +37,7 @@ const Page = async ({
     redirect(config.routes.login);
   }
 
-  const response = await storefrontSdk('no-store').getCustomerOrders({
+  const response = await storefrontSdk('private').getCustomerOrders({
     customerAccessToken: shopifyToken,
     first: 5,
     ...adjustPaginationVariables({

@@ -10,6 +10,39 @@ import { storefrontSdk } from '@/shopify/index';
 
 export const revalidate = 3600;
 
+const STATIC_PARAMS_PAGE_SIZE = 250;
+
+/**
+ * Pre-render product pages so they are statically served and revalidated
+ * instead of server-rendered on every request. Products added later are still
+ * generated on demand and cached (dynamicParams defaults to true).
+ */
+export async function generateStaticParams(): Promise<Array<{ productSlug: string }>> {
+  const params: Array<{ productSlug: string }> = [];
+  let after: string | undefined;
+  let hasNextPage = true;
+
+  while (hasNextPage) {
+    // Sequential cursor pagination: each request depends on the previous cursor.
+    // eslint-disable-next-line no-await-in-loop
+    const { products } = await storefrontSdk().getProductsForSitemap({
+      after,
+      first: STATIC_PARAMS_PAGE_SIZE,
+    });
+
+    for (const edge of products.edges) {
+      if (edge.node.handle) {
+        params.push({ productSlug: edge.node.handle });
+      }
+    }
+
+    hasNextPage = products.pageInfo.hasNextPage && Boolean(products.pageInfo.endCursor);
+    after = products.pageInfo.endCursor ?? undefined;
+  }
+
+  return params;
+}
+
 type parametersType = {
   genre: string;
   collectionSlug: string;

@@ -9,9 +9,6 @@ import { Toaster } from '@/components/ui/sonner';
 import config from '@/config';
 import { CartProvider } from '@/contexts/CartContext/CartContext';
 import { UserProvider } from '@/contexts/UserContext/UserContext';
-import { reportError } from '@/lib/logger';
-import { hasShopifySession } from '@/lib/server/shopify-helpers';
-import { CartService } from '@/services/cart.service';
 import { storefrontSdk } from '@/shopify';
 
 import '../styles/globals.css';
@@ -32,27 +29,10 @@ const playfair = Playfair_Display({
   weight: ['400', '500', '600', '700'], // Editorial display serif
 });
 
-const handleInitialCart = async () => {
-  const cartId = await CartService.getCartId();
-
-  if (!cartId) return null;
-
-  try {
-    return await CartService.getCart(cartId);
-  } catch (error) {
-    // Transient Shopify failure: keep the cart cookie and render without a cart
-    // rather than replacing it. The next successful request will show it again.
-    reportError('layout.handleInitialCart', error);
-    return null;
-  }
-};
-
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
-  const [headerMenu, footerMenu, initialCart, isLoggedIn] = await Promise.all([
+  const [headerMenu, footerMenu] = await Promise.all([
     storefrontSdk().getMenuByHandle({ handle: config.constants.menuHandles.main }),
     storefrontSdk().getMenuByHandle({ handle: config.constants.menuHandles.footer }),
-    handleInitialCart(),
-    hasShopifySession(),
   ]);
 
   return (
@@ -75,9 +55,9 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
           enableSystem
           disableTransitionOnChange
         >
-          <CartProvider initialCart={initialCart}>
-            <UserProvider isLoggedIn={isLoggedIn}>
-              <Header headerMenu={headerMenu?.menu || null} isLoggedIn={isLoggedIn} />
+          <CartProvider>
+            <UserProvider>
+              <Header headerMenu={headerMenu?.menu || null} />
               <main className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)]">
                 {children}
               </main>

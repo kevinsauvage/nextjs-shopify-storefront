@@ -9,7 +9,7 @@ export const getUser = async () => {
   if (!customerAccessToken) return;
 
   try {
-    const response = await storefrontSdk('no-store').getCustomer({
+    const response = await storefrontSdk('private').getCustomer({
       customerAccessToken,
       metafields: [],
     });

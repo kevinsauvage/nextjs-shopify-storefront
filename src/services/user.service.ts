@@ -40,7 +40,7 @@ export class UserService {
       phone: phone || undefined,
     };
 
-    const updateResponse = await storefrontSdk().customerUpdate({
+    const updateResponse = await storefrontSdk('private').customerUpdate({
       customer: customerInput,
       customerAccessToken: shopifyToken,
     });

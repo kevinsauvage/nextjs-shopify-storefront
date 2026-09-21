@@ -34,7 +34,7 @@ export class WishlistService {
 
     if (!shopifyToken) return [];
 
-    const wishlistResponse = await storefrontSdk('no-store').getCustomerMetafields({
+    const wishlistResponse = await storefrontSdk('private').getCustomerMetafields({
       customerAccessToken: shopifyToken,
       metafields: [{ key: 'wishlist', namespace: 'custom' }],
     });
@@ -67,7 +67,7 @@ export class WishlistService {
     if (productIds.length === 0) return [];
 
     try {
-      const response = await storefrontSdk('no-store').getProductsByIds({
+      const response = await storefrontSdk('private').getProductsByIds({
         ids: productIds,
         identifiers: [],
       });

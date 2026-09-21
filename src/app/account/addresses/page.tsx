@@ -41,7 +41,7 @@ const Addresses = async ({
     redirect(config.routes.login);
   }
 
-  const response = await storefrontSdk('no-store').getCustomerAddresses({
+  const response = await storefrontSdk('private').getCustomerAddresses({
     ...adjustPaginationVariables({
       after: searchParameters.after || undefined,
       before: searchParameters.before || undefined,

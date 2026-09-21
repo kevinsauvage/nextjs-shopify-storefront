@@ -67,14 +67,14 @@ const Page = async () => {
 
   // Fetch stats in parallel
   const [ordersResponse, addressesResponse, wishlist] = await Promise.all([
-    storefrontSdk('no-store').getCustomerOrders({
+    storefrontSdk('private').getCustomerOrders({
       customerAccessToken: shopifyToken,
       first: 1,
       identifiers: [],
       language: LanguageCode.En,
       sortKey: OrderSortKeys.ProcessedAt,
     }),
-    storefrontSdk('no-store').getCustomerAddresses({
+    storefrontSdk('private').getCustomerAddresses({
       customerAccessToken: shopifyToken,
       first: 1,
     }),
@@ -86,7 +86,7 @@ const Page = async () => {
   const wishlistCount = wishlist?.length || 0;
 
   // Fetch recent orders for preview
-  const recentOrdersResponse = await storefrontSdk('no-store').getCustomerOrders({
+  const recentOrdersResponse = await storefrontSdk('private').getCustomerOrders({
     customerAccessToken: shopifyToken,
     first: 3,
     identifiers: [],

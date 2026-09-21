@@ -37,7 +37,7 @@ export class AddressService {
       return { error: this.UNAUTHENTICATED_ERROR };
     }
 
-    const response = await storefrontSdk().customerAddressCreate({
+    const response = await storefrontSdk('private').customerAddressCreate({
       address: input,
       customerAccessToken,
     });
@@ -69,7 +69,7 @@ export class AddressService {
       return { error: 'Address ID is required for update' };
     }
 
-    const response = await storefrontSdk().customerAddressUpdate({
+    const response = await storefrontSdk('private').customerAddressUpdate({
       address,
       addressId: id,
       customerAccessToken,
@@ -98,7 +98,7 @@ export class AddressService {
       return { error: this.UNAUTHENTICATED_ERROR };
     }
 
-    const response = await storefrontSdk().customerAddressDelete({
+    const response = await storefrontSdk('private').customerAddressDelete({
       addressId,
       customerAccessToken,
     });
@@ -128,7 +128,7 @@ export class AddressService {
 
     let response;
     try {
-      response = await storefrontSdk().customerDefaultAddressUpdate({
+      response = await storefrontSdk('private').customerDefaultAddressUpdate({
         addressId,
         customerAccessToken,
       });

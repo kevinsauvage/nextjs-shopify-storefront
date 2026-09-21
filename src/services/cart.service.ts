@@ -34,7 +34,7 @@ export class CartService {
    * missing cart and replace a customer's cart by accident.
    */
   static async getCart(cartId: string): Promise<CartFieldsFragment | null> {
-    const response = await storefrontSdk('no-store').getCart({
+    const response = await storefrontSdk('private').getCart({
       cartId,
       ...adjustPaginationVariables({ first: 100 }),
     });
@@ -46,7 +46,7 @@ export class CartService {
    * Create a new cart in Shopify and persist its id in the cart cookie.
    */
   static async createCart(): Promise<CartFieldsFragment> {
-    const createCartResponse = await storefrontSdk('no-store').cartCreate({
+    const createCartResponse = await storefrontSdk('private').cartCreate({
       ...adjustPaginationVariables({ first: 100 }),
     });
 
@@ -168,7 +168,7 @@ export class CartService {
    */
   static async addLines(lines: CartLineInput[]): Promise<CartFieldsFragment> {
     return this.mutate('Failed to add product', (cartId) =>
-      storefrontSdk('no-store')
+      storefrontSdk('private')
         .cartLinesAdd({ cartId, lines, ...adjustPaginationVariables({ first: 100 }) })
         .then((response) => response?.cartLinesAdd),
     );
@@ -179,7 +179,7 @@ export class CartService {
    */
   static async updateLines(lines: CartLineUpdateInput[]): Promise<CartFieldsFragment> {
     return this.mutate('Failed to update cart', (cartId) =>
-      storefrontSdk('no-store')
+      storefrontSdk('private')
         .cartLinesUpdate({ cartId, lines, ...adjustPaginationVariables({ first: 100 }) })
         .then((response) => response?.cartLinesUpdate),
     );
@@ -190,7 +190,7 @@ export class CartService {
    */
   static async removeLine(lineId: string): Promise<CartFieldsFragment> {
     return this.mutate('Failed to remove product', (cartId) =>
-      storefrontSdk('no-store')
+      storefrontSdk('private')
         .cartLinesRemove({
           cartId,
           lineIds: [lineId],
@@ -205,7 +205,7 @@ export class CartService {
    */
   static async updateDiscountCodes(discountCodes: string[]): Promise<CartFieldsFragment> {
     return this.mutate('Failed to update discount codes', (cartId) =>
-      storefrontSdk('no-store')
+      storefrontSdk('private')
         .cartDiscountCodesUpdate({
           cartId,
           discountCodes,

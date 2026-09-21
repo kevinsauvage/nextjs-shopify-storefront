@@ -39,7 +39,7 @@ export class AuthService {
   static async register(input: RegisterInput) {
     const { email, password, firstName, lastName } = input;
 
-    const registerResponse = await storefrontSdk().customerCreate({
+    const registerResponse = await storefrontSdk('private').customerCreate({
       input: { email, firstName, lastName, password },
     });
 
@@ -52,7 +52,7 @@ export class AuthService {
     if (userErrorResult) return userErrorResult;
 
     // Auto-login after registration
-    const loginResponse = await storefrontSdk().customerAccessTokenCreate({
+    const loginResponse = await storefrontSdk('private').customerAccessTokenCreate({
       input: { email, password },
     });
 
@@ -82,7 +82,7 @@ export class AuthService {
   static async login(input: LoginInput) {
     const { email, password } = input;
 
-    const response = await storefrontSdk().customerAccessTokenCreate({
+    const response = await storefrontSdk('private').customerAccessTokenCreate({
       input: { email, password },
     });
 
@@ -111,7 +111,7 @@ export class AuthService {
   static async recoverPassword(input: RecoverInput) {
     const { email } = input;
 
-    const response = await storefrontSdk().customerRecover({
+    const response = await storefrontSdk('private').customerRecover({
       email,
     });
 
@@ -129,7 +129,7 @@ export class AuthService {
   static async resetPassword(input: ResetPasswordInput) {
     const { password, resetToken } = input;
 
-    const response = await storefrontSdk().customerResetByUrl({
+    const response = await storefrontSdk('private').customerResetByUrl({
       resetUrl: resetToken,
       password,
     });
@@ -162,7 +162,7 @@ export class AuthService {
     if (!cartId) return;
 
     try {
-      const response = await storefrontSdk('no-store').cartBuyerIdentityUpdate({
+      const response = await storefrontSdk('private').cartBuyerIdentityUpdate({
         buyerIdentity: {
           customerAccessToken: token,
           email: user.email,

@@ -110,7 +110,7 @@ const EditAddress = async ({ searchParams }: PageProperties) => {
     redirect(config.routes.login);
   }
 
-  const response = await storefrontSdk('no-store').getCustomerAddresses({
+  const response = await storefrontSdk('private').getCustomerAddresses({
     customerAccessToken,
     first: 100,
   });

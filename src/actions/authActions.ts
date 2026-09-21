@@ -175,7 +175,7 @@ export async function logoutAction(): Promise<void> {
 
   if (token) {
     try {
-      await storefrontSdk('no-store').customerAccessTokenDelete({
+      await storefrontSdk('private').customerAccessTokenDelete({
         customerAccessToken: token,
       });
     } catch (error) {

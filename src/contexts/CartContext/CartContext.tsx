@@ -1,9 +1,10 @@
 'use client';
 
-import { createContext, useCallback, useMemo, useState } from 'react';
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   addCartLinesAction,
+  getCartAction,
   removeCartLineAction,
   updateCartLinesAction,
   updateDiscountCodesAction,
@@ -34,14 +35,27 @@ const getErrorMessage = (error: unknown, defaultMessage: string): string => {
   return error instanceof Error ? error.message : defaultMessage;
 };
 
-export const CartProvider = ({
-  children,
-  initialCart,
-}: {
-  children: React.ReactNode;
-  initialCart: CartFieldsFragment | null;
-}) => {
-  const [cart, setCart] = useState<CartFieldsFragment | null>(initialCart);
+export const CartProvider = ({ children }: { children: React.ReactNode }) => {
+  const [cart, setCart] = useState<CartFieldsFragment | null>(null);
+
+  // The cart id lives in an httpOnly cookie, so the cart is hydrated client-side
+  // to keep the root layout (and the catalog) statically renderable. A cart is
+  // created on demand by the first mutation, never here.
+  useEffect(() => {
+    let cancelled = false;
+
+    getCartAction()
+      .then((initialCart) => {
+        if (!cancelled) setCart(initialCart);
+      })
+      .catch((error) => {
+        console.error('Failed to load cart:', error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleResponse = useCallback((response: CartResponse) => {
     setCart(response.data);
