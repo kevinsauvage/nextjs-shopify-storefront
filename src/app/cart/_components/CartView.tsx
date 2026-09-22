@@ -112,7 +112,8 @@ const CartView = () => {
 
       {isEmpty ? (
         <CartEmptyState />
-      ) : (        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
+      ) : (
+        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
           <div className="space-y-6 lg:col-span-2">
             <FreeShippingBar
               subtotal={Number.parseFloat(cart?.cost?.subtotalAmount?.amount ?? '0')}
