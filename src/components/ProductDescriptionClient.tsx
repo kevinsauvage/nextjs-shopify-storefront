@@ -45,32 +45,43 @@ const MetaItem = ({ label, value }: { label: string; value: string }) => (
 const AvailabilityLine = ({
   availableForSale,
   quantityAvailable,
+  unavailable,
 }: {
   availableForSale?: boolean;
   quantityAvailable?: number | null;
+  unavailable?: boolean;
 }) => {
   const isSoldOut = availableForSale === false;
   const isLowStock =
-    !isSoldOut && typeof quantityAvailable === 'number' && quantityAvailable > 0 && quantityAvailable < 5;
+    !isSoldOut &&
+    typeof quantityAvailable === 'number' &&
+    quantityAvailable > 0 &&
+    quantityAvailable < 5;
 
-  const label = isSoldOut
-    ? 'Sold out'
-    : isLowStock
-      ? `Only ${quantityAvailable} left`
-      : 'In stock';
+  const label = unavailable
+    ? 'Unavailable in this combination'
+    : isSoldOut
+      ? 'Sold out'
+      : isLowStock
+        ? `Only ${quantityAvailable} left`
+        : 'In stock';
 
   return (
     <p
       className={cn(
         'inline-flex items-center gap-2 text-body-sm font-medium',
-        isSoldOut ? 'text-muted' : isLowStock ? 'text-destructive' : 'text-secondary',
+        unavailable || isSoldOut
+          ? 'text-muted'
+          : isLowStock
+            ? 'text-destructive'
+            : 'text-secondary',
       )}
     >
       <span
         aria-hidden="true"
         className={cn(
           'size-1.5 rounded-full bg-current',
-          !isSoldOut && !isLowStock && 'animate-pulse-subtle',
+          !unavailable && !isSoldOut && !isLowStock && 'animate-pulse-subtle',
         )}
       />
       {label}
@@ -95,6 +106,7 @@ const ProductDescriptionClient = ({
     isAdding,
     isOptionSelected,
     isOptionOutOfStock,
+    isSelectionUnavailable,
   } = useProductSelection({ product });
 
   const {
@@ -148,7 +160,11 @@ const ProductDescriptionClient = ({
               Total: {formatPrice(totalPrice, price.currencyCode)}
             </span>
           ) : null}
-          <AvailabilityLine availableForSale={availableForSale} quantityAvailable={quantityAvailable} />
+          <AvailabilityLine
+            availableForSale={availableForSale}
+            quantityAvailable={quantityAvailable}
+            unavailable={isSelectionUnavailable}
+          />
         </div>
       </div>
 
@@ -157,7 +173,9 @@ const ProductDescriptionClient = ({
       {!isModal && (
         <Accordion type="single" collapsible defaultValue="details" className="w-full">
           <AccordionItem value="details">
-            <AccordionTrigger className="text-label hover:no-underline">Description</AccordionTrigger>
+            <AccordionTrigger className="text-label hover:no-underline">
+              Description
+            </AccordionTrigger>
             <AccordionContent>
               {descriptionHtml ? (
                 <div
@@ -181,7 +199,10 @@ const ProductDescriptionClient = ({
                 {sku ? <MetaItem label="SKU" value={sku} /> : null}
                 {variantTitle ? <MetaItem label="Variant" value={variantTitle} /> : null}
                 {weight ? (
-                  <MetaItem label="Weight" value={`${weight} ${weightUnit?.toLowerCase() ?? ''}`.trim()} />
+                  <MetaItem
+                    label="Weight"
+                    value={`${weight} ${weightUnit?.toLowerCase() ?? ''}`.trim()}
+                  />
                 ) : null}
                 {quantityAvailable !== null && quantityAvailable !== undefined ? (
                   <MetaItem label="Available" value={`${quantityAvailable} units`} />
@@ -214,7 +235,7 @@ const ProductDescriptionClient = ({
               quantity={quantity}
               onChange={handleChangeInput}
               quantityAvailable={quantityAvailable}
-              disabled={!availableForSale}
+              disabled={!availableForSale || isSelectionUnavailable}
             />
           </div>
 
@@ -224,6 +245,7 @@ const ProductDescriptionClient = ({
             disabled={quantityCap !== undefined && quantity > quantityCap}
             loading={isAdding}
             onAddToCart={handleAddToCart}
+            unavailable={isSelectionUnavailable}
           />
         </div>
       </div>

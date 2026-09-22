@@ -15,25 +15,15 @@ const LineItem: React.FC<{
 }> = ({ node }) => {
   if (!('merchandise' in node)) return null;
 
-  const unitPrice =
-    typeof node.merchandise.price.amount === 'string'
-      ? Number.parseFloat(node.merchandise.price.amount)
-      : 0;
-  const totalPrice = unitPrice * node.quantity;
-
-  const totalDiscount = node.discountAllocations.reduce(
-    (accumulator: number, allocation) =>
-      accumulator +
-      Number.parseFloat(
-        typeof allocation.discountedAmount.amount === 'string'
-          ? allocation.discountedAmount.amount
-          : '0.00',
-      ),
-    0,
-  );
-  const finalPrice = totalPrice - totalDiscount > 0 ? totalPrice - totalDiscount : 0;
-  const hasDiscount = finalPrice < totalPrice;
-  const {currencyCode} = node.merchandise.price;
+  // Use Shopify's authoritative per-line cost rather than the variant's current
+  // price, which can drift from the cart (the price may have changed since the
+  // item was added).
+  const unitPrice = Number.parseFloat(node.cost.amountPerQuantity.amount);
+  const totalPrice = Number.parseFloat(node.cost.subtotalAmount.amount);
+  const finalPrice = Number.parseFloat(node.cost.totalAmount.amount);
+  const totalDiscount = Math.max(0, totalPrice - finalPrice);
+  const hasDiscount = totalDiscount > 0;
+  const { currencyCode } = node.cost.totalAmount;
 
   // Get product handle for link
   const productHandle =

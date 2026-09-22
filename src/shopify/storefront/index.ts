@@ -10240,6 +10240,24 @@ export type CartAttributesUpdateMutation = {
                 __typename?: 'CartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -10318,6 +10336,24 @@ export type CartAttributesUpdateMutation = {
                 __typename?: 'ComponentizableCartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -10532,6 +10568,24 @@ export type CartBuyerIdentityUpdateMutation = {
                 __typename?: 'CartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -10610,6 +10664,24 @@ export type CartBuyerIdentityUpdateMutation = {
                 __typename?: 'ComponentizableCartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -10823,6 +10895,24 @@ export type CartCreateMutation = {
                 __typename?: 'CartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -10901,6 +10991,24 @@ export type CartCreateMutation = {
                 __typename?: 'ComponentizableCartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -11115,6 +11223,24 @@ export type CartDiscountCodesUpdateMutation = {
                 __typename?: 'CartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -11193,6 +11319,24 @@ export type CartDiscountCodesUpdateMutation = {
                 __typename?: 'ComponentizableCartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -11407,6 +11551,24 @@ export type CartLinesAddMutation = {
                 __typename?: 'CartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -11485,6 +11647,24 @@ export type CartLinesAddMutation = {
                 __typename?: 'ComponentizableCartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -11699,6 +11879,24 @@ export type CartLinesRemoveMutation = {
                 __typename?: 'CartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -11777,6 +11975,24 @@ export type CartLinesRemoveMutation = {
                 __typename?: 'ComponentizableCartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -11991,6 +12207,24 @@ export type CartLinesUpdateMutation = {
                 __typename?: 'CartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -12069,6 +12303,24 @@ export type CartLinesUpdateMutation = {
                 __typename?: 'ComponentizableCartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -12283,6 +12535,24 @@ export type CartNoteUpdateMutation = {
                 __typename?: 'CartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -12361,6 +12631,24 @@ export type CartNoteUpdateMutation = {
                 __typename?: 'ComponentizableCartLine';
                 id: string;
                 quantity: number;
+                cost: {
+                  __typename?: 'CartLineCost';
+                  amountPerQuantity: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  subtotalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                  totalAmount: {
+                    __typename?: 'MoneyV2';
+                    amount: string;
+                    currencyCode: CurrencyCode;
+                  };
+                };
                 merchandise: {
                   __typename?: 'ProductVariant';
                   id: string;
@@ -12568,6 +12856,20 @@ export type GetCartQuery = {
               __typename?: 'CartLine';
               id: string;
               quantity: number;
+              cost: {
+                __typename?: 'CartLineCost';
+                amountPerQuantity: {
+                  __typename?: 'MoneyV2';
+                  amount: string;
+                  currencyCode: CurrencyCode;
+                };
+                subtotalAmount: {
+                  __typename?: 'MoneyV2';
+                  amount: string;
+                  currencyCode: CurrencyCode;
+                };
+                totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
+              };
               merchandise: {
                 __typename?: 'ProductVariant';
                 id: string;
@@ -12646,6 +12948,20 @@ export type GetCartQuery = {
               __typename?: 'ComponentizableCartLine';
               id: string;
               quantity: number;
+              cost: {
+                __typename?: 'CartLineCost';
+                amountPerQuantity: {
+                  __typename?: 'MoneyV2';
+                  amount: string;
+                  currencyCode: CurrencyCode;
+                };
+                subtotalAmount: {
+                  __typename?: 'MoneyV2';
+                  amount: string;
+                  currencyCode: CurrencyCode;
+                };
+                totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
+              };
               merchandise: {
                 __typename?: 'ProductVariant';
                 id: string;
@@ -14315,6 +14631,16 @@ export type CartLineFieldsFragment = {
           __typename?: 'CartLine';
           id: string;
           quantity: number;
+          cost: {
+            __typename?: 'CartLineCost';
+            amountPerQuantity: {
+              __typename?: 'MoneyV2';
+              amount: string;
+              currencyCode: CurrencyCode;
+            };
+            subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
+            totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
+          };
           merchandise: {
             __typename?: 'ProductVariant';
             id: string;
@@ -14389,6 +14715,16 @@ export type CartLineFieldsFragment = {
           __typename?: 'ComponentizableCartLine';
           id: string;
           quantity: number;
+          cost: {
+            __typename?: 'CartLineCost';
+            amountPerQuantity: {
+              __typename?: 'MoneyV2';
+              amount: string;
+              currencyCode: CurrencyCode;
+            };
+            subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
+            totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
+          };
           merchandise: {
             __typename?: 'ProductVariant';
             id: string;
@@ -14678,6 +15014,20 @@ export type CartFieldsFragment = {
             __typename?: 'CartLine';
             id: string;
             quantity: number;
+            cost: {
+              __typename?: 'CartLineCost';
+              amountPerQuantity: {
+                __typename?: 'MoneyV2';
+                amount: string;
+                currencyCode: CurrencyCode;
+              };
+              subtotalAmount: {
+                __typename?: 'MoneyV2';
+                amount: string;
+                currencyCode: CurrencyCode;
+              };
+              totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
+            };
             merchandise: {
               __typename?: 'ProductVariant';
               id: string;
@@ -14756,6 +15106,20 @@ export type CartFieldsFragment = {
             __typename?: 'ComponentizableCartLine';
             id: string;
             quantity: number;
+            cost: {
+              __typename?: 'CartLineCost';
+              amountPerQuantity: {
+                __typename?: 'MoneyV2';
+                amount: string;
+                currencyCode: CurrencyCode;
+              };
+              subtotalAmount: {
+                __typename?: 'MoneyV2';
+                amount: string;
+                currencyCode: CurrencyCode;
+              };
+              totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
+            };
             merchandise: {
               __typename?: 'ProductVariant';
               id: string;
@@ -17268,6 +17632,17 @@ export const CartLineFieldsFragmentDoc = gql`
       node {
         id
         quantity
+        cost {
+          amountPerQuantity {
+            ...MoneyFields
+          }
+          subtotalAmount {
+            ...MoneyFields
+          }
+          totalAmount {
+            ...MoneyFields
+          }
+        }
         merchandise {
           ... on ProductVariant {
             id
@@ -17320,8 +17695,8 @@ export const CartLineFieldsFragmentDoc = gql`
       ...PageInfoFields
     }
   }
-  ${ImageFieldsFragmentDoc}
   ${MoneyFieldsFragmentDoc}
+  ${ImageFieldsFragmentDoc}
   ${PageInfoFieldsFragmentDoc}
 `;
 export const CartCostFieldsFragmentDoc = gql`

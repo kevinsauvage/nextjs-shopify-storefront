@@ -16,6 +16,7 @@ export const metadata: Metadata = generateMetadataUtil({
   title: seo.home.title,
   description: seo.home.description,
   url: '/',
+  absoluteTitle: true,
 });
 
 const Home = async () => {

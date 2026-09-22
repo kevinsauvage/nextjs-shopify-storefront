@@ -4,9 +4,12 @@ import { notFound } from 'next/navigation';
 
 import HomeSection from '@/app/_components/HomeSection';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import JsonLd from '@/components/JsonLd';
 import ProductDescription from '@/components/ProductDescription';
 import ProductRecommendations from '@/components/ProductRecommendations';
+import config from '@/config';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
+import { breadcrumbJsonLd, productJsonLd } from '@/lib/server/structured-data';
 import { storefrontSdk } from '@/shopify';
 
 export const revalidate = 3600;
@@ -115,8 +118,42 @@ const ProductPage = async ({ params }: PageProperties) => {
   const hasRecommendations =
     recommendations?.productRecommendations && recommendations.productRecommendations.length > 0;
 
+  const productUrl = `${config.routes.collection}/products/${product.handle}`;
+  const collectionHandle = product.collections.edges[0]?.node.handle;
+  const price = product.priceRange.minVariantPrice;
+
+  const structuredData = [
+    productJsonLd({
+      name: product.title,
+      description: product.seo?.description || product.description,
+      url: productUrl,
+      images: product.images.edges
+        .map((edge) => edge.node.src || edge.node.url)
+        .filter((image): image is string => Boolean(image)),
+      sku: product.variants.edges[0]?.node.sku,
+      brand: product.vendor,
+      price: price?.amount,
+      currency: price?.currencyCode,
+      availableForSale: product.availableForSale,
+    }),
+    breadcrumbJsonLd([
+      { name: 'Home', url: config.routes.home },
+      { name: 'Collections', url: config.routes.collection },
+      ...(collectionHandle
+        ? [
+            {
+              name: collectionHandle.replace(/-/g, ' '),
+              url: `${config.routes.collection}/${collectionHandle}`,
+            },
+          ]
+        : []),
+      { name: product.title, url: productUrl },
+    ]),
+  ];
+
   return (
     <div className="min-h-[calc(100vh-76px)]">
+      <JsonLd data={structuredData} />
       <div className="border-b border-border/60 bg-secondary/30">
         <div className="container mx-auto px-4 py-3 md:px-6">
           <Breadcrumbs lastElement={title} />

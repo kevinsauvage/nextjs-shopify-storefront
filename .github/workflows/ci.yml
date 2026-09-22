@@ -27,11 +27,11 @@ jobs:
       - name: Run ESLint
         run: yarn lint
 
-      - name: Create Next.js types directory
-        run: |
-          mkdir -p .next/dev/types
-          echo "// Generated for CI type checking" > .next/dev/types/routes.d.ts
-          echo "export {};" >> .next/dev/types/routes.d.ts
+      # Generate the real Next.js route/page types so `tsc` type-checks against
+      # the actual app structure instead of a hand-written stub. `next typegen`
+      # is static (it never executes pages), so no Shopify credentials are needed.
+      - name: Generate Next.js route types
+        run: yarn typegen
 
       - name: Run TypeScript type check
         run: yarn lint-ts
@@ -42,6 +42,46 @@ jobs:
       - name: Run tests
         run: yarn test
 
-      # Codegen is intentionally not run here: it introspects the live Shopify
-      # schema (which needs secrets) and the generated SDK is committed.
-      # Vercel regenerates it during `yarn build`.
+  build:
+    name: Production Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      # `next build` prerenders data-backed routes, so it needs the Storefront
+      # API. The job is a no-op until those secrets are configured, which keeps
+      # forks and un-provisioned branches green while still running a real build
+      # wherever credentials exist.
+      - name: Check for Shopify build credentials
+        id: credentials
+        env:
+          SHOPIFY_STOREFRONT_URL: ${{ secrets.NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL }}
+        run: |
+          if [ -n "$SHOPIFY_STOREFRONT_URL" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Skipping the production build: NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL is not configured."
+          fi
+
+      - name: Build
+        if: steps.credentials.outputs.available == 'true'
+        env:
+          NEXT_PUBLIC_BASE_URL: ${{ vars.NEXT_PUBLIC_BASE_URL || 'https://example.com' }}
+          NEXT_PUBLIC_SITE_DOMAIN: ${{ vars.NEXT_PUBLIC_SITE_DOMAIN || 'example.com' }}
+          SHOPIFY_STORE_FRONT_ACCESS_TOKEN: ${{ secrets.SHOPIFY_STORE_FRONT_ACCESS_TOKEN }}
+          NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL: ${{ secrets.NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL }}
+          SHOPIFY_STORE_FRONT_ADMIN_TOKEN: ${{ secrets.SHOPIFY_STORE_FRONT_ADMIN_TOKEN }}
+          SHOPIFY_ADMIN_URL: ${{ secrets.SHOPIFY_ADMIN_URL }}
+        run: yarn build

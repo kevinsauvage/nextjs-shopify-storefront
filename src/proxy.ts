@@ -1,14 +1,17 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import { renewCustomerToken, shouldRenewToken } from './lib/token-renewal';
-import { getSecureCookieOptions } from './utils/cookie-security';
+import { isTokenExpired, renewCustomerToken, shouldRenewToken } from './lib/token-renewal';
+import { getCookieDeleteOptions, getSecureCookieOptions } from './utils/cookie-security';
 import globalConfig from './config';
 
 /**
  * Runs on every navigation. It only manages session state (token renewal and
  * auth redirects) and never sets cookies on anonymous catalog responses, so
  * statically rendered pages stay cacheable at the CDN.
+ *
+ * Cookie writes must also happen here (not while rendering server components),
+ * which is why stale-token cleanup lives in this file.
  */
 async function proxy(request: NextRequest) {
   const { nextUrl, cookies, url } = request;
@@ -17,25 +20,44 @@ async function proxy(request: NextRequest) {
   const cookieShopify = cookies.get(globalConfig.cookies.shopifyToken);
   const tokenExpiresAt = cookies.get(globalConfig.cookies.shopifyTokenExpire)?.value;
 
-  // Renew here rather than during render: `cookies().set()` is only allowed in
-  // middleware, Server Actions and Route Handlers.
-  const renewedToken =
-    cookieShopify?.value && shouldRenewToken(tokenExpiresAt)
-      ? await renewCustomerToken(cookieShopify.value)
-      : null;
+  const isAccountRoute = pathname.startsWith(globalConfig.routes.account);
+  const isAuthRoute =
+    pathname.startsWith(globalConfig.routes.login) ||
+    pathname.startsWith(globalConfig.routes.register);
+
+  const hasToken = Boolean(cookieShopify?.value);
+  const tokenExpired = isTokenExpired(tokenExpiresAt);
+
+  // Validate/renew the token only where the result changes behaviour:
+  //  - account routes, once the token is inside its renewal window; and
+  //  - auth routes, to bounce signed-in visitors and to catch revoked tokens.
+  // Anonymous catalog requests never pay for this round-trip.
+  const shouldValidate = hasToken && (isAuthRoute || shouldRenewToken(tokenExpiresAt));
+
+  const renewedToken = shouldValidate
+    ? await renewCustomerToken(cookieShopify?.value as string)
+    : null;
+
+  const validationFailed = shouldValidate && !renewedToken;
+  // A rejected token is unusable when it has already expired, or when we only
+  // learned it was rejected because an auth decision required checking it.
+  const hasStaleSession = hasToken && validationFailed && (tokenExpired || isAuthRoute);
+  const hasSession = hasToken && !hasStaleSession;
 
   let response: NextResponse;
 
-  if (!cookieShopify && pathname.startsWith(globalConfig.routes.account)) {
+  if (isAccountRoute && !hasSession) {
     response = NextResponse.redirect(new URL(globalConfig.routes.login, url));
-  } else if (
-    cookieShopify &&
-    (pathname.startsWith(globalConfig.routes.login) ||
-      pathname.startsWith(globalConfig.routes.register))
-  ) {
+  } else if (isAuthRoute && hasSession) {
     response = NextResponse.redirect(new URL(globalConfig.routes.account, url));
   } else {
     response = NextResponse.next();
+  }
+
+  if (hasStaleSession) {
+    const deleteOptions = getCookieDeleteOptions();
+    response.cookies.delete({ name: globalConfig.cookies.shopifyToken, ...deleteOptions });
+    response.cookies.delete({ name: globalConfig.cookies.shopifyTokenExpire, ...deleteOptions });
   }
 
   if (renewedToken) {

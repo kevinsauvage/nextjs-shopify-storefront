@@ -28,12 +28,23 @@ export const shouldRenewToken = (expiresAt?: string | null): boolean => {
 };
 
 /**
+ * True only when the stored token's expiry is in the past, i.e. the token is
+ * unusable. Unlike {@link shouldRenewToken} this ignores the renewal window, so
+ * callers can tell "needs a refresh" apart from "definitely expired".
+ */
+export const isTokenExpired = (expiresAt?: string | null): boolean => {
+  if (!expiresAt) return false;
+
+  const expiry = new Date(expiresAt).getTime();
+
+  return Number.isFinite(expiry) && expiry <= Date.now();
+};
+
+/**
  * Renews a customer access token against the Storefront API. Returns `null` on
  * any failure so callers can degrade gracefully.
  */
-export const renewCustomerToken = async (
-  token: string,
-): Promise<RenewedCustomerToken | null> => {
+export const renewCustomerToken = async (token: string): Promise<RenewedCustomerToken | null> => {
   const url = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL;
   const accessToken = process.env.SHOPIFY_STORE_FRONT_ACCESS_TOKEN;
 

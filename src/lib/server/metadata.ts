@@ -33,6 +33,12 @@ type MetadataOptions = {
   url?: string;
   type?: 'website' | 'article';
   noindex?: boolean;
+  /**
+   * Emit the title as an absolute string (with the site name appended). Use for
+   * pages in the root segment, where the root layout's title template does not
+   * apply.
+   */
+  absoluteTitle?: boolean;
 };
 
 /**
@@ -46,6 +52,7 @@ export function generateMetadata({
   url,
   type = 'website',
   noindex = false,
+  absoluteTitle = false,
 }: MetadataOptions): Metadata {
   // Use getBaseUrl() to ensure consistency and proper env var handling
   const siteUrl = getBaseUrl();
@@ -54,7 +61,9 @@ export function generateMetadata({
   const pageUrl = url ? `${siteUrl}${url}` : siteUrl;
 
   return {
-    title: fullTitle,
+    // Nested routes inherit the root layout's title template, so their titles
+    // stay unqualified here; the root page opts into an absolute title.
+    title: absoluteTitle ? { absolute: fullTitle } : title,
     description,
     metadataBase: new URL(siteUrl),
     alternates: {
@@ -96,4 +105,3 @@ export function generateMetadata({
     },
   };
 }
-

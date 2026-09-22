@@ -41,6 +41,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
     isAdding,
     isOptionSelected,
     isOptionOutOfStock,
+    isSelectionUnavailable,
   } = useProductSelection({ product });
 
   const productImages = mapShopifyImagesToImageFields(product.images?.edges);
@@ -245,6 +246,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
               onChange={handleChangeInput}
               quantityAvailable={quantityAvailable}
               showAvailable
+              disabled={isSelectionUnavailable}
             />
           </div>
         </div>
@@ -257,6 +259,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
           disabled={quantityCap !== undefined && quantity > quantityCap}
           loading={isAdding}
           onAddToCart={handleAddToCartAndClose}
+          unavailable={isSelectionUnavailable}
           compact
         />
 

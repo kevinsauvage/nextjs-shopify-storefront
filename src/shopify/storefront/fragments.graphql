@@ -22,6 +22,17 @@ fragment CartLineFields on BaseCartLineConnection {
     node {
       id
       quantity
+      cost {
+        amountPerQuantity {
+          ...MoneyFields
+        }
+        subtotalAmount {
+          ...MoneyFields
+        }
+        totalAmount {
+          ...MoneyFields
+        }
+      }
       merchandise {
         ... on ProductVariant {
           id

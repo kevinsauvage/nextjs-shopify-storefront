@@ -8,6 +8,7 @@
     "build": "yarn codegen && next build --turbo",
     "analyze": "next experimental-analyze",
     "start": "next start",
+    "typegen": "next typegen",
     "lint": "eslint .",
     "lint-ts": "tsc --noEmit -p tsconfig.json",
     "lint-fix": "eslint . --fix",

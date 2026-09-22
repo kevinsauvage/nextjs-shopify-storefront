@@ -26,13 +26,6 @@ type CartMutationPayload =
  */
 export class CartService {
   /**
-   * In-flight cart creation promise. Concurrent first-time mutations (e.g. a
-   * double-clicked add-to-cart) would otherwise each create a cart and orphan
-   * all but the last; sharing the promise keeps exactly one.
-   */
-  private static createCartInFlight: Promise<CartFieldsFragment> | null = null;
-
-  /**
    * Read a cart from Shopify.
    *
    * Returns `null` only when Shopify confirms the cart no longer exists.
@@ -93,18 +86,19 @@ export class CartService {
   /**
    * Return the current cart id, creating a cart first when none is stored.
    * Must run inside a Server Action / Route Handler (it writes the cookie).
+   *
+   * Cart creation is not memoized in module state: a static in-flight promise
+   * is shared by every concurrent request in the server instance, so a request
+   * could await a cart whose cookie was written in another request's context.
+   * Creating inline keeps all request-scoped state (the cookie) where it
+   * belongs. Two concurrent first-time mutations can therefore create two
+   * carts; the last cookie write wins and the other cart is simply orphaned.
    */
   private static async requireCartId(): Promise<string> {
     const cartId = await this.getCartId();
     if (cartId) return cartId;
 
-    if (!this.createCartInFlight) {
-      this.createCartInFlight = this.createCart().finally(() => {
-        this.createCartInFlight = null;
-      });
-    }
-
-    const cart = await this.createCartInFlight;
+    const cart = await this.createCart();
     return cart.id;
   }
 

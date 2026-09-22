@@ -10,27 +10,27 @@ Legend: **P0** = critical (data loss/leak, broken checkout, security, or no safe
 
 ## P0 — Critical
 
-- [ ] **P0-1 · Cross-user cart contamination via shared in-flight promise**
+- [x] **P0-1 · Cross-user cart contamination via shared in-flight promise**
       `src/services/cart.service.ts:33,97-109` — `createCartInFlight` is a `static` field shared across _all_ concurrent requests in the same server instance. Two visitors with no cart cookie arriving together: the second awaits the first's `createCart()` (whose `cookies().set()` is bound to the first request's context), receives the first user's cart id, and mutates it; its own response never gets a cart cookie.
       **Fix:** keep request-scoped state out of static fields — wrap the read/create in `React.cache()`, key the in-flight map by session, or create inline and accept the rare duplicate.
 
-- [ ] **P0-2 · Invalid option combinations silently add the wrong variant to the cart**
+- [x] **P0-2 · Invalid option combinations silently add the wrong variant to the cart**
       `src/hooks/useProductSelection.ts:45-53` falls back to `variants[0]` when no variant matches the selection, and `isOptionOutOfStock` (`:71-79`) only checks whether a value exists on _some_ variant, ignoring the rest of the selection. On a "Red/S + Blue/M" product, choosing Red + M keeps M enabled, highlights it as selected, then prices and adds **Red/S**.
       **Fix:** return `undefined` (show "unavailable", disable Add to Cart) when no exact match exists; compute availability against the full selection and `availableForSale`.
 
-- [ ] **P0-3 · Cart totals do not reconcile with Shopify's authoritative amounts**
+- [x] **P0-3 · Cart totals do not reconcile with Shopify's authoritative amounts**
       `src/app/cart/_components/CartSummary.tsx:15-19` derives `discount = subtotal - total + tax`, but `total` includes shipping and `totalTaxAmount` is deprecated/unpopulated, so the "Discount" is wrong whenever shipping exists and `Subtotal − Discount + Tax ≠ Total`. `src/app/cart/_components/LineItem.tsx:18-22` computes line totals from `merchandise.price` (today's price) instead of the cart line's `cost`, so line prices drift from the summary if a variant's price changed.
       **Fix:** use `cart.discountAllocations`/`discountCodes` for the discount, drop the deprecated tax row, and render `lines[].cost.totalAmount` (add it to the cart fragment, then regenerate codegen).
 
-- [ ] **P0-4 · `getUser()` mutates cookies during render → 500 on an expired/invalid session**
+- [x] **P0-4 · `getUser()` mutates cookies during render → 500 on an expired/invalid session**
       `src/utils/users.ts:22-34` calls `clearShopifyToken()` (a `cookies().delete()`) from a function invoked during Server Component render (`src/app/account/page.tsx`, `.../update/page.tsx`, `.../addresses/page.tsx`). Next.js forbids cookie writes while rendering, and `src/proxy.ts` only redirects when the cookie is _absent_, not when it is stale — so an expired token produces a 500 instead of a login redirect.
       **Fix:** do not touch cookies in `getUser()`; return `null` and let callers `redirect()`, and clear stale tokens in middleware/a route handler.
 
-- [ ] **P0-5 · CI never runs `next build` and fakes the generated route types**
+- [x] **P0-5 · CI never runs `next build` and fakes the generated route types**
       `.github/workflows/ci.yml:30-47` runs lint/typecheck/stylelint/test only, then hand-writes a stub `.next/dev/types/routes.d.ts`. Server/Client boundary errors, static-generation failures, invalid route conventions, and build-time env problems are all invisible until a production deploy.
       **Fix:** add a `yarn build` job (with placeholder env) and let Next generate the real route types instead of the stub.
 
-- [ ] **P0-6 · No root metadata/`metadataBase` and no structured data**
+- [x] **P0-6 · No root metadata/`metadataBase` and no structured data**
       `src/app/layout.tsx` exports neither `metadata` nor `viewport`, so there is no `metadataBase`, title template, or default OG/Twitter/description — plain pages render bare titles. There is no JSON-LD anywhere on a commerce site (`Product`/`Offer`, `BreadcrumbList`, `Organization`), forfeiting rich results.
       **Fix:** add `metadata`/`viewport` to the root layout (title template, `metadataBase`, icons, OG/Twitter defaults) and emit JSON-LD on product, collection, and root.
 
@@ -68,3 +68,16 @@ Legend: **P0** = critical (data loss/leak, broken checkout, security, or no safe
 - [ ] Make `Breadcrumbs` resilient: safe `decodeURIComponent` (a malformed `%` currently throws during render).
 - [ ] Derive `Filters` price bounds from the catalog instead of a hardcoded `200`; import `SearchForm`'s label from `@/components/ui/label`.
 - [ ] Reduce per-card client cost: keep `ProductCardDefault` server-renderable where possible and avoid mounting `QuickBuy` per card until interaction.
+
+---
+
+## Completed in this pass
+
+- [x] **P0-1** — Removed the `static createCartInFlight` promise from `CartService`; `requireCartId()` now creates inline so no request can await another request's cart cookie (`src/services/cart.service.ts`).
+- [x] **P0-2** — Exact variant match (no `variants[0]` fallback) and full-selection/`availableForSale` availability, extracted into tested pure helpers (`src/utils/productSelection.ts`, `+10` unit tests). Invalid combos render "Unavailable" and disable Add to Cart.
+- [x] **P0-3** — Added `lines[].cost` to the cart fragment and regenerated codegen; line prices use `cost.totalAmount`, and the summary derives the discount from per-line `discountAllocations`, dropping the deprecated tax row.
+- [x] **P0-4** — `getUser()` no longer writes cookies; stale/expired/revoked tokens are cleared in `src/proxy.ts`, which also prevents the login↔account redirect loop.
+- [x] **P0-5** — CI now runs `next typegen` (real route types, no stub) plus a credential-gated `yarn build` job (`.github/workflows/ci.yml`).
+- [x] **P0-6** — Root `metadata`/`viewport` (metadataBase, title template, OG/Twitter, icons) and JSON-LD for `Organization`/`WebSite` (site-wide), `Product`+`BreadcrumbList`, and `CollectionPage`+`BreadcrumbList`.
+
+Verified: `tsc` clean · `eslint` 0 errors · `stylelint` clean · 133 tests pass · full `next build` (731 static pages).

@@ -4,13 +4,16 @@ import { useCallback, useMemo, useState } from 'react';
 
 import useCartContext from '@/contexts/CartContext/useCartContext';
 import type { GetProductByHandleQuery, ProductFieldsFragment } from '@/shopify/storefront';
+import {
+  findVariantForSelection,
+  isOptionValueOutOfStock,
+  isSelectionUnavailable as getIsSelectionUnavailable,
+  type OptionSelection,
+} from '@/utils/productSelection';
 
 type Product = NonNullable<GetProductByHandleQuery['product']>;
 export type ProductVariant = Product['variants']['edges'][number]['node'];
 type OptionValue = ProductFieldsFragment['options'][number]['optionValues'][number];
-
-/** Option name -> selected value name. */
-type OptionSelection = Record<string, string>;
 
 const getInitialSelection = (product: Product | null | undefined): OptionSelection => {
   const variant = product?.variants.edges[0]?.node;
@@ -37,20 +40,17 @@ const useProductSelection = ({
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
 
-  const variants = useMemo(
-    () => product?.variants.edges.map((edge) => edge.node) ?? [],
-    [product],
+  const variants = useMemo(() => product?.variants.edges.map((edge) => edge.node) ?? [], [product]);
+
+  const selectedVariant = useMemo<ProductVariant | undefined>(
+    () => findVariantForSelection(variants, selection),
+    [selection, variants],
   );
 
-  const selectedVariant = useMemo<ProductVariant | undefined>(() => {
-    if (!Object.keys(selection).length) return variants[0];
-
-    return (
-      variants.find((variant) =>
-        variant.selectedOptions.every((option) => selection[option.name] === option.value),
-      ) ?? variants[0]
-    );
-  }, [selection, variants]);
+  const isSelectionUnavailable = useMemo(
+    () => getIsSelectionUnavailable(variants, selection),
+    [selection, variants],
+  );
 
   const handleChangeInput = useCallback((nextQuantity: number) => {
     setQuantity(Math.max(1, nextQuantity));
@@ -70,12 +70,8 @@ const useProductSelection = ({
 
   const isOptionOutOfStock = useCallback(
     (name: string, value: OptionValue) =>
-      !variants.some((variant) =>
-        variant.selectedOptions.some(
-          (option) => option.name === name && option.value === value?.name,
-        ),
-      ),
-    [variants],
+      isOptionValueOutOfStock(variants, selection, name, value?.name),
+    [selection, variants],
   );
 
   const totalPrice = useMemo(() => {
@@ -99,6 +95,7 @@ const useProductSelection = ({
     isAdding,
     isOptionOutOfStock,
     isOptionSelected,
+    isSelectionUnavailable,
     quantity,
     selectedVariant,
     totalPrice,

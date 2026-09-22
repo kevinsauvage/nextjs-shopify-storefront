@@ -14,6 +14,8 @@ type ProductActionsProps = {
   disabled?: boolean;
   loading?: boolean;
   compact?: boolean;
+  /** The current option combination does not exist. */
+  unavailable?: boolean;
 };
 
 /**
@@ -27,9 +29,13 @@ const ProductActions = ({
   disabled,
   loading = false,
   compact = false,
+  unavailable = false,
 }: ProductActionsProps) => {
   const { wishlistIds, handleSetWishlist } = useUserContext();
   const isWishlisted = wishlistIds.includes(productId);
+  const isPurchasable = availableForSale && !unavailable;
+
+  const label = unavailable ? 'Unavailable' : availableForSale ? 'Add to Cart' : 'Sold Out';
 
   return (
     <div className={cn('flex w-full', compact ? 'gap-2' : 'gap-3')}>
@@ -37,11 +43,11 @@ const ProductActions = ({
         className={cn('flex-1', compact ? 'h-12 text-body-lg font-semibold gap-2' : 'gap-2')}
         size="lg"
         loading={loading}
-        disabled={disabled || !availableForSale}
+        disabled={disabled || !isPurchasable}
         onClick={onAddToCart}
       >
         <ShoppingBag className="h-5 w-5" color="currentColor" />
-        {availableForSale ? 'Add to Cart' : 'Sold Out'}
+        {label}
       </Button>
 
       <Button

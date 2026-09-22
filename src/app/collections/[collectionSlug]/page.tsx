@@ -4,12 +4,14 @@ import Link from 'next/link';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import EmptyState from '@/components/EmptyState';
+import JsonLd from '@/components/JsonLd';
 import ListingHeader from '@/components/ListingHeader';
 import PageInfoPagination from '@/components/PageInfoPagination';
 import ProductsList from '@/components/ProductsList';
 import { Button } from '@/components/ui/button';
 import config from '@/config';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
+import { breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/server/structured-data';
 import { storefrontSdk } from '@/shopify';
 import { adjustPaginationVariables, parseFiltersQuery } from '@/shopify/helpers';
 import type { GetMenuByHandleQuery } from '@/shopify/storefront';
@@ -62,7 +64,10 @@ const findRecursiveMenuItem = (
   if (!items?.items) return false;
 
   for (const item of items.items) {
-    if (typeof item?.url === 'string' && item.url.toLowerCase().includes(collectionSlug.toLowerCase())) {
+    if (
+      typeof item?.url === 'string' &&
+      item.url.toLowerCase().includes(collectionSlug.toLowerCase())
+    ) {
       return true;
     } else if (item?.items?.length) {
       const foundItem = findRecursiveMenuItem(
@@ -178,6 +183,20 @@ const CollectionSlugPage = async ({
 
   return (
     <div className="pb-16 md:pb-24">
+      <JsonLd
+        data={[
+          collectionPageJsonLd({
+            name: collection?.title || 'Collection',
+            description: collection?.description,
+            url: basePath,
+          }),
+          breadcrumbJsonLd([
+            { name: 'Home', url: config.routes.home },
+            { name: 'Collections', url: config.routes.collection },
+            { name: collection?.title || 'Collection', url: basePath },
+          ]),
+        ]}
+      />
       {/* Breadcrumb bar */}
       <div className="border-b border-border/60 bg-secondary/30">
         <div className="container mx-auto px-4 py-3 md:px-6">
@@ -207,7 +226,9 @@ const CollectionSlugPage = async ({
               <span className="text-eyebrow text-white/80">Collection</span>
               <h1 className="mt-3 max-w-3xl text-white">{collection?.title || 'Collection'}</h1>
               {collection?.description ? (
-                <p className="mt-4 max-w-2xl text-body-lg text-white/85">{collection.description}</p>
+                <p className="mt-4 max-w-2xl text-body-lg text-white/85">
+                  {collection.description}
+                </p>
               ) : null}
             </div>
           </div>
