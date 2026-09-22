@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 import AccountStats from '@/app/account/_components/AccountStats';
 import CardHeaderPattern from '@/components/CardHeaderPattern';
 import { Card, CardContent } from '@/components/ui/card';
+import config from '@/config';
 import seo from '@/data/seo';
 import { getAccountStats } from '@/lib/server/account';
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
@@ -22,6 +24,10 @@ export const metadata: Metadata = {
 const Page = async () => {
   const shopifyToken = await getShopifyToken();
   const user = await getUser();
+
+  if (!user) {
+    redirect(config.routes.login);
+  }
 
   const stats = shopifyToken
     ? await getAccountStats(shopifyToken)

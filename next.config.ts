@@ -17,7 +17,8 @@ const nextConfig: NextConfig = {
     // `unsafe-inline` would either break the app or force every page dynamic.
     // The other directives stay strict (`object-src 'none'`, `base-uri 'self'`,
     // `form-action 'self'`, `frame-ancestors 'self'`, explicit
-    // `connect-src`/`img-src`), and no user HTML is injected without escaping.
+    // `connect-src`/`img-src`), and store-provided HTML injected with
+    // `dangerouslySetInnerHTML` is sanitized via `@/utils/sanitize`.
     const scriptSource = [
       "'self'",
       "'unsafe-inline'",

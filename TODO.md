@@ -2,7 +2,7 @@
 
 ### P1 — High
 
-### [ ] Add the missing auth guard on `/account/update`
+### [x] Add the missing auth guard on `/account/update`
 
 **Why:** The page renders without redirecting when `getUser()`/token is null (expired or
 invalid token), unlike `/account`, `/orders`, `/addresses`. Middleware only checks cookie
@@ -14,7 +14,7 @@ presence, so this is a real gap.
 
 **Impact:** High
 
-### [ ] Sanitize merchant/store HTML before injection
+### [x] Sanitize merchant/store HTML before injection
 
 **Why:** `descriptionHtml` and legal-policy `body` (store-controlled) are injected via
 `dangerouslySetInnerHTML` under a CSP that allows `'unsafe-inline'`, so any injected markup has

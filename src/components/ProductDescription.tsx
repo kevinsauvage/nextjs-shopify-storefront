@@ -1,6 +1,7 @@
 import type { GetProductByHandleQuery } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
 import { mapShopifyImagesToImageFields } from '@/utils/images';
+import { sanitizeHtml } from '@/utils/sanitize';
 
 import { Badge } from './ui/badge';
 import PhotoGallery from './PhotoGallery';
@@ -16,8 +17,9 @@ const ProductDescription = ({ product, isModal, className }: ProductDescriptionP
   if (!product) return null;
 
   const {images} = product;
-  const descriptionHtml: string =
-    typeof product.descriptionHtml === 'string' ? product.descriptionHtml : '';
+  const descriptionHtml = sanitizeHtml(
+    typeof product.descriptionHtml === 'string' ? product.descriptionHtml : '',
+  );
 
   // Get default variant data for initial render (server-side)
   const defaultVariant = product.variants?.edges?.[0]?.node

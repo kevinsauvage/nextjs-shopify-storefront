@@ -6,6 +6,7 @@ import config from '@/config';
 import seo from '@/data/seo';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
 import { storefrontSdk } from '@/shopify';
+import { sanitizeHtml } from '@/utils/sanitize';
 
 import MainContent from '../_components/MainContent';
 
@@ -18,6 +19,7 @@ const ShippingPage = async () => {
   const response = await storefrontSdk().getShippingPolicy({});
   const { shippingPolicy } = response?.shop || {};
   const { title, description } = seo.pages.shipping || {};
+  const shippingHtml = sanitizeHtml(shippingPolicy?.body);
 
   return (
     <div>
@@ -25,7 +27,7 @@ const ShippingPage = async () => {
         <Breadcrumbs lastElement={title} />
       </PageBanner>
       <MainContent>
-        {shippingPolicy?.body && <div dangerouslySetInnerHTML={{ __html: shippingPolicy.body }} />}
+        {shippingHtml && <div dangerouslySetInnerHTML={{ __html: shippingHtml }} />}
       </MainContent>
     </div>
   );

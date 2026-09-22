@@ -6,6 +6,7 @@ import config from '@/config';
 import seo from '@/data/seo';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
 import { storefrontSdk } from '@/shopify/index';
+import { sanitizeHtml } from '@/utils/sanitize';
 
 import MainContent from '../_components/MainContent';
 
@@ -19,6 +20,7 @@ const PrivacyPage = async () => {
   const shopInfo = await storefrontSdk().getPrivacyPolicy({});
   const privacyPolicy = shopInfo?.shop.privacyPolicy;
   const { title, description } = seo.pages.privacy || {};
+  const privacyHtml = sanitizeHtml(privacyPolicy?.body);
 
   return (
     <div>
@@ -26,7 +28,7 @@ const PrivacyPage = async () => {
         <Breadcrumbs lastElement={title} />
       </PageBanner>
       <MainContent>
-        {privacyPolicy?.body && <div dangerouslySetInnerHTML={{ __html: privacyPolicy.body }} />}
+        {privacyHtml && <div dangerouslySetInnerHTML={{ __html: privacyHtml }} />}
       </MainContent>
     </div>
   );

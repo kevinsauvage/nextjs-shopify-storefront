@@ -6,6 +6,7 @@ import config from '@/config';
 import seo from '@/data/seo';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
 import { storefrontSdk } from '@/shopify/index';
+import { sanitizeHtml } from '@/utils/sanitize';
 
 import MainContent from '../_components/MainContent';
 
@@ -19,13 +20,14 @@ const TermsPage = async () => {
   const response = await storefrontSdk().getTermsOfService({});
   const { termsOfService } = response?.shop || {};
   const { title, description } = seo.pages.terms || {};
+  const termsHtml = sanitizeHtml(termsOfService?.body);
   return (
     <div>
       <PageBanner title={title} description={description}>
         <Breadcrumbs lastElement={title} />
       </PageBanner>
       <MainContent>
-        {termsOfService?.body && <div dangerouslySetInnerHTML={{ __html: termsOfService.body }} />}
+        {termsHtml && <div dangerouslySetInnerHTML={{ __html: termsHtml }} />}
       </MainContent>
     </div>
   );

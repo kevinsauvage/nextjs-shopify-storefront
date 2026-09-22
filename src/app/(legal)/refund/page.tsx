@@ -6,6 +6,7 @@ import config from '@/config';
 import seo from '@/data/seo';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
 import { storefrontSdk } from '@/shopify/index';
+import { sanitizeHtml } from '@/utils/sanitize';
 
 import MainContent from '../_components/MainContent';
 
@@ -20,6 +21,7 @@ const RefundPage = async () => {
   const refundPolicy = response.shop?.refundPolicy;
 
   const { title, description } = seo.pages.refund || {};
+  const refundHtml = sanitizeHtml(refundPolicy?.body);
 
   return (
     <div>
@@ -27,7 +29,7 @@ const RefundPage = async () => {
         <Breadcrumbs lastElement={title} />
       </PageBanner>
       <MainContent>
-        {refundPolicy?.body && <div dangerouslySetInnerHTML={{ __html: refundPolicy.body }} />}
+        {refundHtml && <div dangerouslySetInnerHTML={{ __html: refundHtml }} />}
       </MainContent>
     </div>
   );
