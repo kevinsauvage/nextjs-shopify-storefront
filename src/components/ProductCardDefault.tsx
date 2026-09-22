@@ -12,7 +12,8 @@ import { mapShopifyImagesToImageFields } from '@/utils/images';
 import { Badge } from './ui/badge';
 import ProductCardActions from './ProductCardActions';
 
-const isWhatPercentOf = (x: number, y: number) => (((x - y) / y) * 100).toFixed(0);
+const discountPercentOf = (price: number, compareAt: number) =>
+  (((compareAt - price) / compareAt) * 100).toFixed(0);
 
 const CARD_SIZES = '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw';
 
@@ -49,7 +50,7 @@ const ProductCardDefault = ({ product, priority, className }: ProductCardDefault
   const hasDiscount =
     !!compareAtPrice && !!price && Number(compareAtPrice.amount) > Number(price.amount);
   const discountPercentage = hasDiscount
-    ? isWhatPercentOf(Number(price?.amount), Number(compareAtPrice?.amount))
+    ? discountPercentOf(Number(price?.amount), Number(compareAtPrice?.amount))
     : null;
 
   const href = `${config.routes.collection}/products/${handle}`;

@@ -8,9 +8,12 @@ describe('getQuantityCap', () => {
     expect(getQuantityCap(undefined)).toBeUndefined();
   });
 
-  it('treats zero or negative values as unlimited', () => {
-    expect(getQuantityCap(0)).toBeUndefined();
-    expect(getQuantityCap(-3)).toBeUndefined();
+  it('treats tracked zero as out of stock', () => {
+    expect(getQuantityCap(0)).toBe(0);
+  });
+
+  it('clamps negative values to zero', () => {
+    expect(getQuantityCap(-3)).toBe(0);
   });
 
   it('returns the cap when inventory is tracked', () => {

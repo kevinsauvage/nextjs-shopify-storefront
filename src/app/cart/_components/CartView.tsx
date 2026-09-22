@@ -3,7 +3,9 @@
 import Link from 'next/link';
 
 import CartLoading from '@/app/cart/loading';
+import EmptyState from '@/components/EmptyState';
 import PageBanner from '@/components/PageBanner';
+import { Button } from '@/components/ui/button';
 import useCartContext from '@/contexts/CartContext/useCartContext';
 
 import CartEmptyState from './CartEmptyState';
@@ -21,11 +23,32 @@ import { ChevronLeft } from 'lucide-react';
  * so there is a single cart skeleton to maintain.
  */
 const CartView = () => {
-  const { cart, isLoading } = useCartContext();
+  const { cart, error, isLoading } = useCartContext();
   const isEmpty = !cart?.lines?.edges?.length;
 
   if (isLoading) {
     return <CartLoading />;
+  }
+
+  // A load failure leaves `cart` null; without this the UI would wrongly claim
+  // the cart is empty. Surface the outage and offer a retry instead.
+  if (error && !cart) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+        <EmptyState
+          variant="error"
+          altText="Error illustration"
+          title="We couldn't load your cart"
+          subtitle="Something went wrong while retrieving your cart. Please try again."
+          tips={['Check your connection', 'Refresh the page']}
+          primaryAction={
+            <Button onClick={() => window.location.reload()} variant="default">
+              Try again
+            </Button>
+          }
+        />
+      </div>
+    );
   }
 
   return (

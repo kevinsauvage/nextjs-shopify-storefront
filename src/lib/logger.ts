@@ -34,6 +34,28 @@ export const sanitizeErrorMessage = (message: string): string =>
     message,
   );
 
+/** Keys whose values must never reach a log sink, even nested in `meta`. */
+const SENSITIVE_KEY = /password|token|secret|reseturl|authorization/i;
+
+const sanitizeValue = (value: unknown): unknown => {
+  if (typeof value === 'string') return sanitizeErrorMessage(value);
+  if (Array.isArray(value)) return value.map(sanitizeValue);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([key, entry]) => [
+        key,
+        SENSITIVE_KEY.test(key) ? '[REDACTED]' : sanitizeValue(entry),
+      ]),
+    );
+  }
+  return value;
+};
+
+const sanitizeMeta = (
+  meta?: Record<string, unknown>,
+): Record<string, unknown> | undefined =>
+  meta ? (sanitizeValue(meta) as Record<string, unknown>) : undefined;
+
 const toError = (error: unknown): Error => {
   if (error instanceof Error) return error;
   if (typeof error === 'string') return new Error(error);
@@ -63,12 +85,20 @@ export const reportError = (
 ): void => {
   const normalized = toError(error);
   const message = sanitizeErrorMessage(normalized.message);
+  const safeMeta = sanitizeMeta(meta);
 
-  write(context, { ...meta, error: message });
+  write(context, { ...safeMeta, error: message });
 
   if (process.env.NODE_ENV === 'development' && normalized.stack) {
-    console.error(`[${context}] Stack:`, normalized.stack);
+    console.error(`[${context}] Stack:`, sanitizeErrorMessage(normalized.stack));
   }
 
-  errorReporter?.({ context, error: normalized, meta });
+  // Hand the reporter redacted copies only — never the raw error/meta, which
+  // can contain credentials or access tokens from GraphQL variables.
+  const reportedError = new Error(message);
+  reportedError.stack = normalized.stack
+    ? sanitizeErrorMessage(normalized.stack)
+    : undefined;
+
+  errorReporter?.({ context, error: reportedError, meta: safeMeta });
 };

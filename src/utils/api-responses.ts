@@ -121,9 +121,7 @@ export function getErrorStatus(error: unknown, defaultStatus = HTTP_STATUS.INTER
 export function handleApiError(context: string, error: unknown, defaultMessage: string) {
   safeLogError(context, error);
   const status = getErrorStatus(error);
-  return createErrorResponse(defaultMessage, {
-    message: error instanceof Error ? error.message : 'An unexpected error occurred',
-    status,
-  });
+  // Never echo the raw error message: it can leak Shopify/GraphQL internals.
+  return createErrorResponse(defaultMessage, { status });
 }
 

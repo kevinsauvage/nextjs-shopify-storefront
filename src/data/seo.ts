@@ -37,7 +37,8 @@ const seo = {
     title: 'Cart',
   },
   home: {
-    description: 'Description',
+    description:
+      'Shop our curated collection of products. Discover new arrivals, best sellers, and exclusive offers with fast, secure checkout.',
     title: 'Home',
   },
   login: {

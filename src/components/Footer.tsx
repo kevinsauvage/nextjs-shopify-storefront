@@ -52,7 +52,9 @@ const Footer = ({ menuItems }: FooterProps) => {
         </div>
 
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
-          <p className="text-caption text-secondary">Copyright © 2025 All rights reserved.</p>
+          <p className="text-caption text-secondary">
+            Copyright © {new Date().getFullYear()} All rights reserved.
+          </p>
           <p className="text-caption text-secondary">Crafted with care.</p>
         </div>
       </div>

@@ -29,7 +29,8 @@ export const formatDate = (
  * @returns Formatted price string (e.g., "$12.99" or "€12.99")
  */
 export const formatPrice = (amount: string | number, currencyCode: string): string => {
-  const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+  const parsed = typeof amount === 'string' ? parseFloat(amount) : amount;
+  const numAmount = Number.isFinite(parsed) ? parsed : 0;
 
   // Use Intl.NumberFormat for proper currency formatting
   try {

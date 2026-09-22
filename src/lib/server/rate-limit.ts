@@ -1,3 +1,5 @@
+import { reportError } from '@/lib/logger';
+
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
@@ -26,13 +28,24 @@ const getLimiter = (name: string, tokens: number, window: Duration): Ratelimit =
   return limiter;
 };
 
-/** Returns `true` when `key` has exceeded `tokens` requests per `window`. */
+/**
+ * Returns `true` when `key` has exceeded `tokens` requests per `window`.
+ *
+ * Fails open: if the limiter backend (Upstash) is unavailable, the request is
+ * allowed through rather than turning a limiter outage into an auth/checkout
+ * outage. The failure is logged so it is still observable.
+ */
 export const isRateLimited = async (
   name: string,
   key: string,
   tokens: number,
   window: Duration,
 ): Promise<boolean> => {
-  const { success } = await getLimiter(name, tokens, window).limit(key);
-  return !success;
+  try {
+    const { success } = await getLimiter(name, tokens, window).limit(key);
+    return !success;
+  } catch (error) {
+    reportError('isRateLimited', error, { name });
+    return false;
+  }
 };

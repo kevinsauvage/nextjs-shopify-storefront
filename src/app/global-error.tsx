@@ -8,6 +8,10 @@ import EmptyState from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
 import { reportError } from '@/lib/logger';
 
+// `global-error` replaces the root layout, so the global stylesheet must be
+// imported here as well or the fallback renders unstyled.
+import '../styles/globals.css';
+
 const GlobalError = ({
   error,
   reset,

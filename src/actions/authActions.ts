@@ -85,7 +85,13 @@ export async function loginAction(input: LoginInput): Promise<FormState> {
   const { email, password, redirectUrl } = result.data;
 
   const ip = await getClientIp();
-  if (await isRateLimited('auth:login', `${ip}:${email}`, 5, '10 m')) {
+  // Two buckets: per-target (ip:email) and a global per-IP cap. The latter stops
+  // credential stuffing / spraying across many different emails from one host.
+  const [targetLimited, ipLimited] = await Promise.all([
+    isRateLimited('auth:login', `${ip}:${email}`, 5, '10 m'),
+    isRateLimited('auth:login:ip', ip, 30, '10 m'),
+  ]);
+  if (targetLimited || ipLimited) {
     return tooManyAttempts();
   }
 
@@ -112,7 +118,11 @@ export const recoverPasswordAction = async (
   }
 
   const ip = await getClientIp();
-  if (await isRateLimited('auth:recover', `${ip}:${result.data.email}`, 3, '15 m')) {
+  const [targetLimited, ipLimited] = await Promise.all([
+    isRateLimited('auth:recover', `${ip}:${result.data.email}`, 3, '15 m'),
+    isRateLimited('auth:recover:ip', ip, 10, '15 m'),
+  ]);
+  if (targetLimited || ipLimited) {
     return tooManyAttempts();
   }
 

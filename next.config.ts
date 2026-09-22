@@ -1,6 +1,8 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
   },
@@ -40,6 +42,14 @@ const nextConfig: NextConfig = {
       {
         key: 'Referrer-Policy',
         value: 'strict-origin-when-cross-origin',
+      },
+      {
+        key: 'Cross-Origin-Opener-Policy',
+        value: 'same-origin',
+      },
+      {
+        key: 'Cross-Origin-Resource-Policy',
+        value: 'same-origin',
       },
       {
         key: 'Permissions-Policy',

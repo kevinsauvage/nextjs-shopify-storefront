@@ -66,6 +66,23 @@ const createStorefrontClient = (cacheOption: 'default' | 'no-store' = 'default')
 
 const storefrontClient = createStorefrontClient('default');
 
+/** Keys whose values must never reach a log sink (auth payloads). */
+const SENSITIVE_KEY = /password|token|secret|reseturl|authorization/i;
+
+/** Deep-clone `value`, replacing any sensitive key's value with a marker. */
+const redactVariables = (value: unknown): unknown => {
+  if (Array.isArray(value)) return value.map(redactVariables);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([key, entry]) => [
+        key,
+        SENSITIVE_KEY.test(key) ? '[REDACTED]' : redactVariables(entry),
+      ]),
+    );
+  }
+  return value;
+};
+
 const logRequestError = (
   operationName: string,
   operationType: string | undefined,
@@ -74,7 +91,7 @@ const logRequestError = (
 ) => {
   safeLogError(`GraphQL request - ${operationName}`, {
     operationType,
-    variables,
+    variables: variables ? redactVariables(variables) : undefined,
     error: error instanceof Error ? error.message : String(error),
   });
 };

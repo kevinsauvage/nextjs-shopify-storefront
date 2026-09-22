@@ -19,6 +19,7 @@ export const getAccountStats = async (customerAccessToken: string): Promise<Acco
       first: 3,
       identifiers: [],
       language: LanguageCode.En,
+      reverse: true,
       sortKey: OrderSortKeys.ProcessedAt,
     }),
     storefrontSdk('private').getCustomerAddresses({

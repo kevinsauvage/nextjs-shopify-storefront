@@ -44,7 +44,6 @@
     ".next/types/**/*.ts",
     "src/types/globals.d.ts",
     "src/types/**/*.d.ts",
-    "tailwind.config.js",
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
