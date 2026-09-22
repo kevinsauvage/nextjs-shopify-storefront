@@ -196,38 +196,38 @@ This project uses [GraphQL Code Generator](https://the-guild.dev/graphql/codegen
 
 ### Required
 
-| Variable                             | Description                                 |
-| ------------------------------------ | ------------------------------------------- |
-| `SHOPIFY_STORE_FRONT_ACCESS_TOKEN`   | Shopify Storefront API access token         |
-| `NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL` | Shopify Storefront API GraphQL endpoint URL |
-| `NEXT_PUBLIC_BASE_URL`               | Canonical site URL (metadata, sitemap, etc.) |
+| Variable                                              | Description                                                |
+| ----------------------------------------------------- | ---------------------------------------------------------- |
+| `SHOPIFY_STORE_FRONT_ACCESS_TOKEN`                    | Shopify Storefront API access token                        |
+| `NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL`                  | Shopify Storefront API GraphQL endpoint URL                |
+| `NEXT_PUBLIC_BASE_URL`                                | Canonical site URL (metadata, sitemap, etc.)               |
 | `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Upstash for Redis creds; durable contact-form rate limiter |
 
 These are validated at server startup by `src/config/env.ts`; the app fails fast if they are missing or malformed.
 
 ### Optional
 
-| Variable                          | Description                                             |
-| --------------------------------- | ------------------------------------------------------- |
-| `SHOPIFY_STORE_FRONT_ADMIN_TOKEN` | Shopify Admin API access token (set with `SHOPIFY_ADMIN_URL`) |
-| `SHOPIFY_ADMIN_URL`               | Shopify Admin API GraphQL endpoint URL                  |
-| `SHOPIFY_SCOPE`                   | Comma-separated list of delegate token scopes           |
-| `NEXT_PUBLIC_SITE_DOMAIN`         | Cookie `Domain` attribute: a registrable parent such as `example.com` (or `www.example.com`). Leave empty on `*.vercel.app`/preview or `localhost` deployments so the session cookie stays host-only. |
-| `NEXT_PUBLIC_GTM_ID`              | Google Tag Manager container ID (format: `GTM-XXXXXXX`) |
-| `EMAIL_ADDRESS` / `EMAIL_PASSWORD` | Sending mailbox used by the contact form                |
-| `CONTACT_EMAIL`                   | Recipient of contact submissions (defaults to `EMAIL_ADDRESS`) |
-| `ERROR_REPORTING_URL`             | Optional webhook that receives logged errors            |
-| `NEXT_PUBLIC_SITE_NAME`           | Company name used across SEO / Open Graph metadata      |
-| `NEXT_PUBLIC_SITE_EMAIL`          | Public contact email shown in metadata / structured data |
-| `NEXT_PUBLIC_SITE_PHONE`          | Public phone number                                     |
-| `NEXT_PUBLIC_SITE_LOGO`           | Absolute URL to the Open Graph logo image               |
-| `NEXT_PUBLIC_SITE_LOGO_SQUARE`    | Absolute URL to the square logo image                   |
-| `NEXT_PUBLIC_SITE_FACEBOOK`       | Facebook profile URL                                    |
-| `NEXT_PUBLIC_SITE_INSTAGRAM`      | Instagram profile URL                                   |
-| `NEXT_PUBLIC_SITE_TWITTER`        | Twitter/X profile URL                                   |
-| `NEXT_PUBLIC_SITE_TWITTER_HANDLE` | Twitter/X handle (e.g. `@yourhandle`)                   |
-| `NEXT_PUBLIC_SITE_LINKEDIN`       | LinkedIn profile URL                                    |
-| `NEXT_PUBLIC_SITE_ABOUT_SHORT`    | Short company description used as a metadata fallback   |
+| Variable                           | Description                                                                                                                                                                                           |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SHOPIFY_STORE_FRONT_ADMIN_TOKEN`  | Shopify Admin API access token (set with `SHOPIFY_ADMIN_URL`)                                                                                                                                         |
+| `SHOPIFY_ADMIN_URL`                | Shopify Admin API GraphQL endpoint URL                                                                                                                                                                |
+| `SHOPIFY_SCOPE`                    | Comma-separated list of delegate token scopes                                                                                                                                                         |
+| `NEXT_PUBLIC_SITE_DOMAIN`          | Cookie `Domain` attribute: a registrable parent such as `example.com` (or `www.example.com`). Leave empty on `*.vercel.app`/preview or `localhost` deployments so the session cookie stays host-only. |
+| `NEXT_PUBLIC_GTM_ID`               | Google Tag Manager container ID (format: `GTM-XXXXXXX`)                                                                                                                                               |
+| `EMAIL_ADDRESS` / `EMAIL_PASSWORD` | Sending mailbox used by the contact form                                                                                                                                                              |
+| `CONTACT_EMAIL`                    | Recipient of contact submissions (defaults to `EMAIL_ADDRESS`)                                                                                                                                        |
+| `ERROR_REPORTING_URL`              | Optional webhook that receives logged errors                                                                                                                                                          |
+| `NEXT_PUBLIC_SITE_NAME`            | Company name used across SEO / Open Graph metadata                                                                                                                                                    |
+| `NEXT_PUBLIC_SITE_EMAIL`           | Public contact email shown in metadata / structured data                                                                                                                                              |
+| `NEXT_PUBLIC_SITE_PHONE`           | Public phone number                                                                                                                                                                                   |
+| `NEXT_PUBLIC_SITE_LOGO`            | Absolute URL to the Open Graph logo image                                                                                                                                                             |
+| `NEXT_PUBLIC_SITE_LOGO_SQUARE`     | Absolute URL to the square logo image                                                                                                                                                                 |
+| `NEXT_PUBLIC_SITE_FACEBOOK`        | Facebook profile URL                                                                                                                                                                                  |
+| `NEXT_PUBLIC_SITE_INSTAGRAM`       | Instagram profile URL                                                                                                                                                                                 |
+| `NEXT_PUBLIC_SITE_TWITTER`         | Twitter/X profile URL                                                                                                                                                                                 |
+| `NEXT_PUBLIC_SITE_TWITTER_HANDLE`  | Twitter/X handle (e.g. `@yourhandle`)                                                                                                                                                                 |
+| `NEXT_PUBLIC_SITE_LINKEDIN`        | LinkedIn profile URL                                                                                                                                                                                  |
+| `NEXT_PUBLIC_SITE_ABOUT_SHORT`     | Short company description used as a metadata fallback                                                                                                                                                 |
 
 When unset, the `NEXT_PUBLIC_SITE_*` values fall back to the defaults in `src/data/siteMetadata.ts`.
 

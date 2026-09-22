@@ -27,6 +27,9 @@ jobs:
       - name: Run ESLint
         run: yarn lint
 
+      - name: Check formatting
+        run: yarn format:check
+
       # Generate the real Next.js route/page types so `tsc` type-checks against
       # the actual app structure instead of a hand-written stub. `next typegen`
       # is static (it never executes pages), so no Shopify credentials are needed.
@@ -39,8 +42,8 @@ jobs:
       - name: Run Stylelint
         run: yarn lint:css
 
-      - name: Run tests
-        run: yarn test
+      - name: Run tests with coverage
+        run: yarn test:coverage
 
   build:
     name: Production Build
@@ -85,3 +88,28 @@ jobs:
           SHOPIFY_STORE_FRONT_ADMIN_TOKEN: ${{ secrets.SHOPIFY_STORE_FRONT_ADMIN_TOKEN }}
           SHOPIFY_ADMIN_URL: ${{ secrets.SHOPIFY_ADMIN_URL }}
         run: yarn build
+
+  audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      # Advisory only: the upstream transitive tree (mostly build-time tooling)
+      # currently reports findings we cannot fix without a major upgrade, so this
+      # job surfaces them without failing the pipeline. Tighten to a blocking
+      # `--level high` once the tree is clean.
+      - name: Audit dependencies
+        continue-on-error: true
+        run: yarn audit --level high

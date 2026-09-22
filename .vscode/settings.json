@@ -60,32 +60,16 @@
     }
   },
   "eslint.enable": true,
-  "eslint.probe": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
-  "eslint.validate": [
-    "javascript",
-    "typescript",
-    "javascriptreact",
-    "typescriptreact"
-  ],
+  "eslint.probe": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.validate": ["javascript", "typescript", "javascriptreact", "typescriptreact"],
   "eslint.workingDirectories": [
     {
       "mode": "auto"
     }
   ],
   "stylelint.enable": true,
-  "stylelint.validate": [
-    "css",
-    "scss"
-  ],
-  "stylelint.snippet": [
-    "css",
-    "scss"
-  ],
+  "stylelint.validate": ["css", "scss"],
+  "stylelint.snippet": ["css", "scss"],
   "css.validate": false,
   "scss.validate": false
 }
