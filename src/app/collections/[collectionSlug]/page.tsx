@@ -14,10 +14,8 @@ import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata'
 import { breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/server/structured-data';
 import { storefrontSdk } from '@/shopify';
 import { adjustPaginationVariables, parseFiltersQuery } from '@/shopify/helpers';
-import type { GetMenuByHandleQuery } from '@/shopify/storefront';
 import { ProductCollectionSortKeys } from '@/shopify/storefront';
 
-import CollectionNav, { type CollectionNavItem } from '../_components/CollectionNav';
 import Filters from '../_components/Filters';
 import Sort from '../_components/Sort';
 
@@ -57,50 +55,6 @@ export async function generateMetadata({
   });
 }
 
-const findRecursiveMenuItem = (
-  items: GetMenuByHandleQuery['menu'] | null | undefined,
-  collectionSlug: string,
-): boolean => {
-  if (!items?.items) return false;
-
-  for (const item of items.items) {
-    if (
-      typeof item?.url === 'string' &&
-      item.url.toLowerCase().includes(collectionSlug.toLowerCase())
-    ) {
-      return true;
-    } else if (item?.items?.length) {
-      const foundItem = findRecursiveMenuItem(
-        { items: item.items } as GetMenuByHandleQuery['menu'],
-        collectionSlug,
-      );
-      if (foundItem) {
-        return true;
-      }
-    }
-  }
-  return false;
-};
-
-const getCollectionNavItems = (
-  menu: GetMenuByHandleQuery['menu'] | null | undefined,
-  collectionSlug: string,
-): CollectionNavItem[] => {
-  if (!menu?.items) return [];
-
-  const foundItem = menu.items.find((item) => {
-    if (typeof item?.url === 'string') {
-      return findRecursiveMenuItem(
-        { items: item.items || [] } as GetMenuByHandleQuery['menu'],
-        collectionSlug,
-      );
-    }
-    return false;
-  });
-
-  return foundItem?.items || [];
-};
-
 const CollectionSlugPage = async ({
   params,
   searchParams,
@@ -121,7 +75,7 @@ const CollectionSlugPage = async ({
     (key) => key.toLowerCase() === searchParameters?.sort_key?.toLowerCase(),
   ) as keyof typeof ProductCollectionSortKeys;
 
-  const [response, menuResponse] = await Promise.all([
+  const [response] = await Promise.all([
     storefrontSdk().collection({
       filters: parseFiltersQuery(searchParameters?.filters),
       ...adjustPaginationVariables({
@@ -135,7 +89,6 @@ const CollectionSlugPage = async ({
       identifiers: [],
       sortKey: ProductCollectionSortKeys[sortKey] || ProductCollectionSortKeys.BestSelling,
     }),
-    storefrontSdk().getMenuByHandle({ handle: config.constants.menuHandles.main }),
   ]);
 
   const { collection } = response || {};
@@ -159,7 +112,6 @@ const CollectionSlugPage = async ({
     sort_key: searchParameters?.sort_key,
   };
 
-  const navItems = getCollectionNavItems(menuResponse?.menu, collectionSlug);
   const activeFilterCount = parseFiltersQuery(searchParameters?.filters).length;
   const safeEdges = edges ?? [];
   const pageCount = safeEdges.length;
@@ -247,14 +199,7 @@ const CollectionSlugPage = async ({
         </section>
       )}
 
-      {/* Sibling collection navigation */}
-      {navItems.length > 0 ? (
-        <div className="border-b border-border/60">
-          <div className="container mx-auto px-4 py-4 md:px-6">
-            <CollectionNav collectionSlug={collectionSlug} items={navItems} />
-          </div>
-        </div>
-      ) : null}
+      {/* Sibling collection navigation is provided by the header dropdowns. */}
 
       <div className="container mx-auto px-4 py-8 md:px-6 md:py-12">
         {pageCount > 0 ? (
