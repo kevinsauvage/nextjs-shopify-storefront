@@ -15,15 +15,41 @@ const Search = ({ searchQuery }: { searchQuery: string }) => {
   const [searchValue, setSearchValue] = useState(searchQuery);
   const [results, setResults] = useState<PredictiveSearchQuery['predictiveSearch'] | null>(null);
   const reference = useRef<HTMLDivElement | null>(null);
-  useOnClickOutside(reference as RefObject<HTMLElement>, () => setResults(null));
+  // Tracks the latest request so slower earlier responses cannot overwrite it.
+  const requestIdRef = useRef(0);
+  const abortRef = useRef<AbortController | null>(null);
+
+  useOnClickOutside(reference as RefObject<HTMLElement>, () => {
+    abortRef.current?.abort();
+    requestIdRef.current += 1;
+    setResults(null);
+  });
+
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+    };
+  }, []);
+
   const handleChange = useCallback(async (value: string) => {
     if (value?.trim().length < 2) {
+      abortRef.current?.abort();
+      requestIdRef.current += 1;
       setResults(null);
       return;
     }
 
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const requestId = (requestIdRef.current += 1);
+
     try {
-      const response = await fetch(`/api/search/predictive?q=${encodeURIComponent(value.trim())}`);
+      const response = await fetch(`/api/search/predictive?q=${encodeURIComponent(value.trim())}`, {
+        signal: controller.signal,
+      });
+
+      if (requestId !== requestIdRef.current) return;
 
       if (!response.ok) {
         throw new Error('Failed to fetch search results');
@@ -31,8 +57,14 @@ const Search = ({ searchQuery }: { searchQuery: string }) => {
 
       // The API wraps payloads in a `{ data, success }` envelope.
       const payload = await response.json();
+
+      if (requestId !== requestIdRef.current) return;
+
       setResults(payload?.data?.predictiveSearch || null);
     } catch (error) {
+      // Aborted requests are expected; only surface genuine failures.
+      if (controller.signal.aborted || requestId !== requestIdRef.current) return;
+
       console.error('Search error:', error);
       setResults(null);
     }

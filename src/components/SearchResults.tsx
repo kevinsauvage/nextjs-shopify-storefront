@@ -53,28 +53,30 @@ const Product = ({ product }: { product: ProductSearchItem }) => {
       href={`/collections/products/${handle}`}
       className="flex items-center gap-2 p-2 rounded hover:bg-muted overflow-hidden"
     >
-      <Button variant="ghost" className="w-full justify-start gap-3 rounded-none" role="option">
-        <OptimizedImage
-          src={image.small}
-          alt={image.altText || ''}
-          width={48}
-          height={48}
-          quality={75}
-          sizes="48px"
-          className="rounded-lg aspect-square object-contain"
-        />
-        <div className="flex flex-col items-start">
-          <span className="text-body font-semibold">{title}</span>
+      <Button asChild variant="ghost" className="w-full justify-start gap-3 rounded-none">
+        <span>
+          <OptimizedImage
+            src={image.small}
+            alt={image.altText || ''}
+            width={48}
+            height={48}
+            quality={75}
+            sizes="48px"
+            className="rounded-lg aspect-square object-contain"
+          />
+          <div className="flex flex-col items-start">
+            <span className="text-body font-semibold">{title}</span>
 
-          {priceRange?.minVariantPrice && (
-            <span className="text-body-sm text-secondary">
-              {formatPrice(
-                priceRange.minVariantPrice.amount,
-                priceRange.minVariantPrice.currencyCode,
-              )}
-            </span>
-          )}
-        </div>
+            {priceRange?.minVariantPrice && (
+              <span className="text-body-sm text-secondary">
+                {formatPrice(
+                  priceRange.minVariantPrice.amount,
+                  priceRange.minVariantPrice.currencyCode,
+                )}
+              </span>
+            )}
+          </div>
+        </span>
       </Button>
     </Link>
   );
@@ -88,12 +90,14 @@ const Query = ({ query }: { query: { text: string } }) => {
       className="block hover:bg-muted px-2 rounded"
     >
       <Button
+        asChild
         variant="ghost"
         className="w-full justify-start rounded-none text-body font-medium"
-        role="option"
       >
-        <Search className="mr-2 h-4 w-4 text-secondary" />
-        {query.text}
+        <span>
+          <Search className="mr-2 h-4 w-4 text-secondary" />
+          {query.text}
+        </span>
       </Button>
     </Link>
   );
@@ -137,9 +141,7 @@ const SearchResults = ({
 
         {products.length > 0 && (
           <>
-            <SectionTitle className="px-4 pt-4 text-label-sm text-secondary">
-              Products
-            </SectionTitle>
+            <SectionTitle className="px-4 pt-4 text-label-sm text-secondary">Products</SectionTitle>
             <div className="pb-4">
               {products.map((product) => (
                 <Product key={product.id} product={product as ProductSearchItem} />

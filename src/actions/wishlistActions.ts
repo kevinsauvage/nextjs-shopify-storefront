@@ -1,6 +1,12 @@
 'use server';
 
-import { WISHLIST_MAX_ITEMS, WishlistService } from '@/services/wishlist.service';
+import { getClientIp } from '@/lib/server/client-ip';
+import { isRateLimited } from '@/lib/server/rate-limit';
+import {
+  isValidWishlistProductId,
+  WISHLIST_MAX_ITEMS,
+  WishlistService,
+} from '@/services/wishlist.service';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
 import { safeLogError } from '@/utils/api-responses';
 
@@ -9,6 +15,20 @@ export type WishlistActionResult = {
   data?: string[];
   message?: string;
 };
+
+/** Generic copy so failures never echo Shopify/GraphQL internals. */
+const GENERIC_ERROR = 'Something went wrong. Please try again.';
+const UNAUTHENTICATED_ERROR = 'User not authenticated';
+
+/** Throttle wishlist writes, which each trigger an Admin API mutation. */
+const assertNotRateLimited = async (): Promise<boolean> => {
+  const ip = await getClientIp();
+  return isRateLimited('wishlist:write', ip, 30, '1 m');
+};
+
+/** Cap the client-supplied id list before any validation or fetching. */
+const normalizeIds = (productIds: unknown): string[] =>
+  Array.isArray(productIds) ? productIds.slice(0, WISHLIST_MAX_ITEMS) : [];
 
 export async function getWishlistIdsAction(): Promise<string[]> {
   try {
@@ -22,10 +42,13 @@ export async function getWishlistIdsAction(): Promise<string[]> {
 export async function getWishlistProductsAction(
   productIds: string[],
 ): Promise<ProductFieldsFragment[]> {
-  if (!Array.isArray(productIds) || productIds.length === 0) return [];
+  const ids = normalizeIds(productIds);
+  if (ids.length === 0) return [];
 
   try {
-    return await WishlistService.resolveProductsByIds(productIds);
+    // `resolveProductsByIds` re-validates every id, so malformed input cannot
+    // reach the Storefront API even though this action is unauthenticated.
+    return await WishlistService.resolveProductsByIds(ids);
   } catch (error) {
     safeLogError('getWishlistProductsAction', error);
     return [];
@@ -33,15 +56,19 @@ export async function getWishlistProductsAction(
 }
 
 export async function addToWishlistAction(productId: string): Promise<WishlistActionResult> {
-  if (!productId || typeof productId !== 'string') {
-    return { success: false, message: 'Missing or invalid product ID' };
+  if (!isValidWishlistProductId(productId)) {
+    return { success: false, message: 'Invalid product ID' };
+  }
+
+  if (await assertNotRateLimited()) {
+    return { success: false, message: 'Too many wishlist updates. Please slow down.' };
   }
 
   try {
     const { customerId, ids } = await WishlistService.getWishlistState();
 
     if (!customerId) {
-      return { success: false, message: 'User not authenticated' };
+      return { success: false, message: UNAUTHENTICATED_ERROR };
     }
 
     if (ids.includes(productId)) {
@@ -55,52 +82,53 @@ export async function addToWishlistAction(productId: string): Promise<WishlistAc
       };
     }
 
-    const result = await WishlistService.updateWishlist([...ids, productId], customerId);
+    // Re-read the current list and apply the change in a single write so a
+    // concurrent add/remove is merged instead of being overwritten.
+    const result = await WishlistService.mutateWishlist({ action: 'add', productId }, customerId);
 
     if (!result.success) {
-      return { success: false, message: result.message || "Couldn't add product to wishlist" };
+      return { success: false, message: result.message || GENERIC_ERROR };
     }
 
     return { success: true, data: result.data, message: 'Product added to wishlist' };
   } catch (error) {
     safeLogError('addToWishlistAction', error);
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : 'An unexpected error occurred',
-    };
+    return { success: false, message: GENERIC_ERROR };
   }
 }
 
 export async function removeFromWishlistAction(productId: string): Promise<WishlistActionResult> {
+  if (!isValidWishlistProductId(productId)) {
+    return { success: false, message: 'Invalid product ID' };
+  }
+
+  if (await assertNotRateLimited()) {
+    return { success: false, message: 'Too many wishlist updates. Please slow down.' };
+  }
+
   try {
     const { customerId, ids } = await WishlistService.getWishlistState();
 
     if (!customerId) {
-      return { success: false, message: 'User not authenticated' };
+      return { success: false, message: UNAUTHENTICATED_ERROR };
     }
 
     if (!ids.includes(productId)) {
-      return { success: false, message: 'Product not found in wishlist' };
+      return { success: true, data: ids, message: 'Product already removed from wishlist' };
     }
 
-    const result = await WishlistService.updateWishlist(
-      ids.filter((id) => id !== productId),
+    const result = await WishlistService.mutateWishlist(
+      { action: 'remove', productId },
       customerId,
     );
 
     if (!result.success) {
-      return {
-        success: false,
-        message: result.message || 'Something went wrong removing the product from the wishlist',
-      };
+      return { success: false, message: result.message || GENERIC_ERROR };
     }
 
     return { success: true, data: result.data, message: 'Product removed from wishlist' };
   } catch (error) {
     safeLogError('removeFromWishlistAction', error);
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : 'An unexpected error occurred',
-    };
+    return { success: false, message: GENERIC_ERROR };
   }
 }

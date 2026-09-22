@@ -30,7 +30,10 @@ const AccountNavigationSheet = () => {
       <SheetContent side="left" className="w-full gap-0 p-0 sm:max-w-sm">
         <SheetHeader className="border-b border-border px-6 pt-6 pb-5">
           <SheetTitle className="text-heading-3">Account</SheetTitle>
-          <SheetDescription className="text-body-sm text-secondary">
+          <SheetDescription
+            id="account-navigation-description"
+            className="text-body-sm text-secondary"
+          >
             Navigate through your account settings and information.
           </SheetDescription>
         </SheetHeader>

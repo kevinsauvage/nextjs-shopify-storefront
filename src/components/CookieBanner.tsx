@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import config from '@/config';
-import { withGtag } from '@/lib/client/analytics';
+import { dispatchConsentUpdated, withGtag } from '@/lib/client/analytics';
 import { getCookieFront, setCookieFront } from '@/lib/client/cookies';
 import type { originalSettingsType } from '@/utils/consents';
 import { transformedSettings } from '@/utils/consents';
@@ -61,6 +61,7 @@ const CookieBanner = () => {
     withGtag((gtag) => {
       gtag('consent', 'update', transformedObject);
     });
+    dispatchConsentUpdated();
   }, [setShowBannerCookies]);
 
   const rejectAllCookie = useCallback(() => {
@@ -76,6 +77,7 @@ const CookieBanner = () => {
     });
     setCookieFront('localConsent', JSON.stringify(cookie), EXPIRY_COOKIE_TIME);
     setShowBannerCookies(false);
+    dispatchConsentUpdated();
   }, [setShowBannerCookies]);
 
   const handleSaveSettings = useCallback(
@@ -101,6 +103,7 @@ const CookieBanner = () => {
       });
       setCookieFront('localConsent', JSON.stringify(formData), EXPIRY_COOKIE_TIME);
       setShowBannerCookies(false);
+      dispatchConsentUpdated();
     },
     [setShowBannerCookies],
   );

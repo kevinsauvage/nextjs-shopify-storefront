@@ -10,21 +10,36 @@ Legend: **P0** = critical (data loss/leak, broken checkout, security, or no safe
 
 ## P1 — Important
 
-- [ ] **P1-1 · GTM never loads in the session where consent is granted**
-      `src/components/GtmScript.tsx:11-31` computes consent once inside `useEffect([])`; `CookieBanner` only calls `gtag('consent','update')` and never re-renders it, so the `<Script id="gtm">` block (`:51-64`) mounts only after a full reload — analytics are lost for the whole first session.
-      **Fix:** share consent via context/state or a `window` event so `GtmScript` re-evaluates, or always mount GTM and rely on Consent Mode.
+- [x] **P1-1 · GTM never loads in the session where consent is granted**
+      `GtmScript` now re-reads the consent cookie on a `localConsentUpdated`
+      `window` event dispatched by `CookieBanner` after every choice
+      (`src/lib/client/analytics.ts`, `src/components/GtmScript.tsx`,
+      `src/components/CookieBanner.tsx`), so `<Script id="gtm">` mounts in the
+      same session instead of waiting for a reload.
 
-- [ ] **P1-2 · Predictive search has races and shows stale results**
-      `src/components/Search.tsx:19-48` issues `fetch` calls with no `AbortController` or request sequencing, so a slower earlier query can overwrite newer results, and an in-flight response reappears after the input is cleared to `< 2` chars (`:64`).
-      **Fix:** abort the previous request or tag responses with a request id and ignore stale ones.
+- [x] **P1-2 · Predictive search has races and shows stale results**
+      `src/components/Search.tsx` now aborts the in-flight request and tags each
+      one with a request id, ignoring responses that are no longer the latest;
+      clearing the input to `< 2` chars aborts and resets so an in-flight
+      response can no longer reappear.
 
-- [ ] **P1-3 · Wishlist writes are unhardened and non-atomic**
-      `src/actions/wishlistActions.ts:35-106` returns raw `error.message` to the browser, validates only `typeof productId === 'string'` (no length/GID check), has no rate limiting despite doing an Admin API write per call, and performs a read-modify-write (`:41-58,76-89`) that loses concurrent updates. `getWishlistProductsAction` (`:22-33`) is an unauthenticated, uncapped GraphQL proxy.
-      **Fix:** return generic messages, validate ids, add per-session rate limits, cap input length, and serialize/atomically apply writes.
+- [x] **P1-3 · Wishlist writes are unhardened and non-atomic**
+      `src/actions/wishlistActions.ts` validates ids against a product-GID
+      pattern (`isValidWishlistProductId`, 255-char cap), rate limits writes per
+      client IP, caps the input list, and returns generic messages.
+      `WishlistService.mutateWishlist` re-reads inside a per-customer lock so
+      concurrent read-modify-write cycles serialize instead of losing updates,
+      and `resolveProductsByIds` validates + caps ids before hitting the
+      Storefront API.
 
-- [ ] **P1-4 · Accessibility regressions in interactive elements**
-      `Button` nested inside `Link` (`src/components/SearchResults.tsx:51-98`, `src/components/PageInfoPagination.tsx:24-58`, `src/app/cart/_components/CartEmptyState.tsx:22-26`) leaves disabled controls focusable and can emit `href=""`; `role="option"` is used with no `listbox` ancestor (`SearchResults.tsx:56,93`); `aria-describedby='"Account Navigation">'` is malformed (`src/app/account/_components/AccountNavigationSheet.tsx:40`); and `PhotoGallery.tsx:65-80` hijacks `ArrowLeft/Right` globally with `preventDefault`, breaking keyboard input on product pages.
-      **Fix:** use `Button asChild` + `Link` (omit the link when there is no page), fix/remove invalid ARIA, and scope gallery key handling to the gallery (no `preventDefault` for inputs).
+- [x] **P1-4 · Accessibility regressions in interactive elements**
+      `Button asChild` now wraps the link/`span` in `SearchResults`,
+      `PageInfoPagination`, and `CartEmptyState` (disabled pagination renders a
+      real disabled button, no `href=""`); invalid `role="option"` and the
+      malformed `aria-describedby` were removed/fixed
+      (`SearchResults.tsx`, `AccountNavigationSheet.tsx`); and `PhotoGallery`
+      scopes arrow-key handling to the gallery/lightbox and never hijacks keys
+      from inputs.
 
 ---
 

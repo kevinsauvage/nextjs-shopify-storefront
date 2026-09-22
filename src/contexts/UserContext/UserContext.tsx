@@ -109,7 +109,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       } catch (error) {
         setWishlistIds(previousIds);
         console.error('Wishlist operation error:', error);
-        toast.error(error instanceof Error ? error.message : 'Something went wrong');
+        toast.error('Something went wrong');
       }
     },
     [isLoggedIn, pathname, router, wishlistIds],

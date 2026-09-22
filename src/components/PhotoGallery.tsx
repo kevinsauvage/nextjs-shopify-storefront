@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
@@ -48,6 +48,7 @@ const THUMB_RAIL_MAX_HEIGHT = 'lg:max-h-[clamp(26rem,72vh,44rem)]';
 const PhotoGallery = ({ images, className }: PhotoGalleryProps) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const galleryRef = useRef<HTMLDivElement | null>(null);
 
   const imageCount = images?.length ?? 0;
   const hasMultipleImages = imageCount > 1;
@@ -61,30 +62,43 @@ const PhotoGallery = ({ images, className }: PhotoGalleryProps) => {
     [imageCount],
   );
 
-  // Arrow-key navigation, shared by the stage and the lightbox.
+  // Arrow-key navigation, scoped to the gallery or the open lightbox.
   useEffect(() => {
     if (!hasMultipleImages) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        goTo(selectedImageIndex - 1);
-      } else if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        goTo(selectedImageIndex + 1);
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+
+      // Never hijack keys from text inputs or other interactive widgets.
+      const target = event.target as HTMLElement | null;
+      if (
+        target?.isContentEditable ||
+        target?.closest('input, textarea, select, [role="textbox"], [contenteditable="true"]')
+      ) {
+        return;
       }
+
+      // The lightbox is portalled outside this subtree, so it is always handled.
+      const isWithinGallery = galleryRef.current?.contains(target ?? null) ?? false;
+      if (!isLightboxOpen && !isWithinGallery) return;
+
+      event.preventDefault();
+      goTo(event.key === 'ArrowLeft' ? selectedImageIndex - 1 : selectedImageIndex + 1);
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [goTo, selectedImageIndex, hasMultipleImages]);
+  }, [goTo, selectedImageIndex, hasMultipleImages, isLightboxOpen]);
 
   if (imageCount === 0) {
     return (
       <div className={cn('relative', className)}>
-        <div className={cn('media-frame flex w-full items-center justify-center', IMAGE_ASPECT_RATIO)}>
+        <div
+          className={cn('media-frame flex w-full items-center justify-center', IMAGE_ASPECT_RATIO)}
+        >
           <span className="text-body-sm text-secondary">No image available</span>
-        </div>      </div>
+        </div>{' '}
+      </div>
     );
   }
 
@@ -116,7 +130,10 @@ const PhotoGallery = ({ images, className }: PhotoGalleryProps) => {
   ) : null;
 
   return (
-    <div className={cn('lg:grid lg:grid-cols-[76px_1fr] lg:items-start lg:gap-4', className)}>
+    <div
+      ref={galleryRef}
+      className={cn('lg:grid lg:grid-cols-[76px_1fr] lg:items-start lg:gap-4', className)}
+    >
       {/* Thumbnail rail (vertical on desktop, horizontal scroll on mobile) */}
       {hasMultipleImages ? (
         <div

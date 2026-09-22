@@ -1,34 +1,44 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Script from 'next/script';
 
+import { CONSENT_UPDATED_EVENT } from '@/lib/client/analytics';
 import { getCookieFront } from '@/lib/client/cookies';
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
 
 const GtmScript = () => {
-  const [hasConsent, setHasConsent] = useState<boolean | null>(null);
+  const [hasConsent, setHasConsent] = useState(false);
 
-  useEffect(() => {
+  const readConsent = useCallback(() => {
     const consentCookie = getCookieFront('localConsent');
-    if (consentCookie) {
-      try {
-        const consent = JSON.parse(consentCookie);
-        setTimeout(() => {
-          setHasConsent(consent.analytics_storage || consent.ad_storage);
-        }, 0);
-      } catch {
-        setTimeout(() => {
-          setHasConsent(false);
-        }, 0);
-      }
-    } else {
-      setTimeout(() => {
-        setHasConsent(false);
-      }, 0);
+    if (!consentCookie) return false;
+
+    try {
+      const consent = JSON.parse(consentCookie) as {
+        ad_storage?: boolean;
+        analytics_storage?: boolean;
+      };
+      return Boolean(consent.analytics_storage || consent.ad_storage);
+    } catch {
+      return false;
     }
   }, []);
+
+  /**
+   * Consent is read after mount (cookies are not available during SSR) and
+   * re-read whenever the cookie banner stores a new choice, so GTM mounts in
+   * the same session instead of waiting for a reload.
+   */
+  useEffect(() => {
+    const sync = () => setHasConsent(readConsent());
+
+    sync();
+    window.addEventListener(CONSENT_UPDATED_EVENT, sync);
+
+    return () => window.removeEventListener(CONSENT_UPDATED_EVENT, sync);
+  }, [readConsent]);
 
   return (
     <>

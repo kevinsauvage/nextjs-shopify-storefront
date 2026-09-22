@@ -19,11 +19,9 @@ const CartEmptyState = () => {
           subtitle="Add items to your cart to get started. Browse our collections to find products you'll love."
           altText="Empty shopping cart"
           primaryAction={
-            <Link href="/">
-              <Button size="lg" className="min-w-[200px]">
-                Start Shopping
-              </Button>
-            </Link>
+            <Button size="lg" className="min-w-[200px]" asChild>
+              <Link href="/">Start Shopping</Link>
+            </Button>
           }
           secondaryAction={
             <Link href="/collections" className="link">
@@ -37,4 +35,3 @@ const CartEmptyState = () => {
 };
 
 export default CartEmptyState;
-
