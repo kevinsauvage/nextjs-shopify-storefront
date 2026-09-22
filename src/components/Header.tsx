@@ -1,11 +1,8 @@
-import Link from 'next/link';
-
 import Logo from '@/components/Logo';
 import UserButtons from '@/components/UserButtons';
-import config from '@/config';
 import type { GetMenuByHandleQuery } from '@/shopify/storefront';
-import { normalizeMenuHref } from '@/utils/url';
 
+import DesktopNav from './DesktopNav';
 import HamburgerMenu from './HamburgerMenu';
 
 import { Truck } from 'lucide-react';
@@ -15,7 +12,7 @@ const Header = ({
 }: {
   headerMenu: GetMenuByHandleQuery['menu'] | null | undefined;
 }) => {
-  const navItems = (headerMenu?.items ?? []).slice(0, 5);
+  const navItems = (headerMenu?.items ?? []).slice(0, 6);
 
   return (
     <>
@@ -27,37 +24,15 @@ const Header = ({
       </div>
       <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="flex h-16 w-full items-center justify-between gap-3 md:h-[72px]">
-            <div className="flex items-center gap-2">
+          <div className="flex h-16 w-full items-center gap-3 md:h-[72px]">
+            <div className="flex flex-1 items-center gap-2">
               <HamburgerMenu headerMenu={headerMenu} />
               <Logo />
             </div>
-            <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
-              <Link
-                href={config.routes.home}
-                className="link-underline text-body-sm font-medium text-secondary transition-colors hover:text-foreground"
-              >
-                Home
-              </Link>
-              {navItems.map((item) =>
-                typeof item.url === 'string' ? (
-                  <Link
-                    key={item.id}
-                    href={normalizeMenuHref(item.url)}
-                    className="link-underline text-body-sm font-medium text-secondary transition-colors hover:text-foreground"
-                  >
-                    {item.title}
-                  </Link>
-                ) : null,
-              )}
-              <Link
-                href={config.routes.collection}
-                className="link-underline text-body-sm font-medium text-secondary transition-colors hover:text-foreground"
-              >
-                Shop all
-              </Link>
-            </nav>
-            <UserButtons />
+            <DesktopNav items={navItems} />
+            <div className="flex flex-1 justify-end">
+              <UserButtons />
+            </div>
           </div>
         </div>
       </header>
