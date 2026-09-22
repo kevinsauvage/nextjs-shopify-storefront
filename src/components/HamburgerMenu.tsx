@@ -112,8 +112,8 @@ const HamburgerMenu = ({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button aria-label="Menu" type="button" className="md:mr-auto cursor-pointer">
-          <Menu size={40} />
+        <button aria-label="Open menu" type="button" className="inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-full border border-border/70 bg-background/60 transition-colors hover:bg-muted">
+          <Menu size={20} strokeWidth={1.75} />
         </button>
       </SheetTrigger>
       <SheetContent side="left" className="p-0 w-full sm:max-w-md overflow-scroll max-h-dvh">

@@ -154,7 +154,7 @@ const ProductPage = async ({ params }: PageProperties) => {
   return (
     <div className="min-h-[calc(100vh-76px)]">
       <JsonLd data={structuredData} />
-      <div className="border-b border-border/60 bg-secondary/30">
+      <div className="hero-mesh border-b border-border/60">
         <div className="container mx-auto px-4 py-3 md:px-6">
           <Breadcrumbs lastElement={title} />
         </div>
@@ -165,7 +165,7 @@ const ProductPage = async ({ params }: PageProperties) => {
       </section>
 
       {hasRecommendations ? (
-        <section className="border-t border-border/60">
+        <section className="border-t border-border/60 bg-[var(--sidebar)]/60">
           <div className="container mx-auto px-4 py-12 md:px-6 md:py-16">
             <HomeSection eyebrow="Curated" title="You may also like">
               <ProductRecommendations recommendations={recommendations} />

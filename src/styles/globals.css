@@ -35,6 +35,14 @@
   --popover: #ffffff; /* Popover surface: #FFFFFF */
   --sidebar: #fafaf9; /* Sidebar surface: #FAFAF9 (stone-50) */
 
+  /* Brand accent — muted brass gold for CTAs, eyebrows, ratings.
+   * #8a5a00 = 5.9:1 on white (AA normal text); solid gold buttons use
+   * near-black text for 9.4:1. */
+  --gold: #8a5a00;
+  --gold-strong: #a16207;
+  --gold-soft: #fef6e0;
+  --gold-foreground: #0c0a09;
+
   --foreground: #0c0a09; /* Ink: #0C0A09 (stone-950) */
   --card-foreground: #0c0a09; /* Ink */
   --popover-foreground: #0c0a09; /* Ink */
@@ -122,6 +130,12 @@
   --destructive: #ef4444; /* red-500 - lighter red for dark mode */
   --destructive-foreground: #ffffff;
 
+  /* Brand accent — dark mode */
+  --gold: #eab308;
+  --gold-strong: #facc15;
+  --gold-soft: #292524;
+  --gold-foreground: #0c0a09;
+
   /* Borders and Inputs */
   --border: #292524; /* Border: #292524 (stone-800) */
   --sidebar-border: #292524;
@@ -149,6 +163,10 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-gold: var(--gold);
+  --color-gold-strong: var(--gold-strong);
+  --color-gold-soft: var(--gold-soft);
+  --color-gold-foreground: var(--gold-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -703,4 +721,97 @@ button[aria-disabled='true'] {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ------- Beauty pass: editorial commerce motion + surfaces ------- */
+
+@layer components {
+  /* Gold eyebrow with rule — used for section kickers */
+  .text-eyebrow-gold {
+    color: var(--gold);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-widest);
+    line-height: 1rem;
+    text-transform: uppercase;
+  }
+
+  /* Warm mesh hero surface: paper gradient + gold/rose washes (light) */
+  .hero-mesh {
+    background:
+      radial-gradient(42rem 22rem at 12% -8%, color-mix(in oklab, var(--gold-soft) 90%, transparent), transparent 70%),
+      radial-gradient(36rem 20rem at 88% 8%, color-mix(in oklab, #f5d0a9 55%, transparent), transparent 70%),
+      radial-gradient(30rem 18rem at 50% 110%, color-mix(in oklab, var(--muted) 90%, transparent), transparent 70%),
+      var(--background);
+  }
+
+  .dark .hero-mesh {
+    background:
+      radial-gradient(42rem 22rem at 12% -8%, color-mix(in oklab, var(--gold) 22%, transparent), transparent 70%),
+      radial-gradient(36rem 20rem at 88% 8%, color-mix(in oklab, #7c2d12 28%, transparent), transparent 70%),
+      var(--background);
+  }
+
+  /* Frosted glass bar / card */
+  .glass {
+    backdrop-filter: blur(14px);
+    background-color: color-mix(in oklab, var(--background) 72%, transparent);
+  }
+
+  /* Soft lift for cards, buttons, tiles */
+  .lift {
+    transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+  }
+
+  .lift:hover {
+    box-shadow: 0 18px 44px -18px rgb(12 10 9 / 0.28);
+    transform: translateY(-3px);
+  }
+
+  /* Hairline gradient divider */
+  .rule-gradient {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border) 18%, var(--gold) 50%, var(--border) 82%, transparent);
+  }
+}
+
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee-x 28s linear infinite;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rise {
+  animation: rise-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-rise-1 {
+  animation-delay: 0.06s;
+}
+
+.animate-rise-2 {
+  animation-delay: 0.14s;
+}
+
+.animate-rise-3 {
+  animation-delay: 0.22s;
 }

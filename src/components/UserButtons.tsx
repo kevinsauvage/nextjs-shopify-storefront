@@ -21,8 +21,8 @@ const UserButtons = ({ className }: { className?: string }) => {
         href={config.routes.search}
       >
         <Search
-          size={30}
-          strokeWidth={1}
+          size={22}
+          strokeWidth={1.5}
           className="hidden md:block text-secondary group-hover:text-primary transition-colors"
         />
       </Link>
@@ -33,8 +33,8 @@ const UserButtons = ({ className }: { className?: string }) => {
         href={config.routes.account}
       >
         <User
-          size={30}
-          strokeWidth={1}
+          size={22}
+          strokeWidth={1.5}
           className="hidden md:block text-secondary group-hover:text-primary transition-colors"
         />
       </Link>
@@ -45,11 +45,11 @@ const UserButtons = ({ className }: { className?: string }) => {
         aria-label={'Toggle Checkout'}
       >
         <ShoppingBag
-          size={30}
-          strokeWidth={1}
+          size={22}
+          strokeWidth={1.5}
           className="text-secondary group-hover:text-primary transition-colors"
         />
-        <Badge className="absolute -top-3 -right-3 rounded-full text-caption-sm font-bold bg-red-800 text-white">
+        <Badge className="absolute -top-1 -right-1 min-w-5 h-5 justify-center rounded-full text-[11px] font-bold bg-[var(--gold)] text-[var(--gold-foreground)] dark:bg-[var(--gold)]">
           {cart?.totalQuantity || 0}
         </Badge>
       </Link>

@@ -78,12 +78,26 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
 
   return (
     <div>
-      <PageBanner title={seo.search.title} description={seo.search.description}>
+      <PageBanner
+        title={seo.search.title}
+        eyebrow="Search the store"
+        description={seo.search.description}
+      >
         <Breadcrumbs />
         <Search
           key={searchParameters.searchQuery ?? ''}
           searchQuery={searchParameters.searchQuery ?? ''}
         />
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <span className="text-caption text-secondary">Popular:</span>
+          {['Linen', 'Denim', 'Dress', 'Knit', 'Boots'].map((term) => (
+            <Button key={term} variant="outline" size="sm" asChild className="rounded-full">
+              <Link href={`${config.routes.search}?searchQuery=${encodeURIComponent(term)}`}>
+                {term}
+              </Link>
+            </Button>
+          ))}
+        </div>
       </PageBanner>
       {products.length > 0 ? (
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 space-y-6">

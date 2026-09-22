@@ -23,9 +23,15 @@ const HomeSection = ({
   return (
     <section className={cn('py-10 md:py-16', className)}>
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4 md:mb-10">
-        <div>
-          {eyebrow && <span className="text-eyebrow mb-3 block">{eyebrow}</span>}
+        <div className="max-w-xl">
+          {eyebrow && (
+            <span className="text-eyebrow-gold mb-3 flex items-center gap-3">
+              <span aria-hidden="true" className="h-px w-8 bg-[var(--gold)]/60" />
+              {eyebrow}
+            </span>
+          )}
           <SectionTitle className={titleClassName}>{title}</SectionTitle>
+          <div aria-hidden="true" className="rule-gradient mt-5 w-40" />
         </div>
         {action && <div className="shrink-0">{action}</div>}
       </div>

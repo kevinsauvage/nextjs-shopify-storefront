@@ -1,3 +1,8 @@
+// Pinned to 2.26.0 in package.json on purpose: it is the last version whose
+// jsdom (v26) has CommonJS-only dependencies. From isomorphic-dompurify 2.31 /
+// jsdom 27+, jsdom's CJS internals `require()` ESM-only modules, which throws
+// ERR_REQUIRE_ESM at runtime on Vercel's Lambda functions (they disable
+// require(esm)) even though it works locally. See vercel/next.js#93901.
 import DOMPurify from 'isomorphic-dompurify';
 
 const ALLOWED_TAGS = [

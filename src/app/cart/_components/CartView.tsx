@@ -14,7 +14,42 @@ import CartItemsList from './CartItemsList';
 import CartPromoCode from './CartPromoCode';
 import CartSummary from './CartSummary';
 
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Lock, RotateCcw, Truck } from 'lucide-react';
+
+const FREE_SHIPPING_THRESHOLD = 150;
+
+const FreeShippingBar = ({ subtotal }: { subtotal: number }) => {
+  const progress = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
+  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+
+  return (
+    <div className="rounded-[var(--radius)] border border-border/70 bg-card p-4 md:p-5">
+      <p className="flex items-center gap-2 text-body-sm font-medium">
+        <Truck size={16} className="text-[var(--gold)]" aria-hidden="true" />
+        {remaining > 0 ? (
+          <span>
+            You&apos;re <strong>${remaining.toFixed(0)}</strong> away from free shipping
+          </span>
+        ) : (
+          <span>You&apos;ve unlocked complimentary shipping</span>
+        )}
+      </p>
+      <div
+        className="mt-3 h-2 overflow-hidden rounded-full bg-muted"
+        role="progressbar"
+        aria-valuenow={progress}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label="Progress to free shipping"
+      >
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-[var(--gold-strong)] to-[var(--gold)] transition-all duration-500"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </div>
+  );
+};
 
 /**
  * Cart page body. The cart is owned by `CartProvider`, so the page renders from
@@ -53,7 +88,12 @@ const CartView = () => {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
-      <PageBanner title="Your Cart" className="w-full pb-4 md:pb-6">
+      <PageBanner
+        title="Your Cart"
+        eyebrow="Secure checkout"
+        description="Review your pieces — taxes and shipping are calculated at checkout."
+        className="w-full rounded-[var(--radius)]"
+      >
         {!isEmpty && (
           <div className="flex w-full flex-wrap items-center justify-between gap-4">
             <Link
@@ -71,14 +111,28 @@ const CartView = () => {
       {isEmpty ? (
         <CartEmptyState />
       ) : (
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
-          <div className="lg:col-span-2">
+        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
+          <div className="space-y-6 lg:col-span-2">
+            <FreeShippingBar
+              subtotal={Number.parseFloat(cart?.cost?.subtotalAmount?.amount ?? '0')}
+            />
             <CartItemsList />
           </div>
 
           <div className="space-y-6 lg:col-span-1">
             <CartSummary />
             <CartPromoCode />
+            <div className="flex flex-wrap gap-x-5 gap-y-2 text-caption text-secondary">
+              <span className="inline-flex items-center gap-1.5">
+                <Lock size={13} aria-hidden="true" /> Secure checkout
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <RotateCcw size={13} aria-hidden="true" /> 30-day returns
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Truck size={13} aria-hidden="true" /> Insured delivery
+              </span>
+            </div>
           </div>
         </div>
       )}
