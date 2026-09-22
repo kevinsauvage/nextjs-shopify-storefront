@@ -9,21 +9,22 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Sheet,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Slider } from '@/components/ui/slider';
 import type { Filter } from '@/shopify/storefront';
+import { cn } from '@/utils/cn';
 
-import { FilterIcon } from 'lucide-react';
+import { RotateCcw, SlidersHorizontal, Sparkles } from 'lucide-react';
 
 // IMPORTANT: do not import runtime enums from `@/shopify/storefront` in client components.
 // The generated Storefront SDK pulls in `graphql-request`/`graphql-tag` and will bloat the client bundle.
@@ -91,6 +92,7 @@ const Filters = ({
     newSearchParameters.delete('after');
     newSearchParameters.delete('before');
     setPriceTouched(false);
+    setSelectedFilters([]);
     router.push(`${pathname}?${newSearchParameters.toString()}`);
   }, [pathname, router, toSearchParameters]);
 
@@ -120,6 +122,7 @@ const Filters = ({
     }
 
     router.push(`${pathname}?${newSearchParameters.toString()}`);
+    setOpen(false);
   }, [
     filters,
     pathname,
@@ -175,89 +178,178 @@ const Filters = ({
     }
   }, [getMinMaxPrice]);
 
+  const countFor = (filterId: string) =>
+    selectedFilters.filter((filter) => filter.filterId === filterId).length;
+
+  const activeCount = selectedFilters.length + (priceTouched ? 1 : 0);
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="outline" className="gap-2">
-          <span className="hidden md:inline">Filters</span>
-          <FilterIcon className="h-4 w-4" aria-hidden="true" />
+        <Button
+          variant="outline"
+          className="relative gap-2 rounded-full border-border/70 bg-background/70 px-5 backdrop-blur transition-all duration-200 hover:-translate-y-px hover:shadow-[0_12px_24px_-16px_rgb(12_10_9/0.5)]"
+        >
+          <SlidersHorizontal size={15} strokeWidth={1.75} aria-hidden="true" />
+          <span>Filters</span>
+          {activeCount > 0 && (
+            <Badge className="h-5 min-w-5 justify-center rounded-full bg-[var(--gold)] px-1.5 text-[11px] font-bold text-[var(--gold-foreground)]">
+              {activeCount}
+            </Badge>
+          )}
           <span className="sr-only">Open filters</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>Filters</SheetTitle>
-          <SheetDescription>Select filters to narrow down your search results.</SheetDescription>
+      <SheetContent
+        side="right"
+        className="hero-mesh flex max-h-dvh w-full flex-col gap-0 overflow-hidden border-l border-border/60 p-0 sm:max-w-md"
+      >
+        <SheetHeader className="relative shrink-0 gap-0 border-b border-border/60 p-0 text-left">
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div className="absolute -left-16 -top-20 size-56 rounded-full bg-[var(--gold)]/10 blur-3xl" />
+          </div>
+          <div className="relative p-6 pb-5 pr-14">
+            <span className="text-eyebrow-gold inline-flex items-center gap-2">
+              <Sparkles size={13} aria-hidden="true" />
+              Refine
+            </span>
+            <div className="mt-2 flex items-center gap-3">
+              <SheetTitle className="font-display text-3xl font-medium tracking-tight">
+                Filters
+              </SheetTitle>
+              {activeCount > 0 && (
+                <Badge className="rounded-full bg-[var(--gold-soft)] text-[var(--gold)]">
+                  {activeCount} active
+                </Badge>
+              )}
+            </div>
+            <SheetDescription className="text-body-sm mt-1.5 text-secondary">
+              Narrow the collection to exactly your taste.
+            </SheetDescription>
+          </div>
         </SheetHeader>
-        <div className="px-4">
+
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
           <Accordion
             type="multiple"
             defaultValue={filters.map((filter) => filter.id)}
-            className="w-full"
+            className="w-full space-y-2"
           >
-            {filters.map((filter) => (
-              <AccordionItem key={filter.id} value={filter.id}>
-                <AccordionTrigger className="text-body-sm font-medium">
-                  {filter.label}
-                </AccordionTrigger>
-                <AccordionContent>
-                  {filter.type === FILTER_TYPE.priceRange && (
-                    <div className="space-y-4 py-2">
-                      <Slider
-                        defaultValue={[getMinMaxPrice()?.[0] || 0, getMinMaxPrice()?.[1] || 200]}
-                        max={getMinMaxPrice()?.[1] || 200}
-                        min={getMinMaxPrice()?.[0] || 0}
-                        step={0.1}
-                        value={priceRange}
-                        onValueChange={handlePriceChange}
-                      />
-                      <div className="flex items-center justify-between">
-                        <span className="text-body-sm">${(priceRange?.[0] ?? 0).toFixed(2)}</span>
-                        <span className="text-body-sm">${(priceRange?.[1] ?? 200).toFixed(2)}</span>
-                      </div>
-                    </div>
-                  )}
-                  {filter.type === FILTER_TYPE.list && (
-                    <div className="space-y-2">
-                      {filter.values.map((value, index) => (
-                        <div
-                          key={`${value.id}-${index + 1}`}
-                          className="flex items-center space-x-2"
+            {filters.map((filter) => {
+              const selected = countFor(filter.id);
+              return (
+                <AccordionItem
+                  key={filter.id}
+                  value={filter.id}
+                  className="overflow-hidden rounded-2xl border border-border/70 bg-card/90 px-4 backdrop-blur transition-colors last:border-b hover:border-foreground/15"
+                >
+                  <AccordionTrigger className="cursor-pointer py-4 text-body-sm font-semibold hover:no-underline">
+                    <span className="flex flex-1 items-center gap-2.5">
+                      {filter.label}
+                      {selected > 0 && (
+                        <span
+                          aria-hidden="true"
+                          className="flex size-5 items-center justify-center rounded-full bg-[var(--gold)] text-[10px] font-bold text-[var(--gold-foreground)]"
                         >
-                          <Checkbox
-                            id={value.id}
-                            checked={isSelected(value.id, value.input as string)}
-                            onCheckedChange={() => {
-                              if (typeof value.input === 'string') {
-                                handleSetFilters(value.id, value.input);
-                              }
-                            }}
-                          />
-                          <label
-                            htmlFor={value.id}
-                            className="text-body-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                          >
-                            {value.label} ({value.count})
-                          </label>
+                          {selected}
+                        </span>
+                      )}
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4">
+                    {filter.type === FILTER_TYPE.priceRange && (
+                      <div className="space-y-4 rounded-xl bg-[var(--sidebar)]/70 p-4">
+                        <Slider
+                          defaultValue={[getMinMaxPrice()?.[0] || 0, getMinMaxPrice()?.[1] || 200]}
+                          max={getMinMaxPrice()?.[1] || 200}
+                          min={getMinMaxPrice()?.[0] || 0}
+                          step={0.1}
+                          value={priceRange}
+                          onValueChange={handlePriceChange}
+                        />
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="rounded-full border border-border/70 bg-card px-3 py-1 text-body-sm font-semibold tabular-nums">
+                            ${(priceRange?.[0] ?? 0).toFixed(0)}
+                          </span>
+                          <span aria-hidden="true" className="h-px w-6 bg-border" />
+                          <span className="rounded-full border border-border/70 bg-card px-3 py-1 text-body-sm font-semibold tabular-nums">
+                            ${(priceRange?.[1] ?? 200).toFixed(0)}
+                          </span>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
+                      </div>
+                    )}
+                    {filter.type === FILTER_TYPE.list && (
+                      <div className="space-y-1">
+                        {filter.values.map((value, index) => {
+                          const checked = isSelected(value.id, value.input as string);
+                          return (
+                            <button
+                              key={`${value.id}-${index + 1}`}
+                              type="button"
+                              role="checkbox"
+                              aria-checked={checked}
+                              onClick={() => {
+                                if (typeof value.input === 'string') {
+                                  handleSetFilters(value.id, value.input);
+                                }
+                              }}
+                              className={cn(
+                                'flex w-full cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-all duration-150',
+                                checked
+                                  ? 'border-[var(--gold)]/40 bg-[var(--gold-soft)]'
+                                  : 'border-transparent hover:border-border/70 hover:bg-muted/60',
+                              )}
+                            >
+                              <Checkbox
+                                id={value.id}
+                                checked={checked}
+                                tabIndex={-1}
+                                aria-hidden="true"
+                                className={cn(
+                                  'pointer-events-none',
+                                  checked &&
+                                    'border-[var(--gold)] bg-[var(--gold)] text-[var(--gold-foreground)]',
+                                )}
+                              />
+                              <span className="flex flex-1 items-center justify-between gap-2 text-body-sm font-medium leading-none">
+                                {value.label}
+                                <span className="text-caption tabular-nums text-secondary">
+                                  {value.count}
+                                </span>
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+              );
+            })}
           </Accordion>
         </div>
-        <SheetFooter>
-          <div className="flex gap-2 mt-4">
-            <Button variant="outline" className="flex-1" onClick={resetFilters}>
-              Reset
+
+        <div className="glass shrink-0 border-t border-border/60 p-4">
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="h-11 flex-1 cursor-pointer rounded-full"
+              onClick={resetFilters}
+              disabled={activeCount === 0}
+            >
+              <RotateCcw size={15} aria-hidden="true" />
+              Clear{activeCount > 0 ? ` (${activeCount})` : ''}
             </Button>
-            <Button className="flex-1" onClick={applyFilters}>
-              Apply Filters
+            <Button className="h-11 flex-[2] cursor-pointer rounded-full" onClick={applyFilters}>
+              Show results
             </Button>
           </div>
-        </SheetFooter>
+          <p className="mt-3 text-center text-caption text-secondary">
+            {activeCount > 0
+              ? `${activeCount} filter${activeCount === 1 ? '' : 's'} selected`
+              : 'No filters selected — showing everything'}
+          </p>
+        </div>
       </SheetContent>
     </Sheet>
   );
