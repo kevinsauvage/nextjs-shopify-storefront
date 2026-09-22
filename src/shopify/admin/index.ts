@@ -650,6 +650,22 @@ export enum BalanceTransactionSortKeys {
   TransactionType = 'TRANSACTION_TYPE'
 }
 
+/** The type of bank account holder. */
+export enum BankAccountHolderType {
+  /** A company account holder. */
+  Company = 'COMPANY',
+  /** An individual account holder. */
+  Individual = 'INDIVIDUAL'
+}
+
+/** The type of bank account. */
+export enum BankAccountType {
+  /** A checking account. */
+  Checking = 'CHECKING',
+  /** A savings account. */
+  Savings = 'SAVINGS'
+}
+
 /** The valid types of actions a user should be able to perform in an financial app. */
 export enum BankingFinanceAppAccess {
   /** Indication that the user has blocked money movement due to MFA disabled. */
@@ -865,6 +881,14 @@ export enum BulkOperationUserErrorCode {
   OperationInProgress = 'OPERATION_IN_PROGRESS'
 }
 
+/** The set of valid sort keys for the BulkOperations query. */
+export enum BulkOperationsSortKeys {
+  /** Sort by the `completed_at` value. */
+  CompletedAt = 'COMPLETED_AT',
+  /** Sort by the `created_at` value. */
+  CreatedAt = 'CREATED_AT'
+}
+
 /** Possible error codes that can be returned by `BulkProductResourceFeedbackCreateUserError`. */
 export enum BulkProductResourceFeedbackCreateUserErrorCode {
   /** The input value is blank. */
@@ -1044,6 +1068,153 @@ export enum CartTransformDeleteUserErrorCode {
   UnauthorizedAppScope = 'UNAUTHORIZED_APP_SCOPE'
 }
 
+/** The set of valid sort keys for the CashActivities query. */
+export enum CashActivitiesSortKeys {
+  /** Sort by the `id` value. */
+  Id = 'ID',
+  /** Sort by the `time` value. */
+  Time = 'TIME'
+}
+
+/** The type of adjustment activity. */
+export enum CashAdjustmentActivityType {
+  /** A manual cash adjustment. */
+  Adjustment = 'ADJUSTMENT',
+  /** A cash payout, such as a gift card cash out. */
+  CashPayout = 'CASH_PAYOUT',
+  /** A closing adjustment. */
+  ClosingAdjustment = 'CLOSING_ADJUSTMENT'
+}
+
+/** The type of count activity. */
+export enum CashCountActivityType {
+  /** A count performed at the closing of a session. */
+  Closing = 'CLOSING',
+  /** A count performed during a session. */
+  MidSession = 'MID_SESSION',
+  /** A count performed at the opening of a session. */
+  Opening = 'OPENING'
+}
+
+/** Possible error codes that can be returned by `CashDrawerCreateUserError`. */
+export enum CashDrawerCreateUserErrorCode {
+  /** A cash drawer with this name already exists at the specified location. */
+  CashDrawerAlreadyExists = 'CASH_DRAWER_ALREADY_EXISTS',
+  /** Unexpected internal error happened. */
+  InternalError = 'INTERNAL_ERROR',
+  /** The name provided is invalid. */
+  InvalidName = 'INVALID_NAME',
+  /** The location was not found. */
+  LocationNotFound = 'LOCATION_NOT_FOUND',
+  /** Failed to create cash drawer. */
+  NotSaved = 'NOT_SAVED'
+}
+
+/** The input fields for date and time range filter. */
+export type CashDrawerDateRangeInput = {
+  /** The start of the date and time range. */
+  from: Scalars['DateTime']['input'];
+  /** The end of the date and time range. */
+  to: Scalars['DateTime']['input'];
+};
+
+/** Possible error codes that can be returned by `CashDrawerFindOrCreateUserError`. */
+export enum CashDrawerFindOrCreateUserErrorCode {
+  /** The cash drawer assignment already exists. */
+  CashDrawerAssignmentAlreadyExists = 'CASH_DRAWER_ASSIGNMENT_ALREADY_EXISTS',
+  /** Unexpected internal error happened. */
+  InternalError = 'INTERNAL_ERROR',
+  /** The location was not found. */
+  LocationNotFound = 'LOCATION_NOT_FOUND',
+  /** Failed to find or create cash drawer. */
+  NotSaved = 'NOT_SAVED',
+  /** The point of sale device was not found. */
+  PointOfSaleDeviceNotFound = 'POINT_OF_SALE_DEVICE_NOT_FOUND'
+}
+
+/** The input fields for updating a cash drawer. */
+export type CashDrawerUpdateInput = {
+  /** The new name for the cash drawer. */
+  name: Scalars['String']['input'];
+};
+
+/** Possible error codes that can be returned by `CashDrawerUpdateUserError`. */
+export enum CashDrawerUpdateUserErrorCode {
+  /** A cash drawer with this name already exists at the specified location. */
+  CashDrawerAlreadyExists = 'CASH_DRAWER_ALREADY_EXISTS',
+  /** The cash drawer was not found. */
+  CashDrawerNotFound = 'CASH_DRAWER_NOT_FOUND',
+  /** Unexpected internal error happened. */
+  InternalError = 'INTERNAL_ERROR',
+  /** The name provided is invalid. */
+  InvalidName = 'INVALID_NAME',
+  /** Failed to update cash drawer. */
+  NotSaved = 'NOT_SAVED'
+}
+
+/** Default reason codes for cash management. */
+export enum CashManagementDefaultReasonCodeEnum {
+  /** Point of sale device payment session was automatically closed because the device switched to a different location. */
+  AutoEndSessionLocationChange = 'AUTO_END_SESSION_LOCATION_CHANGE',
+  /** Point of sale device payment session was automatically closed because a staff member logged out. */
+  AutoEndSessionLogout = 'AUTO_END_SESSION_LOGOUT',
+  /** Point of sale device payment session was automatically opened by a cash payment at checkout. */
+  AutoStartSessionCheckout = 'AUTO_START_SESSION_CHECKOUT',
+  /** Cash count. */
+  CashCount = 'CASH_COUNT',
+  /** Cash payout. */
+  CashPayout = 'CASH_PAYOUT',
+  /** Cash pickup. */
+  CashPickup = 'CASH_PICKUP',
+  /** Change correction. */
+  ChangeCorrection = 'CHANGE_CORRECTION',
+  /** Other. */
+  Other = 'OTHER',
+  /** Petty cash. */
+  PettyCash = 'PETTY_CASH',
+  /** Tip payout. */
+  TipPayout = 'TIP_PAYOUT'
+}
+
+/** Possible error codes that can be returned by `CashManagementReasonCodeCreateUserError`. */
+export enum CashManagementReasonCodeCreateUserErrorCode {
+  /** The input value is blank. */
+  Blank = 'BLANK',
+  /** The reason code already exists. */
+  CodeAlreadyExists = 'CODE_ALREADY_EXISTS',
+  /** Failed to create cash management reason code. */
+  NotSaved = 'NOT_SAVED'
+}
+
+/** Possible error codes that can be returned by `CashManagementReasonCodeDeleteUserError`. */
+export enum CashManagementReasonCodeDeleteUserErrorCode {
+  /** Database error occurred. */
+  DatabaseError = 'DATABASE_ERROR',
+  /** SYSTEM type reason codes are not deletable. */
+  NotDeletable = 'NOT_DELETABLE',
+  /** Reason code not found. */
+  NotFound = 'NOT_FOUND'
+}
+
+/** System reason codes for cash management. */
+export enum CashManagementSystemReasonCodeEnum {
+  /** Point of sale device payment session was automatically closed because the device switched to a different location. */
+  AutoEndSessionLocationChange = 'AUTO_END_SESSION_LOCATION_CHANGE',
+  /** Point of sale device payment session was automatically closed because a staff member logged out. */
+  AutoEndSessionLogout = 'AUTO_END_SESSION_LOGOUT',
+  /** Point of sale device payment session was automatically opened by a cash payment at checkout. */
+  AutoStartSessionCheckout = 'AUTO_START_SESSION_CHECKOUT',
+  /** Cash payout. */
+  CashPayout = 'CASH_PAYOUT',
+  /** Float setup. */
+  FloatSetup = 'FLOAT_SETUP',
+  /**
+   * Other.
+   * @deprecated Use CashManagementDefaultReasonCodeEnum.OTHER instead.
+   */
+  Other = 'OTHER'
+}
+
 /** The set of valid sort keys for the CashTrackingSessionTransactions query. */
 export enum CashTrackingSessionTransactionsSortKeys {
   /** Sort by the `id` value. */
@@ -1068,6 +1239,16 @@ export enum CashTrackingSessionsSortKeys {
   TotalDiscrepancyAsc = 'TOTAL_DISCREPANCY_ASC',
   /** Sort by the `total_discrepancy_desc` value. */
   TotalDiscrepancyDesc = 'TOTAL_DISCREPANCY_DESC'
+}
+
+/** The type of transaction activity. */
+export enum CashTransactionActivityType {
+  /** Change given to a customer. */
+  Change = 'CHANGE',
+  /** A cash refund. */
+  Refund = 'REFUND',
+  /** A cash sale. */
+  Sale = 'SALE'
 }
 
 /** The input fields for the context in which the catalog's publishing and pricing rules apply. */
@@ -1147,6 +1328,8 @@ export type CatalogUpdateInput = {
 export enum CatalogUserErrorCode {
   /** An app catalog cannot be assigned to a price list. */
   AppCatalogPriceListAssignment = 'APP_CATALOG_PRICE_LIST_ASSIGNMENT',
+  /** You've reached the maximum number of B2B catalogs allowed for your plan. */
+  B2BCatalogLimitReached = 'B2B_CATALOG_LIMIT_REACHED',
   /** The input value is blank. */
   Blank = 'BLANK',
   /** The catalog can't be associated with more than one market. */
@@ -1171,6 +1354,8 @@ export enum CatalogUserErrorCode {
   CatalogContextLocked = 'CATALOG_CONTEXT_LOCKED',
   /** Catalog failed to save. */
   CatalogFailedToSave = 'CATALOG_FAILED_TO_SAVE',
+  /** Catalogs and condition types are not compatible with each other. */
+  CatalogNotCompatibleWithConditionTypes = 'CATALOG_NOT_COMPATIBLE_WITH_CONDITION_TYPES',
   /** The catalog wasn't found. */
   CatalogNotFound = 'CATALOG_NOT_FOUND',
   /** A company location catalog outside of a supported plan can only have an archived status. */
@@ -1223,10 +1408,1156 @@ export enum CatalogUserErrorCode {
   TooLong = 'TOO_LONG',
   /** The input value is too short. */
   TooShort = 'TOO_SHORT',
+  /** Catalogs assigned to company locations can't be set to active with your plan. */
+  UnpermittedEntitlementsDirectCatalogAssignment = 'UNPERMITTED_ENTITLEMENTS_DIRECT_CATALOG_ASSIGNMENT',
   /** Managing this catalog is not supported by your plan. */
   UnpermittedEntitlementsMarketCatalogs = 'UNPERMITTED_ENTITLEMENTS_MARKET_CATALOGS',
   /** Can't perform this action on a catalog of this type. */
   UnsupportedCatalogAction = 'UNSUPPORTED_CATALOG_ACTION'
+}
+
+/** The input fields for creating a [`Channel`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Channel). */
+export type ChannelCreateInput = {
+  /** A unique identifier for the merchant's account on the external platform, such as an Amazon Seller ID or Google Merchant Center ID. Used together with `specificationHandle` to uniquely identify the channel connection. */
+  accountId: Scalars['String']['input'];
+  /** The merchant-facing name for the external account. Displayed in Shopify Admin wherever the channel connection is referenced, such as in Markets and order attribution. Should match how the merchant recognises the account on the external platform. */
+  accountName: Scalars['String']['input'];
+  /** A unique, human-readable identifier for the channel within the shop. For example, `amazon-us-A1B2C3D4E5F6G7`. Used for lookups via [`channelByHandle`](https://shopify.dev/docs/api/admin-graphql/latest/queries/channelByHandle). If not provided, auto-generated from the specification handle and account ID. Must be unique across all channels on the shop. */
+  handle?: InputMaybe<Scalars['String']['input']>;
+  /** The handle of the [channel specification](https://shopify.dev/docs/apps/build/sales-channels/channel-config-extension) to bind to this channel. The specification must have been deployed by the calling application via `shopify app deploy`. Determines the channel's regional coverage, capabilities, and requirements. */
+  specificationHandle: Scalars['String']['input'];
+};
+
+/** Possible error codes that can be returned by `ChannelCreateUserError`. */
+export enum ChannelCreateUserErrorCode {
+  /** The input value is invalid. */
+  Invalid = 'INVALID',
+  /** The record with the ID used as the input value couldn't be found. */
+  NotFound = 'NOT_FOUND'
+}
+
+/** Possible error codes that can be returned by `ChannelDeleteUserError`. */
+export enum ChannelDeleteUserErrorCode {
+  /** The input value is invalid. */
+  Invalid = 'INVALID',
+  /** The record with the ID used as the input value couldn't be found. */
+  NotFound = 'NOT_FOUND'
+}
+
+/** Possible error codes that can be returned by `ChannelFullSyncUserError`. */
+export enum ChannelFullSyncUserErrorCode {
+  /** The input value is invalid. */
+  Invalid = 'INVALID',
+  /** The record with the ID used as the input value couldn't be found. */
+  NotFound = 'NOT_FOUND'
+}
+
+/** The input fields for updating a [`Channel`](https://shopify.dev/docs/api/admin-graphql/latest/objects/Channel). */
+export type ChannelUpdateInput = {
+  /** An updated identifier for the merchant's account on the external platform. Changing this value signals that the channel connection now represents a different external account. */
+  accountId?: InputMaybe<Scalars['String']['input']>;
+  /** An updated merchant-facing name for the external account. Displayed in Shopify Admin when multiple channels exist for the same app, to help merchants distinguish between connections. */
+  accountName?: InputMaybe<Scalars['String']['input']>;
+  /** A new unique identifier for the channel within the shop. Must be unique across all channels on the shop. Handles are typically set at creation and rarely changed — use when correcting a handle or migrating legacy channel records. */
+  handle?: InputMaybe<Scalars['String']['input']>;
+  /** The handle of the [channel specification](https://shopify.dev/docs/apps/build/sales-channels/channel-config-extension) to bind to this channel. When changed, the platform re-evaluates the specification's country coverage against the shop's region markets and reconciles product feeds accordingly. */
+  specificationHandle?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Possible error codes that can be returned by `ChannelUpdateUserError`. */
+export enum ChannelUpdateUserErrorCode {
+  /** The input value is invalid. */
+  Invalid = 'INVALID',
+  /** The record with the ID used as the input value couldn't be found. */
+  NotFound = 'NOT_FOUND'
+}
+
+/** The container background style. */
+export enum CheckoutAndAccountsConfigurationBrandingBackground {
+  /** The Base background style. */
+  Base = 'BASE',
+  /** The Subdued background style. */
+  Subdued = 'SUBDUED'
+}
+
+/** The input fields for customizing a base group of colors. */
+export type CheckoutAndAccountsConfigurationBrandingBaseColorRolesInput = {
+  /** The color of accented objects (links and focused state). */
+  accent?: InputMaybe<Scalars['String']['input']>;
+  /** The color of the background. */
+  background?: InputMaybe<Scalars['String']['input']>;
+  /** The color of borders. */
+  border?: InputMaybe<Scalars['String']['input']>;
+  /** The decorative color for highlighting specific parts of the user interface. */
+  decorative?: InputMaybe<Scalars['String']['input']>;
+  /** The color of icons. */
+  icon?: InputMaybe<Scalars['String']['input']>;
+  /** The color of text. */
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Possible values for the border. */
+export enum CheckoutAndAccountsConfigurationBrandingBorder {
+  /** The Block End border. */
+  BlockEnd = 'BLOCK_END',
+  /** The Full border. */
+  Full = 'FULL',
+  /** The None border. */
+  None = 'NONE'
+}
+
+/** The container border style. */
+export enum CheckoutAndAccountsConfigurationBrandingBorderStyle {
+  /** The Base border style. */
+  Base = 'BASE',
+  /** The Dashed border style. */
+  Dashed = 'DASHED',
+  /** The Dotted border style. */
+  Dotted = 'DOTTED'
+}
+
+/** The container border width. */
+export enum CheckoutAndAccountsConfigurationBrandingBorderWidth {
+  /** The Base border width. */
+  Base = 'BASE',
+  /** The Large border width. */
+  Large = 'LARGE',
+  /** The Large 100 border width. */
+  Large_100 = 'LARGE_100',
+  /** The Large 200 border width. */
+  Large_200 = 'LARGE_200'
+}
+
+/** The input fields for customizing the buttons. */
+export type CheckoutAndAccountsConfigurationBrandingButtonInput = {
+  /** The block padding. */
+  blockPadding?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSpacing>;
+  /** The border. */
+  border?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSimpleBorder>;
+  /** The corner radius. */
+  cornerRadius?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCornerRadius>;
+  /** The inline padding. */
+  inlinePadding?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSpacing>;
+  /** The typography style. */
+  typography?: InputMaybe<CheckoutAndAccountsConfigurationBrandingTypographyStyleInput>;
+};
+
+/** The input fields for updating breadcrumb customizations, which represent the buyer's journey to checkout. */
+export type CheckoutAndAccountsConfigurationBrandingBuyerJourneyInput = {
+  /** The visibility customizations for updating breadcrumbs, which represent the buyer's journey to checkout. */
+  visibility?: InputMaybe<CheckoutAndAccountsConfigurationBrandingVisibility>;
+};
+
+/** Possible values for the cart link content type for the header. */
+export enum CheckoutAndAccountsConfigurationBrandingCartLinkContentType {
+  /** The checkout header content type icon value. */
+  Icon = 'ICON',
+  /** The checkout header content type image value. */
+  Image = 'IMAGE',
+  /** The checkout header content type text value. */
+  Text = 'TEXT'
+}
+
+/** The input fields for customizing the cart link at Checkout. */
+export type CheckoutAndAccountsConfigurationBrandingCartLinkInput = {
+  /** The input to update the visibility of cart links in checkout. This hides the cart icon on one-page and the cart link in the breadcrumbs/buyer journey on three-page checkout. */
+  visibility?: InputMaybe<CheckoutAndAccountsConfigurationBrandingVisibility>;
+};
+
+/** The input fields for customizing the checkboxes. */
+export type CheckoutAndAccountsConfigurationBrandingCheckboxInput = {
+  /** The corner radius. */
+  cornerRadius?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCornerRadius>;
+};
+
+/** The input fields for customizing the Checkout components. */
+export type CheckoutAndAccountsConfigurationBrandingCheckoutComponentsInput = {
+  /** The breadcrumbs that represent a buyer's journey to the checkout. */
+  buyerJourney?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBuyerJourneyInput>;
+  /** The input for checkout cart link customizations. For example, by setting the visibility field to `HIDDEN`, you can hide the cart icon in the header for one-page checkout, and the cart link in breadcrumbs in three-page checkout. */
+  cartLink?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCartLinkInput>;
+  /** The content container. */
+  content?: InputMaybe<CheckoutAndAccountsConfigurationBrandingContentInput>;
+  /** The express checkout. */
+  expressCheckout?: InputMaybe<CheckoutAndAccountsConfigurationBrandingExpressCheckoutInput>;
+  /** The footer. */
+  footer?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCheckoutFooterInput>;
+  /** The header. */
+  header?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCheckoutHeaderInput>;
+  /** The main area. */
+  main?: InputMaybe<CheckoutAndAccountsConfigurationBrandingMainInput>;
+  /** The order summary. */
+  orderSummary?: InputMaybe<CheckoutAndAccountsConfigurationBrandingOrderSummaryInput>;
+};
+
+/** The input fields for customizing the checkout footer. */
+export type CheckoutAndAccountsConfigurationBrandingCheckoutFooterInput = {
+  /** The footer alignment settings. You can set the footer native content alignment to the left, center, or right. */
+  alignment?: InputMaybe<CheckoutAndAccountsConfigurationBrandingFooterAlignment>;
+  /** The background style of the footer container. */
+  background?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBackground>;
+  /** The colors customizations. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorsInput>;
+  /** The input field for setting the footer content customizations. */
+  content?: InputMaybe<CheckoutAndAccountsConfigurationBrandingFooterContentInput>;
+  /** The divided setting. */
+  divided?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The padding of the footer container. */
+  padding?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSpacingKeyword>;
+  /** The footer position. */
+  position?: InputMaybe<CheckoutAndAccountsConfigurationBrandingFooterPosition>;
+};
+
+/** The input fields for customizing the checkout header. */
+export type CheckoutAndAccountsConfigurationBrandingCheckoutHeaderInput = {
+  /** The header alignment. */
+  alignment?: InputMaybe<CheckoutAndAccountsConfigurationBrandingHeaderAlignment>;
+  /** The background style of the header container. */
+  background?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBackground>;
+  /** The input for cart link customizations for 1-page checkout. This field allows to customize the cart icon that renders by default on 1-page checkout. */
+  cartLink?: InputMaybe<CheckoutAndAccountsConfigurationBrandingHeaderCartLinkInput>;
+  /** The colors customizations for the header container. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorsInput>;
+  /** The divided setting. */
+  divided?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The store logo. */
+  logo?: InputMaybe<CheckoutAndAccountsConfigurationBrandingLogoInput>;
+  /** The padding of the header container. */
+  padding?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSpacingKeyword>;
+  /** The header position. */
+  position?: InputMaybe<CheckoutAndAccountsConfigurationBrandingHeaderPosition>;
+};
+
+/** The input fields for customizing the Checkout surface. */
+export type CheckoutAndAccountsConfigurationBrandingCheckoutSurfaceInput = {
+  /** The Checkout components. */
+  components?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCheckoutComponentsInput>;
+};
+
+/** The input fields for customizing the 'group' variant of ChoiceList. */
+export type CheckoutAndAccountsConfigurationBrandingChoiceListGroupInput = {
+  /** The spacing between UI elements in the list. */
+  spacing?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSpacingKeyword>;
+};
+
+/** The input fields for customizing the choice list. */
+export type CheckoutAndAccountsConfigurationBrandingChoiceListInput = {
+  /** The 'group' variant of ChoiceList. */
+  group?: InputMaybe<CheckoutAndAccountsConfigurationBrandingChoiceListGroupInput>;
+};
+
+/** The input fields for customizing a group of colors used together on a surface. */
+export type CheckoutAndAccountsConfigurationBrandingColorRolesInput = {
+  /** The color of accented objects (links and focused state). */
+  accent?: InputMaybe<Scalars['String']['input']>;
+  /** The color of the background. */
+  background?: InputMaybe<Scalars['String']['input']>;
+  /** The color of borders. */
+  border?: InputMaybe<Scalars['String']['input']>;
+  /** The decorative color for highlighting specific parts of the user interface. */
+  decorative?: InputMaybe<Scalars['String']['input']>;
+  /** The color of icons. */
+  icon?: InputMaybe<Scalars['String']['input']>;
+  /** The color of text. */
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The input fields for customizing a base set of colors, from which every component pulls its colors. */
+export type CheckoutAndAccountsConfigurationBrandingColorsInput = {
+  /** The main colors, used for the surface background, text, links, and more. */
+  base?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBaseColorRolesInput>;
+  /** The colors of form controls, such as the [`TextField`](https://shopify.dev/docs/api/checkout-ui-extensions/latest/components/forms/textfield) and [`ChoiceList`](https://shopify.dev/docs/api/checkout-ui-extensions/latest/components/forms/choicelist) components. */
+  control?: InputMaybe<CheckoutAndAccountsConfigurationBrandingControlColorRolesInput>;
+  /** The colors of the primary button. For example, the main payment, or **Pay now** button. */
+  primaryButton?: InputMaybe<CheckoutAndAccountsConfigurationBrandingPrimaryButtonColorRolesInput>;
+  /** The colors of the secondary button, which is used for secondary actions. For example, **Buy again**. */
+  secondaryButton?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSecondaryButtonColorRolesInput>;
+};
+
+/** The input fields for customizing the components. */
+export type CheckoutAndAccountsConfigurationBrandingComponentsInput = {
+  /** The checkboxes customizations. */
+  checkbox?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCheckboxInput>;
+  /** The choice list customizations. */
+  choiceList?: InputMaybe<CheckoutAndAccountsConfigurationBrandingChoiceListInput>;
+  /** The form controls customizations. */
+  control?: InputMaybe<CheckoutAndAccountsConfigurationBrandingControlInput>;
+  /** The divider customizations. */
+  divider?: InputMaybe<CheckoutAndAccountsConfigurationBrandingDividerStyleInput>;
+  /** The favicon. */
+  favicon?: InputMaybe<CheckoutAndAccountsConfigurationBrandingImageInput>;
+  /** The footer customizations. */
+  footer?: InputMaybe<CheckoutAndAccountsConfigurationBrandingFooterInput>;
+  /** The header customizations. */
+  header?: InputMaybe<CheckoutAndAccountsConfigurationBrandingHeaderInput>;
+  /** The Heading Level 1 customizations. */
+  headingLevel1?: InputMaybe<CheckoutAndAccountsConfigurationBrandingHeadingLevelInput>;
+  /** The Heading Level 2 customizations. */
+  headingLevel2?: InputMaybe<CheckoutAndAccountsConfigurationBrandingHeadingLevelInput>;
+  /** The Heading Level 3 customizations. */
+  headingLevel3?: InputMaybe<CheckoutAndAccountsConfigurationBrandingHeadingLevelInput>;
+  /** The main area customizations. */
+  main?: InputMaybe<CheckoutAndAccountsConfigurationBrandingMainInput>;
+  /** The merchandise thumbnails customizations. */
+  merchandiseThumbnail?: InputMaybe<CheckoutAndAccountsConfigurationBrandingMerchandiseThumbnailInput>;
+  /** The primary buttons customizations. */
+  primaryButton?: InputMaybe<CheckoutAndAccountsConfigurationBrandingButtonInput>;
+  /** The secondary buttons customizations. */
+  secondaryButton?: InputMaybe<CheckoutAndAccountsConfigurationBrandingButtonInput>;
+  /** The selects customizations. */
+  select?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSelectInput>;
+  /** The shared customizations. */
+  shared?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSharedInput>;
+  /** The text fields customizations. */
+  textField?: InputMaybe<CheckoutAndAccountsConfigurationBrandingTextFieldInput>;
+};
+
+/** The input fields for customizing a container's divider. */
+export type CheckoutAndAccountsConfigurationBrandingContainerDividerInput = {
+  /** The divider style. */
+  borderStyle?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBorderStyle>;
+  /** The divider width. */
+  borderWidth?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBorderWidth>;
+  /** The divider visibility. */
+  visibility?: InputMaybe<CheckoutAndAccountsConfigurationBrandingVisibility>;
+};
+
+/** The input fields for customizing the content container. */
+export type CheckoutAndAccountsConfigurationBrandingContentInput = {
+  /** Divider style and visibility on the content container. */
+  divider?: InputMaybe<CheckoutAndAccountsConfigurationBrandingContainerDividerInput>;
+};
+
+/** The input fields for customizing colors for form controls. */
+export type CheckoutAndAccountsConfigurationBrandingControlColorRolesInput = {
+  /** The color of accented objects (links and focused state). */
+  accent?: InputMaybe<Scalars['String']['input']>;
+  /** The color of the background. */
+  background?: InputMaybe<Scalars['String']['input']>;
+  /** The color of borders. */
+  border?: InputMaybe<Scalars['String']['input']>;
+  /** The decorative color for highlighting specific parts of the user interface. */
+  decorative?: InputMaybe<Scalars['String']['input']>;
+  /** The color of icons. */
+  icon?: InputMaybe<Scalars['String']['input']>;
+  /** The colors of selected controls. */
+  selected?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorRolesInput>;
+  /** The color of text. */
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The input fields for customizing the form controls. */
+export type CheckoutAndAccountsConfigurationBrandingControlInput = {
+  /** The border. */
+  border?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSimpleBorder>;
+  /** The corner radius. */
+  cornerRadius?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCornerRadius>;
+  /** The label position. */
+  labelPosition?: InputMaybe<CheckoutAndAccountsConfigurationBrandingLabelPosition>;
+};
+
+/** The options for customizing the corner radius of checkout-related objects. Examples include the primary button, the name text fields and the sections within the main area (if they have borders). */
+export enum CheckoutAndAccountsConfigurationBrandingCornerRadius {
+  /** The corner radius with a pixel value defined by designTokens.cornerRadius.base. */
+  Base = 'BASE',
+  /** The corner radius with a pixel value defined by designTokens.cornerRadius.large. */
+  Large = 'LARGE',
+  /** The 0px corner radius (square corners). */
+  None = 'NONE',
+  /** The corner radius with a pixel value defined by designTokens.cornerRadius.small. */
+  Small = 'SMALL'
+}
+
+/** The input fields for customizing the corner radius variables. */
+export type CheckoutAndAccountsConfigurationBrandingCornerRadiusVariablesInput = {
+  /** The value in pixels for base corner radii. It should be greater than zero. Example: 5. */
+  base?: InputMaybe<Scalars['Int']['input']>;
+  /** The value in pixels for large corner radii. It should be greater than zero. Example: 10. */
+  large?: InputMaybe<Scalars['Int']['input']>;
+  /** The value in pixels for small corner radii. It should be greater than zero. Example: 3. */
+  small?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** The input fields for customizing a custom font group. */
+export type CheckoutAndAccountsConfigurationBrandingCustomFontGroupInput = {
+  /** The base font. */
+  base: CheckoutAndAccountsConfigurationBrandingCustomFontInput;
+  /** The bold font. */
+  bold: CheckoutAndAccountsConfigurationBrandingCustomFontInput;
+  /** The font loading strategy. */
+  loadingStrategy?: InputMaybe<CheckoutAndAccountsConfigurationBrandingFontLoadingStrategy>;
+};
+
+/** The input fields for customizing a custom font. */
+export type CheckoutAndAccountsConfigurationBrandingCustomFontInput = {
+  /** A globally-unique ID for a font file uploaded via the Files api. Allowed font types are .woff and .woff2. */
+  genericFileId: Scalars['ID']['input'];
+  /** The font weight. Its value should be between 100 and 900. */
+  weight: Scalars['Int']['input'];
+};
+
+/** The input fields for customizing the Customer Accounts components. */
+export type CheckoutAndAccountsConfigurationBrandingCustomerAccountsComponentsInput = {
+  /** The footer customizations. */
+  footer?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCustomerAccountsFooterInput>;
+  /** The header customizations. */
+  header?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCustomerAccountsHeaderInput>;
+  /** The main area customizations. */
+  main?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCustomerAccountsMainInput>;
+};
+
+/** The input fields for customizing the customer accounts footer. */
+export type CheckoutAndAccountsConfigurationBrandingCustomerAccountsFooterInput = {
+  /** The footer alignment settings. You can set the footer native content alignment to the left, center, or right. */
+  alignment?: InputMaybe<CheckoutAndAccountsConfigurationBrandingFooterAlignment>;
+  /** The colors customizations. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorsInput>;
+  /** The padding of the footer container. */
+  padding?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSpacingKeyword>;
+};
+
+/** The input fields for customizing the customer accounts header. */
+export type CheckoutAndAccountsConfigurationBrandingCustomerAccountsHeaderInput = {
+  /** The header alignment. */
+  alignment?: InputMaybe<CheckoutAndAccountsConfigurationBrandingHeaderAlignment>;
+  /** The colors customizations for the header container. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorsInput>;
+  /** The store logo. */
+  logo?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCustomerAccountsLogoInput>;
+  /** The padding of the header container. */
+  padding?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSpacingKeyword>;
+};
+
+/** The input fields for customizing the logo. */
+export type CheckoutAndAccountsConfigurationBrandingCustomerAccountsLogoInput = {
+  /** The logo image. */
+  image?: InputMaybe<CheckoutAndAccountsConfigurationBrandingImageInput>;
+  /** The maximum width of the logo. */
+  maxWidth?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** The input fields for customizing the main container. */
+export type CheckoutAndAccountsConfigurationBrandingCustomerAccountsMainInput = {
+  /** The colors customizations. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorsInput>;
+  /** The customizations for the main sections. */
+  section?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCustomerAccountsMainSectionInput>;
+};
+
+/** The input fields for customizing the customer accounts branding section. */
+export type CheckoutAndAccountsConfigurationBrandingCustomerAccountsMainSectionInput = {
+  /** The background style of the main sections. */
+  background?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBackground>;
+  /** The border for the main sections. */
+  border?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSimpleBorder>;
+  /** The border style of the main sections. */
+  borderStyle?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBorderStyle>;
+  /** The border width of the main sections. */
+  borderWidth?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBorderWidth>;
+  /** The colors customizations. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorsInput>;
+  /** The corner radius of the main sections. */
+  cornerRadius?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCornerRadius>;
+  /** The padding of the main sections. */
+  padding?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSpacingKeyword>;
+  /** The shadow of the main sections. */
+  shadow?: InputMaybe<CheckoutAndAccountsConfigurationBrandingShadow>;
+};
+
+/** The input fields for customizing the Customer Accounts surface. */
+export type CheckoutAndAccountsConfigurationBrandingCustomerAccountsSurfaceInput = {
+  /** The Customer Accounts components. */
+  components?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCustomerAccountsComponentsInput>;
+};
+
+/** The input fields for customizing the colors. */
+export type CheckoutAndAccountsConfigurationBrandingDesignTokensColorsInput = {
+  /** The input to update the color palette. */
+  palette?: InputMaybe<CheckoutAndAccountsConfigurationBrandingPaletteInput>;
+};
+
+/** The input fields for customizing the design tokens. */
+export type CheckoutAndAccountsConfigurationBrandingDesignTokensInput = {
+  /** The color customizations for global colors. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingDesignTokensColorsInput>;
+  /** The corner radius variables. */
+  cornerRadius?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCornerRadiusVariablesInput>;
+  /** The typography. */
+  typography?: InputMaybe<CheckoutAndAccountsConfigurationBrandingTypographyInput>;
+};
+
+/** The input fields for customizing the global divider. */
+export type CheckoutAndAccountsConfigurationBrandingDividerStyleInput = {
+  /** The border style for the divider. */
+  borderStyle?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBorderStyle>;
+  /** The border width for the divider. */
+  borderWidth?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBorderWidth>;
+};
+
+/** The input fields for customizing the express checkout button. */
+export type CheckoutAndAccountsConfigurationBrandingExpressCheckoutButtonInput = {
+  /** The corner radius. */
+  cornerRadius?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCornerRadius>;
+};
+
+/** The input fields for customizing the Express Checkout. */
+export type CheckoutAndAccountsConfigurationBrandingExpressCheckoutInput = {
+  /** The Express Checkout buttons customizations. */
+  button?: InputMaybe<CheckoutAndAccountsConfigurationBrandingExpressCheckoutButtonInput>;
+};
+
+/** The input fields used to update a font group. */
+export type CheckoutAndAccountsConfigurationBrandingFontGroupInput = {
+  /** A custom font group. */
+  customFontGroup?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCustomFontGroupInput>;
+  /** A Shopify font group. */
+  shopifyFontGroup?: InputMaybe<CheckoutAndAccountsConfigurationBrandingShopifyFontGroupInput>;
+};
+
+/** The font loading strategy determines how a font face is displayed after it is loaded or failed to load. For more information: https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display. */
+export enum CheckoutAndAccountsConfigurationBrandingFontLoadingStrategy {
+  /** The font display strategy is defined by the browser user agent. */
+  Auto = 'AUTO',
+  /** Gives the font face a short block period and an infinite swap period. */
+  Block = 'BLOCK',
+  /** Gives the font face an extremely small block period and a short swap period. */
+  Fallback = 'FALLBACK',
+  /** Gives the font face an extremely small block period and no swap period. */
+  Optional = 'OPTIONAL',
+  /** Gives the font face an extremely small block period and an infinite swap period. */
+  Swap = 'SWAP'
+}
+
+/** The input fields for customizing the font size. */
+export type CheckoutAndAccountsConfigurationBrandingFontSizeInput = {
+  /** The base font size. Its value should be between 12.0 and 18.0. */
+  base?: InputMaybe<Scalars['Float']['input']>;
+  /** The scale ratio used to derive all font sizes such as small and large. Its value should be between 1.0 and 1.4. */
+  ratio?: InputMaybe<Scalars['Float']['input']>;
+};
+
+/** Possible values for the footer alignment. */
+export enum CheckoutAndAccountsConfigurationBrandingFooterAlignment {
+  /** The checkout footer alignment Center value. */
+  Center = 'CENTER',
+  /** The checkout footer alignment End value. */
+  End = 'END',
+  /** The checkout footer alignment Start value. */
+  Start = 'START'
+}
+
+/** The input fields for customizing the footer content. */
+export type CheckoutAndAccountsConfigurationBrandingFooterContentInput = {
+  /** The visibility customizations for footer content. */
+  visibility?: InputMaybe<CheckoutAndAccountsConfigurationBrandingVisibility>;
+};
+
+/** The input fields for customizing the checkout footer. */
+export type CheckoutAndAccountsConfigurationBrandingFooterInput = {
+  /** The footer alignment settings. You can set the footer native content alignment to the left, center, or right. */
+  alignment?: InputMaybe<CheckoutAndAccountsConfigurationBrandingFooterAlignment>;
+  /** The background style of the footer container. */
+  background?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBackground>;
+  /** The colors customizations. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorsInput>;
+  /** The input field for setting the footer content customizations. */
+  content?: InputMaybe<CheckoutAndAccountsConfigurationBrandingFooterContentInput>;
+  /** The divided setting. */
+  divided?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The padding of the footer container. */
+  padding?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSpacingKeyword>;
+};
+
+/** Possible values for the footer position. */
+export enum CheckoutAndAccountsConfigurationBrandingFooterPosition {
+  /** The End footer position. */
+  End = 'END',
+  /** The Inline footer position. */
+  Inline = 'INLINE'
+}
+
+/** The possible header alignments. */
+export enum CheckoutAndAccountsConfigurationBrandingHeaderAlignment {
+  /** Center alignment. */
+  Center = 'CENTER',
+  /** End alignment. */
+  End = 'END',
+  /** Start alignment. */
+  Start = 'START'
+}
+
+/** The input fields for customizing the cart link for 1-page checkout. This field allows to customize the cart icon that renders by default on 1-page checkout. */
+export type CheckoutAndAccountsConfigurationBrandingHeaderCartLinkInput = {
+  /** The input for the content type for the header back to cart link in 1-page checkout. Setting this to image will render the custom image provided using the image field on the header cart_link object. If no image is provided, the default cart icon will be used. */
+  contentType?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCartLinkContentType>;
+  /** The input for the image that's used for the header back to cart link in 1-page checkout when the content type is set to image. */
+  image?: InputMaybe<CheckoutAndAccountsConfigurationBrandingImageInput>;
+};
+
+/** The input fields for customizing the header. */
+export type CheckoutAndAccountsConfigurationBrandingHeaderInput = {
+  /** The header alignment. */
+  alignment?: InputMaybe<CheckoutAndAccountsConfigurationBrandingHeaderAlignment>;
+  /** The background style of the header container. */
+  background?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBackground>;
+  /** The colors customizations for the header container. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorsInput>;
+  /** The divided setting. */
+  divided?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The store logo. */
+  logo?: InputMaybe<CheckoutAndAccountsConfigurationBrandingLogoInput>;
+  /** The padding of the header container. */
+  padding?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSpacingKeyword>;
+};
+
+/** The possible header positions. */
+export enum CheckoutAndAccountsConfigurationBrandingHeaderPosition {
+  /** Inline position. */
+  Inline = 'INLINE',
+  /** Secondary inline position. */
+  InlineSecondary = 'INLINE_SECONDARY',
+  /** Start position. */
+  Start = 'START'
+}
+
+/** The input fields for customizing the heading level. */
+export type CheckoutAndAccountsConfigurationBrandingHeadingLevelInput = {
+  /** The typography. */
+  typography?: InputMaybe<CheckoutAndAccountsConfigurationBrandingTypographyStyleInput>;
+};
+
+/** The input fields for customizing the image. */
+export type CheckoutAndAccountsConfigurationBrandingImageInput = {
+  /** A globally-unique ID. */
+  mediaImageId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+/** The input fields for customizing Checkout and Customer Accounts branding. */
+export type CheckoutAndAccountsConfigurationBrandingInput = {
+  /** The customizations that apply to specific components or areas of the user interface. */
+  components?: InputMaybe<CheckoutAndAccountsConfigurationBrandingComponentsInput>;
+  /** The design tokens allows you to set values that represent specific attributes of your brand like color and font. These attributes are used throughout the user interface. This brings consistency and allows you to easily make broad design changes. */
+  designTokens?: InputMaybe<CheckoutAndAccountsConfigurationBrandingDesignTokensInput>;
+  /** The surface-level customizations. */
+  surfaces?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSurfacesInput>;
+};
+
+/** The label position options. */
+export enum CheckoutAndAccountsConfigurationBrandingLabelPosition {
+  /** The Inside label position. */
+  Inside = 'INSIDE',
+  /** The Outside label position. */
+  Outside = 'OUTSIDE'
+}
+
+/** The input fields for customizing the logo. */
+export type CheckoutAndAccountsConfigurationBrandingLogoInput = {
+  /** The logo image. */
+  image?: InputMaybe<CheckoutAndAccountsConfigurationBrandingImageInput>;
+  /** The maximum width of the logo. */
+  maxWidth?: InputMaybe<Scalars['Int']['input']>;
+  /** The visibility of the logo. */
+  visibility?: InputMaybe<CheckoutAndAccountsConfigurationBrandingVisibility>;
+};
+
+/** The input fields for customizing the main container. */
+export type CheckoutAndAccountsConfigurationBrandingMainInput = {
+  /** The colors customizations. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorsInput>;
+  /** Divider style and visibility on the main container. */
+  divider?: InputMaybe<CheckoutAndAccountsConfigurationBrandingContainerDividerInput>;
+  /** The customizations for the main sections. */
+  section?: InputMaybe<CheckoutAndAccountsConfigurationBrandingMainSectionInput>;
+};
+
+/** The input fields for customizing the main sections. */
+export type CheckoutAndAccountsConfigurationBrandingMainSectionInput = {
+  /** The background style of the main sections. */
+  background?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBackground>;
+  /** The border for the main sections. */
+  border?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSimpleBorder>;
+  /** The border style of the main sections. */
+  borderStyle?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBorderStyle>;
+  /** The border width of the main sections. */
+  borderWidth?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBorderWidth>;
+  /** The colors customizations. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorsInput>;
+  /** The corner radius of the main sections. */
+  cornerRadius?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCornerRadius>;
+  /** The padding of the main sections. */
+  padding?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSpacingKeyword>;
+  /** The shadow of the main sections. */
+  shadow?: InputMaybe<CheckoutAndAccountsConfigurationBrandingShadow>;
+};
+
+/** The merchandise thumbnail badge background. */
+export enum CheckoutAndAccountsConfigurationBrandingMerchandiseThumbnailBadgeBackground {
+  /** The Accent background. */
+  Accent = 'ACCENT',
+  /** The Base background. */
+  Base = 'BASE'
+}
+
+/** The input fields for customizing the merchandise thumbnail badges. */
+export type CheckoutAndAccountsConfigurationBrandingMerchandiseThumbnailBadgeInput = {
+  /** The background. */
+  background?: InputMaybe<CheckoutAndAccountsConfigurationBrandingMerchandiseThumbnailBadgeBackground>;
+};
+
+/** The input fields for customizing the merchandise thumbnails. */
+export type CheckoutAndAccountsConfigurationBrandingMerchandiseThumbnailInput = {
+  /** The aspect ratio. */
+  aspectRatio?: InputMaybe<Scalars['Float']['input']>;
+  /** The merchandise thumbnail badge. */
+  badge?: InputMaybe<CheckoutAndAccountsConfigurationBrandingMerchandiseThumbnailBadgeInput>;
+  /** The border. */
+  border?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSimpleBorder>;
+  /** The corner radius. */
+  cornerRadius?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCornerRadius>;
+  /** The property used to customize how the product image fits within merchandise thumbnails. */
+  fit?: InputMaybe<CheckoutAndAccountsConfigurationBrandingObjectFit>;
+};
+
+/** Possible values for object fit. */
+export enum CheckoutAndAccountsConfigurationBrandingObjectFit {
+  /** The Contain value for fit. The image is scaled to maintain its aspect ratio while fitting within the containing box. The entire image is made to fill the box, while preserving its aspect ratio, so the image will be "letterboxed" if its aspect ratio does not match the aspect ratio of the box. This is the default value. */
+  Contain = 'CONTAIN',
+  /** The Cover value for fit. The image is sized to maintain its aspect ratio while filling the entire containing box. If the image's aspect ratio does not match the aspect ratio of the containing box, then the object will be clipped to fit. */
+  Cover = 'COVER'
+}
+
+/** The input fields for customizing the order summary container. */
+export type CheckoutAndAccountsConfigurationBrandingOrderSummaryInput = {
+  /** The background image of the order summary container (must not be of SVG format). */
+  backgroundImage?: InputMaybe<CheckoutAndAccountsConfigurationBrandingImageInput>;
+  /** The colors customizations. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorsInput>;
+  /** Divider style and visibility on the order summary container. */
+  divider?: InputMaybe<CheckoutAndAccountsConfigurationBrandingContainerDividerInput>;
+  /** The customizations for the order summary sections. */
+  section?: InputMaybe<CheckoutAndAccountsConfigurationBrandingOrderSummarySectionInput>;
+};
+
+/** The input fields for customizing the order summary sections. */
+export type CheckoutAndAccountsConfigurationBrandingOrderSummarySectionInput = {
+  /** The background style of the order summary sections. */
+  background?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBackground>;
+  /** The border for the order summary sections. */
+  border?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSimpleBorder>;
+  /** The border style of the order summary sections. */
+  borderStyle?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBorderStyle>;
+  /** The border width of the order summary sections. */
+  borderWidth?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBorderWidth>;
+  /** The colors customizations. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorsInput>;
+  /** The corner radius of the order summary sections. */
+  cornerRadius?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCornerRadius>;
+  /** The padding of the order summary sections. */
+  padding?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSpacingKeyword>;
+  /** The shadow of the order summary sections. */
+  shadow?: InputMaybe<CheckoutAndAccountsConfigurationBrandingShadow>;
+};
+
+/** The input fields to update the color palette. */
+export type CheckoutAndAccountsConfigurationBrandingPaletteInput = {
+  /** A color in the palette (hex value). */
+  color1?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color2?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color3?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color4?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color5?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color6?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color7?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color8?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color9?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color10?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color11?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color12?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color13?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color14?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color15?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color16?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color17?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color18?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color19?: InputMaybe<Scalars['String']['input']>;
+  /** A color in the palette (hex value). */
+  color20?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The input fields for customizing colors for primary buttons. */
+export type CheckoutAndAccountsConfigurationBrandingPrimaryButtonColorRolesInput = {
+  /** The color of accented objects (links and focused state). */
+  accent?: InputMaybe<Scalars['String']['input']>;
+  /** The color of the background. */
+  background?: InputMaybe<Scalars['String']['input']>;
+  /** The color of borders. */
+  border?: InputMaybe<Scalars['String']['input']>;
+  /** The decorative color for highlighting specific parts of the user interface. */
+  decorative?: InputMaybe<Scalars['String']['input']>;
+  /** The colors of the button on hover. */
+  hover?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorRolesInput>;
+  /** The color of icons. */
+  icon?: InputMaybe<Scalars['String']['input']>;
+  /** The color of text. */
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The input fields for customizing colors for secondary buttons. */
+export type CheckoutAndAccountsConfigurationBrandingSecondaryButtonColorRolesInput = {
+  /** The color of accented objects (links and focused state). */
+  accent?: InputMaybe<Scalars['String']['input']>;
+  /** The color of the background. */
+  background?: InputMaybe<Scalars['String']['input']>;
+  /** The color of borders. */
+  border?: InputMaybe<Scalars['String']['input']>;
+  /** The decorative color for highlighting specific parts of the user interface. */
+  decorative?: InputMaybe<Scalars['String']['input']>;
+  /** The colors of the button on hover. */
+  hover?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorRolesInput>;
+  /** The color of icons. */
+  icon?: InputMaybe<Scalars['String']['input']>;
+  /** The color of text. */
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The input fields for customizing the selects. */
+export type CheckoutAndAccountsConfigurationBrandingSelectInput = {
+  /** The border. */
+  border?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBorder>;
+  /** The typography. */
+  typography?: InputMaybe<CheckoutAndAccountsConfigurationBrandingTypographyStyleInput>;
+};
+
+/** The container shadow. */
+export enum CheckoutAndAccountsConfigurationBrandingShadow {
+  /** The Base shadow. */
+  Base = 'BASE',
+  /** The Large 100 shadow. */
+  Large_100 = 'LARGE_100',
+  /** The Large 200 shadow. */
+  Large_200 = 'LARGE_200',
+  /** The Small 100 shadow. */
+  Small_100 = 'SMALL_100',
+  /** The Small 200 shadow. */
+  Small_200 = 'SMALL_200'
+}
+
+/** The input fields for customizing shared colors. */
+export type CheckoutAndAccountsConfigurationBrandingSharedColorsInput = {
+  /** The accent color for interactive elements. */
+  accent?: InputMaybe<Scalars['String']['input']>;
+  /** The button color. */
+  button?: InputMaybe<Scalars['String']['input']>;
+  /** The form control color. */
+  control?: InputMaybe<Scalars['String']['input']>;
+  /** The critical/error color. */
+  critical?: InputMaybe<Scalars['String']['input']>;
+  /** The decorative color. */
+  decorative?: InputMaybe<Scalars['String']['input']>;
+  /** The informational color. */
+  info?: InputMaybe<Scalars['String']['input']>;
+  /** The success color. */
+  success?: InputMaybe<Scalars['String']['input']>;
+  /** The warning color. */
+  warning?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Possible choices to override corner radius customizations on all applicable objects. Note that this selection can only be used to set the override to `NONE` (0px). */
+export enum CheckoutAndAccountsConfigurationBrandingSharedCornerRadius {
+  /** Set the shared corner radius override to 0px (square corners). */
+  None = 'NONE'
+}
+
+/** The input fields for customizing the shared settings. */
+export type CheckoutAndAccountsConfigurationBrandingSharedInput = {
+  /** The shared color customizations. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSharedColorsInput>;
+  /** Select a shared corner radius setting that overrides all other corner radii customizations. */
+  cornerRadius?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSharedCornerRadius>;
+  /** The shared typography customizations. */
+  typography?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSharedTypographyStyleInput>;
+};
+
+/** The input fields for customizing the shared typography. */
+export type CheckoutAndAccountsConfigurationBrandingSharedTypographyStyleInput = {
+  /** The kerning. */
+  kerning?: InputMaybe<CheckoutAndAccountsConfigurationBrandingTypographyKerning>;
+  /** The letter case. */
+  letterCase?: InputMaybe<CheckoutAndAccountsConfigurationBrandingTypographyLetterCase>;
+};
+
+/** The input fields for customizing a Shopify font group. */
+export type CheckoutAndAccountsConfigurationBrandingShopifyFontGroupInput = {
+  /** The Shopify base font handle. */
+  baseFontHandle: Scalars['String']['input'];
+  /** The Shopify bold font handle. */
+  boldFontHandle: Scalars['String']['input'];
+  /** The font loading strategy. */
+  loadingStrategy?: InputMaybe<CheckoutAndAccountsConfigurationBrandingFontLoadingStrategy>;
+};
+
+/** The input fields for customizing the sign-in components. */
+export type CheckoutAndAccountsConfigurationBrandingSignInComponentsInput = {
+  /** The header customizations. */
+  header?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSignInHeaderInput>;
+  /** The main customizations. */
+  main?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSignInMainInput>;
+};
+
+/** The input fields for customizing the sign-in header. */
+export type CheckoutAndAccountsConfigurationBrandingSignInHeaderInput = {
+  /** The store logo. */
+  logo?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSignInLogoInput>;
+  /** The padding of the header container. */
+  padding?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSpacingKeyword>;
+};
+
+/** The input fields for customizing the sign-in logo. */
+export type CheckoutAndAccountsConfigurationBrandingSignInLogoInput = {
+  /** The logo image. */
+  image?: InputMaybe<CheckoutAndAccountsConfigurationBrandingImageInput>;
+  /** The maximum width of the logo. */
+  maxWidth?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** The input fields for customizing the sign-in main container. */
+export type CheckoutAndAccountsConfigurationBrandingSignInMainInput = {
+  /** The background image of the main container. */
+  backgroundImage?: InputMaybe<CheckoutAndAccountsConfigurationBrandingImageInput>;
+  /** The colors customizations. */
+  colors?: InputMaybe<CheckoutAndAccountsConfigurationBrandingColorsInput>;
+  /** The customizations for the main sections. */
+  section?: InputMaybe<CheckoutAndAccountsConfigurationBrandingMainSectionInput>;
+};
+
+/** The input fields for customizing the sign-in surface. */
+export type CheckoutAndAccountsConfigurationBrandingSignInSurfaceInput = {
+  /** The sign-in components. */
+  components?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSignInComponentsInput>;
+};
+
+/** Possible values for the simple border. */
+export enum CheckoutAndAccountsConfigurationBrandingSimpleBorder {
+  /** The Full simple border. */
+  Full = 'FULL',
+  /** The None simple border. */
+  None = 'NONE'
+}
+
+/** Possible values for the spacing. */
+export enum CheckoutAndAccountsConfigurationBrandingSpacing {
+  /** The Base spacing. */
+  Base = 'BASE',
+  /** The Extra Loose spacing. */
+  ExtraLoose = 'EXTRA_LOOSE',
+  /** The Extra Tight spacing. */
+  ExtraTight = 'EXTRA_TIGHT',
+  /** The Loose spacing. */
+  Loose = 'LOOSE',
+  /** The None spacing. */
+  None = 'NONE',
+  /** The Tight spacing. */
+  Tight = 'TIGHT'
+}
+
+/** The spacing between UI elements. */
+export enum CheckoutAndAccountsConfigurationBrandingSpacingKeyword {
+  /** The Base spacing. */
+  Base = 'BASE',
+  /** The Large spacing. */
+  Large = 'LARGE',
+  /** The Large 100 spacing. */
+  Large_100 = 'LARGE_100',
+  /** The Large 200 spacing. */
+  Large_200 = 'LARGE_200',
+  /** The Large 300 spacing. */
+  Large_300 = 'LARGE_300',
+  /** The Large 400 spacing. */
+  Large_400 = 'LARGE_400',
+  /** The Large 500 spacing. */
+  Large_500 = 'LARGE_500',
+  /** The None spacing. */
+  None = 'NONE',
+  /** The Small spacing. */
+  Small = 'SMALL',
+  /** The Small 100 spacing. */
+  Small_100 = 'SMALL_100',
+  /** The Small 200 spacing. */
+  Small_200 = 'SMALL_200',
+  /** The Small 300 spacing. */
+  Small_300 = 'SMALL_300',
+  /** The Small 400 spacing. */
+  Small_400 = 'SMALL_400',
+  /** The Small 500 spacing. */
+  Small_500 = 'SMALL_500'
+}
+
+/** The input fields for customizing surfaces branding. */
+export type CheckoutAndAccountsConfigurationBrandingSurfacesInput = {
+  /** The checkout surface customizations. */
+  checkout?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCheckoutSurfaceInput>;
+  /** The customer accounts surface customizations. */
+  customerAccounts?: InputMaybe<CheckoutAndAccountsConfigurationBrandingCustomerAccountsSurfaceInput>;
+  /** The sign-in surface customizations. */
+  signIn?: InputMaybe<CheckoutAndAccountsConfigurationBrandingSignInSurfaceInput>;
+};
+
+/** The input fields for customizing the text fields. */
+export type CheckoutAndAccountsConfigurationBrandingTextFieldInput = {
+  /** The border. */
+  border?: InputMaybe<CheckoutAndAccountsConfigurationBrandingBorder>;
+  /** The typography. */
+  typography?: InputMaybe<CheckoutAndAccountsConfigurationBrandingTypographyStyleInput>;
+};
+
+/** The font selection. */
+export enum CheckoutAndAccountsConfigurationBrandingTypographyFont {
+  /** The primary font. */
+  Primary = 'PRIMARY',
+  /** The secondary font. */
+  Secondary = 'SECONDARY'
+}
+
+/** The input fields for customizing the typography. */
+export type CheckoutAndAccountsConfigurationBrandingTypographyInput = {
+  /** The font group used for most components such as text, buttons and form controls. */
+  primary?: InputMaybe<CheckoutAndAccountsConfigurationBrandingFontGroupInput>;
+  /** The font group used for heading components by default. */
+  secondary?: InputMaybe<CheckoutAndAccountsConfigurationBrandingFontGroupInput>;
+  /** The font size. */
+  size?: InputMaybe<CheckoutAndAccountsConfigurationBrandingFontSizeInput>;
+};
+
+/** Possible values for the typography kerning. */
+export enum CheckoutAndAccountsConfigurationBrandingTypographyKerning {
+  /** Base or default kerning. */
+  Base = 'BASE',
+  /** Extra loose kerning, leaving even more space in between characters. */
+  ExtraLoose = 'EXTRA_LOOSE',
+  /** Loose kerning, leaving more space than the default in between characters. */
+  Loose = 'LOOSE'
+}
+
+/** Possible values for the typography letter case. */
+export enum CheckoutAndAccountsConfigurationBrandingTypographyLetterCase {
+  /** All letters are is lower case. */
+  Lower = 'LOWER',
+  /** No letter casing applied. */
+  None = 'NONE',
+  /** Capitalize the first letter of each word. */
+  Title = 'TITLE',
+  /** All letters are uppercase. */
+  Upper = 'UPPER'
+}
+
+/** Possible choices for the font size. */
+export enum CheckoutAndAccountsConfigurationBrandingTypographySize {
+  /** The Base font size. Example: 14px. */
+  Base = 'BASE',
+  /** The Extra extra large font size. Example: 24px. */
+  ExtraExtraLarge = 'EXTRA_EXTRA_LARGE',
+  /** The Extra large font size. Example: 21px. */
+  ExtraLarge = 'EXTRA_LARGE',
+  /** The Extra small font size. Example: 10px. */
+  ExtraSmall = 'EXTRA_SMALL',
+  /** The Large font size. Example: 19px. */
+  Large = 'LARGE',
+  /** The Medium font size. Example: 16px. */
+  Medium = 'MEDIUM',
+  /** The Small font size. Example: 12px. */
+  Small = 'SMALL'
+}
+
+/** The input fields for customizing the typography. */
+export type CheckoutAndAccountsConfigurationBrandingTypographyStyleInput = {
+  /** The font. */
+  font?: InputMaybe<CheckoutAndAccountsConfigurationBrandingTypographyFont>;
+  /** The kerning. */
+  kerning?: InputMaybe<CheckoutAndAccountsConfigurationBrandingTypographyKerning>;
+  /** The letter case. */
+  letterCase?: InputMaybe<CheckoutAndAccountsConfigurationBrandingTypographyLetterCase>;
+  /** The font size. */
+  size?: InputMaybe<CheckoutAndAccountsConfigurationBrandingTypographySize>;
+  /** The font weight. */
+  weight?: InputMaybe<CheckoutAndAccountsConfigurationBrandingTypographyWeight>;
+};
+
+/** Possible values for the font weight. */
+export enum CheckoutAndAccountsConfigurationBrandingTypographyWeight {
+  /** The base weight. */
+  Base = 'BASE',
+  /** The bold weight. */
+  Bold = 'BOLD'
+}
+
+/** Possible visibility states. */
+export enum CheckoutAndAccountsConfigurationBrandingVisibility {
+  /** The Hidden visibility setting. */
+  Hidden = 'HIDDEN',
+  /** The Visible visibility setting. */
+  Visible = 'VISIBLE'
+}
+
+/** The input fields for checkout and account configurations. */
+export type CheckoutAndAccountsConfigurationInput = {
+  /** The branding settings of the configuration. */
+  branding?: InputMaybe<CheckoutAndAccountsConfigurationBrandingInput>;
+  /** The overrides to create/update in the configuration. */
+  overrides?: InputMaybe<Array<CheckoutAndAccountsConfigurationOverrideInput>>;
+};
+
+/** The input fields for checkout and account configuration overrides. */
+export type CheckoutAndAccountsConfigurationOverrideInput = {
+  /** The branding settings of the configuration. */
+  branding?: InputMaybe<CheckoutAndAccountsConfigurationBrandingInput>;
+  /** The ID of the configuration override to update. */
+  id?: InputMaybe<Scalars['ID']['input']>;
+};
+
+/** Possible error codes that can be returned by `CheckoutAndAccountsConfigurationUserError`. */
+export enum CheckoutAndAccountsConfigurationUserErrorCode {
+  /** The input value is blank. */
+  Blank = 'BLANK',
+  /** Internal error. Looks like something went wrong on our end. */
+  InternalServerError = 'INTERNAL_SERVER_ERROR',
+  /** The input value is invalid. */
+  Invalid = 'INVALID',
+  /** One or more required fields are missing in the input. */
+  Missing = 'MISSING',
+  /** One or more requested items couldn't be found. */
+  NotFound = 'NOT_FOUND',
+  /** The request could not be completed — please try again later. */
+  Transient = 'TRANSIENT'
+}
+
+/** The set of valid sort keys for the CheckoutAndAccountsConfigurationsGraphQL query. */
+export enum CheckoutAndAccountsConfigurationsGraphQlSortKeys {
+  /** Sort by the `created_at` value. */
+  CreatedAt = 'CREATED_AT',
+  /** Sort by the `edited_at` value. */
+  EditedAt = 'EDITED_AT',
+  /** Sort by the `id` value. */
+  Id = 'ID',
+  /** Sort by the `is_published` value. */
+  IsPublished = 'IS_PUBLISHED'
 }
 
 /** The container background style. */
@@ -1415,6 +2746,10 @@ export enum CheckoutBrandingColorSchemeSelection {
   ColorScheme3 = 'COLOR_SCHEME3',
   /** The COLOR_SCHEME4 color scheme selection. */
   ColorScheme4 = 'COLOR_SCHEME4',
+  /** The COLOR_SCHEME5 color scheme selection. */
+  ColorScheme5 = 'COLOR_SCHEME5',
+  /** The COLOR_SCHEME6 color scheme selection. */
+  ColorScheme6 = 'COLOR_SCHEME6',
   /** The TRANSPARENT color scheme selection. */
   Transparent = 'TRANSPARENT'
 }
@@ -1429,6 +2764,10 @@ export type CheckoutBrandingColorSchemesInput = {
   scheme3?: InputMaybe<CheckoutBrandingColorSchemeInput>;
   /** An extra scheme available to customize more surfaces, components or specific states of the user interface. */
   scheme4?: InputMaybe<CheckoutBrandingColorSchemeInput>;
+  /** An extra scheme available to customize more surfaces, components or specific states of the user interface. */
+  scheme5?: InputMaybe<CheckoutBrandingColorSchemeInput>;
+  /** An extra scheme available to customize more surfaces, components or specific states of the user interface. */
+  scheme6?: InputMaybe<CheckoutBrandingColorSchemeInput>;
 };
 
 /** The possible colors. */
@@ -2170,10 +3509,146 @@ export enum CollectionAddProductsV2UserErrorCode {
   CollectionDoesNotExist = 'COLLECTION_DOES_NOT_EXIST'
 }
 
+/** Specifies whether products must match any or all conditions to be included in the collection. */
+export enum CollectionConditionMatchType {
+  /** Products match only if they satisfy all of the conditions. */
+  All = 'ALL',
+  /** Products match if they satisfy one or more of the conditions. */
+  Any = 'ANY'
+}
+
+/** The set of valid sort keys for the CollectionConditionsSource query. */
+export enum CollectionConditionsSourceSortKeys {
+  /** Sort by the `id` value. */
+  Id = 'ID',
+  /** Sort by the `title` value. */
+  Title = 'TITLE'
+}
+
+/** The input fields required to create a collection source. */
+export type CollectionCreateConditionsSourceInput = {
+  /** An optional description of the source. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The exclusion rules for the source. */
+  exclusion?: InputMaybe<CollectionCreateSourceExclusionInput>;
+  /** The inclusion rules for the source. */
+  inclusion?: InputMaybe<CollectionCreateSourceInclusionInput>;
+  /** What granularity this source operates at. Defaults to PRODUCTS. */
+  targetType?: InputMaybe<CollectionSourceTargetType>;
+  /** The title of the source. */
+  title: Scalars['String']['input'];
+};
+
+/** The input fields required to create a collection. */
+export type CollectionCreateInput = {
+  /** The description of the collection, in HTML format. */
+  descriptionHtml?: InputMaybe<Scalars['String']['input']>;
+  /** A unique human-friendly string for the collection. Automatically generated from the collection's title. */
+  handle?: InputMaybe<Scalars['String']['input']>;
+  /** The image associated with the collection. */
+  image?: InputMaybe<ImageInput>;
+  /** The metafields to associate with the collection. */
+  metafields?: InputMaybe<Array<MetafieldInput>>;
+  /** SEO information for the collection. */
+  seo?: InputMaybe<SeoInput>;
+  /** The order in which the collection's products are sorted. */
+  sortOrder?: InputMaybe<CollectionSortOrder>;
+  /** The sources to create for the collection. */
+  sources?: InputMaybe<Array<CollectionCreateSourceTargetInput>>;
+  /** The theme template used when viewing the collection in a store. */
+  templateSuffix?: InputMaybe<Scalars['String']['input']>;
+  /** The title of the collection. */
+  title: Scalars['String']['input'];
+};
+
+/** The input fields for creating exclusion rules for a collection source. */
+export type CollectionCreateSourceExclusionInput = {
+  /** The conditions that products must match to be excluded from the collection. */
+  conditions?: InputMaybe<Array<CollectionSourceExclusionConditionInput>>;
+  /** Whether products must match all or any of the conditions to be excluded. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The products to explicitly exclude from the collection. */
+  selections?: InputMaybe<Array<CollectionExclusionProductSelectionInput>>;
+};
+
+/** The input fields for creating inclusion rules for a collection source. */
+export type CollectionCreateSourceInclusionInput = {
+  /** The conditions that products must match to be included in the collection. */
+  conditions?: InputMaybe<Array<CollectionSourceInclusionConditionInput>>;
+  /** Whether products must match all or any of the conditions. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The products to explicitly include in the collection. */
+  selections?: InputMaybe<Array<CollectionInclusionProductSelectionInput>>;
+};
+
+/** The input fields for adding a source to a collection — provide exactly one field that represents the type of source to create. */
+export type CollectionCreateSourceTargetInput = {
+  /** An existing shareable source to link to the collection. */
+  shareableSource?: InputMaybe<CollectionShareableSourceInput>;
+  /** Net new conditions-based source (target_type products or variants) to create — must belong to one collection. */
+  source?: InputMaybe<CollectionCreateConditionsSourceInput>;
+  /** Net new sub-collection source (target_type collections) whose membership comes from one or more referenced collections. */
+  subCollections?: InputMaybe<CollectionCreateSubCollectionsSourceInput>;
+};
+
+/** The input fields required to create a sub-collection source — a source whose membership comes from one or more referenced collections. */
+export type CollectionCreateSubCollectionsSourceInput = {
+  /** The global IDs of the sub-collections whose products supply this source. */
+  collectionIds: Array<Scalars['ID']['input']>;
+  /** An optional description of the source. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The title of the source. */
+  title: Scalars['String']['input'];
+};
+
 /** The input fields for specifying the collection to delete. */
 export type CollectionDeleteInput = {
   /** The ID of the collection to be deleted. */
   id: Scalars['ID']['input'];
+};
+
+/** The input fields for duplicating a collection. */
+export type CollectionDuplicateInput = {
+  /** The ID of the collection to be duplicated. */
+  collectionId: Scalars['ID']['input'];
+  /** Whether to duplicate the collection's publications (channel availability). When `true` (default), the duplicated collection will be published to the same channels as the original. When `false`, the duplicated collection will be unpublished on all channels. */
+  copyPublications?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The new title of the collection. */
+  newTitle: Scalars['String']['input'];
+};
+
+/** The role a collection plays in a duplication operation. */
+export enum CollectionDuplicateOperationRole {
+  /** Products are being duplicated from this collection. */
+  Source = 'SOURCE',
+  /** Products are being duplicated onto this collection. */
+  Target = 'TARGET'
+}
+
+/** Possible error codes that can be returned by `CollectionDuplicateUserError`. */
+export enum CollectionDuplicateUserErrorCode {
+  /** The collection title must not be blank. */
+  Blank = 'BLANK',
+  /** The collection was not found. Please check the collection ID and try again. */
+  CollectionNotFound = 'COLLECTION_NOT_FOUND',
+  /** The duplicated collection isn't valid. */
+  Invalid = 'INVALID',
+  /** The URL handle generated from the new title is already in use. Please choose a different title. */
+  Taken = 'TAKEN',
+  /** The collection title or URL handle is too long. */
+  TooLong = 'TOO_LONG',
+  /** The shop has reached its limit of collection sources with conditions. */
+  TooManyConditionBackedSources = 'TOO_MANY_CONDITION_BACKED_SOURCES',
+  /** The shop has reached its limit of collections with sub-collection exclusions. */
+  TooManySubCollectionExclusionCollections = 'TOO_MANY_SUB_COLLECTION_EXCLUSION_COLLECTIONS',
+  /** The shop has reached its limit of collections with sub-collection inclusions. */
+  TooManySubCollectionInclusionCollections = 'TOO_MANY_SUB_COLLECTION_INCLUSION_COLLECTIONS'
+}
+
+/** The input fields for selecting specific products to exclude from a collection. */
+export type CollectionExclusionProductSelectionInput = {
+  /** The ID of the product to exclude from the collection. */
+  productId: Scalars['ID']['input'];
 };
 
 /** The input fields for identifying a collection. */
@@ -2184,6 +3659,14 @@ export type CollectionIdentifierInput = {
   handle?: InputMaybe<Scalars['String']['input']>;
   /** The ID of the collection. */
   id?: InputMaybe<Scalars['ID']['input']>;
+};
+
+/** The input fields for selecting specific products to include in a collection. */
+export type CollectionInclusionProductSelectionInput = {
+  /** The ID of the product to include in the collection. */
+  productId: Scalars['ID']['input'];
+  /** The IDs of the product variants to include in the collection. */
+  variantIds?: InputMaybe<Array<Scalars['ID']['input']>>;
 };
 
 /** The input fields required to create a collection. */
@@ -2342,6 +3825,12 @@ export type CollectionRuleSetInput = {
   rules?: InputMaybe<Array<CollectionRuleInput>>;
 };
 
+/** The input fields for linking an existing shareable source to a collection. */
+export type CollectionShareableSourceInput = {
+  /** The ID of an existing shareable source to link to the collection. */
+  sourceId: Scalars['ID']['input'];
+};
+
 /** The set of valid sort keys for the Collection query. */
 export enum CollectionSortKeys {
   /** Sort by the `id` value. */
@@ -2371,10 +3860,826 @@ export enum CollectionSortOrder {
   CreatedDesc = 'CREATED_DESC',
   /** In the order set manually by the merchant. */
   Manual = 'MANUAL',
+  /** By most relevant products. */
+  MostRelevant = 'MOST_RELEVANT',
   /** By price, in ascending order (lowest - highest). */
   PriceAsc = 'PRICE_ASC',
   /** By price, in descending order (highest - lowest). */
   PriceDesc = 'PRICE_DESC'
+}
+
+/** The input fields for an exclusion condition based on collections. */
+export type CollectionSourceExclusionConditionCollectionInput = {
+  /** The collection IDs whose products are excluded. */
+  values: Array<Scalars['ID']['input']>;
+};
+
+/** The input fields for a condition that determines which products are excluded from a collection. Exactly one condition type must be provided. */
+export type CollectionSourceExclusionConditionInput = {
+  /** A condition based on collections. */
+  collection?: InputMaybe<CollectionSourceExclusionConditionCollectionInput>;
+  /** A condition based on product categories. */
+  productCategory?: InputMaybe<CollectionSourceExclusionConditionProductCategoryInput>;
+  /** A condition based on product tags. */
+  productTag?: InputMaybe<CollectionSourceExclusionConditionProductTagInput>;
+  /** A condition based on product types. */
+  productType?: InputMaybe<CollectionSourceExclusionConditionProductTypeInput>;
+  /** A condition based on product vendors. */
+  productVendor?: InputMaybe<CollectionSourceExclusionConditionProductVendorInput>;
+};
+
+/** The input fields for an exclusion condition based on product categories. */
+export type CollectionSourceExclusionConditionProductCategoryInput = {
+  /** Whether to match any or all of the values. */
+  matchType: CollectionConditionMatchType;
+  /** The relationship between the product category and the condition values. */
+  relation: CollectionSourceExclusionConditionProductCategoryRelation;
+  /** The product category values to match against. */
+  values: Array<CollectionSourceExclusionConditionProductCategoryValueInput>;
+};
+
+/** The relation for comparing product categories in exclusion conditions. */
+export enum CollectionSourceExclusionConditionProductCategoryRelation {
+  /** The product category equals the specified value. */
+  Equals = 'EQUALS'
+}
+
+/** The input fields for a product category value in an exclusion condition. */
+export type CollectionSourceExclusionConditionProductCategoryValueInput = {
+  /** The ID of the product category. */
+  categoryId: Scalars['ID']['input'];
+  /** Whether to include descendants of the product category. */
+  includeDescendants?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** The input fields for an exclusion condition based on product tags. */
+export type CollectionSourceExclusionConditionProductTagInput = {
+  /** Whether to match any or all of the values. */
+  matchType: CollectionConditionMatchType;
+  /** The relationship between the product tag and the condition values. */
+  relation: CollectionSourceExclusionConditionProductTagRelation;
+  /** The tag values to match against. */
+  values: Array<Scalars['String']['input']>;
+};
+
+/** The relationship between the product tag and the condition values. */
+export enum CollectionSourceExclusionConditionProductTagRelation {
+  /** The product is tagged with the specified value. */
+  TaggedWith = 'TAGGED_WITH'
+}
+
+/** The input fields for an exclusion condition based on product types. */
+export type CollectionSourceExclusionConditionProductTypeInput = {
+  /** Whether to match any or all of the values. */
+  matchType: CollectionConditionMatchType;
+  /** The relationship between the product type and the condition values. */
+  relation: CollectionSourceExclusionConditionProductTypeRelation;
+  /** The product type values to match against. */
+  values: Array<Scalars['String']['input']>;
+};
+
+/** The relation for comparing product types in exclusion conditions. */
+export enum CollectionSourceExclusionConditionProductTypeRelation {
+  /** The product type contains the specified value. */
+  Contains = 'CONTAINS',
+  /** The product type equals the specified value. */
+  Equals = 'EQUALS'
+}
+
+/** The input fields for an exclusion condition based on product vendors. */
+export type CollectionSourceExclusionConditionProductVendorInput = {
+  /** Whether to match any or all of the values. */
+  matchType: CollectionConditionMatchType;
+  /** The relationship between the product vendor and the condition values. */
+  relation: CollectionSourceExclusionConditionProductVendorRelation;
+  /** The product vendor values to match against. */
+  values: Array<Scalars['String']['input']>;
+};
+
+/** The relation for comparing product vendors in exclusion conditions. */
+export enum CollectionSourceExclusionConditionProductVendorRelation {
+  /** The product vendor contains the specified value. */
+  Contains = 'CONTAINS',
+  /** The product vendor equals the specified value. */
+  Equals = 'EQUALS'
+}
+
+/** The input fields for updating an exclusion condition based on collections. */
+export type CollectionSourceExclusionConditionUpdateCollectionInput = {
+  /** The collection IDs whose products are excluded. */
+  values: Array<Scalars['ID']['input']>;
+};
+
+/** The input fields for updating a condition that determines which products are excluded from a collection. Exactly one condition type must be provided. */
+export type CollectionSourceExclusionConditionUpdateInput = {
+  /** An update to an exclusion condition based on collections. */
+  collection?: InputMaybe<CollectionSourceExclusionConditionUpdateCollectionInput>;
+  /** An update to an exclusion condition based on product categories. */
+  productCategory?: InputMaybe<CollectionSourceExclusionConditionUpdateProductCategoryInput>;
+  /** An update to an exclusion condition based on product tags. */
+  productTag?: InputMaybe<CollectionSourceExclusionConditionUpdateProductTagInput>;
+  /** An update to an exclusion condition based on product types. */
+  productType?: InputMaybe<CollectionSourceExclusionConditionUpdateProductTypeInput>;
+  /** An update to an exclusion condition based on product vendors. */
+  productVendor?: InputMaybe<CollectionSourceExclusionConditionUpdateProductVendorInput>;
+};
+
+/** The input fields for updating an exclusion condition based on product categories. */
+export type CollectionSourceExclusionConditionUpdateProductCategoryInput = {
+  /** Whether to match any or all of the values. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The relationship between the product category and the condition values. */
+  relation?: InputMaybe<CollectionSourceExclusionConditionProductCategoryRelation>;
+  /** The product category values to match against. */
+  values?: InputMaybe<Array<CollectionSourceExclusionConditionProductCategoryValueInput>>;
+};
+
+/** The input fields for updating an exclusion condition based on product tags. */
+export type CollectionSourceExclusionConditionUpdateProductTagInput = {
+  /** Whether to match any or all of the values. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The relationship between the product tag and the condition values. */
+  relation?: InputMaybe<CollectionSourceExclusionConditionProductTagRelation>;
+  /** The tag values to match against. */
+  values?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** The input fields for updating an exclusion condition based on product types. */
+export type CollectionSourceExclusionConditionUpdateProductTypeInput = {
+  /** Whether to match any or all of the values. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The relationship between the product type and the condition values. */
+  relation?: InputMaybe<CollectionSourceExclusionConditionProductTypeRelation>;
+  /** The product type values to match against. */
+  values?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** The input fields for updating an exclusion condition based on product vendors. */
+export type CollectionSourceExclusionConditionUpdateProductVendorInput = {
+  /** Whether to match any or all of the values. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The relationship between the product vendor and the condition values. */
+  relation?: InputMaybe<CollectionSourceExclusionConditionProductVendorRelation>;
+  /** The product vendor values to match against. */
+  values?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/**
+ * A condition that determines which products are included in a collection.
+ *
+ * Available condition types, grouped by what they filter on:
+ *
+ * - **Product attributes**: `productTag`, `productTitle`, `productType`, `productVendor`, `productStatus`,
+ * `productCategory`.
+ * - **Variant attributes**: `variantTitle`, `variantPrice`, `variantCompareAtPrice`, `variantInventory`,
+ * `variantWeight`.
+ * - **Pricing**: `isPriceReduced`.
+ * - **Metafields**: `metafieldBoolean`, `metafieldDecimal`, `metafieldString`, `metafieldStringList`,
+ * `metafieldMetaobject`, `metafieldMetaobjectList`, and either `metafieldInteger` or `metafieldInt` for
+ * integer metafields. Use `metafieldInteger` before API version 2026-10 and `metafieldInt` from 2026-10
+ * onward. `metafieldInteger` is deprecated as of 2026-10 and removed as of 2027-01.
+ *
+ * Each condition type specifies its own `relation` (for example, `EQUALS`, `CONTAINS`, `TAGGED_WITH`) and
+ * value shape. Combine multiple conditions in a single source's `inclusion.conditions` list and use the
+ * source's `matchType` to require that products match `ANY` or `ALL` of them.
+ */
+export type CollectionSourceInclusionConditionInput = {
+  /** A condition based on boolean metafield values. */
+  metafieldBoolean?: InputMaybe<CollectionSourceInclusionConditionMetafieldBooleanInput>;
+  /** A condition based on decimal metafield values. */
+  metafieldDecimal?: InputMaybe<CollectionSourceInclusionConditionMetafieldDecimalInput>;
+  /** A condition based on integer metafield values. */
+  metafieldInteger?: InputMaybe<CollectionSourceInclusionConditionMetafieldIntegerInput>;
+  /** A condition based on single metaobject reference metafield values. */
+  metafieldMetaobject?: InputMaybe<CollectionSourceInclusionConditionMetafieldMetaobjectInput>;
+  /** A condition based on metaobject list reference metafield values. */
+  metafieldMetaobjectList?: InputMaybe<CollectionSourceInclusionConditionMetafieldMetaobjectListInput>;
+  /** A condition based on string metafield values. */
+  metafieldString?: InputMaybe<CollectionSourceInclusionConditionMetafieldStringInput>;
+  /** A condition based on string list metafield values. */
+  metafieldStringList?: InputMaybe<CollectionSourceInclusionConditionMetafieldStringListInput>;
+  /** A condition based on product categories. */
+  productCategory?: InputMaybe<CollectionSourceInclusionConditionProductCategoryInput>;
+  /** A condition based on product status. */
+  productStatus?: InputMaybe<CollectionSourceInclusionConditionProductStatusInput>;
+  /** A condition based on product tags. */
+  productTag?: InputMaybe<CollectionSourceInclusionConditionProductTagInput>;
+  /** A condition based on product titles. */
+  productTitle?: InputMaybe<CollectionSourceInclusionConditionProductTitleInput>;
+  /** A condition based on product types. */
+  productType?: InputMaybe<CollectionSourceInclusionConditionProductTypeInput>;
+  /** A condition based on product vendors. */
+  productVendor?: InputMaybe<CollectionSourceInclusionConditionProductVendorInput>;
+  /** A condition based on variant compare at prices. */
+  variantCompareAtPrice?: InputMaybe<CollectionSourceInclusionConditionVariantCompareAtPriceInput>;
+  /** A condition based on variant inventory quantities. */
+  variantInventory?: InputMaybe<CollectionSourceInclusionConditionVariantInventoryInput>;
+  /** A condition based on variant prices. */
+  variantPrice?: InputMaybe<CollectionSourceInclusionConditionVariantPriceInput>;
+  /** A condition based on variant titles. */
+  variantTitle?: InputMaybe<CollectionSourceInclusionConditionVariantTitleInput>;
+  /** A condition based on variant weights. */
+  variantWeight?: InputMaybe<CollectionSourceInclusionConditionVariantWeightInput>;
+};
+
+/** The input fields for a condition based on boolean metafield values. */
+export type CollectionSourceInclusionConditionMetafieldBooleanInput = {
+  /** The ID of the metafield definition. */
+  definitionId: Scalars['ID']['input'];
+  /** The relationship between the metafield value and the condition value. */
+  relation: CollectionSourceInclusionConditionMetafieldBooleanRelation;
+  /** The boolean value to match against. */
+  value: Scalars['Boolean']['input'];
+};
+
+/** The relation for comparing boolean metafield values. */
+export enum CollectionSourceInclusionConditionMetafieldBooleanRelation {
+  /** The metafield value equals the condition value. */
+  Equals = 'EQUALS'
+}
+
+/** The input fields for a condition based on decimal metafield values. */
+export type CollectionSourceInclusionConditionMetafieldDecimalInput = {
+  /** The ID of the metafield definition. */
+  definitionId: Scalars['ID']['input'];
+  /** The relationship between the metafield value and the condition value. */
+  relation: CollectionSourceInclusionConditionMetafieldDecimalRelation;
+  /** The decimal value to match against. */
+  value: Scalars['Decimal']['input'];
+};
+
+/** The relation for comparing decimal metafield values. */
+export enum CollectionSourceInclusionConditionMetafieldDecimalRelation {
+  /** The metafield value equals the specified value. */
+  Equals = 'EQUALS',
+  /** The metafield value is greater than the specified value. */
+  GreaterThan = 'GREATER_THAN',
+  /** The metafield value is less than the specified value. */
+  LessThan = 'LESS_THAN'
+}
+
+/** The input fields for a condition based on integer metafield values. */
+export type CollectionSourceInclusionConditionMetafieldIntegerInput = {
+  /** The ID of the metafield definition. */
+  definitionId: Scalars['ID']['input'];
+  /** The relationship between the metafield value and the condition value. */
+  relation: CollectionSourceInclusionConditionMetafieldIntegerRelation;
+  /** The integer value to match against. */
+  value: Scalars['Int']['input'];
+};
+
+/** The relation for comparing integer metafield values. */
+export enum CollectionSourceInclusionConditionMetafieldIntegerRelation {
+  /** The metafield value equals the specified value. */
+  Equals = 'EQUALS',
+  /** The metafield value is greater than the specified value. */
+  GreaterThan = 'GREATER_THAN',
+  /** The metafield value is less than the specified value. */
+  LessThan = 'LESS_THAN'
+}
+
+/** The input fields for a condition based on single metaobject reference metafield values. */
+export type CollectionSourceInclusionConditionMetafieldMetaobjectInput = {
+  /** The ID of the metafield definition. */
+  definitionId: Scalars['ID']['input'];
+  /** The relationship between the metafield value and the condition value. */
+  relation: CollectionSourceInclusionConditionMetafieldMetaobjectRelation;
+  /** The metaobject ID to match against. */
+  value: Scalars['ID']['input'];
+};
+
+/** The input fields for a condition based on metaobject list reference metafield values. */
+export type CollectionSourceInclusionConditionMetafieldMetaobjectListInput = {
+  /** The ID of the metafield definition. */
+  definitionId: Scalars['ID']['input'];
+  /** Whether to match any or all of the values. */
+  matchType: CollectionConditionMatchType;
+  /** The relationship between the metafield value and the condition values. */
+  relation: CollectionSourceInclusionConditionMetafieldMetaobjectListRelation;
+  /** The metaobject IDs to match against. */
+  values: Array<Scalars['ID']['input']>;
+};
+
+/** The relationship between the metaobject value and the condition values. */
+export enum CollectionSourceInclusionConditionMetafieldMetaobjectListRelation {
+  /** Matches if the supplied metaobject value is equal to one or more of the values in the metafield's metaobject list. */
+  Includes = 'INCLUDES'
+}
+
+/** The relation for comparing metaobject metafield values. */
+export enum CollectionSourceInclusionConditionMetafieldMetaobjectRelation {
+  /** The metaobject value equals the condition value. */
+  Equals = 'EQUALS'
+}
+
+/** The input fields for a condition based on string metafield values. */
+export type CollectionSourceInclusionConditionMetafieldStringInput = {
+  /** The ID of the metafield definition. */
+  definitionId: Scalars['ID']['input'];
+  /** Whether to match any or all of the values. */
+  matchType: CollectionConditionMatchType;
+  /** The relationship between the metafield value and the condition values. */
+  relation: CollectionSourceInclusionConditionMetafieldStringRelation;
+  /** The string values to match against. */
+  values: Array<Scalars['String']['input']>;
+};
+
+/** The input fields for a condition based on string list metafield values. */
+export type CollectionSourceInclusionConditionMetafieldStringListInput = {
+  /** The ID of the metafield definition. */
+  definitionId: Scalars['ID']['input'];
+  /** Whether to match any or all of the values. */
+  matchType: CollectionConditionMatchType;
+  /** The relationship between the metafield value and the condition values. */
+  relation: CollectionSourceInclusionConditionMetafieldStringListRelation;
+  /** The string values to match against. */
+  values: Array<Scalars['String']['input']>;
+};
+
+/** The relationship between the metafield value and the condition values. */
+export enum CollectionSourceInclusionConditionMetafieldStringListRelation {
+  /** The metafield value includes the specified value. */
+  Includes = 'INCLUDES'
+}
+
+/** The relationship between the metafield value and the condition values. */
+export enum CollectionSourceInclusionConditionMetafieldStringRelation {
+  /** The metafield value equals the specified value. */
+  Equals = 'EQUALS'
+}
+
+/** The input fields for a condition based on product categories. */
+export type CollectionSourceInclusionConditionProductCategoryInput = {
+  /** Whether to match any or all of the values. */
+  matchType: CollectionConditionMatchType;
+  /** The relationship between the product category and the condition values. */
+  relation: CollectionSourceInclusionConditionProductCategoryRelation;
+  /** The product category values to match against. */
+  values: Array<CollectionSourceInclusionConditionProductCategoryValueInput>;
+};
+
+/** The relation for comparing product category IDs. */
+export enum CollectionSourceInclusionConditionProductCategoryRelation {
+  /** The product category ID equals the specified value. */
+  Equals = 'EQUALS',
+  /** The product category ID does not equal the specified value. */
+  NotEquals = 'NOT_EQUALS'
+}
+
+/** The input fields for a product category value in a collection condition. */
+export type CollectionSourceInclusionConditionProductCategoryValueInput = {
+  /** The ID of the product category. */
+  categoryId: Scalars['ID']['input'];
+  /** Whether to include descendants of the product category. */
+  includeDescendants: Scalars['Boolean']['input'];
+};
+
+/** The input fields for a condition based on product status. */
+export type CollectionSourceInclusionConditionProductStatusInput = {
+  /** Whether to match any or all of the values. */
+  matchType: CollectionConditionMatchType;
+  /** The relationship between the product status and the condition values. */
+  relation: CollectionSourceInclusionConditionProductStatusRelation;
+  /** The product status values to match against. */
+  values: Array<ProductStatus>;
+};
+
+/** The relation for comparing product status. */
+export enum CollectionSourceInclusionConditionProductStatusRelation {
+  /** The product status equals the specified value. */
+  Equals = 'EQUALS',
+  /** The product status does not equal the specified value. */
+  NotEquals = 'NOT_EQUALS'
+}
+
+/** The input fields for a condition based on product tags. */
+export type CollectionSourceInclusionConditionProductTagInput = {
+  /** Whether to match any or all of the values. */
+  matchType: CollectionConditionMatchType;
+  /** The relationship between the product tag and the condition values. */
+  relation: CollectionSourceInclusionConditionProductTagRelation;
+  /** The tag values to match against. */
+  values: Array<Scalars['String']['input']>;
+};
+
+/** The relationship between the product tag and the condition values. */
+export enum CollectionSourceInclusionConditionProductTagRelation {
+  /** The product is not tagged with the specified value. */
+  NotTaggedWith = 'NOT_TAGGED_WITH',
+  /** The product is tagged with the specified value. */
+  TaggedWith = 'TAGGED_WITH'
+}
+
+/** The input fields for a condition based on product titles. */
+export type CollectionSourceInclusionConditionProductTitleInput = {
+  /** Whether to match any or all of the values. */
+  matchType: CollectionConditionMatchType;
+  /** The relationship between the product title and the condition values. */
+  relation: CollectionSourceInclusionConditionProductTitleRelation;
+  /** The title values to match against. */
+  values: Array<Scalars['String']['input']>;
+};
+
+/** The relationship between the product title and the condition values. */
+export enum CollectionSourceInclusionConditionProductTitleRelation {
+  /** The product title contains the specified value. */
+  Contains = 'CONTAINS',
+  /** The product title does not contain the specified value. */
+  DoesNotContain = 'DOES_NOT_CONTAIN',
+  /** The product title ends with the specified value. */
+  EndsWith = 'ENDS_WITH',
+  /** The product title equals the specified value. */
+  Equals = 'EQUALS',
+  /** The product title does not equal the specified value. */
+  NotEquals = 'NOT_EQUALS',
+  /** The product title starts with the specified value. */
+  StartsWith = 'STARTS_WITH'
+}
+
+/** The input fields for a condition based on product types. */
+export type CollectionSourceInclusionConditionProductTypeInput = {
+  /** Whether to match any or all of the values. */
+  matchType: CollectionConditionMatchType;
+  /** The relationship between the product type and the condition values. */
+  relation: CollectionSourceInclusionConditionProductTypeRelation;
+  /** The product type values to match against. */
+  values: Array<Scalars['String']['input']>;
+};
+
+/** The relation for comparing product types. */
+export enum CollectionSourceInclusionConditionProductTypeRelation {
+  /** The product type contains the specified value. */
+  Contains = 'CONTAINS',
+  /** The product type does not contain the specified value. */
+  DoesNotContain = 'DOES_NOT_CONTAIN',
+  /** The product type ends with the specified value. */
+  EndsWith = 'ENDS_WITH',
+  /** The product type equals the specified value. */
+  Equals = 'EQUALS',
+  /** The product type does not equal the specified value. */
+  NotEquals = 'NOT_EQUALS',
+  /** The product type starts with the specified value. */
+  StartsWith = 'STARTS_WITH'
+}
+
+/** The input fields for a condition based on product vendors. */
+export type CollectionSourceInclusionConditionProductVendorInput = {
+  /** Whether to match any or all of the values. */
+  matchType: CollectionConditionMatchType;
+  /** The relationship between the product vendor and the condition values. */
+  relation: CollectionSourceInclusionConditionProductVendorRelation;
+  /** The product vendor values to match against. */
+  values: Array<Scalars['String']['input']>;
+};
+
+/** The relation for comparing product vendors. */
+export enum CollectionSourceInclusionConditionProductVendorRelation {
+  /** The product vendor contains the specified value. */
+  Contains = 'CONTAINS',
+  /** The product vendor does not contain the specified value. */
+  DoesNotContain = 'DOES_NOT_CONTAIN',
+  /** The product vendor ends with the specified value. */
+  EndsWith = 'ENDS_WITH',
+  /** The product vendor equals the specified value. */
+  Equals = 'EQUALS',
+  /** The product vendor does not equal the specified value. */
+  NotEquals = 'NOT_EQUALS',
+  /** The product vendor starts with the specified value. */
+  StartsWith = 'STARTS_WITH'
+}
+
+/** The input fields for updating a condition that determines which products are included in a collection. Exactly one condition type must be provided. */
+export type CollectionSourceInclusionConditionUpdateInput = {
+  /** An update to a condition based on boolean metafield values. */
+  metafieldBoolean?: InputMaybe<CollectionSourceInclusionConditionUpdateMetafieldBooleanInput>;
+  /** An update to a condition based on decimal metafield values. */
+  metafieldDecimal?: InputMaybe<CollectionSourceInclusionConditionUpdateMetafieldDecimalInput>;
+  /** An update to a condition based on integer metafield values. */
+  metafieldInteger?: InputMaybe<CollectionSourceInclusionConditionUpdateMetafieldIntegerInput>;
+  /** An update to a condition based on single metaobject reference metafield values. */
+  metafieldMetaobject?: InputMaybe<CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput>;
+  /** An update to a condition based on metaobject list reference metafield values. */
+  metafieldMetaobjectList?: InputMaybe<CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput>;
+  /** An update to a condition based on string metafield values. */
+  metafieldString?: InputMaybe<CollectionSourceInclusionConditionUpdateMetafieldStringInput>;
+  /** An update to a condition based on string list metafield values. */
+  metafieldStringList?: InputMaybe<CollectionSourceInclusionConditionUpdateMetafieldStringListInput>;
+  /** An update to a condition based on product categories. */
+  productCategory?: InputMaybe<CollectionSourceInclusionConditionUpdateProductCategoryInput>;
+  /** An update to a condition based on product status. */
+  productStatus?: InputMaybe<CollectionSourceInclusionConditionUpdateProductStatusInput>;
+  /** An update to a condition based on product tags. */
+  productTag?: InputMaybe<CollectionSourceInclusionConditionUpdateProductTagInput>;
+  /** An update to a condition based on product titles. */
+  productTitle?: InputMaybe<CollectionSourceInclusionConditionUpdateProductTitleInput>;
+  /** An update to a condition based on product types. */
+  productType?: InputMaybe<CollectionSourceInclusionConditionUpdateProductTypeInput>;
+  /** An update to a condition based on product vendors. */
+  productVendor?: InputMaybe<CollectionSourceInclusionConditionUpdateProductVendorInput>;
+  /** An update to a condition based on variant compare at prices. */
+  variantCompareAtPrice?: InputMaybe<CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput>;
+  /** An update to a condition based on variant inventory quantities. */
+  variantInventory?: InputMaybe<CollectionSourceInclusionConditionUpdateVariantInventoryInput>;
+  /** An update to a condition based on variant prices. */
+  variantPrice?: InputMaybe<CollectionSourceInclusionConditionUpdateVariantPriceInput>;
+  /** An update to a condition based on variant titles. */
+  variantTitle?: InputMaybe<CollectionSourceInclusionConditionUpdateVariantTitleInput>;
+  /** An update to a condition based on variant weights. */
+  variantWeight?: InputMaybe<CollectionSourceInclusionConditionUpdateVariantWeightInput>;
+};
+
+/** The input fields for updating a condition based on boolean metafield values. */
+export type CollectionSourceInclusionConditionUpdateMetafieldBooleanInput = {
+  /** The ID of the metafield definition. */
+  definitionId?: InputMaybe<Scalars['ID']['input']>;
+  /** The relationship between the metafield value and the condition value. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionMetafieldBooleanRelation>;
+  /** The boolean value to match against. */
+  value?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** The input fields for updating a condition based on decimal metafield values. */
+export type CollectionSourceInclusionConditionUpdateMetafieldDecimalInput = {
+  /** The ID of the metafield definition. */
+  definitionId?: InputMaybe<Scalars['ID']['input']>;
+  /** The relationship between the metafield value and the condition value. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionMetafieldDecimalRelation>;
+  /** The decimal value to match against. */
+  value?: InputMaybe<Scalars['Decimal']['input']>;
+};
+
+/** The input fields for updating a condition based on integer metafield values. */
+export type CollectionSourceInclusionConditionUpdateMetafieldIntegerInput = {
+  /** The ID of the metafield definition. */
+  definitionId?: InputMaybe<Scalars['ID']['input']>;
+  /** The relationship between the metafield value and the condition value. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionMetafieldIntegerRelation>;
+  /** The integer value to match against. */
+  value?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** The input fields for updating a condition based on single metaobject reference metafield values. */
+export type CollectionSourceInclusionConditionUpdateMetafieldMetaobjectInput = {
+  /** The ID of the metafield definition. */
+  definitionId?: InputMaybe<Scalars['ID']['input']>;
+  /** The relationship between the metafield value and the condition value. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionMetafieldMetaobjectRelation>;
+  /** The metaobject ID to match against. */
+  value?: InputMaybe<Scalars['ID']['input']>;
+};
+
+/** The input fields for updating a condition based on metaobject list reference metafield values. */
+export type CollectionSourceInclusionConditionUpdateMetafieldMetaobjectListInput = {
+  /** The ID of the metafield definition. */
+  definitionId?: InputMaybe<Scalars['ID']['input']>;
+  /** Whether to match any or all of the values. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The relationship between the metafield value and the condition values. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionMetafieldMetaobjectListRelation>;
+  /** The metaobject IDs to match against. */
+  values?: InputMaybe<Array<Scalars['ID']['input']>>;
+};
+
+/** The input fields for updating a condition based on string metafield values. */
+export type CollectionSourceInclusionConditionUpdateMetafieldStringInput = {
+  /** The ID of the metafield definition. */
+  definitionId?: InputMaybe<Scalars['ID']['input']>;
+  /** Whether to match any or all of the values. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The relationship between the metafield value and the condition values. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionMetafieldStringRelation>;
+  /** The string values to match against. */
+  values?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** The input fields for updating a condition based on string list metafield values. */
+export type CollectionSourceInclusionConditionUpdateMetafieldStringListInput = {
+  /** The ID of the metafield definition. */
+  definitionId?: InputMaybe<Scalars['ID']['input']>;
+  /** Whether to match any or all of the values. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The relationship between the metafield value and the condition values. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionMetafieldStringListRelation>;
+  /** The string values to match against. */
+  values?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** The input fields for updating a condition based on product categories. */
+export type CollectionSourceInclusionConditionUpdateProductCategoryInput = {
+  /** Whether to match any or all of the values. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The relationship between the product category and the condition values. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionProductCategoryRelation>;
+  /** The product category values to match against. */
+  values?: InputMaybe<Array<CollectionSourceInclusionConditionProductCategoryValueInput>>;
+};
+
+/** The input fields for updating a condition based on product status. */
+export type CollectionSourceInclusionConditionUpdateProductStatusInput = {
+  /** Whether to match any or all of the values. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The relationship between the product status and the condition values. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionProductStatusRelation>;
+  /** The product status values to match against. */
+  values?: InputMaybe<Array<ProductStatus>>;
+};
+
+/** The input fields for updating a condition based on product tags. */
+export type CollectionSourceInclusionConditionUpdateProductTagInput = {
+  /** Whether to match any or all of the values. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The relationship between the product tag and the condition values. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionProductTagRelation>;
+  /** The tag values to match against. */
+  values?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** The input fields for updating a condition based on product titles. */
+export type CollectionSourceInclusionConditionUpdateProductTitleInput = {
+  /** Whether to match any or all of the values. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The relationship between the product title and the condition values. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionProductTitleRelation>;
+  /** The title values to match against. */
+  values?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** The input fields for updating a condition based on product types. */
+export type CollectionSourceInclusionConditionUpdateProductTypeInput = {
+  /** Whether to match any or all of the values. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The relationship between the product type and the condition values. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionProductTypeRelation>;
+  /** The product type values to match against. */
+  values?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** The input fields for updating a condition based on product vendors. */
+export type CollectionSourceInclusionConditionUpdateProductVendorInput = {
+  /** Whether to match any or all of the values. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The relationship between the product vendor and the condition values. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionProductVendorRelation>;
+  /** The product vendor values to match against. */
+  values?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** The input fields for updating a condition based on variant compare at prices. */
+export type CollectionSourceInclusionConditionUpdateVariantCompareAtPriceInput = {
+  /** The relationship between the variant compare at price and the condition value. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionVariantCompareAtPriceRelation>;
+  /** The variant compare at price to match against. Required for numeric relations and must be absent for IS_SET or IS_NOT_SET. */
+  value?: InputMaybe<MoneyInput>;
+};
+
+/** The input fields for updating a condition based on variant inventory quantities. */
+export type CollectionSourceInclusionConditionUpdateVariantInventoryInput = {
+  /** The relationship between the variant inventory and the condition value. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionVariantInventoryRelation>;
+  /** The variant inventory quantity to match against. */
+  value?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** The input fields for updating a condition based on variant prices. */
+export type CollectionSourceInclusionConditionUpdateVariantPriceInput = {
+  /** The relationship between the variant price and the condition value. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionVariantPriceRelation>;
+  /** The variant price to match against. */
+  value?: InputMaybe<MoneyInput>;
+};
+
+/** The input fields for updating a condition based on variant titles. */
+export type CollectionSourceInclusionConditionUpdateVariantTitleInput = {
+  /** Whether to match any or all of the values. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The relationship between the variant title and the condition values. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionVariantTitleRelation>;
+  /** The variant title values to match against. */
+  values?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** The input fields for updating a condition based on variant weights. */
+export type CollectionSourceInclusionConditionUpdateVariantWeightInput = {
+  /** The relationship between the variant weight and the condition value. */
+  relation?: InputMaybe<CollectionSourceInclusionConditionVariantWeightRelation>;
+  /** The variant weight to match against. */
+  value?: InputMaybe<WeightInput>;
+};
+
+/** The input fields for a condition based on variant compare at prices. */
+export type CollectionSourceInclusionConditionVariantCompareAtPriceInput = {
+  /** The relationship between the variant compare at price and the condition value. */
+  relation: CollectionSourceInclusionConditionVariantCompareAtPriceRelation;
+  /** The variant compare at price to match against. Required for numeric relations and must be absent for IS_SET or IS_NOT_SET. */
+  value?: InputMaybe<MoneyInput>;
+};
+
+/** The relation for comparing variant compare at prices. */
+export enum CollectionSourceInclusionConditionVariantCompareAtPriceRelation {
+  /** The variant compare at price equals the specified value. */
+  Equals = 'EQUALS',
+  /** The variant compare at price is greater than the specified value. */
+  GreaterThan = 'GREATER_THAN',
+  /** The variant does not have a compare at price set. */
+  IsNotSet = 'IS_NOT_SET',
+  /** The variant has a compare at price set (indicating a price reduction). */
+  IsSet = 'IS_SET',
+  /** The variant compare at price is less than the specified value. */
+  LessThan = 'LESS_THAN',
+  /** The variant compare at price does not equal the specified value. */
+  NotEquals = 'NOT_EQUALS'
+}
+
+/** The input fields for a condition based on variant inventory quantities. */
+export type CollectionSourceInclusionConditionVariantInventoryInput = {
+  /** The relationship between the variant inventory and the condition value. */
+  relation: CollectionSourceInclusionConditionVariantInventoryRelation;
+  /** The variant inventory quantity to match against. */
+  value: Scalars['Int']['input'];
+};
+
+/** The relation for comparing variant inventory quantities. */
+export enum CollectionSourceInclusionConditionVariantInventoryRelation {
+  /** The variant inventory equals the specified value. */
+  Equals = 'EQUALS',
+  /** The variant inventory is greater than the specified value. */
+  GreaterThan = 'GREATER_THAN',
+  /** The variant inventory is less than the specified value. */
+  LessThan = 'LESS_THAN'
+}
+
+/** The input fields for a condition based on variant prices. */
+export type CollectionSourceInclusionConditionVariantPriceInput = {
+  /** The relationship between the variant price and the condition value. */
+  relation: CollectionSourceInclusionConditionVariantPriceRelation;
+  /** The variant price to match against. */
+  value: MoneyInput;
+};
+
+/** The relation for comparing variant prices. */
+export enum CollectionSourceInclusionConditionVariantPriceRelation {
+  /** The variant price equals the specified value. */
+  Equals = 'EQUALS',
+  /** The variant price is greater than the specified value. */
+  GreaterThan = 'GREATER_THAN',
+  /** The variant price is less than the specified value. */
+  LessThan = 'LESS_THAN',
+  /** The variant price does not equal the specified value. */
+  NotEquals = 'NOT_EQUALS'
+}
+
+/** The input fields for a condition based on variant titles. */
+export type CollectionSourceInclusionConditionVariantTitleInput = {
+  /** Whether to match any or all of the values. */
+  matchType: CollectionConditionMatchType;
+  /** The relationship between the variant title and the condition values. */
+  relation: CollectionSourceInclusionConditionVariantTitleRelation;
+  /** The variant title values to match against. */
+  values: Array<Scalars['String']['input']>;
+};
+
+/** The relation for comparing variant titles. */
+export enum CollectionSourceInclusionConditionVariantTitleRelation {
+  /** The variant title contains the specified value. */
+  Contains = 'CONTAINS',
+  /** The variant title does not contain the specified value. */
+  DoesNotContain = 'DOES_NOT_CONTAIN',
+  /** The variant title ends with the specified value. */
+  EndsWith = 'ENDS_WITH',
+  /** The variant title equals the specified value. */
+  Equals = 'EQUALS',
+  /** The variant title does not equal the specified value. */
+  NotEquals = 'NOT_EQUALS',
+  /** The variant title starts with the specified value. */
+  StartsWith = 'STARTS_WITH'
+}
+
+/** The input fields for a condition based on variant weights. */
+export type CollectionSourceInclusionConditionVariantWeightInput = {
+  /** The relationship between the variant weight and the condition value. */
+  relation: CollectionSourceInclusionConditionVariantWeightRelation;
+  /** The variant weight to match against. */
+  value: WeightInput;
+};
+
+/** The relation for comparing variant weights. */
+export enum CollectionSourceInclusionConditionVariantWeightRelation {
+  /** The variant weight equals the specified value. */
+  Equals = 'EQUALS',
+  /** The variant weight is greater than the specified value. */
+  GreaterThan = 'GREATER_THAN',
+  /** The variant weight is less than the specified value. */
+  LessThan = 'LESS_THAN',
+  /** The variant weight does not equal the specified value. */
+  NotEquals = 'NOT_EQUALS'
+}
+
+/** Conditions that target variants cause either the entire product to be included when satisfied or only the matching variants. */
+export enum CollectionSourceTargetType {
+  /** The entire product is included if any variant satisfies the conditions. */
+  Products = 'PRODUCTS',
+  /** Individual variants are included if they satisfy the conditions. */
+  Variants = 'VARIANTS'
 }
 
 /** The input fields for specifying the collection to unpublish and the sales channels to remove it from. */
@@ -2385,12 +4690,131 @@ export type CollectionUnpublishInput = {
   id: Scalars['ID']['input'];
 };
 
+/** The input fields for updating a shareable collection source. */
+export type CollectionUpdateConditionsSourceInput = {
+  /** An optional description of the source. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The exclusion rules for the source. */
+  exclusion?: InputMaybe<CollectionUpdateSourceExclusionInput>;
+  /** The ID of the source to update. */
+  id: Scalars['ID']['input'];
+  /** The inclusion rules for the source. */
+  inclusion?: InputMaybe<CollectionUpdateSourceInclusionInput>;
+  /** The title of the source. */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The input fields required to update a collection. */
+export type CollectionUpdateInput = {
+  /** The description of the collection, in HTML format. */
+  descriptionHtml?: InputMaybe<Scalars['String']['input']>;
+  /** A unique human-friendly string for the collection. Automatically generated from the collection's title. */
+  handle?: InputMaybe<Scalars['String']['input']>;
+  /** Specifies the collection to update. */
+  id?: InputMaybe<Scalars['ID']['input']>;
+  /** The image associated with the collection. */
+  image?: InputMaybe<ImageInput>;
+  /** The metafields to associate with the collection. */
+  metafields?: InputMaybe<Array<MetafieldInput>>;
+  /**
+   * Indicates whether a redirect is required after a new handle has been provided.
+   * If true, then the old handle is redirected to the new one automatically.
+   */
+  redirectNewHandle?: InputMaybe<Scalars['Boolean']['input']>;
+  /** SEO information for the collection. */
+  seo?: InputMaybe<SeoInput>;
+  /** The order in which the collection's products are sorted. */
+  sortOrder?: InputMaybe<CollectionSortOrder>;
+  /** The sources to create for the collection. */
+  sourcesToCreate?: InputMaybe<Array<CollectionCreateSourceTargetInput>>;
+  /** The IDs of the sources to delete from the collection. */
+  sourcesToDelete?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** The sources to update for the collection. */
+  sourcesToUpdate?: InputMaybe<Array<CollectionUpdateSourceTargetInput>>;
+  /** The theme template used when viewing the collection in a store. */
+  templateSuffix?: InputMaybe<Scalars['String']['input']>;
+  /** The title of the collection. */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The input fields for updating an exclusion condition in a collection source. */
+export type CollectionUpdateSourceExclusionConditionInput = {
+  /** The updated exclusion condition. */
+  condition: CollectionSourceExclusionConditionUpdateInput;
+  /** The ID of the exclusion condition to update. */
+  id: Scalars['ID']['input'];
+};
+
+/** The input fields for updating exclusion rules for a collection source. */
+export type CollectionUpdateSourceExclusionInput = {
+  /** The exclusion conditions to create for the source. */
+  conditionsToCreate?: InputMaybe<Array<CollectionSourceExclusionConditionInput>>;
+  /** The IDs of the exclusion conditions to delete from the source. */
+  conditionsToDelete?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** The exclusion conditions to update for the source. */
+  conditionsToUpdate?: InputMaybe<Array<CollectionUpdateSourceExclusionConditionInput>>;
+  /** Whether products must match all or any of the conditions to be excluded. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The product selections to add to the source. */
+  selectionsToAdd?: InputMaybe<Array<CollectionExclusionProductSelectionInput>>;
+  /** The product selections to remove from the source. */
+  selectionsToRemove?: InputMaybe<Array<CollectionExclusionProductSelectionInput>>;
+};
+
+/** The input fields for updating a condition in a collection source. */
+export type CollectionUpdateSourceInclusionConditionInput = {
+  /** The updated condition. */
+  condition: CollectionSourceInclusionConditionUpdateInput;
+  /** The ID of the condition to update. */
+  id: Scalars['ID']['input'];
+};
+
+/** The input fields for updating inclusion rules for a collection source. */
+export type CollectionUpdateSourceInclusionInput = {
+  /** The conditions to create for the source. */
+  conditionsToCreate?: InputMaybe<Array<CollectionSourceInclusionConditionInput>>;
+  /** The IDs of the conditions to delete from the source. */
+  conditionsToDelete?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** The conditions to update for the source. */
+  conditionsToUpdate?: InputMaybe<Array<CollectionUpdateSourceInclusionConditionInput>>;
+  /** Whether products must match all or any of the conditions. */
+  matchType?: InputMaybe<CollectionConditionMatchType>;
+  /** The product selections to add to the source. */
+  selectionsToAdd?: InputMaybe<Array<CollectionInclusionProductSelectionInput>>;
+  /** The product selections to remove from the source. For sources that target variants, omitting variant IDs will remove all for the product. */
+  selectionsToRemove?: InputMaybe<Array<CollectionInclusionProductSelectionInput>>;
+};
+
+/** The input fields for updating a collection source - provide the one field that represents the type of source to update. */
+export type CollectionUpdateSourceTargetInput = {
+  /** An update to a shareable conditions-based source. */
+  condition?: InputMaybe<CollectionUpdateConditionsSourceInput>;
+  /** An update to a sub-collection source whose membership comes from one or more referenced collections. */
+  subCollections?: InputMaybe<CollectionUpdateSubCollectionsSourceInput>;
+};
+
+/** The input fields for updating a sub-collection source — a source whose membership comes from one or more referenced collections. */
+export type CollectionUpdateSubCollectionsSourceInput = {
+  /** The global IDs of the sub-collections whose products supply this source. When provided, it replaces the source's current referenced collections. */
+  collectionIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** An optional description of the source. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The ID of the source to update. */
+  id: Scalars['ID']['input'];
+  /** The title of the source. */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
 /** The data type of a column. */
 export enum ColumnDataType {
   /** Represents an array of values. */
   Array = 'ARRAY',
   /** Represents a boolean value. */
   Boolean = 'BOOLEAN',
+  /** Represents a hex color value. */
+  Color = 'COLOR',
+  /** Represents a cumulative value. */
+  Cumulative = 'CUMULATIVE',
   /** Represents a duration in days. */
   DayDuration = 'DAY_DURATION',
   /** Represents a day of week value. */
@@ -2399,8 +4823,12 @@ export enum ColumnDataType {
   DayTimestamp = 'DAY_TIMESTAMP',
   /** Represents a decimal value. */
   Decimal = 'DECIMAL',
+  /** Represents an entity reference value. */
+  Entity = 'ENTITY',
   /** Represents a floating point value. */
   Float = 'FLOAT',
+  /** Represents a geographic coordinate value. */
+  GeoCoordinate = 'GEO_COORDINATE',
   /** Represents a duration in hours. */
   HourDuration = 'HOUR_DURATION',
   /** Represents an hour of day value. */
@@ -2423,18 +4851,26 @@ export enum ColumnDataType {
   MonthOfYear = 'MONTH_OF_YEAR',
   /** Represents a month-level timestamp value. */
   MonthTimestamp = 'MONTH_TIMESTAMP',
+  /** Represents a multiplier value. */
+  Multiplier = 'MULTIPLIER',
   /** Represents a percentage value. */
   Percent = 'PERCENT',
   /** Represents a quarter-level timestamp value. */
   QuarterTimestamp = 'QUARTER_TIMESTAMP',
+  /** Represents a rating value. */
+  Rating = 'RATING',
   /** Represents a duration in seconds. */
   SecondDuration = 'SECOND_DURATION',
   /** Represents a second-level timestamp value. */
   SecondTimestamp = 'SECOND_TIMESTAMP',
   /** Represents a string value. */
   String = 'STRING',
+  /** Represents a string identity value. */
+  StringIdentity = 'STRING_IDENTITY',
   /** Represents a timestamp value in seconds. */
   Timestamp = 'TIMESTAMP',
+  /** Represents a unitless scalar value. */
+  UnitlessScalar = 'UNITLESS_SCALAR',
   /** Represents an unspecified data type. */
   Unspecified = 'UNSPECIFIED',
   /** Represents a week of year value. */
@@ -3934,7 +6370,54 @@ export type CustomerInput = {
   taxExempt?: InputMaybe<Scalars['Boolean']['input']>;
   /** The list of tax exemptions to apply to the customer. */
   taxExemptions?: InputMaybe<Array<TaxExemption>>;
+  /**
+   * The marketing consent information when the customer consented to receiving marketing
+   *         material by WhatsApp. The `phone` field is required when creating a customer with WhatsApp
+   *         marketing consent information.
+   */
+  whatsAppMarketingConsent?: InputMaybe<CustomerMarketingConsentInput>;
 };
+
+/** Possible error codes that can be returned by `CustomerMarketingConsentError`. */
+export enum CustomerMarketingConsentErrorCode {
+  /** The input value isn't included in the list. */
+  Inclusion = 'INCLUSION',
+  /** Unexpected internal error happened. */
+  InternalError = 'INTERNAL_ERROR',
+  /** The input value is invalid. */
+  Invalid = 'INVALID',
+  /** Missing a required argument. */
+  MissingArgument = 'MISSING_ARGUMENT'
+}
+
+/** The input fields for marketing consent information when a [customer](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer) consents to receive marketing material on a specific channel. Channel-specific consent mutations like [`customerWhatsAppMarketingConsentUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/customerWhatsAppMarketingConsentUpdate) use this input. */
+export type CustomerMarketingConsentInput = {
+  /** The [marketing subscription opt-in level](https://shopify.dev/docs/api/admin-graphql/latest/enums/CustomerMarketingOptInLevel) that was set when the customer consented to receive marketing information. */
+  optInLevel?: InputMaybe<CustomerMarketingOptInLevel>;
+  /** Identifies the [location](https://shopify.dev/docs/api/admin-graphql/latest/objects/Location) where the customer consented to receiving marketing material. */
+  sourceLocationId?: InputMaybe<Scalars['ID']['input']>;
+  /** The [marketing consent state](https://shopify.dev/docs/api/admin-graphql/latest/enums/CustomerMarketingConsentState) to set for the customer on this channel. */
+  state: CustomerMarketingConsentState;
+  /**
+   * The date and time when the customer consented to receive marketing material.
+   * If no date is provided, then the date and time when the consent information was sent is used.
+   */
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+/** The valid marketing consent states for a customer on a specific marketing channel. The [`CustomerMarketingConsent`](https://shopify.dev/docs/api/admin-graphql/latest/interfaces/CustomerMarketingConsent) interface and channel-specific consent mutations use these values. */
+export enum CustomerMarketingConsentState {
+  /** The customer has never subscribed to marketing on this channel. This is the default state for any channel the customer hasn't interacted with. Read-only: can't be set as an input. */
+  NeverSubscribed = 'NEVER_SUBSCRIBED',
+  /** The customer is in the process of subscribing to marketing on this channel, for example, pending an opt-in confirmation. */
+  Pending = 'PENDING',
+  /** The customer's personal data is erased. This value is internally-set and read-only. */
+  Redacted = 'REDACTED',
+  /** The customer is subscribed to marketing on this channel. */
+  Subscribed = 'SUBSCRIBED',
+  /** The customer isn't currently subscribed to marketing on this channel but was previously subscribed. */
+  Unsubscribed = 'UNSUBSCRIBED'
+}
 
 /**
  * The possible values for the marketing subscription opt-in level enabled at the time the customer consented to receive marketing information.
@@ -4410,6 +6893,14 @@ export enum CustomerState {
   Invited = 'INVITED'
 }
 
+/** The input fields to update a customer's WhatsApp marketing consent information. */
+export type CustomerWhatsAppMarketingConsentUpdateInput = {
+  /** The ID of the [customer](https://shopify.dev/docs/api/admin-graphql/latest/objects/Customer) to update the WhatsApp marketing consent information for. The customer must have a unique phone number associated with their record. If not, then add the phone number using the [`customerUpdate`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/customerUpdate) mutation first. */
+  customerId: Scalars['ID']['input'];
+  /** The marketing consent information when the customer consented to receiving marketing material by WhatsApp. */
+  whatsAppMarketingConsent: CustomerMarketingConsentInput;
+};
+
 /** Possible error codes that can be returned by `DataSaleOptOutUserError`. */
 export enum DataSaleOptOutUserErrorCode {
   /** Data sale opt out failed. */
@@ -4485,6 +6976,101 @@ export enum DeletionEventSubjectType {
   Collection = 'COLLECTION',
   Product = 'PRODUCT'
 }
+
+/** The input fields for creating a carrier-calculated shipping option. */
+export type DeliveryCarrierCalculatedOptionDefinitionCreateInput = {
+  /** The currency used for all money values in this shipping option. */
+  currency: CurrencyCode;
+  /** Optional description shown to buyers. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The cart subtotal required for free shipping. Currency must match the shipping option's currency. */
+  freeDeliveryMinimumValue?: InputMaybe<MoneyInput>;
+  /** Whether this shipping option is active and shown to buyers. Defaults to true. */
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The rate groups to create for this shipping option. At this time, only a single rate group is supported for carrier calculated shipping options. */
+  rateGroups: Array<DeliveryCarrierCalculatedRateGroupCreateInput>;
+};
+
+/** The input fields for updating a carrier-calculated shipping option. */
+export type DeliveryCarrierCalculatedOptionDefinitionUpdateInput = {
+  /** The currency used for all money values in this shipping option. */
+  currency?: InputMaybe<CurrencyCode>;
+  /** Description shown to buyers. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The cart subtotal required for free shipping. Null clears the existing threshold. Currency must match the shipping option's currency. */
+  freeDeliveryMinimumValue?: InputMaybe<MoneyInput>;
+  /** The ID of the carrier-calculated shipping option to update. */
+  id: Scalars['ID']['input'];
+  /** Whether this shipping option is active and shown to buyers. */
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Rate groups to create for this shipping option. At this time, only a single rate group is supported for carrier calculated shipping options. */
+  rateGroupsToCreate?: InputMaybe<Array<DeliveryCarrierCalculatedRateGroupCreateInput>>;
+  /** The IDs of rate groups to delete from this shipping option. */
+  rateGroupsToDelete?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** Rate groups to update for this shipping option. Only the existing single rate group is supported. */
+  rateGroupsToUpdate?: InputMaybe<Array<DeliveryCarrierCalculatedRateGroupUpdateInput>>;
+};
+
+/** The input fields for creating a rate group for a carrier-calculated shipping option. */
+export type DeliveryCarrierCalculatedRateGroupCreateInput = {
+  /** The flat amount added to or subtracted from carrier rates. */
+  absoluteAdjustment?: InputMaybe<MoneyInput>;
+  /**
+   * Whether new services from this carrier are automatically included at checkout.
+   * When omitted, defaults to true. Set to false to offer only explicitly
+   * included services for carriers that support service discovery.
+   */
+  autoIncludeNewServices?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The ID of the carrier service to use for this rate group. */
+  carrierServiceId: Scalars['ID']['input'];
+  /** Collection and origin location conditions for this rate group. */
+  conditions?: InputMaybe<DeliveryRateConditionsCreateInput>;
+  /** The percentage added to or subtracted from carrier rates. */
+  percentageAdjustment?: InputMaybe<Scalars['Int']['input']>;
+  /**
+   * Carrier-provided services to include or exclude.
+   * Services not listed follow the default behavior based on `autoIncludeNewServices`.
+   */
+  serviceConfiguration?: InputMaybe<Array<DeliveryCarrierCalculatedRateGroupServiceInput>>;
+};
+
+/** The input fields for including or excluding a carrier-provided service in a rate group. */
+export type DeliveryCarrierCalculatedRateGroupServiceInput = {
+  /** The name of the carrier-provided service. */
+  name: Scalars['String']['input'];
+  /** Whether this service is included or excluded at checkout. */
+  status: DeliveryCarrierCalculatedRateGroupServiceStatus;
+};
+
+/** Whether a carrier-provided service is included at checkout. */
+export enum DeliveryCarrierCalculatedRateGroupServiceStatus {
+  /** The service is excluded at checkout. */
+  Excluded = 'EXCLUDED',
+  /** The service is included at checkout. */
+  Included = 'INCLUDED'
+}
+
+/** The input fields for updating a rate group for a carrier-calculated shipping option. */
+export type DeliveryCarrierCalculatedRateGroupUpdateInput = {
+  /** The flat amount added to or subtracted from carrier rates. */
+  absoluteAdjustment?: InputMaybe<MoneyInput>;
+  /**
+   * Whether new services from this carrier are automatically included at checkout.
+   * When true, buyers see any service that isn't excluded.
+   * When false, buyers see only included services.
+   */
+  autoIncludeNewServices?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The ID of the carrier service that provides rates for this shipping option. */
+  carrierServiceId?: InputMaybe<Scalars['ID']['input']>;
+  /** Collection and origin location conditions for this rate group. */
+  conditions?: InputMaybe<DeliveryRateConditionsUpdateInput>;
+  /** The ID of the rate group to update */
+  id: Scalars['ID']['input'];
+  /** The percentage added to or subtracted from carrier rates. */
+  percentageAdjustment?: InputMaybe<Scalars['Int']['input']>;
+  /** Carrier-provided services to include or exclude. Replaces the existing configuration. */
+  serviceConfiguration?: InputMaybe<Array<DeliveryCarrierCalculatedRateGroupServiceInput>>;
+};
 
 /** The input fields required to create a carrier service. */
 export type DeliveryCarrierServiceCreateInput = {
@@ -4586,16 +7172,81 @@ export type DeliveryCustomizationInput = {
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
-/** Reasons the shop is blocked from converting to full multi-location delivery profiles mode. */
-export enum DeliveryLegacyModeBlockedReason {
-  /**
-   * Multi-Location mode is disabled. The shop can't convert to full multi-location delivery profiles mode.
-   * @deprecated All shops are now using multi-location mode.
-   */
-  MultiLocationDisabled = 'MULTI_LOCATION_DISABLED',
-  /** There are no locations for this store that can fulfill online orders. */
-  NoLocationsFulfillingOnlineOrders = 'NO_LOCATIONS_FULFILLING_ONLINE_ORDERS'
-}
+/** The input fields for creating a flat rate. */
+export type DeliveryFlatRateCreateInput = {
+  /** The fixed price charged for this rate. */
+  price: MoneyInput;
+  /** The maximum estimated transit time in seconds. */
+  transitTimeMaxSeconds?: InputMaybe<Scalars['Int']['input']>;
+  /** The minimum estimated transit time in seconds. */
+  transitTimeMinSeconds?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** The input fields for creating a flat rate group. */
+export type DeliveryFlatRateGroupCreateInput = {
+  /** Collection and origin location conditions for this rate group. */
+  conditions?: InputMaybe<DeliveryRateConditionsCreateInput>;
+  /** The fixed-price rate and optional transit time. */
+  rate: DeliveryFlatRateCreateInput;
+};
+
+/** The input fields for updating a flat rate group. */
+export type DeliveryFlatRateGroupUpdateInput = {
+  /** Collection and origin location conditions for this rate group. */
+  conditions?: InputMaybe<DeliveryRateConditionsUpdateInput>;
+  /** The globally unique ID of the flat rate group to update. */
+  id: Scalars['ID']['input'];
+  /** Updates to the fixed-price rate and optional transit time. */
+  rate?: InputMaybe<DeliveryFlatRateUpdateInput>;
+};
+
+/** The input fields for creating a flat rate shipping option. */
+export type DeliveryFlatRateOptionDefinitionCreateInput = {
+  /** The currency used for all money values in this shipping option. */
+  currency: CurrencyCode;
+  /** Optional description shown to buyers. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The cart subtotal required for free shipping. Currency must match the shipping option's currency. */
+  freeDeliveryMinimumValue?: InputMaybe<MoneyInput>;
+  /** Whether this shipping option is active and shown to buyers. Defaults to true. */
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The name shown to buyers for this shipping option. */
+  name: Scalars['String']['input'];
+  /** The flat rate groups for this shipping option. */
+  rateGroups?: InputMaybe<Array<DeliveryFlatRateGroupCreateInput>>;
+};
+
+/** The input fields for updating a flat rate shipping option. */
+export type DeliveryFlatRateOptionDefinitionUpdateInput = {
+  /** The currency used for all money values in this shipping option. */
+  currency?: InputMaybe<CurrencyCode>;
+  /** Optional description shown to buyers. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The cart subtotal required for free shipping. Null clears the threshold. Currency must match the shipping option's currency. */
+  freeDeliveryMinimumValue?: InputMaybe<MoneyInput>;
+  /** The globally unique ID of the flat rate shipping option to update. */
+  id: Scalars['ID']['input'];
+  /** Whether this shipping option is active and shown to buyers. */
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The name shown to buyers for this shipping option. */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Rate groups to create for this shipping option. */
+  rateGroupsToCreate?: InputMaybe<Array<DeliveryFlatRateGroupCreateInput>>;
+  /** The IDs of rate groups to delete from this shipping option. */
+  rateGroupsToDelete?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** Rate groups to update for this shipping option. */
+  rateGroupsToUpdate?: InputMaybe<Array<DeliveryFlatRateGroupUpdateInput>>;
+};
+
+/** The input fields for updating a flat rate. */
+export type DeliveryFlatRateUpdateInput = {
+  /** The fixed price charged for this rate. */
+  price?: InputMaybe<MoneyInput>;
+  /** The maximum estimated transit time in seconds. */
+  transitTimeMaxSeconds?: InputMaybe<Scalars['Int']['input']>;
+  /** The minimum estimated transit time in seconds. */
+  transitTimeMinSeconds?: InputMaybe<Scalars['Int']['input']>;
+};
 
 /** Possible pickup time values that a location enabled for local pickup can have. */
 export enum DeliveryLocalPickupTime {
@@ -4698,6 +7349,30 @@ export enum DeliveryMethodType {
   Shipping = 'SHIPPING'
 }
 
+/** The input fields for creating a shipping option. Provide exactly one option type. */
+export type DeliveryOptionDefinitionCreateInput = {
+  /** A carrier-calculated shipping option. */
+  carrierCalculated?: InputMaybe<DeliveryCarrierCalculatedOptionDefinitionCreateInput>;
+  /** A flat rate shipping option. */
+  flatRate?: InputMaybe<DeliveryFlatRateOptionDefinitionCreateInput>;
+  /** A value-based shipping option. */
+  valueBased?: InputMaybe<DeliveryValueBasedOptionDefinitionCreateInput>;
+  /** A weight-based shipping option. */
+  weightBased?: InputMaybe<DeliveryWeightBasedOptionDefinitionCreateInput>;
+};
+
+/** The input fields for updating a shipping option. Provide exactly one option type. */
+export type DeliveryOptionDefinitionUpdateInput = {
+  /** A carrier-calculated shipping option to update. */
+  carrierCalculated?: InputMaybe<DeliveryCarrierCalculatedOptionDefinitionUpdateInput>;
+  /** A flat rate shipping option to update. */
+  flatRate?: InputMaybe<DeliveryFlatRateOptionDefinitionUpdateInput>;
+  /** A value-based shipping option to update. */
+  valueBased?: InputMaybe<DeliveryValueBasedOptionDefinitionUpdateInput>;
+  /** A weight-based shipping option to update. */
+  weightBased?: InputMaybe<DeliveryWeightBasedOptionDefinitionUpdateInput>;
+};
+
 /** The input fields for a participant. */
 export type DeliveryParticipantInput = {
   /** Whether to automatically display new shipping services to the customer when a service becomes available. */
@@ -4734,6 +7409,14 @@ export type DeliveryPriceConditionInput = {
 export type DeliveryProfileInput = {
   /** The list of condition IDs to delete. */
   conditionsToDelete?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /**
+   * Whether this delivery profile covers all items in the shop. This field is only supported on
+   * app-owned shipping profiles. Set it to `true` to make the profile cover all shippable items,
+   * or `false` to disable this behavior. When omitted
+   * on create, the profile is created with `coversAllItems: false`. When omitted on update, the
+   * existing value is preserved.
+   */
+  coversAllItems?: InputMaybe<Scalars['Boolean']['input']>;
   /**
    * The list of location groups to be created in the delivery profile.
    *
@@ -4825,18 +7508,34 @@ export type DeliveryProvinceInput = {
   code: Scalars['String']['input'];
 };
 
+/** The input fields for conditions that limit a rate group to specific collections or origin locations. */
+export type DeliveryRateConditionsCreateInput = {
+  /** Collection IDs to add. The rate group applies only to products in these collections. */
+  collectionsToAdd?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** Origin location IDs to add. The rate group applies only to shipments from these locations. */
+  originLocationsToAdd?: InputMaybe<Array<Scalars['ID']['input']>>;
+};
+
+/** The input fields for conditions that limit a rate group to specific collections or origin locations. */
+export type DeliveryRateConditionsUpdateInput = {
+  /** Collection IDs to add. The rate group applies only to products in these collections. */
+  collectionsToAdd?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** Collection IDs to remove. */
+  collectionsToRemove?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** Origin location IDs to add. The rate group applies only to shipments from these locations. */
+  originLocationsToAdd?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** Origin location IDs to remove. */
+  originLocationsToRemove?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** Whether to remove all collection conditions so the rate group applies to all products. */
+  resetToAllProducts?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 /** The input fields for a rate definition. */
 export type DeliveryRateDefinitionInput = {
   /** A globally-unique ID of the rate definition. */
   id?: InputMaybe<Scalars['ID']['input']>;
   /** The price of the rate definition. */
   price: MoneyInput;
-};
-
-/** The input fields for shop-level delivery settings. */
-export type DeliverySettingInput = {
-  /** Whether legacy compatability mode is enabled for the multi-location delivery profiles feature. Note: this field is effectively deprecated and will be removed in a future version of the API. */
-  legacyModeProfiles?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 /** The input fields for updating the condition of a delivery method definition. */
@@ -4851,6 +7550,186 @@ export type DeliveryUpdateConditionInput = {
   id: Scalars['ID']['input'];
   /** The operator to use for comparison. */
   operator?: InputMaybe<DeliveryConditionOperator>;
+};
+
+/** The input fields for creating a value-based shipping option. */
+export type DeliveryValueBasedOptionDefinitionCreateInput = {
+  /** The currency used for all money values in this shipping option. */
+  currency: CurrencyCode;
+  /** Optional description shown to buyers. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The cart subtotal required for free shipping. Currency must match the shipping option's currency. */
+  freeDeliveryMinimumValue?: InputMaybe<MoneyInput>;
+  /** Whether this shipping option is active and shown to buyers. Defaults to true. */
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The name shown to buyers for this shipping option. */
+  name: Scalars['String']['input'];
+  /** Rate groups to create for this shipping option. */
+  rateGroups: Array<DeliveryValueBasedRateGroupCreateInput>;
+};
+
+/** The input fields for updating a value-based shipping option. */
+export type DeliveryValueBasedOptionDefinitionUpdateInput = {
+  /** The currency used for all money values in this shipping option. */
+  currency?: InputMaybe<CurrencyCode>;
+  /** Description shown to buyers. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The cart subtotal required for free shipping. Null clears the threshold. Currency must match the shipping option's currency. */
+  freeDeliveryMinimumValue?: InputMaybe<MoneyInput>;
+  /** The ID of the value-based shipping option to update. */
+  id: Scalars['ID']['input'];
+  /** Whether this shipping option is active and shown to buyers. */
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The name shown to buyers for this shipping option. */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Rate groups to create for this shipping option. */
+  rateGroupsToCreate?: InputMaybe<Array<DeliveryValueBasedRateGroupCreateInput>>;
+  /** The IDs of rate groups to delete from this shipping option. */
+  rateGroupsToDelete?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** Rate groups to update for this shipping option. */
+  rateGroupsToUpdate?: InputMaybe<Array<DeliveryValueBasedRateGroupUpdateInput>>;
+};
+
+/** The input fields for creating a value-based rate. */
+export type DeliveryValueBasedRateCreateInput = {
+  /** The maximum cart value (inclusive) for this rate. Omit for no upper limit. */
+  maxValue?: InputMaybe<MoneyInput>;
+  /** The minimum cart value (inclusive) for this rate. */
+  minValue: MoneyInput;
+  /** The price charged for this rate. */
+  price: MoneyInput;
+  /** The maximum transit time estimate in seconds. */
+  transitTimeMaxSeconds?: InputMaybe<Scalars['Int']['input']>;
+  /** The minimum transit time estimate in seconds. */
+  transitTimeMinSeconds?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** The input fields for creating a rate group for a value-based shipping option. */
+export type DeliveryValueBasedRateGroupCreateInput = {
+  /** Collection and origin location conditions for this rate group. */
+  conditions: DeliveryRateConditionsCreateInput;
+  /** The rates to create in this rate group. */
+  rates: Array<DeliveryValueBasedRateCreateInput>;
+};
+
+/** The input fields for updating a rate group for a value-based shipping option. */
+export type DeliveryValueBasedRateGroupUpdateInput = {
+  /** Collection and origin location conditions for this rate group. */
+  conditions?: InputMaybe<DeliveryRateConditionsUpdateInput>;
+  /** The ID of the rate group to update. */
+  id: Scalars['ID']['input'];
+  /** Rates to create within this rate group. */
+  ratesToCreate?: InputMaybe<Array<DeliveryValueBasedRateCreateInput>>;
+  /** IDs of rates to delete from this rate group. */
+  ratesToDelete?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** Rates to update within this rate group. */
+  ratesToUpdate?: InputMaybe<Array<DeliveryValueBasedRateUpdateInput>>;
+};
+
+/** The input fields for updating a value-based rate. */
+export type DeliveryValueBasedRateUpdateInput = {
+  /** The ID of the rate to update. */
+  id: Scalars['ID']['input'];
+  /** The maximum cart value (inclusive) for this rate. Set to null for no upper limit. */
+  maxValue?: InputMaybe<MoneyInput>;
+  /** The minimum cart value for this rate. */
+  minValue?: InputMaybe<MoneyInput>;
+  /** The price charged for this rate. */
+  price?: InputMaybe<MoneyInput>;
+  /** The maximum transit time estimate in seconds. */
+  transitTimeMaxSeconds?: InputMaybe<Scalars['Int']['input']>;
+  /** The minimum transit time estimate in seconds. */
+  transitTimeMinSeconds?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** The input fields for creating a weight-based shipping option. */
+export type DeliveryWeightBasedOptionDefinitionCreateInput = {
+  /** The currency used for all money values in this shipping option. */
+  currency: CurrencyCode;
+  /** Optional description shown to buyers. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The cart subtotal required for free shipping. Currency must match the shipping option's currency. */
+  freeDeliveryMinimumValue?: InputMaybe<MoneyInput>;
+  /** Whether this shipping option is active and shown to buyers. Defaults to true. */
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The name shown to buyers for this shipping option. */
+  name: Scalars['String']['input'];
+  /** The weight-based rate groups for this shipping option. At this time, only a single rate group is supported for weight-based shipping options. */
+  rateGroups: Array<DeliveryWeightBasedRateGroupCreateInput>;
+};
+
+/** The input fields for updating a weight-based shipping option. */
+export type DeliveryWeightBasedOptionDefinitionUpdateInput = {
+  /** The currency used for all money values in this shipping option. */
+  currency?: InputMaybe<CurrencyCode>;
+  /** Optional description shown to buyers. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** The cart subtotal required for free shipping. Null clears the threshold. Currency must match the shipping option's currency. */
+  freeDeliveryMinimumValue?: InputMaybe<MoneyInput>;
+  /** The globally unique ID of the weight-based shipping option to update. */
+  id: Scalars['ID']['input'];
+  /** Whether this shipping option is active and shown to buyers. */
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The name shown to buyers for this shipping option. */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Rate groups to create for this shipping option. At this time, only a single rate group is supported for weight-based shipping options. */
+  rateGroupsToCreate?: InputMaybe<Array<DeliveryWeightBasedRateGroupCreateInput>>;
+  /** The IDs of rate groups to delete from this shipping option. */
+  rateGroupsToDelete?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** Rate groups to update for this shipping option. Only the existing single rate group is supported. */
+  rateGroupsToUpdate?: InputMaybe<Array<DeliveryWeightBasedRateGroupUpdateInput>>;
+};
+
+/** The input fields for creating a weight-based rate. */
+export type DeliveryWeightBasedRateCreateInput = {
+  /** The maximum package weight for this rate tier. If omitted, the tier has no upper weight limit. */
+  maxWeight?: InputMaybe<WeightInput>;
+  /** The minimum package weight for this rate tier. */
+  minWeight: WeightInput;
+  /** The price charged for this rate tier. */
+  price: MoneyInput;
+  /** The maximum estimated transit time in seconds. */
+  transitTimeMaxSeconds?: InputMaybe<Scalars['Int']['input']>;
+  /** The minimum estimated transit time in seconds. */
+  transitTimeMinSeconds?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** The input fields for creating a weight-based rate group. */
+export type DeliveryWeightBasedRateGroupCreateInput = {
+  /** Collection and origin location conditions for this rate group. */
+  conditions: DeliveryRateConditionsCreateInput;
+  /** The weight-based rates for this rate group. */
+  rates: Array<DeliveryWeightBasedRateCreateInput>;
+};
+
+/** The input fields for updating a weight-based rate group. */
+export type DeliveryWeightBasedRateGroupUpdateInput = {
+  /** Collection and origin location conditions for this rate group. */
+  conditions?: InputMaybe<DeliveryRateConditionsUpdateInput>;
+  /** The ID of the rate group to update. */
+  id: Scalars['ID']['input'];
+  /** Rates to create in this rate group. */
+  ratesToCreate?: InputMaybe<Array<DeliveryWeightBasedRateCreateInput>>;
+  /** IDs of rates to delete from this rate group. */
+  ratesToDelete?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** Rates to update in this rate group. */
+  ratesToUpdate?: InputMaybe<Array<DeliveryWeightBasedRateUpdateInput>>;
+};
+
+/** The input fields for updating a weight-based rate. */
+export type DeliveryWeightBasedRateUpdateInput = {
+  /** The globally unique ID of the weight-based rate to update. */
+  id: Scalars['ID']['input'];
+  /** The maximum package weight for this rate tier. Null means no upper weight limit. */
+  maxWeight?: InputMaybe<WeightInput>;
+  /** The minimum package weight for this rate tier. */
+  minWeight?: InputMaybe<WeightInput>;
+  /** The price charged for this rate tier. */
+  price?: InputMaybe<MoneyInput>;
+  /** The maximum estimated transit time in seconds. */
+  transitTimeMaxSeconds?: InputMaybe<Scalars['Int']['input']>;
+  /** The minimum estimated transit time in seconds. */
+  transitTimeMinSeconds?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** The input fields for a weight-based condition of a delivery method definition. */
@@ -4963,7 +7842,9 @@ export type DiscountAutomaticAppInput = {
    * The
    * [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
    * that you can use in combination with
-   * [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types).
+   * [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types),
+   * and the product discount tags that determine which product discounts can apply
+   * together on the same cart line.
    */
   combinesWith?: InputMaybe<DiscountCombinesWithInput>;
   /**
@@ -4998,6 +7879,22 @@ export type DiscountAutomaticAppInput = {
   recurringCycleLimit?: InputMaybe<Scalars['Int']['input']>;
   /** The date and time when the discount becomes active and is available to customers. */
   startsAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /**
+   * A list of searchable keywords that are associated with the discount.
+   *
+   * Use these tags on product discounts to determine which other product discounts can
+   * apply to the same cart line when you configure
+   * `productDiscountsWithTagsOnSameCartLine` in `combinesWith`.
+   *
+   * For example, you can apply a `loyalty` tag to discounts
+   * that are associated with a loyalty program.
+   *
+   * Updating `tags` overwrites any existing tags that were previously added to the discount.
+   * To add new tags without overwriting existing tags, use the
+   * [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+   * mutation.
+   */
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The discount's name that displays to merchants in the Shopify admin and to customers. */
   title?: InputMaybe<Scalars['String']['input']>;
 };
@@ -5015,9 +7912,11 @@ export type DiscountAutomaticAppInput = {
 export type DiscountAutomaticBasicInput = {
   /**
    * The
-   * [discount class](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+   * [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
    * that you can use in combination with
-   * [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types).
+   * [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types),
+   * and the product discount tags that determine which product discounts can apply
+   * together on the same cart line.
    */
   combinesWith?: InputMaybe<DiscountCombinesWithInput>;
   /**
@@ -5044,6 +7943,22 @@ export type DiscountAutomaticBasicInput = {
   recurringCycleLimit?: InputMaybe<Scalars['Int']['input']>;
   /** The date and time when the discount becomes active and is available to customers. */
   startsAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /**
+   * A list of searchable keywords that are associated with the discount.
+   *
+   * Use these tags on product discounts to determine which other product discounts can
+   * apply to the same cart line when you configure
+   * `productDiscountsWithTagsOnSameCartLine` in `combinesWith`.
+   *
+   * For example, you can apply a `loyalty` tag to discounts
+   * that are associated with a loyalty program.
+   *
+   * Updating `tags` overwrites any existing tags that were previously added to the discount.
+   * To add new tags without overwriting existing tags, use the
+   * [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+   * mutation.
+   */
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The discount's name that displays to merchants in the Shopify admin and to customers. */
   title?: InputMaybe<Scalars['String']['input']>;
 };
@@ -5062,9 +7977,11 @@ export type DiscountAutomaticBasicInput = {
 export type DiscountAutomaticBxgyInput = {
   /**
    * The
-   * [discount class](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+   * [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
    * that you can use in combination with
-   * [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types).
+   * [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types),
+   * and the product discount tags that determine which product discounts can apply
+   * together on the same cart line.
    */
   combinesWith?: InputMaybe<DiscountCombinesWithInput>;
   /**
@@ -5084,6 +8001,22 @@ export type DiscountAutomaticBxgyInput = {
   endsAt?: InputMaybe<Scalars['DateTime']['input']>;
   /** The date and time when the discount becomes active and is available to customers. */
   startsAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /**
+   * A list of searchable keywords that are associated with the discount.
+   *
+   * Use these tags on product discounts to determine which other product discounts can
+   * apply to the same cart line when you configure
+   * `productDiscountsWithTagsOnSameCartLine` in `combinesWith`.
+   *
+   * For example, you can apply a `loyalty` tag to discounts
+   * that are associated with a loyalty program.
+   *
+   * Updating `tags` overwrites any existing tags that were previously added to the discount.
+   * To add new tags without overwriting existing tags, use the
+   * [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+   * mutation.
+   */
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The discount's name that displays to merchants in the Shopify admin and to customers. */
   title?: InputMaybe<Scalars['String']['input']>;
   /** The maximum number of times that the discount can be applied to an order. */
@@ -5141,6 +8074,22 @@ export type DiscountAutomaticFreeShippingInput = {
   recurringCycleLimit?: InputMaybe<Scalars['Int']['input']>;
   /** The date and time when the discount becomes active and is available to customers. */
   startsAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /**
+   * A list of searchable keywords that are associated with the discount.
+   *
+   * Use these tags on product discounts to determine which other product discounts can
+   * apply to the same cart line when you configure
+   * `productDiscountsWithTagsOnSameCartLine` in `combinesWith`.
+   *
+   * For example, you can apply a `loyalty` tag to discounts
+   * that are associated with a loyalty program.
+   *
+   * Updating `tags` overwrites any existing tags that were previously added to the discount.
+   * To add new tags without overwriting existing tags, use the
+   * [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+   * mutation.
+   */
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The discount's name that displays to merchants in the Shopify admin and to customers. */
   title?: InputMaybe<Scalars['String']['input']>;
 };
@@ -5194,7 +8143,9 @@ export type DiscountCodeAppInput = {
    * The
    * [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
    * that you can use in combination with
-   * [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types).
+   * [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types),
+   * and the product discount tags that determine which product discounts can apply
+   * together on the same cart line.
    */
   combinesWith?: InputMaybe<DiscountCombinesWithInput>;
   /**
@@ -5217,6 +8168,22 @@ export type DiscountCodeAppInput = {
   recurringCycleLimit?: InputMaybe<Scalars['Int']['input']>;
   /** The date and time when the discount becomes active and is available to customers. */
   startsAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /**
+   * A list of searchable keywords that are associated with the discount.
+   *
+   * Use these tags on product discounts to determine which other product discounts can
+   * apply to the same cart line when you configure
+   * `productDiscountsWithTagsOnSameCartLine` in `combinesWith`.
+   *
+   * For example, you can apply a `loyalty` tag to discounts
+   * that are associated with a loyalty program.
+   *
+   * Updating `tags` overwrites any existing tags that were previously added to the discount.
+   * To add new tags without overwriting existing tags, use the
+   * [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+   * mutation.
+   */
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The discount's name that displays to merchants in the Shopify admin and to customers. */
   title?: InputMaybe<Scalars['String']['input']>;
   /**
@@ -5243,9 +8210,11 @@ export type DiscountCodeBasicInput = {
   code?: InputMaybe<Scalars['String']['input']>;
   /**
    * The
-   * [discount class](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+   * [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
    * that you can use in combination with
-   * [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types).
+   * [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types),
+   * and the product discount tags that determine which product discounts can apply
+   * together on the same cart line.
    */
   combinesWith?: InputMaybe<DiscountCombinesWithInput>;
   /**
@@ -5266,6 +8235,22 @@ export type DiscountCodeBasicInput = {
   recurringCycleLimit?: InputMaybe<Scalars['Int']['input']>;
   /** The date and time when the discount becomes active and is available to customers. */
   startsAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /**
+   * A list of searchable keywords that are associated with the discount.
+   *
+   * Use these tags on product discounts to determine which other product discounts can
+   * apply to the same cart line when you configure
+   * `productDiscountsWithTagsOnSameCartLine` in `combinesWith`.
+   *
+   * For example, you can apply a `loyalty` tag to discounts
+   * that are associated with a loyalty program.
+   *
+   * Updating `tags` overwrites any existing tags that were previously added to the discount.
+   * To add new tags without overwriting existing tags, use the
+   * [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+   * mutation.
+   */
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The discount's name that displays to merchants in the Shopify admin and to customers. */
   title?: InputMaybe<Scalars['String']['input']>;
   /**
@@ -5295,9 +8280,11 @@ export type DiscountCodeBxgyInput = {
   code?: InputMaybe<Scalars['String']['input']>;
   /**
    * The
-   * [discount class](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
+   * [discount classes](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
    * that you can use in combination with
-   * [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types).
+   * [Shopify discount types](https://help.shopify.com/manual/discounts/discount-types),
+   * and the product discount tags that determine which product discounts can apply
+   * together on the same cart line.
    */
   combinesWith?: InputMaybe<DiscountCombinesWithInput>;
   /**
@@ -5316,6 +8303,22 @@ export type DiscountCodeBxgyInput = {
   endsAt?: InputMaybe<Scalars['DateTime']['input']>;
   /** The date and time when the discount becomes active and is available to customers. */
   startsAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /**
+   * A list of searchable keywords that are associated with the discount.
+   *
+   * Use these tags on product discounts to determine which other product discounts can
+   * apply to the same cart line when you configure
+   * `productDiscountsWithTagsOnSameCartLine` in `combinesWith`.
+   *
+   * For example, you can apply a `loyalty` tag to discounts
+   * that are associated with a loyalty program.
+   *
+   * Updating `tags` overwrites any existing tags that were previously added to the discount.
+   * To add new tags without overwriting existing tags, use the
+   * [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+   * mutation.
+   */
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The discount's name that displays to merchants in the Shopify admin and to customers. */
   title?: InputMaybe<Scalars['String']['input']>;
   /**
@@ -5379,6 +8382,22 @@ export type DiscountCodeFreeShippingInput = {
   recurringCycleLimit?: InputMaybe<Scalars['Int']['input']>;
   /** The date and time when the discount becomes active and is available to customers. */
   startsAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /**
+   * A list of searchable keywords that are associated with the discount.
+   *
+   * Use these tags on product discounts to determine which other product discounts can
+   * apply to the same cart line when you configure
+   * `productDiscountsWithTagsOnSameCartLine` in `combinesWith`.
+   *
+   * For example, you can apply a `loyalty` tag to discounts
+   * that are associated with a loyalty program.
+   *
+   * Updating `tags` overwrites any existing tags that were previously added to the discount.
+   * To add new tags without overwriting existing tags, use the
+   * [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+   * mutation.
+   */
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The discount's name that displays to merchants in the Shopify admin and to customers. */
   title?: InputMaybe<Scalars['String']['input']>;
   /**
@@ -5426,6 +8445,29 @@ export type DiscountCombinesWithInput = {
    */
   productDiscounts?: InputMaybe<Scalars['Boolean']['input']>;
   /**
+   * Controls which product discounts can apply together on the same cart line. By
+   * default, only one product discount applies per line. Available only on a Shopify
+   * Plus plan and requires the `productDiscounts` field to be set to `true`.
+   *
+   * For discounts to apply together, they must match tags in both directions. Each
+   * discount has two tag sets: the tags that identify the discount, and the tags that
+   * it agrees to apply with. Use the `tags` field on the discount input to set the
+   * discount's own tags. Use this field to set the tags that the discount can apply
+   * with. Two discounts apply together only if each one allows at least one tag that
+   * the other is tagged with. Any number of product discounts can apply to the same
+   * line if this two-way match holds for every pair in the group.
+   *
+   * Example: Discount A is tagged with `LOYALTY` and allows `SEASONAL`, and Discount B
+   * is tagged with `SEASONAL` and allows `LOYALTY`. They apply together. To add a
+   * third discount, it must meet the same mutual-match rule with both A and B.
+   *
+   * Buy X Get Y discounts stack only on the customer-gets products (GY), not the
+   * customer-buys products (BX). See
+   * [Limitations for discount combinations](https://help.shopify.com/manual/discounts/discount-combinations#considerations)
+   * for details.
+   */
+  productDiscountsWithTagsOnSameCartLine?: InputMaybe<ProductDiscountsWithTagsOnSameCartLineInput>;
+  /**
    * Whether the discount combines
    * with the
    * [shipping discount](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
@@ -5442,6 +8484,8 @@ export type DiscountContextInput = {
   customerSegments?: InputMaybe<DiscountCustomerSegmentsInput>;
   /** The list of customer IDs to add or remove from the list of customers. */
   customers?: InputMaybe<DiscountCustomersInput>;
+  /** The list of market IDs to add or remove from the list of markets. */
+  markets?: InputMaybe<DiscountMarketsInput>;
 };
 
 /** The input fields for a list of countries to add or remove from the free shipping discount. */
@@ -5551,6 +8595,8 @@ export enum DiscountErrorCode {
   Blank = 'BLANK',
   /** The attribute selection contains conflicting settings. */
   Conflict = 'CONFLICT',
+  /** Discounts and condition types are not compatible with each other. */
+  DiscountNotCompatibleWithConditionTypes = 'DISCOUNT_NOT_COMPATIBLE_WITH_CONDITION_TYPES',
   /** The input value is already present. */
   Duplicate = 'DUPLICATE',
   /** The end date should be after the start date. */
@@ -5575,6 +8621,14 @@ export enum DiscountErrorCode {
   InvalidCombinesWithForDiscountClass = 'INVALID_COMBINES_WITH_FOR_DISCOUNT_CLASS',
   /** The discountClass is invalid for the price rule. */
   InvalidDiscountClassForPriceRule = 'INVALID_DISCOUNT_CLASS_FOR_PRICE_RULE',
+  /** The `productDiscounts` field can't be set to false when `productDiscountsWithTagsOnSameCartLine` tags exist on the discount. */
+  InvalidProductDiscountsFalseWithExistingTagsOnSameCartLine = 'INVALID_PRODUCT_DISCOUNTS_FALSE_WITH_EXISTING_TAGS_ON_SAME_CART_LINE',
+  /** The `productDiscountsWithTagsOnSameCartLine` field is only valid for discounts with the PRODUCT discount class. */
+  InvalidProductDiscountsWithTagsOnSameCartLineForDiscountClass = 'INVALID_PRODUCT_DISCOUNTS_WITH_TAGS_ON_SAME_CART_LINE_FOR_DISCOUNT_CLASS',
+  /** The `productDiscountsWithTagsOnSameCartLine` field can only be specified when `productDiscounts` is true. */
+  InvalidProductDiscountsWithTagsOnSameCartLineWithoutProductDiscounts = 'INVALID_PRODUCT_DISCOUNTS_WITH_TAGS_ON_SAME_CART_LINE_WITHOUT_PRODUCT_DISCOUNTS',
+  /** The tag title exceeds the maximum length of 255 characters. */
+  InvalidTagLength = 'INVALID_TAG_LENGTH',
   /** The input value should be less than the maximum value allowed. */
   LessThan = 'LESS_THAN',
   /** The input value should be less than or equal to the maximum value allowed. */
@@ -5593,6 +8647,8 @@ export enum DiscountErrorCode {
   MultipleRecurringCycleLimitForNonSubscriptionItems = 'MULTIPLE_RECURRING_CYCLE_LIMIT_FOR_NON_SUBSCRIPTION_ITEMS',
   /** The input value needs to be blank. */
   Present = 'PRESENT',
+  /** The shop's plan does not allow setting `productDiscountsWithTagsOnSameCartLine`. */
+  ProductDiscountsWithTagsOnSameCartLineNotEntitled = 'PRODUCT_DISCOUNTS_WITH_TAGS_ON_SAME_CART_LINE_NOT_ENTITLED',
   /** Recurring cycle limit must be a valid integer greater than or equal to 0. */
   RecurringCycleLimitNotAValidInteger = 'RECURRING_CYCLE_LIMIT_NOT_A_VALID_INTEGER',
   /** The input value is already taken. */
@@ -5601,6 +8657,10 @@ export enum DiscountErrorCode {
   TooLong = 'TOO_LONG',
   /** Too many arguments provided. */
   TooManyArguments = 'TOO_MANY_ARGUMENTS',
+  /** The number of tags in `productDiscountsWithTagsOnSameCartLine` exceeds the maximum of 10. */
+  TooManyProductDiscountsWithTagsOnSameCartLine = 'TOO_MANY_PRODUCT_DISCOUNTS_WITH_TAGS_ON_SAME_CART_LINE',
+  /** The number of tags exceeds the maximum of 5. */
+  TooManyTags = 'TOO_MANY_TAGS',
   /** The input value is too short. */
   TooShort = 'TOO_SHORT',
   /** The value is outside of the allowed range. */
@@ -5620,6 +8680,14 @@ export type DiscountItemsInput = {
    * that the discount applies to.
    */
   products?: InputMaybe<DiscountProductsInput>;
+};
+
+/** The input fields for the markets where the discount is available. */
+export type DiscountMarketsInput = {
+  /** The list of market IDs to add. */
+  add?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** The list of market IDs to remove. */
+  remove?: InputMaybe<Array<Scalars['ID']['input']>>;
 };
 
 /** The input fields for the minimum quantity required for the discount. */
@@ -5725,6 +8793,14 @@ export enum DiscountStatus {
   Scheduled = 'SCHEDULED'
 }
 
+/** The set of valid sort keys for the DiscountTag query. */
+export enum DiscountTagSortKeys {
+  /** Sort by the `id` value. */
+  Id = 'ID',
+  /** Sort by the `title` value. */
+  Title = 'TITLE'
+}
+
 /** The type of line (line item or shipping line) on an order that the subscription discount is applicable towards. */
 export enum DiscountTargetType {
   /** The discount applies onto line items. */
@@ -5771,6 +8847,8 @@ export enum DisputeStatus {
   ChargeRefunded = 'CHARGE_REFUNDED',
   Lost = 'LOST',
   NeedsResponse = 'NEEDS_RESPONSE',
+  /** A dispute that was prevented from becoming a formal chargeback. */
+  Prevented = 'PREVENTED',
   UnderReview = 'UNDER_REVIEW',
   Won = 'WON'
 }
@@ -5870,6 +8948,8 @@ export type DraftOrderInput = {
   billingAddress?: InputMaybe<MailingAddressInput>;
   /** The extra information added to the draft order on behalf of the customer. */
   customAttributes?: InputMaybe<Array<AttributeInput>>;
+  /** The input fields configuring the deposit requirement. */
+  deposit?: InputMaybe<DepositInput>;
   /**
    * The list of discount codes that will be attempted to be applied to the draft order.
    * If the draft isn't eligible for any given discount code it will be skipped during calculation.
@@ -6104,6 +9184,8 @@ export type EventBridgeWebhookSubscriptionInput = {
   metafieldNamespaces?: InputMaybe<Array<Scalars['String']['input']>>;
   /** A list of identifiers specifying metafields to include in the webhook payload. */
   metafields?: InputMaybe<Array<HasMetafieldsMetafieldIdentifierInput>>;
+  /** A human-readable name for the webhook subscription. */
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** The set of valid sort keys for the Event query. */
@@ -6656,6 +9738,8 @@ export enum FulfillmentOrderAction {
   Move = 'MOVE',
   /** Releases the fulfillment hold on the fulfillment order. The corresponding mutation for this action is `fulfillmentOrderReleaseHold`. */
   ReleaseHold = 'RELEASE_HOLD',
+  /** Report the progress of the fulfillment order, marking as in progress if it's not already in progress. */
+  ReportProgress = 'REPORT_PROGRESS',
   /** Sends a cancellation request to the fulfillment service of a fulfillment order. The corresponding mutation for this action is `fulfillmentOrderSubmitCancellationRequest`. */
   RequestCancellation = 'REQUEST_CANCELLATION',
   /** Sends a request for fulfilling selected line items in a fulfillment order to a fulfillment service. The corresponding mutation for this action is `fulfillmentOrderSubmitFulfillmentRequest`. */
@@ -6681,6 +9765,12 @@ export enum FulfillmentOrderAssignmentStatus {
   FulfillmentRequested = 'FULFILLMENT_REQUESTED',
   /** Fulfillment orders for which the merchant hasn't yet requested fulfillment. */
   FulfillmentUnsubmitted = 'FULFILLMENT_UNSUBMITTED'
+}
+
+/** Possible error codes that can be returned by `FulfillmentOrderCancelError`. */
+export enum FulfillmentOrderCancelErrorCode {
+  /** Cannot cancel fulfillment order with reported progress. Mark as unfulfilled first. */
+  FulfillmentOrderHasManuallyReportedProgress = 'FULFILLMENT_ORDER_HAS_MANUALLY_REPORTED_PROGRESS'
 }
 
 /** The input fields for the fulfillment hold applied on the fulfillment order. */
@@ -6810,6 +9900,12 @@ export enum FulfillmentOrderMergeUserErrorCode {
   InvalidLineItemQuantity = 'INVALID_LINE_ITEM_QUANTITY'
 }
 
+/** Possible error codes that can be returned by `FulfillmentOrderMoveFulfillmentOrderMoveUserError`. */
+export enum FulfillmentOrderMoveFulfillmentOrderMoveUserErrorCode {
+  /** Cannot move a fulfillment order that has progress reported. */
+  CannotMoveFulfillmentOrderWithReportedProgress = 'CANNOT_MOVE_FULFILLMENT_ORDER_WITH_REPORTED_PROGRESS'
+}
+
 /** The reason for a fulfillment order rejection. */
 export enum FulfillmentOrderRejectionReason {
   /** The fulfillment order was rejected because of an incorrect address. */
@@ -6848,6 +9944,30 @@ export enum FulfillmentOrderReleaseHoldUserErrorCode {
   FulfillmentOrderNotFound = 'FULFILLMENT_ORDER_NOT_FOUND',
   /** The app doesn't have access to release the fulfillment hold. */
   InvalidAccess = 'INVALID_ACCESS'
+}
+
+/** The input fields for the progress report for the fulfillment order. */
+export type FulfillmentOrderReportProgressInput = {
+  /** Additional information for the progress report. */
+  reasonNotes?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Possible error codes that can be returned by `FulfillmentOrderReportProgressUserError`. */
+export enum FulfillmentOrderReportProgressUserErrorCode {
+  /** The fulfillment order contains picked items. */
+  FulfillmentOrderContainsPickedItems = 'FULFILLMENT_ORDER_CONTAINS_PICKED_ITEMS',
+  /** Progress cannot be reported for a fulfillment order with this delivery method. */
+  FulfillmentOrderInvalidDeliveryMethod = 'FULFILLMENT_ORDER_INVALID_DELIVERY_METHOD',
+  /** The fulfillment order is not assigned to the requesting fulfillment service. */
+  FulfillmentOrderInvalidFulfillmentServiceOwnership = 'FULFILLMENT_ORDER_INVALID_FULFILLMENT_SERVICE_OWNERSHIP',
+  /** The fulfillment order could not be found. */
+  FulfillmentOrderNotFound = 'FULFILLMENT_ORDER_NOT_FOUND',
+  /** The fulfillment order status is invalid. */
+  FulfillmentOrderStatusInvalid = 'FULFILLMENT_ORDER_STATUS_INVALID',
+  /** The action is not supported for the fulfillment order. */
+  FulfillmentOrderUnsupportedAction = 'FULFILLMENT_ORDER_UNSUPPORTED_ACTION',
+  /** Marketplace apps are not eligible to report progress on fulfillment orders. */
+  MarketplaceAppNotEligible = 'MARKETPLACE_APP_NOT_ELIGIBLE'
 }
 
 /** The request status of a fulfillment order. */
@@ -7142,6 +10262,16 @@ export type FulfillmentV2Input = {
   trackingInfo?: InputMaybe<FulfillmentTrackingInput>;
 };
 
+/** The supported units for gift card expiration. */
+export enum GiftCardConfigurationExpirationUnit {
+  /** Gift cards expire in days. */
+  Days = 'DAYS',
+  /** Gift cards expire in months. */
+  Months = 'MONTHS',
+  /** Gift cards expire in years. */
+  Years = 'YEARS'
+}
+
 /** The input fields to issue a gift card. */
 export type GiftCardCreateInput = {
   /**
@@ -7149,12 +10279,14 @@ export type GiftCardCreateInput = {
    * It isn't case sensitive. If not provided, then a random code will be generated.
    */
   code?: InputMaybe<Scalars['String']['input']>;
+  /** The strategy used to convert the gift card's balance when it's redeemed in a currency other than the one it was issued in. When not provided, defaults to `MARKET_FX` for gift cards issued in the shop's currency, and `NONE` for gift cards issued in a different currency. */
+  crossCurrencyRedemptionStrategy?: InputMaybe<GiftCardCrossCurrencyRedemptionStrategy>;
   /** The ID of the customer who will receive the gift card. Requires `write_customers` access_scope. */
   customerId?: InputMaybe<Scalars['ID']['input']>;
   /** The date at which the gift card will expire. If not provided, then the gift card will never expire. */
   expiresOn?: InputMaybe<Scalars['Date']['input']>;
-  /** The initial value of the gift card. */
-  initialValue: Scalars['Decimal']['input'];
+  /** The initial amount of the gift card. */
+  initialAmount?: InputMaybe<MoneyInput>;
   /** The note associated with the gift card, which isn't visible to the customer. */
   note?: InputMaybe<Scalars['String']['input']>;
   /** The recipient attributes of the gift card. */
@@ -7176,6 +10308,16 @@ export type GiftCardCreditInput = {
   /** The date and time the credit was processed. Defaults to current date and time. */
   processedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
+
+/** The strategy used to convert the gift card's balance when it is redeemed in a currency other than the one it was issued in. */
+export enum GiftCardCrossCurrencyRedemptionStrategy {
+  /** The gift card is redeemed using the automatic or manual exchange rate configured in the market's currency setting when converting from shop currency. Only applicable for gift cards issued in the shop currency. */
+  MarketFx = 'MARKET_FX',
+  /** The gift card can only be redeemed in the currency it was issued in. It cannot be used for purchases in other currencies. */
+  None = 'NONE',
+  /** The gift card is redeemed using standard spot exchange rates between the redemption currency and the gift card currency. */
+  SpotFx = 'SPOT_FX'
+}
 
 /** Possible error codes that can be returned by `GiftCardDeactivateUserError`. */
 export enum GiftCardDeactivateUserErrorCode {
@@ -7216,6 +10358,224 @@ export enum GiftCardErrorCode {
   /** The input value is too short. */
   TooShort = 'TOO_SHORT'
 }
+
+/**
+ * The input fields for creating or updating a gift card product with the
+ * [`giftCardProductSet`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/giftCardProductSet)
+ * mutation.
+ *
+ * For list fields like
+ * [`variants`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/giftCardProductSet#arguments-input.fields.variants),
+ * the mutation creates new entries, updates existing ones, and deletes any entries not included
+ * in the input. All other fields update only when explicitly provided, leaving omitted fields
+ * unchanged.
+ */
+export type GiftCardProductSetInput = {
+  /** The IDs of collections that this product will be a member of. */
+  collections?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /**
+   * Whether gift cards fulfilled from this product are redeemable in any payment currency supported by the store.
+   *
+   * > Note
+   * > This value can't be changed after the product is created.
+   */
+  crossCurrencyRedeemable?: InputMaybe<Scalars['Boolean']['input']>;
+  /**
+   * The description of the product, with HTML tags.
+   * For example, the description might include bold `<strong></strong>` and italic `<i></i>` text.
+   */
+  descriptionHtml?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * The files to associate with the product.
+   *
+   * Complexity cost: 1.9 per file.
+   */
+  files?: InputMaybe<Array<FileSetInput>>;
+  /** The [theme template](https://shopify.dev/docs/storefronts/themes/architecture/templates) that's used when customers view a gift card in a store. */
+  giftCardTemplateSuffix?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * A unique, human-readable string that's used to identify the product in URLs. A handle can contain letters, hyphens (`-`), and numbers, but no spaces.
+   * If no handle is explicitly provided, then the title is used to construct the product's handle.
+   * For example, if a product is titled "Black Sunglasses" and no handle is provided, then the handle `black-sunglasses` is generated (unless that handle
+   * is already taken, in which case a suffix is added to make the handle unique).
+   */
+  handle?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * The issuance currency for gift cards fulfilled from this product.
+   *
+   * > Note
+   * > This value can't be changed after the product is created.
+   */
+  issuanceCurrency?: InputMaybe<CurrencyCode>;
+  /**
+   * The metafields to associate with this product.
+   *
+   * Complexity cost: 0.4 per metafield.
+   */
+  metafields?: InputMaybe<Array<MetafieldInput>>;
+  /** List of custom product options and option values (maximum of 3 per product). */
+  productOptions?: InputMaybe<Array<OptionSetInput>>;
+  /**
+   * The [product type](https://help.shopify.com/manual/products/details/product-type)
+   * that merchants define.
+   */
+  productType?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * Whether a redirect is required after a new handle has been provided.
+   * If `true`, then the old handle is redirected to the new one automatically.
+   */
+  redirectNewHandle?: InputMaybe<Scalars['Boolean']['input']>;
+  /**
+   * The [SEO title and description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
+   * that are associated with a product.
+   */
+  seo?: InputMaybe<SeoInput>;
+  /** The status of the product. */
+  status?: InputMaybe<ProductStatus>;
+  /**
+   * A list of searchable keywords that are
+   * associated with the product. For example, a merchant might apply the `sports`
+   * and `summer` tags to products that are associated with sportwear for summer.
+   *
+   * Updating `tags` overwrites any existing tags that were previously added to the product.
+   * To add new tags without overwriting existing tags, use the
+   * [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+   * mutation.
+   */
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** The [theme template](https://shopify.dev/docs/storefronts/themes/architecture/templates) that's used when customers view a product in a store. */
+  templateSuffix?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * The name for the product that displays to customers. If no handle is explicitly provided, then the title is used to construct the product's handle.
+   * For example, if a product is titled "Black Sunglasses" and no handle is provided, then the handle `black-sunglasses` is generated.
+   */
+  title?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * A list of variants associated with the gift card product.
+   *
+   * Complexity cost: 0.2 per variant.
+   */
+  variants?: InputMaybe<Array<GiftCardProductVariantSetInput>>;
+  /** The name of the product's vendor. */
+  vendor?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Possible error codes that can be returned by `GiftCardProductSetUserError`. */
+export enum GiftCardProductSetUserErrorCode {
+  /** An option cannot have both metafield linked and nonlinked option values. */
+  CannotCombineLinkedAndNonlinkedOptionValues = 'CANNOT_COMBINE_LINKED_AND_NONLINKED_OPTION_VALUES',
+  /** The metafield violates a capability restriction. */
+  CapabilityViolation = 'CAPABILITY_VIOLATION',
+  /** Duplicated metafield value for linked option. */
+  DuplicatedMetafieldValue = 'DUPLICATED_METAFIELD_VALUE',
+  /** Duplicated option name. */
+  DuplicatedOptionName = 'DUPLICATED_OPTION_NAME',
+  /** Duplicated option value. */
+  DuplicatedOptionValue = 'DUPLICATED_OPTION_VALUE',
+  /** Duplicated value. */
+  DuplicatedValue = 'DUPLICATED_VALUE',
+  /** Cannot link multiple options to the same metafield. */
+  DuplicateLinkedOption = 'DUPLICATE_LINKED_OPTION',
+  /** Something went wrong, please try again. */
+  GenericError = 'GENERIC_ERROR',
+  /** Gift card products can only be created after they have been activated. */
+  GiftCardsNotActivated = 'GIFT_CARDS_NOT_ACTIVATED',
+  /** The product gift_card attribute cannot be changed after creation. */
+  GiftCardAttributeCannotBeChanged = 'GIFT_CARD_ATTRIBUTE_CANNOT_BE_CHANGED',
+  /** Handle already in use. Please provide a new handle. */
+  HandleNotUnique = 'HANDLE_NOT_UNIQUE',
+  /** The id field is not allowed if identifier is provided. */
+  IdNotAllowed = 'ID_NOT_ALLOWED',
+  /** The identifier value does not match the value of the corresponding field in the input. */
+  InputMismatch = 'INPUT_MISMATCH',
+  /** Input is not valid. */
+  InvalidInput = 'INVALID_INPUT',
+  /** Metafield is not valid. */
+  InvalidMetafield = 'INVALID_METAFIELD',
+  /** Invalid metafield value for linked option. */
+  InvalidMetafieldValueForLinkedOption = 'INVALID_METAFIELD_VALUE_FOR_LINKED_OPTION',
+  /** Product is not valid. */
+  InvalidProduct = 'INVALID_PRODUCT',
+  /** Product variant is not valid. */
+  InvalidVariant = 'INVALID_VARIANT',
+  /** Error processing request in the background job. */
+  JobError = 'JOB_ERROR',
+  /** No valid metafield definition found for linked option. */
+  LinkedMetafieldDefinitionNotFound = 'LINKED_METAFIELD_DEFINITION_NOT_FOUND',
+  /** Linked options are currently not supported for this shop. */
+  LinkedOptionsNotSupportedForShop = 'LINKED_OPTIONS_NOT_SUPPORTED_FOR_SHOP',
+  /** The input argument `metafields` (if present) must contain the `customId` value. */
+  MetafieldMismatch = 'METAFIELD_MISMATCH',
+  /** The input field corresponding to the identifier is required. */
+  MissingFieldRequired = 'MISSING_FIELD_REQUIRED',
+  /** Resource matching the identifier was not found. */
+  NotFound = 'NOT_FOUND',
+  /** Options over limit. */
+  OptionsOverLimit = 'OPTIONS_OVER_LIMIT',
+  /** Option does not exist. */
+  OptionDoesNotExist = 'OPTION_DOES_NOT_EXIST',
+  /** Each option must have at least one option value specified. */
+  OptionValuesMissing = 'OPTION_VALUES_MISSING',
+  /** Option values over limit. */
+  OptionValuesOverLimit = 'OPTION_VALUES_OVER_LIMIT',
+  /** Option value does not exist. */
+  OptionValueDoesNotExist = 'OPTION_VALUE_DOES_NOT_EXIST',
+  /** Product does not exist. */
+  ProductDoesNotExist = 'PRODUCT_DOES_NOT_EXIST',
+  /** The specified product is not a gift card. The giftCardProductSet mutation can only be used with gift card products. */
+  ProductMustBeGiftCard = 'PRODUCT_MUST_BE_GIFT_CARD',
+  /** Must specify product options when updating variants. */
+  ProductOptionsInputMissing = 'PRODUCT_OPTIONS_INPUT_MISSING',
+  /** Product is suspended. */
+  ProductSuspended = 'PRODUCT_SUSPENDED',
+  /** Product variant does not exist. */
+  ProductVariantDoesNotExist = 'PRODUCT_VARIANT_DOES_NOT_EXIST',
+  /** Must specify variants when updating options. */
+  VariantsInputMissing = 'VARIANTS_INPUT_MISSING',
+  /** Number of product variants exceeds shop limit. */
+  VariantsOverLimit = 'VARIANTS_OVER_LIMIT'
+}
+
+/**
+ * The input fields for specifying a gift card product variant to create or update with the
+ * [`giftCardProductSet`](https://shopify.dev/docs/api/admin-graphql/latest/mutations/giftCardProductSet)
+ * mutation.
+ *
+ * Include an
+ * [`id`](https://shopify.dev/docs/api/admin-graphql/latest/input-objects/GiftCardProductSetVariantInput#field-GiftCardProductSetVariantInput.fields.id)
+ * to update an existing variant, or omit it to create a new one. Gift card variant defaults are
+ * applied automatically, meaning variants are set to non-taxable, don't require shipping, and their inventory is untracked.
+ */
+export type GiftCardProductVariantSetInput = {
+  /** The value of the barcode associated with the product. */
+  barcode?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * The file to associate with the variant.
+   *
+   * Complexity cost: 0.6 per variant file.
+   *
+   * Any file specified here must also be specified in the `files` input for the product.
+   */
+  file?: InputMaybe<FileSetInput>;
+  /** Specifies the product variant to update or create a new variant if absent. */
+  id?: InputMaybe<Scalars['ID']['input']>;
+  /**
+   * Additional customizable information about the product variant.
+   *
+   * Complexity cost: 0.4 per variant metafield.
+   */
+  metafields?: InputMaybe<Array<MetafieldInput>>;
+  /** The custom properties that a shop owner uses to define product variants. */
+  optionValues: Array<VariantOptionValueInput>;
+  /** The order of the product variant in the list of product variants. The first position in the list is 1. */
+  position?: InputMaybe<Scalars['Int']['input']>;
+  /** The price of the variant. */
+  price?: InputMaybe<Scalars['Money']['input']>;
+  /** Indicates whether the product variant is created as published or unpublished. This option is only available for new product variants. */
+  published?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The SKU for the variant. Case-sensitive string. */
+  sku?: InputMaybe<Scalars['String']['input']>;
+};
 
 /** The input fields to add a recipient to a gift card. */
 export type GiftCardRecipientInput = {
@@ -7293,6 +10653,8 @@ export enum GiftCardTransactionUserErrorCode {
 
 /** The input fields to update a gift card. */
 export type GiftCardUpdateInput = {
+  /** The strategy used to convert the gift card's balance when it's redeemed in a currency other than the one it was issued in. */
+  crossCurrencyRedemptionStrategy?: InputMaybe<GiftCardCrossCurrencyRedemptionStrategy>;
   /** The ID of the customer who will receive the gift card. The ID can't be changed if the gift card already has an assigned customer ID. */
   customerId?: InputMaybe<Scalars['ID']['input']>;
   /** The date at which the gift card will expire. If set to `null`, then the gift card will never expire. */
@@ -7431,6 +10793,14 @@ export type InventoryAdjustQuantitiesInput = {
 export enum InventoryAdjustQuantitiesUserErrorCode {
   /** The quantities couldn't be adjusted. Try again. */
   AdjustQuantitiesFailed = 'ADJUST_QUANTITIES_FAILED',
+  /** The changeFromQuantity argument no longer matches the persisted quantity. */
+  ChangeFromQuantityStale = 'CHANGE_FROM_QUANTITY_STALE',
+  /** This request is currently in progress, please try again. */
+  IdempotencyConcurrentRequest = 'IDEMPOTENCY_CONCURRENT_REQUEST',
+  /** The same idempotency key cannot be used with different operation parameters. */
+  IdempotencyKeyParameterMismatch = 'IDEMPOTENCY_KEY_PARAMETER_MISMATCH',
+  /** A previous request with this idempotency key failed. Retry with a new idempotency key. */
+  IdempotencyPreviousAttemptFailed = 'IDEMPOTENCY_PREVIOUS_ATTEMPT_FAILED',
   /** Internal (gid://shopify/) ledger documents are not allowed to be adjusted via API. */
   InternalLedgerDocument = 'INTERNAL_LEDGER_DOCUMENT',
   /** A ledger document URI is not allowed when adjusting available. */
@@ -7458,8 +10828,20 @@ export enum InventoryAdjustQuantitiesUserErrorCode {
   /** All changes must have the same ledger document URI or, in the case of adjusting available, no ledger document URI. */
   MaxOneLedgerDocument = 'MAX_ONE_LEDGER_DOCUMENT',
   /** The specified inventory item is not allowed to be adjusted via API. Example: if the inventory item is a parent bundle. */
-  NonMutableInventoryItem = 'NON_MUTABLE_INVENTORY_ITEM'
+  NonMutableInventoryItem = 'NON_MUTABLE_INVENTORY_ITEM',
+  /** The service is temporarily unavailable. Try again later. */
+  ServiceUnavailable = 'SERVICE_UNAVAILABLE'
 }
+
+/** The input fields required to adjust the available quantity of a product variant at a location. */
+export type InventoryAdjustmentInput = {
+  /** The adjustment of the available quantity at the location. If the value is `null`, then the product variant is no longer stocked at the location. */
+  adjustment?: InputMaybe<Scalars['Int']['input']>;
+  /** The quantity to compare against before applying the delta. This field is mandatory- you must explicitly pass in a value (even if it's `null`), or else you will get an error. */
+  changeFromQuantity?: InputMaybe<Scalars['Int']['input']>;
+  /** The ID of the location where the available quantity should be adjusted. */
+  locationId: Scalars['ID']['input'];
+};
 
 /** The input fields to specify whether the inventory item should be activated or not at the specified location. */
 export type InventoryBulkToggleActivationInput = {
@@ -7504,6 +10886,17 @@ export enum InventoryBulkToggleActivationUserErrorCode {
 
 /** The input fields for the change to be made to an inventory item at a location. */
 export type InventoryChangeInput = {
+  /**
+   * The quantity currently expected at this location, before the delta is applied.
+   *
+   * This field enables a compare-and-swap (CAS) safety check. If the location’s current quantity doesn't match the value you provide, then the mutation fails with a `CHANGE_FROM_QUANTITY_STALE` error. This prevents unintended overwrites when the request is based on stale inventory data.
+   *
+   * To skip the CAS check, pass `null`. Use this only when your system is the source of truth for this inventory and you don’t need to protect against concurrent updates.
+   * This field is mandatory: you must explicitly pass in a value, even if that value is `null`, or the mutation returns an error.
+   *
+   * For more information, refer to the [compare and swap documentation](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps/manage-quantities-states#compare-and-swap).
+   */
+  changeFromQuantity?: InputMaybe<Scalars['Int']['input']>;
   /** The amount by which the inventory quantity will be changed. */
   delta: Scalars['Int']['input'];
   /** Specifies the inventory item to which the change will be applied. */
@@ -7596,8 +10989,16 @@ export type InventoryMoveQuantitiesInput = {
 
 /** Possible error codes that can be returned by `InventoryMoveQuantitiesUserError`. */
 export enum InventoryMoveQuantitiesUserErrorCode {
+  /** The changeFromQuantity argument no longer matches the persisted quantity. */
+  ChangeFromQuantityStale = 'CHANGE_FROM_QUANTITY_STALE',
   /** The quantities can't be moved between different locations. */
   DifferentLocations = 'DIFFERENT_LOCATIONS',
+  /** This request is currently in progress, please try again. */
+  IdempotencyConcurrentRequest = 'IDEMPOTENCY_CONCURRENT_REQUEST',
+  /** The same idempotency key cannot be used with different operation parameters. */
+  IdempotencyKeyParameterMismatch = 'IDEMPOTENCY_KEY_PARAMETER_MISMATCH',
+  /** A previous request with this idempotency key failed. Retry with a new idempotency key. */
+  IdempotencyPreviousAttemptFailed = 'IDEMPOTENCY_PREVIOUS_ATTEMPT_FAILED',
   /** Internal (gid://shopify/) ledger documents are not allowed to be adjusted via API. */
   InternalLedgerDocument = 'INTERNAL_LEDGER_DOCUMENT',
   /** A ledger document URI is not allowed when adjusting available. */
@@ -7629,7 +11030,9 @@ export enum InventoryMoveQuantitiesUserErrorCode {
   /** The specified inventory item is not allowed to be adjusted via API. Example: if the inventory item is a parent bundle. */
   NonMutableInventoryItem = 'NON_MUTABLE_INVENTORY_ITEM',
   /** The quantity names for each change can't be the same. */
-  SameQuantityName = 'SAME_QUANTITY_NAME'
+  SameQuantityName = 'SAME_QUANTITY_NAME',
+  /** The service is temporarily unavailable. Try again later. */
+  ServiceUnavailable = 'SERVICE_UNAVAILABLE'
 }
 
 /**
@@ -7650,6 +11053,17 @@ export type InventoryMoveQuantityChange = {
 
 /** The input fields representing the change to be made to an inventory item at a location. */
 export type InventoryMoveQuantityTerminalInput = {
+  /**
+   * The quantity currently expected at this location, before the move is applied.
+   *
+   * This field enables a compare-and-swap (CAS) safety check. If the location’s current quantity doesn't match the value you provide, then the mutation fails with a `CHANGE_FROM_QUANTITY_STALE` error. This helps prevent unintended overwrites when the request is based on stale inventory data.
+   *
+   * To skip the CAS check, pass `null`. Use this only when your system is the source of truth for this inventory and you don’t need to protect against concurrent updates.
+   * This field is mandatory: you must explicitly pass in a value, even if that value is `null`, or the mutation returns an error.
+   *
+   * For more information, refer to the [compare and swap documentation](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps/manage-quantities-states#compare-and-swap).
+   */
+  changeFromQuantity?: InputMaybe<Scalars['Int']['input']>;
   /**
    * A non-Shopify URI that identifies what specific inventory transaction or ledger entry was changed. Represents the exact inventory movement being referenced, distinct from the business reason for the change.
    *
@@ -7676,54 +11090,23 @@ export type InventoryMoveQuantityTerminalInput = {
 
 /** The input fields for the quantity to be set for an inventory item at a location. */
 export type InventoryQuantityInput = {
+  /**
+   * The quantity currently expected at this location, before setting the new quantity.
+   *
+   * This field enables a compare-and-swap (CAS) safety check. If the location’s current quantity doesn't match the value you provide, then the mutation fails with a `CHANGE_FROM_QUANTITY_STALE` error. This helps prevent unintended overwrites when the request is based on stale inventory data.
+   *
+   * To skip the CAS check, pass `null`. Use this only when your system is the source of truth for this inventory and you don’t need to protect against concurrent updates.
+   * This field is mandatory: you must explicitly pass in a value, even if that value is `null`, or the mutation returns an error.
+   *
+   * For more information, refer to the [compare and swap documentation](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps/manage-quantities-states#compare-and-swap).
+   */
+  changeFromQuantity?: InputMaybe<Scalars['Int']['input']>;
   /** Specifies the inventory item to which the quantity will be set. */
   inventoryItemId: Scalars['ID']['input'];
   /** Specifies the location at which the quantity will be set. */
   locationId: Scalars['ID']['input'];
   /** The quantity to which the inventory quantity will be set. */
   quantity: Scalars['Int']['input'];
-};
-
-/** The input fields for a scheduled change of an inventory item. */
-export type InventoryScheduledChangeInput = {
-  /** The date and time that the scheduled change is expected to happen. */
-  expectedAt: Scalars['DateTime']['input'];
-  /**
-   * The quantity
-   * [name](https://shopify.dev/docs/apps/fulfillment/inventory-management-apps/quantities-states#move-inventory-quantities-between-states)
-   * to transition from.
-   */
-  fromName: Scalars['String']['input'];
-  /**
-   * The quantity
-   * [name](https://shopify.dev/docs/apps/fulfillment/inventory-management-apps/quantities-states#move-inventory-quantities-between-states)
-   * to transition to.
-   */
-  toName: Scalars['String']['input'];
-};
-
-/** The input fields for the inventory item associated with the scheduled changes that need to be applied. */
-export type InventoryScheduledChangeItemInput = {
-  /** The ID of the inventory item. */
-  inventoryItemId: Scalars['ID']['input'];
-  /**
-   * A non-Shopify URI that identifies what specific inventory transaction or ledger entry was changed. Represents the exact inventory movement being referenced, distinct from the business reason for the change.
-   *
-   * Preferred format - Global ID (GID): gid://[your-app-name]/[transaction-type]/[id]
-   *
-   * Examples:
-   * - gid://warehouse-app/InventoryTransaction/TXN-2024-001 (specific transaction)
-   * - gid://3pl-system/StockMovement/SM-2024-0125 (stock movement record)
-   * - gid://pos-app/InventoryUpdate/UPD-98765 (POS inventory update)
-   * - gid://erp-connector/LedgerEntry/LE-2024-11-21-001 (ledger entry)
-   *
-   * Requirements: Valid non-Shopify URI with scheme and content. Cannot use gid://shopify/* format.
-   */
-  ledgerDocumentUri: Scalars['URL']['input'];
-  /** The ID of the location. */
-  locationId: Scalars['ID']['input'];
-  /** An array of all the scheduled changes for the item. */
-  scheduledChanges: Array<InventoryScheduledChangeInput>;
 };
 
 /** The input fields required to set inventory on hand quantities. */
@@ -7758,8 +11141,16 @@ export type InventorySetOnHandQuantitiesInput = {
 
 /** Possible error codes that can be returned by `InventorySetOnHandQuantitiesUserError`. */
 export enum InventorySetOnHandQuantitiesUserErrorCode {
+  /** The changeFromQuantity argument no longer matches the persisted quantity. */
+  ChangeFromQuantityStale = 'CHANGE_FROM_QUANTITY_STALE',
   /** The compareQuantity value does not match persisted value. */
   CompareQuantityStale = 'COMPARE_QUANTITY_STALE',
+  /** This request is currently in progress, please try again. */
+  IdempotencyConcurrentRequest = 'IDEMPOTENCY_CONCURRENT_REQUEST',
+  /** The same idempotency key cannot be used with different operation parameters. */
+  IdempotencyKeyParameterMismatch = 'IDEMPOTENCY_KEY_PARAMETER_MISMATCH',
+  /** A previous request with this idempotency key failed. Retry with a new idempotency key. */
+  IdempotencyPreviousAttemptFailed = 'IDEMPOTENCY_PREVIOUS_ATTEMPT_FAILED',
   /** The specified inventory item could not be found. */
   InvalidInventoryItem = 'INVALID_INVENTORY_ITEM',
   /** The specified location could not be found. */
@@ -7776,6 +11167,8 @@ export enum InventorySetOnHandQuantitiesUserErrorCode {
   ItemNotStockedAtLocation = 'ITEM_NOT_STOCKED_AT_LOCATION',
   /** The specified inventory item is not allowed to be adjusted via API. Example: if the inventory item is a parent bundle. */
   NonMutableInventoryItem = 'NON_MUTABLE_INVENTORY_ITEM',
+  /** The service is temporarily unavailable. Try again later. */
+  ServiceUnavailable = 'SERVICE_UNAVAILABLE',
   /** The on-hand quantities couldn't be set. Try again. */
   SetOnHandQuantitiesFailed = 'SET_ON_HAND_QUANTITIES_FAILED'
 }
@@ -7814,10 +11207,18 @@ export type InventorySetQuantitiesInput = {
 
 /** Possible error codes that can be returned by `InventorySetQuantitiesUserError`. */
 export enum InventorySetQuantitiesUserErrorCode {
+  /** The changeFromQuantity value does not match persisted value. */
+  ChangeFromQuantityStale = 'CHANGE_FROM_QUANTITY_STALE',
   /** The compareQuantity argument must be given to each quantity or ignored using ignoreCompareQuantity. */
   CompareQuantityRequired = 'COMPARE_QUANTITY_REQUIRED',
   /** The compareQuantity value does not match persisted value. */
   CompareQuantityStale = 'COMPARE_QUANTITY_STALE',
+  /** This request is currently in progress, please try again. */
+  IdempotencyConcurrentRequest = 'IDEMPOTENCY_CONCURRENT_REQUEST',
+  /** The same idempotency key cannot be used with different operation parameters. */
+  IdempotencyKeyParameterMismatch = 'IDEMPOTENCY_KEY_PARAMETER_MISMATCH',
+  /** A previous request with this idempotency key failed. Retry with a new idempotency key. */
+  IdempotencyPreviousAttemptFailed = 'IDEMPOTENCY_PREVIOUS_ATTEMPT_FAILED',
   /** The specified inventory item could not be found. */
   InvalidInventoryItem = 'INVALID_INVENTORY_ITEM',
   /** The specified location could not be found. */
@@ -7844,6 +11245,8 @@ export enum InventorySetQuantitiesUserErrorCode {
 
 /** The input fields for the quantity to be set for an inventory item at a location. */
 export type InventorySetQuantityInput = {
+  /** The current quantity to be compared against the persisted quantity. This field is mandatory- you must explicitly pass in a value (even if it's `null`), or else you will get an error. For more information, refer to the [Compare and Swap documentation](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps/manage-quantities-states#compare-and-swap). */
+  changeFromQuantity?: InputMaybe<Scalars['Int']['input']>;
   /** Specifies the inventory item to which the quantity will be set. */
   inventoryItemId: Scalars['ID']['input'];
   /** Specifies the location at which the quantity will be set. */
@@ -7852,69 +11255,18 @@ export type InventorySetQuantityInput = {
   quantity: Scalars['Int']['input'];
 };
 
-/** The input fields for setting up scheduled changes of inventory items. */
-export type InventorySetScheduledChangesInput = {
-  /** The list of all the items on which the scheduled changes need to be applied. */
-  items: Array<InventoryScheduledChangeItemInput>;
-  /** The reason for setting up the scheduled changes. */
-  reason: Scalars['String']['input'];
-  /**
-   * A URI that represents why the inventory change happened, identifying the source system and document that caused this adjustment. Enables complete audit trails and brand visibility in Shopify admin inventory history.
-   *
-   * Preferred format - Global ID (GID): gid://[your-app-name]/[entity-type]/[id]
-   *
-   * Examples:
-   * - gid://warehouse-app/PurchaseOrder/PO-2024-001 (stock received)
-   * - gid://3pl-system/CycleCount/CC-2024-0125 (cycle count adjustment)
-   * - gid://pos-app/Transaction/TXN-98765 (in-store sale)
-   * - gid://erp-connector/SyncJob/SYNC-2024-11-21-001 (ERP sync)
-   * - gid://shopify/Order/1234567890 (Shopify order reference)
-   *
-   * Benefits: Your app name appears directly in merchant inventory history, reducing support tickets and providing clear audit trails for compliance.
-   *
-   * Alternative formats (also supported): https://myapp.com/documents/12345, custom-scheme://identifier
-   *
-   * Requirements: Valid URI with scheme and content. For GID format, all components (app, entity, id) must be present.
-   */
-  referenceDocumentUri: Scalars['URL']['input'];
-};
-
-/** Possible error codes that can be returned by `InventorySetScheduledChangesUserError`. */
-export enum InventorySetScheduledChangesUserErrorCode {
-  /** The item can only have one scheduled change for quantity name as the fromName. */
-  DuplicateFromName = 'DUPLICATE_FROM_NAME',
-  /** The item can only have one scheduled change for quantity name as the toName. */
-  DuplicateToName = 'DUPLICATE_TO_NAME',
-  /** There was an error updating the scheduled changes. */
-  ErrorUpdatingScheduled = 'ERROR_UPDATING_SCHEDULED',
-  /** The specified field is invalid. */
-  Inclusion = 'INCLUSION',
-  /** The specified fromName is invalid. */
-  InvalidFromName = 'INVALID_FROM_NAME',
-  /** The specified reason is invalid. */
-  InvalidReason = 'INVALID_REASON',
-  /** The specified toName is invalid. */
-  InvalidToName = 'INVALID_TO_NAME',
-  /** The inventory item was not found. */
-  InventoryItemNotFound = 'INVENTORY_ITEM_NOT_FOUND',
-  /** The inventory item was not found at the location specified. */
-  InventoryStateNotFound = 'INVENTORY_STATE_NOT_FOUND',
-  /** At least 1 item must be provided. */
-  ItemsEmpty = 'ITEMS_EMPTY',
-  /** The ledger document URI is invalid. */
-  LedgerDocumentInvalid = 'LEDGER_DOCUMENT_INVALID',
-  /** The location couldn't be found. */
-  LocationNotFound = 'LOCATION_NOT_FOUND',
-  /** The from_name and to_name can't be the same. */
-  SameFromToNames = 'SAME_FROM_TO_NAMES'
-}
-
 /** Possible error codes that can be returned by `InventoryShipmentAddItemsUserError`. */
 export enum InventoryShipmentAddItemsUserErrorCode {
   /** Failed to activate inventory at location. */
   ActivationFailed = 'ACTIVATION_FAILED',
   /** A single item can't be listed twice. */
   DuplicateItem = 'DUPLICATE_ITEM',
+  /** This request is currently in progress, please try again. */
+  IdempotencyConcurrentRequest = 'IDEMPOTENCY_CONCURRENT_REQUEST',
+  /** The same idempotency key cannot be used with different operation parameters. */
+  IdempotencyKeyParameterMismatch = 'IDEMPOTENCY_KEY_PARAMETER_MISMATCH',
+  /** A previous request with this idempotency key failed. Retry with a new idempotency key. */
+  IdempotencyPreviousAttemptFailed = 'IDEMPOTENCY_PREVIOUS_ATTEMPT_FAILED',
   /** The quantity is invalid. */
   InvalidQuantity = 'INVALID_QUANTITY',
   /** Current shipment status does not support this operation. */
@@ -7939,6 +11291,12 @@ export enum InventoryShipmentCreateInTransitUserErrorCode {
   DuplicateItem = 'DUPLICATE_ITEM',
   /** The shipment input cannot be empty. */
   EmptyShipmentInput = 'EMPTY_SHIPMENT_INPUT',
+  /** This request is currently in progress, please try again. */
+  IdempotencyConcurrentRequest = 'IDEMPOTENCY_CONCURRENT_REQUEST',
+  /** The same idempotency key cannot be used with different operation parameters. */
+  IdempotencyKeyParameterMismatch = 'IDEMPOTENCY_KEY_PARAMETER_MISMATCH',
+  /** A previous request with this idempotency key failed. Retry with a new idempotency key. */
+  IdempotencyPreviousAttemptFailed = 'IDEMPOTENCY_PREVIOUS_ATTEMPT_FAILED',
   /** One or more items are not valid. */
   InvalidItem = 'INVALID_ITEM',
   /** The quantity is invalid. */
@@ -7967,6 +11325,8 @@ export enum InventoryShipmentCreateInTransitUserErrorCode {
 
 /** The input fields to add a shipment. */
 export type InventoryShipmentCreateInput = {
+  /** A unique barcode for the shipment. */
+  barcode?: InputMaybe<Scalars['String']['input']>;
   /** The date the shipment was created. */
   dateCreated?: InputMaybe<Scalars['DateTime']['input']>;
   /** The list of line items for the inventory shipment. */
@@ -7989,6 +11349,14 @@ export enum InventoryShipmentCreateUserErrorCode {
   DuplicateItem = 'DUPLICATE_ITEM',
   /** The shipment input cannot be empty. */
   EmptyShipmentInput = 'EMPTY_SHIPMENT_INPUT',
+  /** This request is currently in progress, please try again. */
+  IdempotencyConcurrentRequest = 'IDEMPOTENCY_CONCURRENT_REQUEST',
+  /** The same idempotency key cannot be used with different operation parameters. */
+  IdempotencyKeyParameterMismatch = 'IDEMPOTENCY_KEY_PARAMETER_MISMATCH',
+  /** A previous request with this idempotency key failed. Retry with a new idempotency key. */
+  IdempotencyPreviousAttemptFailed = 'IDEMPOTENCY_PREVIOUS_ATTEMPT_FAILED',
+  /** The idempotency record was found but the associated scheduled changes no longer exist. */
+  IdempotencyRecordNotFound = 'IDEMPOTENCY_RECORD_NOT_FOUND',
   /** One or more items are not valid. */
   InvalidItem = 'INVALID_ITEM',
   /** The quantity is invalid. */
@@ -8067,6 +11435,12 @@ export enum InventoryShipmentReceiveLineItemReason {
 
 /** Possible error codes that can be returned by `InventoryShipmentReceiveUserError`. */
 export enum InventoryShipmentReceiveUserErrorCode {
+  /** This request is currently in progress, please try again. */
+  IdempotencyConcurrentRequest = 'IDEMPOTENCY_CONCURRENT_REQUEST',
+  /** The same idempotency key cannot be used with different operation parameters. */
+  IdempotencyKeyParameterMismatch = 'IDEMPOTENCY_KEY_PARAMETER_MISMATCH',
+  /** A previous request with this idempotency key failed. Retry with a new idempotency key. */
+  IdempotencyPreviousAttemptFailed = 'IDEMPOTENCY_PREVIOUS_ATTEMPT_FAILED',
   /** Unexpected internal error happened. */
   InternalError = 'INTERNAL_ERROR',
   /** The quantity is invalid. */
@@ -8101,12 +11475,30 @@ export enum InventoryShipmentRemoveItemsUserErrorCode {
   ShipmentNotFound = 'SHIPMENT_NOT_FOUND'
 }
 
+/** Possible error codes that can be returned by `InventoryShipmentSetBarcodeUserError`. */
+export enum InventoryShipmentSetBarcodeUserErrorCode {
+  /** This barcode is already assigned to another shipment. */
+  BarcodeDuplicate = 'BARCODE_DUPLICATE',
+  /** Barcode must be 255 characters or less. */
+  BarcodeTooLong = 'BARCODE_TOO_LONG',
+  /** The shipment was not found. */
+  ShipmentNotFound = 'SHIPMENT_NOT_FOUND'
+}
+
 /** Possible error codes that can be returned by `InventoryShipmentSetTrackingUserError`. */
 export enum InventoryShipmentSetTrackingUserErrorCode {
   /** The URL is invalid. */
   InvalidUrl = 'INVALID_URL',
   /** The shipment was not found. */
   ShipmentNotFound = 'SHIPMENT_NOT_FOUND'
+}
+
+/** The set of valid sort keys for the InventoryShipment query. */
+export enum InventoryShipmentSortKeys {
+  /** Sort by the `id` value. */
+  Id = 'ID',
+  /** Sort by the `status` value. */
+  Status = 'STATUS'
 }
 
 /** The status of an inventory shipment. */
@@ -8186,13 +11578,15 @@ export type InventoryTransferCreateAsReadyToShipInput = {
   /** The date and time the inventory transfer was created. If left blank, defaults to the current date and time in UTC format. */
   dateCreated?: InputMaybe<Scalars['DateTime']['input']>;
   /** The destination location for the inventory transfer. */
-  destinationLocationId: Scalars['ID']['input'];
+  destinationLocationId?: InputMaybe<Scalars['ID']['input']>;
   /** The list of line items for the inventory transfer. */
   lineItems?: Array<InventoryTransferLineItemInput>;
+  /** The metafields to attach to the inventory transfer. */
+  metafields?: InputMaybe<Array<MetafieldInput>>;
   /** A note to add to the Inventory Transfer. */
   note?: InputMaybe<Scalars['String']['input']>;
   /** The origin location for the inventory transfer. */
-  originLocationId: Scalars['ID']['input'];
+  originLocationId?: InputMaybe<Scalars['ID']['input']>;
   /** The reference name to add to the inventory transfer. */
   referenceName?: InputMaybe<Scalars['String']['input']>;
   /** The tags to add to the inventory transfer. */
@@ -8205,6 +11599,14 @@ export enum InventoryTransferCreateAsReadyToShipUserErrorCode {
   BundledItem = 'BUNDLED_ITEM',
   /** A single item can't be listed twice. */
   DuplicateItem = 'DUPLICATE_ITEM',
+  /** This request is currently in progress, please try again. */
+  IdempotencyConcurrentRequest = 'IDEMPOTENCY_CONCURRENT_REQUEST',
+  /** The same idempotency key cannot be used with different operation parameters. */
+  IdempotencyKeyParameterMismatch = 'IDEMPOTENCY_KEY_PARAMETER_MISMATCH',
+  /** A previous request with this idempotency key failed. Retry with a new idempotency key. */
+  IdempotencyPreviousAttemptFailed = 'IDEMPOTENCY_PREVIOUS_ATTEMPT_FAILED',
+  /** One or more metafields are not valid. */
+  InvalidMetafields = 'INVALID_METAFIELDS',
   /** The quantity is invalid. */
   InvalidQuantity = 'INVALID_QUANTITY',
   /** One or more tags are not valid. */
@@ -8241,6 +11643,8 @@ export type InventoryTransferCreateInput = {
   destinationLocationId?: InputMaybe<Scalars['ID']['input']>;
   /** The list of line items for the inventory transfer. */
   lineItems?: Array<InventoryTransferLineItemInput>;
+  /** The metafields to attach to the inventory transfer. */
+  metafields?: InputMaybe<Array<MetafieldInput>>;
   /** A note to add to the Inventory Transfer. */
   note?: InputMaybe<Scalars['String']['input']>;
   /** The origin location for the inventory transfer. */
@@ -8257,6 +11661,14 @@ export enum InventoryTransferCreateUserErrorCode {
   BundledItem = 'BUNDLED_ITEM',
   /** A single item can't be listed twice. */
   DuplicateItem = 'DUPLICATE_ITEM',
+  /** This request is currently in progress, please try again. */
+  IdempotencyConcurrentRequest = 'IDEMPOTENCY_CONCURRENT_REQUEST',
+  /** The same idempotency key cannot be used with different operation parameters. */
+  IdempotencyKeyParameterMismatch = 'IDEMPOTENCY_KEY_PARAMETER_MISMATCH',
+  /** A previous request with this idempotency key failed. Retry with a new idempotency key. */
+  IdempotencyPreviousAttemptFailed = 'IDEMPOTENCY_PREVIOUS_ATTEMPT_FAILED',
+  /** One or more metafields are not valid. */
+  InvalidMetafields = 'INVALID_METAFIELDS',
   /** The quantity is invalid. */
   InvalidQuantity = 'INVALID_QUANTITY',
   /** One or more tags are not valid. */
@@ -8281,6 +11693,8 @@ export enum InventoryTransferCreateUserErrorCode {
 
 /** Possible error codes that can be returned by `InventoryTransferDeleteUserError`. */
 export enum InventoryTransferDeleteUserErrorCode {
+  /** A resource was not in the correct state for the operation to succeed. */
+  InvalidState = 'INVALID_STATE',
   /** Current transfer status does not support this operation. */
   InvalidTransferStatus = 'INVALID_TRANSFER_STATUS',
   /** The transfer was not found. */
@@ -8289,6 +11703,12 @@ export enum InventoryTransferDeleteUserErrorCode {
 
 /** Possible error codes that can be returned by `InventoryTransferDuplicateUserError`. */
 export enum InventoryTransferDuplicateUserErrorCode {
+  /** This request is currently in progress, please try again. */
+  IdempotencyConcurrentRequest = 'IDEMPOTENCY_CONCURRENT_REQUEST',
+  /** The same idempotency key cannot be used with different operation parameters. */
+  IdempotencyKeyParameterMismatch = 'IDEMPOTENCY_KEY_PARAMETER_MISMATCH',
+  /** A previous request with this idempotency key failed. Retry with a new idempotency key. */
+  IdempotencyPreviousAttemptFailed = 'IDEMPOTENCY_PREVIOUS_ATTEMPT_FAILED',
   /** The quantity is invalid. */
   InvalidQuantity = 'INVALID_QUANTITY',
   /** The transfer was not found. */
@@ -8304,6 +11724,8 @@ export type InventoryTransferEditInput = {
    * changed for draft transfers.
    */
   destinationId?: InputMaybe<Scalars['ID']['input']>;
+  /** The metafields to attach to the inventory transfer. */
+  metafields?: InputMaybe<Array<MetafieldInput>>;
   /** A note to add to the Inventory Transfer. */
   note?: InputMaybe<Scalars['String']['input']>;
   /**
@@ -8321,6 +11743,8 @@ export type InventoryTransferEditInput = {
 export enum InventoryTransferEditUserErrorCode {
   /** Unexpected internal error happened. */
   InternalError = 'INTERNAL_ERROR',
+  /** One or more metafields are not valid. */
+  InvalidMetafields = 'INVALID_METAFIELDS',
   /** One or more tags are not valid. */
   InvalidTag = 'INVALID_TAG',
   /** The item is not stocked at the intended location. */
@@ -8409,6 +11833,12 @@ export enum InventoryTransferSetItemsUserErrorCode {
   BundledItem = 'BUNDLED_ITEM',
   /** A single item can't be listed twice. */
   DuplicateItem = 'DUPLICATE_ITEM',
+  /** This request is currently in progress, please try again. */
+  IdempotencyConcurrentRequest = 'IDEMPOTENCY_CONCURRENT_REQUEST',
+  /** The same idempotency key cannot be used with different operation parameters. */
+  IdempotencyKeyParameterMismatch = 'IDEMPOTENCY_KEY_PARAMETER_MISMATCH',
+  /** A previous request with this idempotency key failed. Retry with a new idempotency key. */
+  IdempotencyPreviousAttemptFailed = 'IDEMPOTENCY_PREVIOUS_ATTEMPT_FAILED',
   /** The quantity is invalid. */
   InvalidQuantity = 'INVALID_QUANTITY',
   /** Current transfer status does not support this operation. */
@@ -9011,6 +12441,10 @@ export enum LocationActivateUserErrorCode {
   HasNonUniqueName = 'HAS_NON_UNIQUE_NAME',
   /** This location currently cannot be activated as inventory, pending orders or transfers are being relocated from this location. */
   HasOngoingRelocation = 'HAS_ONGOING_RELOCATION',
+  /** This request is currently in progress, please try again. */
+  IdempotencyConcurrentRequest = 'IDEMPOTENCY_CONCURRENT_REQUEST',
+  /** The same idempotency key cannot be used with different operation parameters. */
+  IdempotencyKeyParameterMismatch = 'IDEMPOTENCY_KEY_PARAMETER_MISMATCH',
   /** Shop has reached its location limit. */
   LocationLimit = 'LOCATION_LIMIT',
   /** Location not found. */
@@ -9117,6 +12551,10 @@ export enum LocationDeactivateUserErrorCode {
   HasIncomingMovementsError = 'HAS_INCOMING_MOVEMENTS_ERROR',
   /** Location could not be deactivated because it has open purchase orders. */
   HasOpenPurchaseOrdersError = 'HAS_OPEN_PURCHASE_ORDERS_ERROR',
+  /** This request is currently in progress, please try again. */
+  IdempotencyConcurrentRequest = 'IDEMPOTENCY_CONCURRENT_REQUEST',
+  /** The same idempotency key cannot be used with different operation parameters. */
+  IdempotencyKeyParameterMismatch = 'IDEMPOTENCY_KEY_PARAMETER_MISMATCH',
   /** Location not found. */
   LocationNotFound = 'LOCATION_NOT_FOUND',
   /** Location either has a fulfillment service or is the only location with a shipping address. */
@@ -9306,6 +12744,8 @@ export enum MarketConditionApplicationType {
 
 /** The condition types for the condition set. */
 export enum MarketConditionType {
+  /** The condition checks the channel that the visitor is shopping from. */
+  Channel = 'CHANNEL',
   /** The condition checks the company location that the visitor is purchasing for. */
   CompanyLocation = 'COMPANY_LOCATION',
   /** The condition checks the location that the visitor is shopping from. */
@@ -9313,6 +12753,12 @@ export enum MarketConditionType {
   /** The condition checks the visitor's region. */
   Region = 'REGION'
 }
+
+/** The input fields required to create or update a channel market condition. */
+export type MarketConditionsChannelsInput = {
+  /** A list of channel IDs to include in the market condition. */
+  channelIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+};
 
 /** The input fields required to create or update a company location market condition. */
 export type MarketConditionsCompanyLocationsInput = {
@@ -9324,6 +12770,8 @@ export type MarketConditionsCompanyLocationsInput = {
 
 /** The input fields required to create or update the market conditions. */
 export type MarketConditionsInput = {
+  /** The channels to include in the market conditions. */
+  channelsCondition?: InputMaybe<MarketConditionsChannelsInput>;
   /** The company locations to include in the market conditions. */
   companyLocationsCondition?: InputMaybe<MarketConditionsCompanyLocationsInput>;
   /** The locations to include in the market conditions. */
@@ -9344,6 +12792,8 @@ export type MarketConditionsLocationsInput = {
 export type MarketConditionsRegionInput = {
   /** A country code to which this condition should apply. */
   countryCode: CountryCode;
+  /** A subdivision such as a province or state. */
+  subdivision?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** The input fields required to create or update a region market condition. */
@@ -9372,6 +12822,10 @@ export type MarketCreateInput = {
   conditions?: InputMaybe<MarketConditionsInput>;
   /** Currency settings for the market. */
   currencySettings?: InputMaybe<MarketCurrencySettingsUpdateInput>;
+  /** Delivery settings for the market. */
+  delivery?: InputMaybe<MarketDeliveryConfigurationsCreateInput>;
+  /** Discounts that are eligible for this market. */
+  discounts?: InputMaybe<Array<Scalars['ID']['input']>>;
   /**
    * A unique identifier for the market. For example `"ca"`.
    * If the handle isn't provided, then the handle is auto-generated based on the country or name.
@@ -9408,6 +12862,8 @@ export type MarketCurrencySettingsUpdateInput = {
 
 /** Possible error codes that can be returned by `MarketCurrencySettingsUserError`. */
 export enum MarketCurrencySettingsUserErrorCode {
+  /** Local currencies must be enabled when adaptive pricing is active. */
+  AdaptivePricingRequiresLocalCurrencies = 'ADAPTIVE_PRICING_REQUIRES_LOCAL_CURRENCIES',
   /** The currency settings of the given market cannot be changed because the market manager has exclusive control of pricing. */
   ManagedMarket = 'MANAGED_MARKET',
   /** The specified market wasn't found. */
@@ -9423,6 +12879,20 @@ export enum MarketCurrencySettingsUserErrorCode {
   /** The specified currency is not supported. */
   UnsupportedCurrency = 'UNSUPPORTED_CURRENCY'
 }
+
+/** The input fields for configuring delivery for a new market. */
+export type MarketDeliveryConfigurationsCreateInput = {
+  /** The shipping configuration for the market. */
+  shipping?: InputMaybe<ShippingConfigurationCreateInput>;
+};
+
+/** The input fields for configuring delivery for an existing market. */
+export type MarketDeliveryConfigurationsUpdateInput = {
+  /** When true, removes the shipping configuration so the market inherits shipping from its parent. */
+  removeShipping?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Shipping configuration changes. When omitted, shipping is not changed. */
+  shipping?: InputMaybe<ShippingConfigurationUpdateInput>;
+};
 
 /** The type of resources that are market localizable. */
 export enum MarketLocalizableResourceType {
@@ -9446,6 +12916,8 @@ export type MarketLocalizationRegisterInput = {
 
 /** The input fields used to create a price inclusion. */
 export type MarketPriceInclusionsInput = {
+  /** Whether adaptive pricing is enabled for the market. Only applicable for Markets with Managed Market enabled. When enabled, forces a state of `INCLUDES_TAXES_IN_PRICE_BASED_ON_COUNTRY`, `INCLUDE_DUTIES_IN_PRICE`, and `DDP`. When disabled, defaults to `INCLUDES_TAXES_IN_PRICE_BASED_ON_COUNTRY`, `ADD_DUTIES_AT_CHECKOUT`, and `DDP` unless otherwise specified. */
+  adaptivePricingEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** The inclusive duties pricing strategy for the market. */
   dutiesPricingStrategy?: InputMaybe<InclusiveDutiesPricingStrategy>;
   /** The inclusive tax pricing strategy for the market. */
@@ -9468,6 +12940,8 @@ export enum MarketStatus {
 
 /** The market types. */
 export enum MarketType {
+  /** The market applies to the visitor based on the channel. */
+  Channel = 'CHANNEL',
   /** The market applies to the visitor based on the company location. */
   CompanyLocation = 'COMPANY_LOCATION',
   /** The market applies to the visitor based on the location. */
@@ -9488,6 +12962,12 @@ export type MarketUpdateInput = {
   conditions?: InputMaybe<MarketConditionsUpdateInput>;
   /** Currency settings for the market. */
   currencySettings?: InputMaybe<MarketCurrencySettingsUpdateInput>;
+  /** Delivery setting updates. When omitted, delivery settings are not changed. */
+  delivery?: InputMaybe<MarketDeliveryConfigurationsUpdateInput>;
+  /** The discounts to add to the market. */
+  discountsToAdd?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** The discounts to remove from the market. */
+  discountsToDelete?: InputMaybe<Array<Scalars['ID']['input']>>;
   /** A unique identifier for the market. For example `"ca"`. */
   handle?: InputMaybe<Scalars['String']['input']>;
   /** Whether to update duplicate region or wildcard markets' status to draft. */
@@ -9510,10 +12990,22 @@ export type MarketUpdateInput = {
 
 /** Possible error codes that can be returned by `MarketUserError`. */
 export enum MarketUserErrorCode {
+  /** The given priceInclusions setup is not compatible with adaptive pricing. */
+  AdaptivePricingRequiredSetupError = 'ADAPTIVE_PRICING_REQUIRED_SETUP_ERROR',
+  /** Local currencies must be enabled when adaptive pricing is active. */
+  AdaptivePricingRequiresLocalCurrencies = 'ADAPTIVE_PRICING_REQUIRES_LOCAL_CURRENCIES',
+  /** Adaptive pricing can only be enabled for Markets with Managed Markets enabled. */
+  AdaptivePricingRequiresManagedMarkets = 'ADAPTIVE_PRICING_REQUIRES_MANAGED_MARKETS',
+  /** The maximum number of active B2B catalogs allowed by your plan has been reached. */
+  B2BCatalogLimitReached = 'B2B_CATALOG_LIMIT_REACHED',
   /** B2B markets must be merchant managed. */
   B2BMarketMustBeMerchantManaged = 'B2B_MARKET_MUST_BE_MERCHANT_MANAGED',
   /** The input value is blank. */
   Blank = 'BLANK',
+  /** Can't activate this market because the B2B catalog limit has been reached. */
+  CannotActivateMarketB2BCatalogLimitReached = 'CANNOT_ACTIVATE_MARKET_B2B_CATALOG_LIMIT_REACHED',
+  /** Can't add all subdivisions for a country to a market. */
+  CannotAddAllSubdivisionsForACountryToAMarket = 'CANNOT_ADD_ALL_SUBDIVISIONS_FOR_A_COUNTRY_TO_A_MARKET',
   /** Can't add customer account domain to a market. */
   CannotAddCustomerDomain = 'CANNOT_ADD_CUSTOMER_DOMAIN',
   /**
@@ -9535,6 +13027,8 @@ export enum MarketUserErrorCode {
    * @deprecated No longer used
    */
   CannotDeletePrimaryMarketWebPresence = 'CANNOT_DELETE_PRIMARY_MARKET_WEB_PRESENCE',
+  /** Can't delete the last subdivision-driven market. */
+  CannotDeleteSubdivisionMarket = 'CANNOT_DELETE_SUBDIVISION_MARKET',
   /** Can't disable the primary market. */
   CannotDisablePrimaryMarket = 'CANNOT_DISABLE_PRIMARY_MARKET',
   /** Can't have both subfolder and domain web presences. */
@@ -9553,6 +13047,12 @@ export enum MarketUserErrorCode {
   CatalogNotCompatibleWithConditionTypes = 'CATALOG_NOT_COMPATIBLE_WITH_CONDITION_TYPES',
   /** A market can only have market catalogs. */
   CatalogTypeNotSupported = 'CATALOG_TYPE_NOT_SUPPORTED',
+  /** A channel driver must have a channel specification. */
+  ChannelDriverMustHaveChannelSpecification = 'CHANNEL_DRIVER_MUST_HAVE_CHANNEL_SPECIFICATION',
+  /** A channel market must have a single channel driver. */
+  ChannelMarketMustHaveSingleChannelDriver = 'CHANNEL_MARKET_MUST_HAVE_SINGLE_CHANNEL_DRIVER',
+  /** The selected channel is not valid for a channel market. */
+  ChannelNotValidForChannelMarket = 'CHANNEL_NOT_VALID_FOR_CHANNEL_MARKET',
   /** One or more condition IDs were not found. */
   ConditionsNotFound = 'CONDITIONS_NOT_FOUND',
   /** Contains regions that cannot be managed. */
@@ -9561,6 +13061,12 @@ export enum MarketUserErrorCode {
   CustomizationsNotFound = 'CUSTOMIZATIONS_NOT_FOUND',
   /** The language isn't enabled on the store. */
   DisabledLanguage = 'DISABLED_LANGUAGE',
+  /** One or more discounts exceed the maximum number of markets allowed. */
+  DiscountExceedsMarketLimit = 'DISCOUNT_EXCEEDS_MARKET_LIMIT',
+  /** The shop does not have discounts enabled for B2B markets. */
+  DiscountNotCompatibleWithB2BMarket = 'DISCOUNT_NOT_COMPATIBLE_WITH_B2B_MARKET',
+  /** One or more discounts do not have market eligibility. */
+  DiscountNotMarketContextual = 'DISCOUNT_NOT_MARKET_CONTEXTUAL',
   /** Domain was not found. */
   DomainNotFound = 'DOMAIN_NOT_FOUND',
   /** Duplicates found in languages. */
@@ -9581,8 +13087,16 @@ export enum MarketUserErrorCode {
   InclusivePricingNotCompatibleWithConditionTypes = 'INCLUSIVE_PRICING_NOT_COMPATIBLE_WITH_CONDITION_TYPES',
   /** The specified conditions are not compatible with each other. */
   IncompatibleConditions = 'INCOMPATIBLE_CONDITIONS',
+  /** The selected customization can't be applied to this configuration. */
+  IncompatibleConfiguration = 'INCOMPATIBLE_CONFIGURATION',
   /** The input value is invalid. */
   Invalid = 'INVALID',
+  /** Channel ids are invalid. */
+  InvalidChannelIds = 'INVALID_CHANNEL_IDS',
+  /** A country condition and a subdivision condition belonging to the same country cannot be added to the same market. */
+  InvalidCountryAndSubdivisionConditions = 'INVALID_COUNTRY_AND_SUBDIVISION_CONDITIONS',
+  /** Can't add selected customizations to a market with a subdivision condition. */
+  InvalidCustomizationForSubdivisionCondition = 'INVALID_CUSTOMIZATION_FOR_SUBDIVISION_CONDITION',
   /** The province format is invalid. */
   InvalidProvinceFormat = 'INVALID_PROVINCE_FORMAT',
   /**
@@ -9592,6 +13106,8 @@ export enum MarketUserErrorCode {
   InvalidResponderForProvinceDrivenMarket = 'INVALID_RESPONDER_FOR_PROVINCE_DRIVEN_MARKET',
   /** Invalid combination of status and enabled. */
   InvalidStatusAndEnabledCombination = 'INVALID_STATUS_AND_ENABLED_COMBINATION',
+  /** The subdivision format is invalid. */
+  InvalidSubdivisionFormat = 'INVALID_SUBDIVISION_FORMAT',
   /** Location match all is only valid with one non-match all region. */
   LocationMatchAllRequiresOneSpecificRegion = 'LOCATION_MATCH_ALL_REQUIRES_ONE_SPECIFIC_REGION',
   /** A location's country does not match the region's country. */
@@ -9606,6 +13122,8 @@ export enum MarketUserErrorCode {
   ManagedMarketCurrencyMustMatchCountry = 'MANAGED_MARKET_CURRENCY_MUST_MATCH_COUNTRY',
   /** A direct connection catalog can't be attached to a market. */
   MarketCantHaveDirectConnectionCatalog = 'MARKET_CANT_HAVE_DIRECT_CONNECTION_CATALOG',
+  /** Market managers and condition types are not compatible with each other. */
+  MarketManagerNotCompatibleWithConditionTypes = 'MARKET_MANAGER_NOT_COMPATIBLE_WITH_CONDITION_TYPES',
   /**
    * Market and condition types are not compatible with each other.
    * @deprecated This will no longer be used after legacy markets are removed in April 2026
@@ -9621,8 +13139,12 @@ export enum MarketUserErrorCode {
   MissingCountryCode = 'MISSING_COUNTRY_CODE',
   /** The province code is missing. */
   MissingProvinceCode = 'MISSING_PROVINCE_CODE',
+  /** The subdivision code is missing. */
+  MissingSubdivisionCode = 'MISSING_SUBDIVISION_CODE',
   /** All retail locations in a market must be in the same country. */
   MixedCountryLocationsNotAllowed = 'MIXED_COUNTRY_LOCATIONS_NOT_ALLOWED',
+  /** All regions in a market that includes a subdivision must be in the same country. */
+  MixedCountrySubdivisionsNotAllowed = 'MIXED_COUNTRY_SUBDIVISIONS_NOT_ALLOWED',
   /** The shop's payment gateway does not support enabling more than one currency. */
   MultipleCurrenciesNotSupported = 'MULTIPLE_CURRENCIES_NOT_SUPPORTED',
   /** Can’t delete, disable, or change the type of the last region market. */
@@ -9652,6 +13174,8 @@ export enum MarketUserErrorCode {
   ProvinceDoesNotExist = 'PROVINCE_DOES_NOT_EXIST',
   /** The market region wasn't found. */
   RegionNotFound = 'REGION_NOT_FOUND',
+  /** The selected region is not supported for the selected channel. */
+  RegionNotSupportedForChannel = 'REGION_NOT_SUPPORTED_FOR_CHANNEL',
   /** Cannot add region-specific language. */
   RegionSpecificLanguage = 'REGION_SPECIFIC_LANGUAGE',
   /** One of `subfolderSuffix` or `domainId` is required. */
@@ -9663,6 +13187,8 @@ export enum MarketUserErrorCode {
   RequiresExactlyOneOption = 'REQUIRES_EXACTLY_ONE_OPTION',
   /** Retail location currency must be local. */
   RetailLocationCurrencyMustBeLocal = 'RETAIL_LOCATION_CURRENCY_MUST_BE_LOCAL',
+  /** Shipping and condition types are not compatible with each other. */
+  ShippingNotCompatibleWithConditionTypes = 'SHIPPING_NOT_COMPATIBLE_WITH_CONDITION_TYPES',
   /** The shop must have a web presence that uses the primary domain. */
   ShopMustHavePrimaryDomainWebPresence = 'SHOP_MUST_HAVE_PRIMARY_DOMAIN_WEB_PRESENCE',
   /**
@@ -9674,6 +13200,10 @@ export enum MarketUserErrorCode {
   SpecifiedConditionsCannotBeEmpty = 'SPECIFIED_CONDITIONS_CANNOT_BE_EMPTY',
   /** With an ID list in input, SPECIFIED is not needed. */
   SpecifiedNotValidForInput = 'SPECIFIED_NOT_VALID_FOR_INPUT',
+  /** The subdivision doesn't exist. */
+  SubdivisionDoesNotExist = 'SUBDIVISION_DOES_NOT_EXIST',
+  /** The selected subdivision does not belong to the selected country. */
+  SubdivisionMustBelongToCountry = 'SUBDIVISION_MUST_BELONG_TO_COUNTRY',
   /** The subfolder suffix is invalid, please provide a different value. */
   SubfolderSuffixCannotBeScriptCode = 'SUBFOLDER_SUFFIX_CANNOT_BE_SCRIPT_CODE',
   /** The subfolder suffix must be at least 2 letters. */
@@ -10067,6 +13597,8 @@ export enum MarketingChannel {
 export type MarketingEngagementInput = {
   /** The total ad spend for the marketing content. Recurring weekly, monthly, or yearly spend needs to be divided into daily amounts. */
   adSpend?: InputMaybe<MoneyInput>;
+  /** The number of all conversions from the marketing content. This field supports ad platforms that track conversions beyond traditional sales metrics. All conversions include both primary and secondary conversion goals as defined by the ad platform, such as purchases, add-to-carts, page views, and sign-ups. */
+  allConversions?: InputMaybe<Scalars['Decimal']['input']>;
   /** The total number of interactions, such as a button press or a screen touch, that occurred on the marketing content. */
   clicksCount?: InputMaybe<Scalars['Int']['input']>;
   /** The total number of comments on the marketing content. */
@@ -10081,12 +13613,12 @@ export type MarketingEngagementInput = {
   firstTimeCustomers?: InputMaybe<Scalars['Decimal']['input']>;
   /** The total number of times marketing content was displayed to users, whether or not an interaction occurred. For message-based platforms such as email or SMS, this represents the number of marketing emails or messages that were delivered. */
   impressionsCount?: InputMaybe<Scalars['Int']['input']>;
-  /** Specifies how the provided metrics have been aggregated. Cumulative metrics are aggregated from the first day of reporting up to and including `occuredOn`. Non-cumulative metrics are aggregated over the single day indicated in `occuredOn`. Cumulative metrics will monotonically increase in time as each record includes the previous day's values, and so on. Non-cumulative metrics are required going forward; cumulative metrics are deprecated. */
-  isCumulative: Scalars['Boolean']['input'];
   /** The calendar date (in the time zone offset specified by the utcOffset field) for which the metrics are being reported. For example, a shop in UTC-5 would set utcOffset="-05:00" and aggregate all engagements from 05:00:00Z up to 29:00:00Z (5am UTC next day) for each call. */
   occurredOn: Scalars['Date']['input'];
   /** The number of orders generated from the marketing content. */
   orders?: InputMaybe<Scalars['Decimal']['input']>;
+  /** The number of primary conversions from the marketing content. This field supports ad platforms that track conversions beyond traditional sales metrics. Primary conversions represent the main conversion goal defined by the ad platform, such as purchases, sign-ups, or add-to-carts. */
+  primaryConversions?: InputMaybe<Scalars['Decimal']['input']>;
   /** The number of returning customers that have placed an order. Doesn't include adjustments such as edits, exchanges, or returns. */
   returningCustomers?: InputMaybe<Scalars['Decimal']['input']>;
   /** The amount of sales generated from the marketing content. */
@@ -10502,10 +14034,32 @@ export type MetafieldCapabilityAdminFilterableInput = {
   enabled: Scalars['Boolean']['input'];
 };
 
+/** The input fields for the analytics queryable capability. */
+export type MetafieldCapabilityAnalyticsQueryableInput = {
+  /** Indicates whether the capability should be enabled or disabled. */
+  enabled: Scalars['Boolean']['input'];
+};
+
+/**
+ * The input fields for enabling or disabling the "Cart to order copyable" capability.
+ * This capability is only available for order metafield definitions.
+ *
+ * When enabled, the value from a cart metafield is automatically copied to the corresponding
+ * order metafield when an order is created. The namespace and key must match between the cart and order metafields.
+ */
+export type MetafieldCapabilityCartToOrderCopyableInput = {
+  /** Indicates whether the capability should be enabled or disabled. */
+  enabled: Scalars['Boolean']['input'];
+};
+
 /** The input fields for creating a metafield capability. */
 export type MetafieldCapabilityCreateInput = {
   /** The input for updating the admin filterable capability. */
   adminFilterable?: InputMaybe<MetafieldCapabilityAdminFilterableInput>;
+  /** The input for the analytics queryable capability. */
+  analyticsQueryable?: InputMaybe<MetafieldCapabilityAnalyticsQueryableInput>;
+  /** The input for updating the cart to order copyable capability. */
+  cartToOrderCopyable?: InputMaybe<MetafieldCapabilityCartToOrderCopyableInput>;
   /** The input for updating the smart collection condition capability. */
   smartCollectionCondition?: InputMaybe<MetafieldCapabilitySmartCollectionConditionInput>;
   /** The input for updating the unique values capability. */
@@ -10528,6 +14082,10 @@ export type MetafieldCapabilityUniqueValuesInput = {
 export type MetafieldCapabilityUpdateInput = {
   /** The input for updating the admin filterable capability. */
   adminFilterable?: InputMaybe<MetafieldCapabilityAdminFilterableInput>;
+  /** The input for the analytics queryable capability. */
+  analyticsQueryable?: InputMaybe<MetafieldCapabilityAnalyticsQueryableInput>;
+  /** The input for updating the cart to order copyable capability. */
+  cartToOrderCopyable?: InputMaybe<MetafieldCapabilityCartToOrderCopyableInput>;
   /** The input for updating the smart collection condition capability. */
   smartCollectionCondition?: InputMaybe<MetafieldCapabilitySmartCollectionConditionInput>;
   /** The input for updating the unique values capability. */
@@ -11035,6 +14593,8 @@ export enum MetafieldOwnerType {
   SellingPlan = 'SELLING_PLAN',
   /** The Shop metafield owner type. */
   Shop = 'SHOP',
+  /** The Transfer metafield owner type. */
+  Transfer = 'TRANSFER',
   /** The Validation metafield owner type. */
   Validation = 'VALIDATION'
 }
@@ -11150,6 +14710,8 @@ export enum MetafieldsSetUserErrorCode {
 export type MetaobjectAccessInput = {
   /** The access permitted on the Admin API. */
   admin?: InputMaybe<MetaobjectAdminAccessInput>;
+  /** The access permitted on the Customer Account API. */
+  customerAccount?: InputMaybe<MetaobjectCustomerAccountAccess>;
   /** The access permitted on the Storefront API. */
   storefront?: InputMaybe<MetaobjectStorefrontAccess>;
 };
@@ -11309,7 +14871,17 @@ export type MetaobjectCreateInput = {
   handle?: InputMaybe<Scalars['String']['input']>;
   /** The type of the metaobject. Must match an existing metaobject definition type. */
   type: Scalars['String']['input'];
+  /** The field values for the metaobject as a JSON object, keyed by field definition key. Cannot be used in conjunction with `fields`. */
+  values?: InputMaybe<Scalars['JSON']['input']>;
 };
+
+/** Metaobject access permissions for the Customer Account API. */
+export enum MetaobjectCustomerAccountAccess {
+  /** No access. */
+  None = 'NONE',
+  /** Read-only access. */
+  Read = 'READ'
+}
 
 /** The input fields for creating a metaobject definition. */
 export type MetaobjectDefinitionCreateInput = {
@@ -11322,7 +14894,7 @@ export type MetaobjectDefinitionCreateInput = {
   /** The key of a field to reference as the display name for metaobjects of this type. */
   displayNameKey?: InputMaybe<Scalars['String']['input']>;
   /** A set of field definitions to create on this metaobject definition. */
-  fieldDefinitions: Array<MetaobjectFieldDefinitionCreateInput>;
+  fieldDefinitions?: InputMaybe<Array<MetaobjectFieldDefinitionCreateInput>>;
   /** A human-readable name for the definition. This can be changed at any time. */
   name?: InputMaybe<Scalars['String']['input']>;
   /**
@@ -11463,6 +15035,8 @@ export type MetaobjectUpdateInput = {
   handle?: InputMaybe<Scalars['String']['input']>;
   /** Whether to create a redirect for the metaobject. */
   redirectNewHandle?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The field values for the metaobject as a JSON object, keyed by field definition key. This is a full replacement — omitted keys are cleared on an existing record. Cannot be used in conjunction with `fields`. */
+  values?: InputMaybe<Scalars['JSON']['input']>;
 };
 
 /** The input fields for upserting a metaobject. */
@@ -11745,6 +15319,8 @@ export enum OnlineStoreThemeFilesUserErrorsCode {
   LessThanOrEqualTo = 'LESS_THAN_OR_EQUAL_TO',
   /** The record with the ID used as the input value couldn't be found. */
   NotFound = 'NOT_FOUND',
+  /** Theme contextualization and condition types are not compatible with each other. */
+  ThemeContextualizationNotCompatibleWithConditionTypes = 'THEME_CONTEXTUALIZATION_NOT_COMPATIBLE_WITH_CONDITION_TYPES',
   /** There are theme files with conflicts. */
   ThemeFilesConflict = 'THEME_FILES_CONFLICT',
   /** This action is not available on your current plan. Please upgrade to access theme editing features. */
@@ -11896,6 +15472,30 @@ export enum OrderAdjustmentInputDiscrepancyReason {
   Other = 'OTHER',
   /** The discrepancy reason is restocking. */
   Restock = 'RESTOCK'
+}
+
+/** Possible error codes that can be returned by `OrderAttributionDefinitionDeleteUserError`. */
+export enum OrderAttributionDefinitionDeleteUserErrorCode {
+  /** The input value is invalid. */
+  Invalid = 'INVALID',
+  /** The record with the ID used as the input value couldn't be found. */
+  NotFound = 'NOT_FOUND'
+}
+
+/** The input fields for upserting an order attribution definition. */
+export type OrderAttributionDefinitionUpsertInput = {
+  /** A human-readable name for the definition, displayed in Shopify Admin and on order details. */
+  displayName: Scalars['String']['input'];
+  /** A unique identifier for the definition, scoped to the calling app on a single shop. Case insensitive. Used to match an existing definition when upserting. */
+  handle: Scalars['String']['input'];
+  /** Sanitized SVG content used as the icon for orders attributed to this definition. Must conform to the platform's SVG sanitization rules and a 0 0 20 20 viewbox. Omit this field to leave the existing icon unchanged on update, or pass `null` to clear it. */
+  icon?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Possible error codes that can be returned by `OrderAttributionDefinitionUpsertUserError`. */
+export enum OrderAttributionDefinitionUpsertUserErrorCode {
+  /** The input value is invalid. */
+  Invalid = 'INVALID'
 }
 
 /** Represents the reason for the order's cancellation. */
@@ -12196,6 +15796,16 @@ export type OrderCreateLineItemPropertyInput = {
   /** The value of the line item property. */
   value: Scalars['String']['input'];
 };
+
+/** Represents the status of a mandate payment request. */
+export enum OrderCreateMandatePaymentStatus {
+  /** The mandate payment has failed. */
+  Failed = 'FAILED',
+  /** The mandate payment request has been initiated. */
+  Started = 'STARTED',
+  /** The mandate payment has been completed successfully. */
+  Succeeded = 'SUCCEEDED'
+}
 
 /** Possible error codes that can be returned by `OrderCreateMandatePaymentUserError`. */
 export enum OrderCreateMandatePaymentUserErrorCode {
@@ -12600,6 +16210,8 @@ export type OrderInput = {
   metafields?: InputMaybe<Array<MetafieldInput>>;
   /** The new contents for the note associated with the order. Overwrites the existing note. */
   note?: InputMaybe<Scalars['String']['input']>;
+  /** A new customer phone number for the order. Overwrites the existing phone number. */
+  phone?: InputMaybe<Scalars['String']['input']>;
   /** The new purchase order number for the order. */
   poNumber?: InputMaybe<Scalars['String']['input']>;
   /** The new shipping address for the order. Overwrites the existing shipping address. */
@@ -12784,14 +16396,32 @@ export enum OrderTransactionErrorCode {
   AmazonPaymentsOrderReferenceCanceled = 'AMAZON_PAYMENTS_ORDER_REFERENCE_CANCELED',
   /** The order was not confirmed within three hours. */
   AmazonPaymentsStale = 'AMAZON_PAYMENTS_STALE',
+  /** The transaction amount exceeds the maximum amount allowed. */
+  AmountTooLarge = 'AMOUNT_TOO_LARGE',
+  /** The transaction amount is below the minimum amount allowed. */
+  AmountTooSmall = 'AMOUNT_TOO_SMALL',
+  /** The 3D Secure authentication failed. */
+  AuthenticationFailed = 'AUTHENTICATION_FAILED',
+  /** The transaction requires 3D Secure authentication but was attempted without authentication. */
+  AuthenticationRequired = 'AUTHENTICATION_REQUIRED',
+  /** The authorization has expired. */
+  AuthorizationExpired = 'AUTHORIZATION_EXPIRED',
   /** The issuer declined the transaction, the customer should contact their issuer for more details. */
   CallIssuer = 'CALL_ISSUER',
+  /** The transaction was cancelled. */
+  CancelledPayment = 'CANCELLED_PAYMENT',
   /** The card was declined. */
   CardDeclined = 'CARD_DECLINED',
+  /** The transaction was declined due to suspected card testing activity. */
+  CardTesting = 'CARD_TESTING',
   /** There is an error in the gateway or merchant configuration. */
   ConfigError = 'CONFIG_ERROR',
+  /** The issuer declined the transaction without providing a specific reason. */
+  DoNotHonor = 'DO_NOT_HONOR',
   /** The card is expired. */
   ExpiredCard = 'EXPIRED_CARD',
+  /** The transaction was declined due to suspected fraudulent activity. */
+  FraudSuspected = 'FRAUD_SUSPECTED',
   /** There was an unknown error with processing the payment. */
   GenericError = 'GENERIC_ERROR',
   /** The address is incorrect. */
@@ -12804,24 +16434,46 @@ export enum OrderTransactionErrorCode {
   IncorrectPin = 'INCORRECT_PIN',
   /** The ZIP or postal code doesn't match the one on file. */
   IncorrectZip = 'INCORRECT_ZIP',
+  /** The payment instrument was declined. */
+  InstrumentDeclined = 'INSTRUMENT_DECLINED',
+  /** There are insufficient funds available to complete the transaction. */
+  InsufficientFunds = 'INSUFFICIENT_FUNDS',
   /** The amount is invalid. */
   InvalidAmount = 'INVALID_AMOUNT',
   /** The payment method is not available in the customer's country. */
   InvalidCountry = 'INVALID_COUNTRY',
+  /** The currency isn't supported. */
+  InvalidCurrency = 'INVALID_CURRENCY',
   /** The format of the CVC is incorrect. */
   InvalidCvc = 'INVALID_CVC',
   /** The format of the expiry date is incorrect. */
   InvalidExpiryDate = 'INVALID_EXPIRY_DATE',
   /** The format of the card number is incorrect. */
   InvalidNumber = 'INVALID_NUMBER',
+  /** The payment method is invalid or not found. */
+  InvalidPaymentMethod = 'INVALID_PAYMENT_METHOD',
+  /** This payment method doesn't support the requested transaction type. */
+  InvalidPurchaseType = 'INVALID_PURCHASE_TYPE',
+  /** The transaction couldn't be processed due to an issue with the merchant account. */
+  MerchantAccountError = 'MERCHANT_ACCOUNT_ERROR',
+  /** The transaction was blocked due to the merchant's custom payment risk rule. */
+  MerchantRule = 'MERCHANT_RULE',
   /** The payment method is momentarily unavailable. */
   PaymentMethodUnavailable = 'PAYMENT_METHOD_UNAVAILABLE',
+  /** The payment method isn't supported. */
+  PaymentMethodUnsupported = 'PAYMENT_METHOD_UNSUPPORTED',
+  /** The transaction couldn't be processed due to an unexpected error with the payment provider. */
+  PaymentProviderError = 'PAYMENT_PROVIDER_ERROR',
   /** The card has been reported as lost or stolen, and the card issuer has requested that the merchant keep the card and call the number on the back. */
   PickUpCard = 'PICK_UP_CARD',
   /** There was an error while processing the payment. */
   ProcessingError = 'PROCESSING_ERROR',
+  /** The transaction retry attempt was declined. */
+  RetryDeclined = 'RETRY_DECLINED',
   /** A real card was used but the gateway was in test mode. */
   TestModeLiveCard = 'TEST_MODE_LIVE_CARD',
+  /** The payment instrument has exceeded the processing frequency limit. */
+  TransactionLimitExceeded = 'TRANSACTION_LIMIT_EXCEEDED',
   /** The gateway or merchant configuration doesn't support a feature, such as network tokenization. */
   UnsupportedFeature = 'UNSUPPORTED_FEATURE'
 }
@@ -12881,6 +16533,14 @@ export enum OrderTransactionStatus {
   /** The transaction status is unknown. */
   Unknown = 'UNKNOWN'
 }
+
+/** The input fields that describe package information for the shipping label purchase. Exactly one of `customPackage` or `carrierPackage` must be provided. */
+export type PackageInfoInput = {
+  /** A standard package provided by the carrier. Mutually exclusive with `customPackage`. */
+  carrierPackage?: InputMaybe<ShippingCarrierPackageInput>;
+  /** A package with custom dimensions and empty-package weight. Mutually exclusive with `carrierPackage`. */
+  customPackage?: InputMaybe<ShippingLabelPurchaseCustomPackageInput>;
+};
 
 /** The input fields to create a page. */
 export type PageCreateInput = {
@@ -13075,6 +16735,12 @@ export enum PaymentReminderSendUserErrorCode {
   PaymentReminderSendUnsuccessful = 'PAYMENT_REMINDER_SEND_UNSUCCESSFUL'
 }
 
+/** Possible error codes that can be returned by `PaymentScheduleCaptureUserError`. */
+export enum PaymentScheduleCaptureUserErrorCode {
+  /** Errors for capturing a scheduled payment. */
+  PaymentScheduleCaptureErrorCode = 'PAYMENT_SCHEDULE_CAPTURE_ERROR_CODE'
+}
+
 /** The input fields used to create a payment schedule for payment terms. */
 export type PaymentScheduleInput = {
   /** Specifies the date and time when the payment schedule is due. This field must be provided for fixed type payment terms. */
@@ -13187,11 +16853,113 @@ export enum PaypalExpressSubscriptionsGatewayStatus {
   Pending = 'PENDING'
 }
 
+/** Possible error codes that can be returned by `PointOfSaleDeviceAssignToCashDrawerUserError`. */
+export enum PointOfSaleDeviceAssignToCashDrawerUserErrorCode {
+  /** The cash drawer was not found. */
+  CashDrawerNotFound = 'CASH_DRAWER_NOT_FOUND',
+  /** Unexpected internal error happened. */
+  InternalError = 'INTERNAL_ERROR',
+  /** The cash drawer and point of sale device must be in the same location. */
+  LocationMismatch = 'LOCATION_MISMATCH',
+  /** The point of sale device was not found. */
+  PointOfSaleDeviceNotFound = 'POINT_OF_SALE_DEVICE_NOT_FOUND'
+}
+
+/** Possible error codes that can be returned by `PointOfSaleDevicePaymentSessionCloseUserError`. */
+export enum PointOfSaleDevicePaymentSessionCloseUserErrorCode {
+  /** The currency code does not match the cash drawer currency. */
+  CurrencyMismatch = 'CURRENCY_MISMATCH',
+  /** Point of sale device payment session not closed. */
+  FailedToCloseSession = 'FAILED_TO_CLOSE_SESSION',
+  /** Point of sale device has no cash drawer associated with it. */
+  NoCashDrawerAssociated = 'NO_CASH_DRAWER_ASSOCIATED',
+  /** Point of sale device payment session not found. */
+  PaymentSessionNotFound = 'PAYMENT_SESSION_NOT_FOUND',
+  /** Reason code not found. */
+  ReasonCodeNotFound = 'REASON_CODE_NOT_FOUND',
+  /** Session is already closed. */
+  SessionAlreadyClosed = 'SESSION_ALREADY_CLOSED',
+  /** Staff member not found. */
+  StaffMemberNotFound = 'STAFF_MEMBER_NOT_FOUND',
+  /** Time cannot be before session opening time. */
+  TimeBeforeSessionOpen = 'TIME_BEFORE_SESSION_OPEN'
+}
+
+/** Possible error codes that can be returned by `PointOfSaleDevicePaymentSessionCountUserError`. */
+export enum PointOfSaleDevicePaymentSessionCountUserErrorCode {
+  /** The currency code does not match the cash drawer currency. */
+  CurrencyMismatch = 'CURRENCY_MISMATCH',
+  /** Point of sale device payment session count not recorded. */
+  FailedToRecordCount = 'FAILED_TO_RECORD_COUNT',
+  /** Point of sale device has no cash drawer associated with it. */
+  NoCashDrawerAssociated = 'NO_CASH_DRAWER_ASSOCIATED',
+  /** Point of sale device payment session not found. */
+  PaymentSessionNotFound = 'PAYMENT_SESSION_NOT_FOUND',
+  /** Reason code not found. */
+  ReasonCodeNotFound = 'REASON_CODE_NOT_FOUND',
+  /** Session is already closed. */
+  SessionAlreadyClosed = 'SESSION_ALREADY_CLOSED',
+  /** Staff member not found. */
+  StaffMemberNotFound = 'STAFF_MEMBER_NOT_FOUND',
+  /** Time cannot be before session opening time. */
+  TimeBeforeSessionOpen = 'TIME_BEFORE_SESSION_OPEN'
+}
+
+/** Possible error codes that can be returned by `PointOfSaleDevicePaymentSessionOpenUserError`. */
+export enum PointOfSaleDevicePaymentSessionOpenUserErrorCode {
+  /** A point of sale device payment session is already open for this point of sale device. */
+  AlreadyOpen = 'ALREADY_OPEN',
+  /** The currency does not match the currency of the cash drawer. */
+  CurrencyMismatch = 'CURRENCY_MISMATCH',
+  /** The point of sale device payment session was not created. */
+  NotSaved = 'NOT_SAVED',
+  /** The point_of_sale_device has no cash drawer associated with it. */
+  NoCashDrawerAssociated = 'NO_CASH_DRAWER_ASSOCIATED',
+  /** The point of sale device was not found. */
+  PointOfSaleDeviceNotFound = 'POINT_OF_SALE_DEVICE_NOT_FOUND',
+  /** The reason code was not found. */
+  ReasonCodeNotFound = 'REASON_CODE_NOT_FOUND',
+  /** The staff member was not found. */
+  StaffMemberNotFound = 'STAFF_MEMBER_NOT_FOUND'
+}
+
+/** The set of valid sort keys for the PointOfSaleDevicePaymentSession query. */
+export enum PointOfSaleDevicePaymentSessionSortKeys {
+  /** Sort by the `closing_time` value. */
+  ClosingTime = 'CLOSING_TIME',
+  /** Sort by the `id` value. */
+  Id = 'ID',
+  /** Sort by the `opening_time` value. */
+  OpeningTime = 'OPENING_TIME'
+}
+
+/** The status of the point of sale device payment session. Payments can't be processed or refunded during a closed session, and the cash drawer balance can't be adjusted or corrected. */
+export enum PointOfSaleDevicePaymentSessionStatus {
+  /** The point of sale device payment session is closed. */
+  Closed = 'CLOSED',
+  /** The point of sale device payment session is open. */
+  Open = 'OPEN'
+}
+
+/** The input fields for selecting a preferred shipping rate by carrier and service codes. */
+export type PreferredRateSelectionInput = {
+  /** The code identifying the carrier for the preferred rate. Examples include `usps`, `ups_shipping`, `dhl_express`, and `canada_post`. */
+  carrierCode: Scalars['String']['input'];
+  /** The carrier-defined service code for the preferred rate. */
+  serviceCode: Scalars['String']['input'];
+};
+
 /** The input fields used to include the line items of a specified fulfillment order that should be marked as prepared for pickup by a customer. */
 export type PreparedFulfillmentOrderLineItemsInput = {
   /** The ID of the fulfillment order. */
   fulfillmentOrderId: Scalars['ID']['input'];
 };
+
+/** Possible error codes that can be returned by `PreviewInstallUserError`. */
+export enum PreviewInstallUserErrorCode {
+  /** Unexpected internal error happened. */
+  InternalError = 'INTERNAL_ERROR'
+}
 
 /** How to calculate the parent product variant's price while bulk updating variant relationships. */
 export enum PriceCalculationType {
@@ -13332,6 +17100,8 @@ export enum PriceListPriceUserErrorCode {
 
 /** The input fields representing the price for all variants of a product. */
 export type PriceListProductPriceInput = {
+  /** Specifies the compare-at price and currency to apply to the product's variants on the price list. */
+  compareAtPrice?: InputMaybe<MoneyInput>;
   /** Specifies the price and currency to apply to the product's variants on the price list. */
   price: MoneyInput;
   /** Specifies the ID of the product to update its variants for. */
@@ -14049,10 +17819,39 @@ export type ProductBundleComponentQuantityOptionValueInput = {
   quantity: Scalars['Int']['input'];
 };
 
+/** The input fields for mapping a consolidated option to a specific component option. */
+export type ProductBundleConsolidatedOptionComponentInput = {
+  /**
+   * The ID of the component option that this consolidated option maps to.
+   * If null, this selection targets the component's quantity option with the given name.
+   */
+  componentOptionId?: InputMaybe<Scalars['ID']['input']>;
+  /** The value to use for the component option (e.g., 'Small', 'Red'). */
+  componentOptionValue: Scalars['String']['input'];
+};
+
+/** The input fields for a consolidated option on a componentized product. */
+export type ProductBundleConsolidatedOptionInput = {
+  /** The name of the consolidated option (e.g., 'Size', 'Color'). */
+  optionName: Scalars['String']['input'];
+  /** The option selections that define how this consolidated option maps to component options. */
+  optionSelections: Array<ProductBundleConsolidatedOptionSelectionInput>;
+};
+
+/** The input fields for a consolidated option selection that maps to component options. */
+export type ProductBundleConsolidatedOptionSelectionInput = {
+  /** The component mappings that define how this option value maps to specific component options. */
+  components: Array<ProductBundleConsolidatedOptionComponentInput>;
+  /** The value for this consolidated option selection (e.g., 'Small', 'Medium', 'Large'). */
+  optionValue: Scalars['String']['input'];
+};
+
 /** The input fields for creating a componentized product. */
 export type ProductBundleCreateInput = {
   /** The component products to bundle with the bundle product. */
   components: Array<ProductBundleComponentInput>;
+  /** The consolidated options of the componentized product to create, if provided. */
+  consolidatedOptions?: InputMaybe<Array<ProductBundleConsolidatedOptionInput>>;
   /** The title of the product to create. */
   title: Scalars['String']['input'];
 };
@@ -14073,6 +17872,8 @@ export enum ProductBundleMutationUserErrorCode {
 export type ProductBundleUpdateInput = {
   /** The components to update existing ones. If none provided, no changes occur. Note: This replaces, not adds to, current components. */
   components?: InputMaybe<Array<ProductBundleComponentInput>>;
+  /** The consolidated options of the componentized product to update, if provided. */
+  consolidatedOptions?: InputMaybe<Array<ProductBundleConsolidatedOptionInput>>;
   /** The ID of the componentized product to update. */
   productId: Scalars['ID']['input'];
   /** The title to rename the componentized product to, if provided. */
@@ -14213,6 +18014,56 @@ export type ProductDeleteInput = {
   id: Scalars['ID']['input'];
 };
 
+/**
+ * Controls which product discounts can apply together on the same cart line. By
+ * default, only one product discount applies per line. Available only on a Shopify
+ * Plus plan.
+ *
+ * For discounts to apply together, they must match tags in both directions. Each
+ * discount has two tag sets: the tags that identify the discount, and the tags that
+ * it agrees to apply with. Use the `tags` field on the discount input to set the
+ * discount's own tags. Use this input object to set the tags that the discount can
+ * apply with. Two discounts apply together only if each one allows at least one tag
+ * that the other is tagged with. Any number of product discounts can apply to the
+ * same line if this two-way match holds for every pair in the group.
+ *
+ * Example: Discount A is tagged with `LOYALTY` and allows `SEASONAL`, and Discount B
+ * is tagged with `SEASONAL` and allows `LOYALTY`. They apply together. To add a
+ * third discount, it must meet the same mutual-match rule with both A and B.
+ *
+ * Buy X Get Y discounts stack only on the customer-gets products (GY), not the
+ * customer-buys products (BX). See
+ * [Limitations for discount combinations](https://help.shopify.com/manual/discounts/discount-combinations#considerations)
+ * for details.
+ */
+export type ProductDiscountsWithTagsOnSameCartLineInput = {
+  /**
+   * The tags to add to this discount's combination list. This field doesn't add
+   * tags to the discount itself. To change the tags on the discount, use the
+   * discount input's `tags` field or the
+   * [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+   * and [`tagsRemove`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsremove)
+   * mutations.
+   *
+   * If another product discount has a matching tag and also allows at least one
+   * tag on this discount, then both discounts can apply to the same cart line.
+   */
+  add?: InputMaybe<Array<Scalars['String']['input']>>;
+  /**
+   * The tags to remove from this discount's combination list. This field doesn't
+   * remove tags from the discount itself. To change the tags on the discount, use
+   * the discount input's `tags` field or the
+   * [`tagsAdd`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsadd)
+   * and [`tagsRemove`](https://shopify.dev/api/admin-graphql/latest/mutations/tagsremove)
+   * mutations.
+   *
+   * If this discount and another product discount still match tags in both
+   * directions after the removal, then both discounts can still apply to the same
+   * cart line.
+   */
+  remove?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
 /** Possible error codes that can be returned by `ProductFeedCreateUserError`. */
 export enum ProductFeedCreateUserErrorCode {
   /** The input value is invalid. */
@@ -14229,6 +18080,8 @@ export enum ProductFeedDeleteUserErrorCode {
 
 /** The input fields required to create a product feed. */
 export type ProductFeedInput = {
+  /** The ID of the channel to associate with the product feed. */
+  channelId?: InputMaybe<Scalars['ID']['input']>;
   /** The country of the product feed. */
   country: CountryCode;
   /** The language of the product feed. */
@@ -14631,6 +18484,8 @@ export type ProductPublishInput = {
 
 /** The input fields used to create a product feedback. */
 export type ProductResourceFeedbackInput = {
+  /** The ID of the channel that the feedback is for. Used to scope feedback to a specific sales channel when the app has multiple channels. */
+  channelId?: InputMaybe<Scalars['ID']['input']>;
   /**
    * The date and time when the payload is constructed.
    * Used to help determine whether incoming feedback is outdated compared to feedback already received, and if it should be ignored upon arrival.
@@ -14886,6 +18741,16 @@ export type ProductUnpublishInput = {
   productPublications: Array<ProductPublicationInput>;
 };
 
+/** The input fields required to identify a product for update. */
+export type ProductUpdateIdentifiers = {
+  /** Custom ID of product to update. */
+  customId?: InputMaybe<UniqueMetafieldValueInput>;
+  /** Handle of product to update. */
+  handle?: InputMaybe<Scalars['String']['input']>;
+  /** ID of product to update. */
+  id?: InputMaybe<Scalars['ID']['input']>;
+};
+
 /** The input fields for updating a product. */
 export type ProductUpdateInput = {
   /**
@@ -15126,6 +18991,8 @@ export type ProductVariantSetInput = {
   position?: InputMaybe<Scalars['Int']['input']>;
   /** The price of the variant. */
   price?: InputMaybe<Scalars['Money']['input']>;
+  /** Indicates whether the product variant is created as published or unpublished. This option is only available for new product variants. */
+  published?: InputMaybe<Scalars['Boolean']['input']>;
   /**
    * Whether a product variant requires components. The default value is `false`.
    * If `true`, then the product variant can only be purchased as a parent bundle with components and it will be omitted
@@ -15200,6 +19067,8 @@ export enum ProductVariantsBulkCreateUserErrorCode {
   InvalidInput = 'INVALID_INPUT',
   /** Inventory quantity input exceeds the limit of 50000. Consider using separate `inventorySetQuantities` mutations. */
   InventoryQuantitiesLimitExceeded = 'INVENTORY_QUANTITIES_LIMIT_EXCEEDED',
+  /** Price must be 0 for variants of products with a gift card issuance currency. */
+  LocalCurrencyGiftCardPriceMustBeZero = 'LOCAL_CURRENCY_GIFT_CARD_PRICE_MUST_BE_ZERO',
   /** Input must be for this product. */
   MustBeForThisProduct = 'MUST_BE_FOR_THIS_PRODUCT',
   /** Variant options are not enough. */
@@ -15272,6 +19141,10 @@ export type ProductVariantsBulkInput = {
   optionValues?: InputMaybe<Array<VariantOptionValueInput>>;
   /** The price of the variant. */
   price?: InputMaybe<Scalars['Money']['input']>;
+  /** Indicates whether the product variant is created as published or unpublished. This option is only available for new product variants. */
+  published?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Adjust inventory quantities with deltas. */
+  quantityAdjustments?: InputMaybe<Array<InventoryAdjustmentInput>>;
   /**
    * Whether a product variant requires components. The default value is `false`.
    * If `true`, then the product variant can only be purchased as a parent bundle with components and it will be
@@ -15318,6 +19191,8 @@ export enum ProductVariantsBulkUpdateUserErrorCode {
   InvalidValue = 'INVALID_VALUE',
   /** Inventory quantity input exceeds the limit of 50000. Consider using separate `inventorySetQuantities` mutations. */
   InventoryQuantitiesLimitExceeded = 'INVENTORY_QUANTITIES_LIMIT_EXCEEDED',
+  /** Price must be 0 for variants of products with a gift card issuance currency. */
+  LocalCurrencyGiftCardPriceMustBeZero = 'LOCAL_CURRENCY_GIFT_CARD_PRICE_MUST_BE_ZERO',
   /** Input must be for this product. */
   MustBeForThisProduct = 'MUST_BE_FOR_THIS_PRODUCT',
   /** Mandatory field input field missing. */
@@ -15405,6 +19280,8 @@ export type PubSubWebhookSubscriptionInput = {
   metafieldNamespaces?: InputMaybe<Array<Scalars['String']['input']>>;
   /** A list of identifiers specifying metafields to include in the webhook payload. */
   metafields?: InputMaybe<Array<HasMetafieldsMetafieldIdentifierInput>>;
+  /** A human-readable name for the webhook subscription. */
+  name?: InputMaybe<Scalars['String']['input']>;
   /** The Pub/Sub project ID. */
   pubSubProject: Scalars['String']['input'];
   /** The Pub/Sub topic ID. */
@@ -15459,6 +19336,8 @@ export type PublicationUpdateInput = {
 export enum PublicationUserErrorCode {
   /** The input value is blank. */
   Blank = 'BLANK',
+  /** Products and variants cannot be updated together. */
+  CannotCombineProductsAndVariants = 'CANNOT_COMBINE_PRODUCTS_AND_VARIANTS',
   /** Cannot modify a catalog for an app. */
   CannotModifyAppCatalog = 'CANNOT_MODIFY_APP_CATALOG',
   /** Can't modify a publication that belongs to an app catalog. */
@@ -15475,6 +19354,8 @@ export enum PublicationUserErrorCode {
   InvalidPublishableId = 'INVALID_PUBLISHABLE_ID',
   /** Market does not exist. */
   MarketNotFound = 'MARKET_NOT_FOUND',
+  /** The product is currently being modified. Please try again later. */
+  ProductLockError = 'PRODUCT_LOCK_ERROR',
   /** A product publication cannot be created because the catalog type associated with this publication does not permit publications of this product type. */
   ProductTypeIncompatibleWithCatalogType = 'PRODUCT_TYPE_INCOMPATIBLE_WITH_CATALOG_TYPE',
   /** The publication is currently being modified. Please try again later. */
@@ -15492,7 +19373,11 @@ export enum PublicationUserErrorCode {
   /** Can't perform this action on a publication. */
   UnsupportedPublicationAction = 'UNSUPPORTED_PUBLICATION_ACTION',
   /** A catalog publication can only contain products. */
-  UnsupportedPublishableType = 'UNSUPPORTED_PUBLISHABLE_TYPE'
+  UnsupportedPublishableType = 'UNSUPPORTED_PUBLISHABLE_TYPE',
+  /** Variants in a single operation must belong to the same product. */
+  VariantsBelongToMultipleProducts = 'VARIANTS_BELONG_TO_MULTIPLE_PRODUCTS',
+  /** Variant publishing is not supported for this product type. */
+  VariantPublishingUnsupportedProductType = 'VARIANT_PUBLISHING_UNSUPPORTED_PRODUCT_TYPE'
 }
 
 /** The input fields for a purchasing company, which is a combination of company, company contact, and company location. */
@@ -15713,6 +19598,8 @@ export type RefundInput = {
   notify?: InputMaybe<Scalars['Boolean']['input']>;
   /** The ID of the order that's being refunded. */
   orderId: Scalars['ID']['input'];
+  /** The date and time when the refund is being processed. If not provided, it will be set to the current time. */
+  processedAt?: InputMaybe<Scalars['DateTime']['input']>;
   /** A list of duties to refund. */
   refundDuties?: InputMaybe<Array<RefundDutyInput>>;
   /** A list of line items to refund. */
@@ -15777,11 +19664,8 @@ export type RefundShippingInput = {
 
 /** The input fields for a remote Authorize.net customer payment profile. */
 export type RemoteAuthorizeNetCustomerPaymentProfileInput = {
-  /**
-   * The customerPaymentProfileId value from the Authorize.net API. Starting on 2025,
-   * customer_payment_profile_id will become mandatory for all API versions.
-   */
-  customerPaymentProfileId?: InputMaybe<Scalars['String']['input']>;
+  /** The customerPaymentProfileId value from the Authorize.net API. */
+  customerPaymentProfileId: Scalars['String']['input'];
   /** The customerProfileId value from the Authorize.net API. */
   customerProfileId: Scalars['String']['input'];
 };
@@ -15790,22 +19674,16 @@ export type RemoteAuthorizeNetCustomerPaymentProfileInput = {
 export type RemoteBraintreePaymentMethodInput = {
   /** The `customer_id` value from the Braintree API. */
   customerId: Scalars['String']['input'];
-  /**
-   * The `payment_method_token` value from the Braintree API. Starting on 2025,
-   * payment_method_token will become mandatory for all API versions.
-   */
-  paymentMethodToken?: InputMaybe<Scalars['String']['input']>;
+  /** The `payment_method_token` value from the Braintree API. */
+  paymentMethodToken: Scalars['String']['input'];
 };
 
 /** The input fields for a remote stripe payment method. */
 export type RemoteStripePaymentMethodInput = {
   /** The customer_id value from the Stripe API. */
   customerId: Scalars['String']['input'];
-  /**
-   * The payment_method_id value from the Stripe API. Starting on 2025,
-   * payment_method_id will become mandatory for all API versions.
-   */
-  paymentMethodId?: InputMaybe<Scalars['String']['input']>;
+  /** The payment_method_id value from the Stripe API. */
+  paymentMethodId: Scalars['String']['input'];
 };
 
 /** The available icons for resource alerts. */
@@ -15834,6 +19712,8 @@ export enum ResourceAlertSeverity {
 
 /** The input fields for a resource feedback object. */
 export type ResourceFeedbackCreateInput = {
+  /** The ID of the channel that the feedback is for. Used to scope feedback to a specific sales channel when the app has multiple channels. */
+  channelId?: InputMaybe<Scalars['ID']['input']>;
   /**
    * The date and time when the feedback was generated. Used to help determine whether
    * incoming feedback is outdated compared to existing feedback.
@@ -15999,8 +19879,8 @@ export type ReturnLineItemInput = {
   quantity: Scalars['Int']['input'];
   /** The restocking fee to capture. */
   restockingFee?: InputMaybe<RestockingFeeInput>;
-  /** The reason for the item to be returned. */
-  returnReason: ReturnReason;
+  /** The ID of a [`ReturnReasonDefinition`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ReturnReasonDefinition). Accepts any ID from the full library of reasons available via [`returnReasonDefinitions`](https://shopify.dev/docs/api/admin-graphql/latest/queries/returnReasonDefinitions), not limited to the suggested reasons for the line item. */
+  returnReasonDefinitionId?: InputMaybe<Scalars['ID']['input']>;
   /**
    * A note about the reason that the item is being returned.
    * Maximum length: 255 characters.
@@ -16104,6 +19984,16 @@ export enum ReturnReason {
   WrongItem = 'WRONG_ITEM'
 }
 
+/** The set of valid sort keys for the ReturnReasonDefinition query. */
+export enum ReturnReasonDefinitionSortKeys {
+  /** Sort by the `handle` value. */
+  Handle = 'HANDLE',
+  /** Sort by the `id` value. */
+  Id = 'ID',
+  /** Sort by the `name` value. */
+  Name = 'NAME'
+}
+
 /** The input fields to refund a return. */
 export type ReturnRefundInput = {
   /** Whether to send a refund notification to the customer. */
@@ -16163,8 +20053,8 @@ export type ReturnRequestLineItemInput = {
   quantity: Scalars['Int']['input'];
   /** The restocking fee to capture. */
   restockingFee?: InputMaybe<RestockingFeeInput>;
-  /** The reason why the line item is being returned. */
-  returnReason: ReturnReason;
+  /** The ID of a [`ReturnReasonDefinition`](https://shopify.dev/docs/api/admin-graphql/latest/objects/ReturnReasonDefinition). Accepts any ID from the full library of reasons available via [`returnReasonDefinitions`](https://shopify.dev/docs/api/admin-graphql/latest/queries/returnReasonDefinitions), not limited to the suggested reasons for the line item. */
+  returnReasonDefinitionId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 /** The input fields for a return shipping fee. */
@@ -16958,6 +20848,36 @@ export enum ShipmentLineItemSortKeys {
   Id = 'ID'
 }
 
+/** The input fields for a carrier-defined package to use for the shipping label purchase. */
+export type ShippingCarrierPackageInput = {
+  /** The code identifying the carrier that supplies the package. Examples include `usps`, `ups_shipping`, `dhl_express`, and `canada_post`. */
+  carrierCode: Scalars['String']['input'];
+  /** The code identifying the carrier package type. */
+  carrierPackageCode: Scalars['String']['input'];
+  /** The carrier-defined display name for the package. */
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The input fields for creating a market's shipping configuration. */
+export type ShippingConfigurationCreateInput = {
+  /** Whether shipping is enabled for this market. When false, customers in this market won't see shipping options at checkout. */
+  isEnabled: Scalars['Boolean']['input'];
+  /** Shipping options to create for the market. */
+  optionDefinitions?: InputMaybe<Array<DeliveryOptionDefinitionCreateInput>>;
+};
+
+/** The input fields for updating a market's shipping configuration. */
+export type ShippingConfigurationUpdateInput = {
+  /** Whether shipping is enabled for this market. When false, customers in this market won't see shipping options at checkout. Defaults to true when the market has no shipping configuration; otherwise preserves the existing value. */
+  isEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Shipping options to create for this market. */
+  optionDefinitionsToCreate?: InputMaybe<Array<DeliveryOptionDefinitionCreateInput>>;
+  /** The IDs of shipping options to remove. */
+  optionDefinitionsToDelete?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** Shipping options to update, matched by ID. */
+  optionDefinitionsToUpdate?: InputMaybe<Array<DeliveryOptionDefinitionUpdateInput>>;
+};
+
 /**
  * The [discount class](https://help.shopify.com/manual/discounts/combining-discounts/discount-combinations)
  * that's used to control how discounts can be combined.
@@ -16965,6 +20885,132 @@ export enum ShipmentLineItemSortKeys {
 export enum ShippingDiscountClass {
   /** Combined as a shipping discount. */
   Shipping = 'SHIPPING'
+}
+
+/** Types of shipping documents. */
+export enum ShippingDocumentType {
+  /** The customs form document for the shipment. */
+  CustomsForm = 'CUSTOMS_FORM',
+  /** The shipping label document for the shipment. */
+  Label = 'LABEL'
+}
+
+/** File format for label. */
+export enum ShippingEnumsFileFormat {
+  /** PDF file format. */
+  Pdf = 'PDF',
+  /** ZPL file format. */
+  Zpl = 'ZPL'
+}
+
+/** The input fields for a custom package to use for the shipping label purchase. */
+export type ShippingLabelPurchaseCustomPackageInput = {
+  /** The outside dimensions of the shipping package. */
+  dimensions: ObjectDimensionsInput;
+  /** The package type. Defaults to `BOX`. */
+  type?: InputMaybe<ShippingPackageType>;
+  /** The weight of the empty package. */
+  weight: WeightInput;
+};
+
+/** Possible error codes that can be returned by `ShippingLabelPurchaseError`. */
+export enum ShippingLabelPurchaseErrorCode {
+  /** The carrier is not available for this label. Please try another carrier. */
+  CarrierNotAvailable = 'CARRIER_NOT_AVAILABLE',
+  /** We could not reach the shipping carrier. Please try again in a few minutes. */
+  ConnectionError = 'CONNECTION_ERROR',
+  /** The requested shop's shipping account is disabled. Please contact support. */
+  DisabledShippingAccount = 'DISABLED_SHIPPING_ACCOUNT',
+  /** There is another shipping label being purchased for this order. */
+  JobNotEnqueued = 'JOB_NOT_ENQUEUED',
+  /** Kill switch is enabled for this carrier. */
+  KillSwitch = 'KILL_SWITCH',
+  /** A non-recoverable error occurred while purchasing the label. Review the shipment details and try again. */
+  PermanentError = 'PERMANENT_ERROR',
+  /** We are still processing the purchase for this label. */
+  PurchaseInProgress = 'PURCHASE_IN_PROGRESS',
+  /** The shipping label could not be purchased due to invalid information. Please verify the shipping address, package weight and dimensions, and customs details (for international shipments). */
+  PurchaseLabelValidationError = 'PURCHASE_LABEL_VALIDATION_ERROR',
+  /** An error occurred while purchasing the label. Please try again. */
+  TransientError = 'TRANSIENT_ERROR',
+  /** An unknown error occurred while purchasing the label. */
+  UnknownError = 'UNKNOWN_ERROR'
+}
+
+/** The input fields for the fulfillment order, shipping date and time, package details, weight, notification setting, and optional rate preference used to purchase a shipping label. */
+export type ShippingLabelPurchaseInput = {
+  /** The ID of the fulfillment order to create the shipping label for. The fulfillment order must be fulfillable, require shipping, and have a destination shipping address. */
+  fulfillmentOrderId: Scalars['ID']['input'];
+  /** Whether to notify the customer after the shipping label is purchased. */
+  notifyCustomer?: InputMaybe<Scalars['Boolean']['input']>;
+  /** A custom ship-from origin address that overrides the fulfillment order's assigned location for this label. If not provided, the assigned location is used. */
+  originAddress?: InputMaybe<MailingAddressInput>;
+  /** The package to use for the shipment. Provide either a custom package or a carrier-provided package. */
+  packageInfo?: InputMaybe<PackageInfoInput>;
+  /** The preferred carrier and service to use for the shipping label. If omitted, the mutation uses Shopify Shipping's default rate selection. */
+  preferredRateSelection?: InputMaybe<PreferredRateSelectionInput>;
+  /** The date and time when the package is expected to be shipped. The value must not be in the past. */
+  shippingDatetime: Scalars['DateTime']['input'];
+  /** Total shipment weight, including the items being fulfilled and the package. If omitted, the total weight used is calculated using the weight of the empty package and the weight of the fulfillable line items. */
+  totalWeight?: InputMaybe<WeightInput>;
+};
+
+/** The status of a shipping label purchase result. */
+export enum ShippingLabelPurchaseResultStatus {
+  /** Purchase is pending. */
+  PendingPurchase = 'PENDING_PURCHASE',
+  /** Purchase succeeded. */
+  Purchased = 'PURCHASED',
+  /** Purchase failed. */
+  PurchaseFailed = 'PURCHASE_FAILED'
+}
+
+/** Possible error codes that can be returned by `ShippingLabelPurchaseUserError`. */
+export enum ShippingLabelPurchaseUserErrorCode {
+  /** The API client lacks write access to the provided fulfillment order. */
+  AccessDenied = 'ACCESS_DENIED',
+  /** The intent is trying to set an adaptive shipping state on a non-adaptive shipping order. */
+  AdaptiveShippingStateInvalid = 'ADAPTIVE_SHIPPING_STATE_INVALID',
+  /** At least 1 item should be fulfilled. */
+  AtLeast_1ItemRequired = 'AT_LEAST_1_ITEM_REQUIRED',
+  /** The selected shipping carrier cannot be purchased through this API. */
+  CarrierNotSupported = 'CARRIER_NOT_SUPPORTED',
+  /** The fulfillment order is not eligible for label purchase. Review the fulfillment order details and try again. */
+  FulfillmentOrderInvalid = 'FULFILLMENT_ORDER_INVALID',
+  /** Package dimensions must be greater than zero. */
+  InvalidPackageDimensions = 'INVALID_PACKAGE_DIMENSIONS',
+  /** Shipping labels may not be purchased at this time. Please try again later. */
+  KillSwitch = 'KILL_SWITCH',
+  /** Missing country of origin. */
+  MissingCountryOfOrigin = 'MISSING_COUNTRY_OF_ORIGIN',
+  /** Missing harmonized system code. */
+  MissingHsCode = 'MISSING_HS_CODE',
+  /** Missing insurance coverage amount. */
+  MissingInsuranceCoverageAmount = 'MISSING_INSURANCE_COVERAGE_AMOUNT',
+  /** Missing insurance coverage currency. */
+  MissingInsuranceCoverageCurrency = 'MISSING_INSURANCE_COVERAGE_CURRENCY',
+  /** Shipping date is required for purchase. */
+  MissingShippingDate = 'MISSING_SHIPPING_DATE',
+  /** Shipping rate selection is required for purchase. */
+  MissingShippingRate = 'MISSING_SHIPPING_RATE',
+  /** The record with the ID used as the input value couldn't be found. */
+  NotFound = 'NOT_FOUND',
+  /** The requested carrier package does not match the preferred rate selection carrier. */
+  PackageCarrierMismatch = 'PACKAGE_CARRIER_MISMATCH',
+  /** The shipping intent has a phone number that is not fully qualified for the destination address. */
+  PhoneNumberNotFullyQualifiedDestination = 'PHONE_NUMBER_NOT_FULLY_QUALIFIED_DESTINATION',
+  /** The shipping intent has a phone number that is not fully qualified for the origin address. */
+  PhoneNumberNotFullyQualifiedOrigin = 'PHONE_NUMBER_NOT_FULLY_QUALIFIED_ORIGIN',
+  /** The label purchase failed. Please review the shipment details and try again. */
+  PurchaseFailed = 'PURCHASE_FAILED',
+  /** Rates for the shipping label were not found. Please review the shipment details and try again. */
+  RatesNotFound = 'RATES_NOT_FOUND',
+  /** Shipping date has already passed. */
+  ShippingDateInThePast = 'SHIPPING_DATE_IN_THE_PAST',
+  /** Shopify Shipping terms of service have not been accepted. Purchase a shipping label through the Shopify admin first. */
+  TermsOfServiceNotAccepted = 'TERMS_OF_SERVICE_NOT_ACCEPTED',
+  /** Non-zero total weight is required for purchase. */
+  TotalWeightZero = 'TOTAL_WEIGHT_ZERO'
 }
 
 /**
@@ -17698,6 +21744,54 @@ export enum ShopifyProtectStatus {
   Protected = 'PROTECTED'
 }
 
+/** Whether a column was explicitly requested in the query or dynamically generated. */
+export enum ShopifyqlColumnOrigin {
+  /** The column was dynamically generated (e.g. a comparison, total, benchmark, or attribution). */
+  Generated = 'GENERATED',
+  /** The column was explicitly requested in the query. */
+  Requested = 'REQUESTED',
+  /** The column origin is unspecified. */
+  Unspecified = 'UNSPECIFIED'
+}
+
+/** The kind of dynamically generated column. */
+export enum ShopifyqlDynamicColumnType {
+  /** An attribution column. */
+  Attribution = 'ATTRIBUTION',
+  /** An attribution column with comparison data. */
+  AttributionComparison = 'ATTRIBUTION_COMPARISON',
+  /** An attribution column with comparison and cumulative data. */
+  AttributionComparisonCumulative = 'ATTRIBUTION_COMPARISON_CUMULATIVE',
+  /** An attribution column with comparison data and totals. */
+  AttributionComparisonTotals = 'ATTRIBUTION_COMPARISON_TOTALS',
+  /** An attribution column with cumulative data. */
+  AttributionCumulative = 'ATTRIBUTION_CUMULATIVE',
+  /** An attribution column with percent-change data. */
+  AttributionPercentChange = 'ATTRIBUTION_PERCENT_CHANGE',
+  /** An attribution column with totals. */
+  AttributionTotals = 'ATTRIBUTION_TOTALS',
+  /** A benchmark data column. */
+  Benchmarks = 'BENCHMARKS',
+  /** A benchmark column with totals. */
+  BenchmarkTotals = 'BENCHMARK_TOTALS',
+  /** A comparison data column (the comparison period). */
+  Comparison = 'COMPARISON',
+  /** A comparison column with cumulative data. */
+  ComparisonCumulative = 'COMPARISON_CUMULATIVE',
+  /** A comparison column with totals. */
+  ComparisonTotals = 'COMPARISON_TOTALS',
+  /** A cumulative column. */
+  Cumulative = 'CUMULATIVE',
+  /** A percent-change column. */
+  PercentChange = 'PERCENT_CHANGE',
+  /** A rollout results column. */
+  RolloutResults = 'ROLLOUT_RESULTS',
+  /** A column with totals. */
+  Totals = 'TOTALS',
+  /** Unspecified dynamic column type. */
+  Unspecified = 'UNSPECIFIED'
+}
+
 /** Represents the fallback avatar image for a staff member. This is used only if the staff member has no avatar image. */
 export enum StaffMemberDefaultImage {
   /** Returns a default avatar image for the staff member. */
@@ -18008,6 +22102,11 @@ export type StoreCreditAccountCreditInput = {
   creditAmount: MoneyInput;
   /** The date and time when the credit expires. */
   expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /**
+   * Whether to send a notification to the account owner when the store credit is issued.
+   * Defaults to `false`.
+   */
+  notify?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 /** Possible error codes that can be returned by `StoreCreditAccountCreditUserError`. */
@@ -18086,6 +22185,26 @@ export type StorefrontAccessTokenInput = {
   title: Scalars['String']['input'];
 };
 
+/** Stable identifier for why a collection cannot be referenced as a sub-collection target. */
+export enum SubCollectionIneligibleReason {
+  /** The referenced collection itself owns a sub-collection source (chains of depth > 1 are not supported). */
+  ChainReference = 'CHAIN_REFERENCE',
+  /** The referenced collection id does not parse as a positive integer or does not exist in the shop. */
+  InvalidCollectionReference = 'INVALID_COLLECTION_REFERENCE',
+  /** The referenced collection is one of the source's owning collections (a source cannot reference itself). */
+  SelfReference = 'SELF_REFERENCE'
+}
+
+/** The actor who initiated a subscription action. */
+export enum SubscriptionActor {
+  /** The subscription action was initiated by a customer. */
+  Customer = 'CUSTOMER',
+  /** The subscription action was initiated by a merchant. */
+  Merchant = 'MERCHANT',
+  /** The subscription action was initiated by a partner. */
+  Partner = 'PARTNER'
+}
+
 /** The input fields for mapping a subscription line to a discount. */
 export type SubscriptionAtomicLineInput = {
   /** The discount to be added to the subscription line. */
@@ -18109,62 +22228,154 @@ export type SubscriptionAtomicManualDiscountInput = {
  * `error_message` to provide consistent results and help with dunning management.
  */
 export enum SubscriptionBillingAttemptErrorCode {
+  /** The amount exceeds the limit for this payment method. */
+  AmountTooLarge = 'AMOUNT_TOO_LARGE',
   /** The amount is too small. */
   AmountTooSmall = 'AMOUNT_TOO_SMALL',
   /** There was an error during the payment authentication. */
   AuthenticationError = 'AUTHENTICATION_ERROR',
+  /** Authentication failed during payment processing. */
+  AuthenticationFailed = 'AUTHENTICATION_FAILED',
+  /** Additional authentication is required to complete the payment. */
+  AuthenticationRequired = 'AUTHENTICATION_REQUIRED',
   /** Payment method was canceled by buyer. */
   BuyerCanceledPaymentMethod = 'BUYER_CANCELED_PAYMENT_METHOD',
+  /** The card issuer requires the cardholder to call them. */
+  CallIssuer = 'CALL_ISSUER',
+  /** The payment was cancelled. */
+  CancelledPayment = 'CANCELLED_PAYMENT',
+  /** The card was declined by the payment processor. */
+  CardDeclined = 'CARD_DECLINED',
   /** Card number was incorrect. */
   CardNumberIncorrect = 'CARD_NUMBER_INCORRECT',
+  /** The payment confirmation was rejected. */
+  ConfirmationRejected = 'CONFIRMATION_REJECTED',
   /** Customer is invalid. */
   CustomerInvalid = 'CUSTOMER_INVALID',
   /** Customer was not found. */
   CustomerNotFound = 'CUSTOMER_NOT_FOUND',
+  /** The card issuer declined the transaction with a 'do not honor' response. */
+  DoNotHonor = 'DO_NOT_HONOR',
+  /** The required buyer action has expired. */
+  ExpiredBuyerAction = 'EXPIRED_BUYER_ACTION',
+  /** The card has expired. */
+  ExpiredCard = 'EXPIRED_CARD',
   /** Payment method is expired. */
   ExpiredPaymentMethod = 'EXPIRED_PAYMENT_METHOD',
   /** Fraud was suspected. */
   FraudSuspected = 'FRAUD_SUSPECTED',
   /** Gift cards must have a price greater than zero. */
   FreeGiftCardNotAllowed = 'FREE_GIFT_CARD_NOT_ALLOWED',
+  /** A generic payment error occurred. */
+  GenericError = 'GENERIC_ERROR',
+  /** The billing address provided is incorrect. */
+  IncorrectAddress = 'INCORRECT_ADDRESS',
+  /** The card security code entered is incorrect. */
+  IncorrectCvc = 'INCORRECT_CVC',
+  /** The card number entered is incorrect. */
+  IncorrectNumber = 'INCORRECT_NUMBER',
+  /** The PIN entered is incorrect. */
+  IncorrectPin = 'INCORRECT_PIN',
+  /** The postal/ZIP code provided is incorrect. */
+  IncorrectZip = 'INCORRECT_ZIP',
   /** Insufficient funds. */
   InsufficientFunds = 'INSUFFICIENT_FUNDS',
   /** Not enough inventory found. */
   InsufficientInventory = 'INSUFFICIENT_INVENTORY',
+  /** The transaction amount is invalid for this payment method. */
+  InvalidAmount = 'INVALID_AMOUNT',
+  /** The billing address is invalid. */
+  InvalidBillingAddress = 'INVALID_BILLING_ADDRESS',
+  /** The currency is not supported for this payment method. */
+  InvalidCurrency = 'INVALID_CURRENCY',
   /** The billing agreement ID or the transaction ID for the customer's payment method is invalid. */
   InvalidCustomerBillingAgreement = 'INVALID_CUSTOMER_BILLING_AGREEMENT',
+  /** The card security code is invalid. */
+  InvalidCvc = 'INVALID_CVC',
+  /** The expiry date of the card provided is invalid. */
+  InvalidExpiryDate = 'INVALID_EXPIRY_DATE',
+  /** The card number is invalid. */
+  InvalidNumber = 'INVALID_NUMBER',
   /** Payment method is invalid. Please update or create a new payment method. */
   InvalidPaymentMethod = 'INVALID_PAYMENT_METHOD',
+  /** The purchase type is invalid for this payment method. */
+  InvalidPurchaseType = 'INVALID_PURCHASE_TYPE',
+  /** The payment request is invalid. */
+  InvalidRequest = 'INVALID_REQUEST',
   /** The shipping address is either missing or invalid. */
   InvalidShippingAddress = 'INVALID_SHIPPING_ADDRESS',
   /** No inventory location found or enabled. */
   InventoryAllocationsNotFound = 'INVENTORY_ALLOCATIONS_NOT_FOUND',
   /** A payment has already been made for this invoice. */
   InvoiceAlreadyPaid = 'INVOICE_ALREADY_PAID',
+  /** Merchant account configuration error. */
+  MerchantAccountError = 'MERCHANT_ACCOUNT_ERROR',
+  /** The transaction was declined due to a merchant-defined rule. */
+  MerchantRule = 'MERCHANT_RULE',
   /** Non-test order limit reached. Use a test payment gateway to place another order. */
   NonTestOrderLimitReached = 'NON_TEST_ORDER_LIMIT_REACHED',
+  /** The off-session payment was rejected and requires customer action. */
+  OffSessionRejected = 'OFF_SESSION_REJECTED',
   /** Payment method was declined by processor. */
   PaymentMethodDeclined = 'PAYMENT_METHOD_DECLINED',
   /** Payment method cannot be used with the current payment gateway test mode configuration. */
   PaymentMethodIncompatibleWithGatewayConfig = 'PAYMENT_METHOD_INCOMPATIBLE_WITH_GATEWAY_CONFIG',
   /** Payment method was not found. */
   PaymentMethodNotFound = 'PAYMENT_METHOD_NOT_FOUND',
+  /** Payment method is not specified on subscription contract. */
+  PaymentMethodNotSpecified = 'PAYMENT_METHOD_NOT_SPECIFIED',
+  /** The payment method type is not supported. */
+  PaymentMethodUnsupported = 'PAYMENT_METHOD_UNSUPPORTED',
+  /** An exception occurred with the payment provider. */
+  PaymentProviderError = 'PAYMENT_PROVIDER_ERROR',
   /** Payment provider is not enabled. */
   PaymentProviderIsNotEnabled = 'PAYMENT_PROVIDER_IS_NOT_ENABLED',
   /** Paypal Error General. */
   PaypalErrorGeneral = 'PAYPAL_ERROR_GENERAL',
+  /** A processing error occurred with the payment provider. */
+  ProcessingError = 'PROCESSING_ERROR',
   /** Purchase Type is not supported. */
   PurchaseTypeNotSupported = 'PURCHASE_TYPE_NOT_SUPPORTED',
+  /** The payment retry was declined. */
+  RetryDeclined = 'RETRY_DECLINED',
   /** Gateway is in test mode and attempted to bill a live payment method. */
   TestMode = 'TEST_MODE',
+  /** The transaction exceeds the cardholder's limit. */
+  TransactionLimitExceeded = 'TRANSACTION_LIMIT_EXCEEDED',
   /** Transient error, try again later. */
   TransientError = 'TRANSIENT_ERROR',
   /** There was an unexpected error during the billing attempt. */
   UnexpectedError = 'UNEXPECTED_ERROR'
 }
 
+/** Error codes for other billing attempt failures. */
+export enum SubscriptionBillingAttemptGeneralErrorCode {
+  /** Customer is invalid. */
+  CustomerInvalid = 'CUSTOMER_INVALID',
+  /** Customer was not found. */
+  CustomerNotFound = 'CUSTOMER_NOT_FOUND',
+  /** Free gift cards are not allowed. */
+  FreeGiftCardNotAllowed = 'FREE_GIFT_CARD_NOT_ALLOWED',
+  /** Billing address is invalid. */
+  InvalidBillingAddress = 'INVALID_BILLING_ADDRESS',
+  /** Merchant account error. */
+  MerchantAccountError = 'MERCHANT_ACCOUNT_ERROR',
+  /** Non-test order limit reached. */
+  NonTestOrderLimitReached = 'NON_TEST_ORDER_LIMIT_REACHED',
+  /** Payment method test mode incompatible with gateway. */
+  PaymentMethodIncompatibleWithGatewayConfig = 'PAYMENT_METHOD_INCOMPATIBLE_WITH_GATEWAY_CONFIG',
+  /** Payment method was not found. */
+  PaymentMethodNotFound = 'PAYMENT_METHOD_NOT_FOUND',
+  /** Payment method not specified. */
+  PaymentMethodNotSpecified = 'PAYMENT_METHOD_NOT_SPECIFIED',
+  /** Payment provider is not enabled. */
+  PaymentProviderIsNotEnabled = 'PAYMENT_PROVIDER_IS_NOT_ENABLED'
+}
+
 /** The input fields required to complete a subscription billing attempt. */
 export type SubscriptionBillingAttemptInput = {
+  /** The actor who initiated a subscription action. */
+  actor?: InputMaybe<SubscriptionActor>;
   /**
    * Select the specific billing cycle to be billed.
    * Default to bill the current billing cycle if not specified.
@@ -18183,7 +22394,17 @@ export type SubscriptionBillingAttemptInput = {
    * pushed to the next anchor date, this field can override the billing attempt date.
    */
   originTime?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Select payment processing policy for the billing attempt. Defaults to FAIL_UNLESS_VALID_PAYMENT_METHOD. */
+  paymentProcessingPolicy?: InputMaybe<SubscriptionBillingAttemptPaymentProcessingPolicy>;
 };
+
+/** Error codes for inventory-related billing attempt failures. */
+export enum SubscriptionBillingAttemptInventoryErrorCode {
+  /** Insufficient inventory. */
+  InsufficientInventory = 'INSUFFICIENT_INVENTORY',
+  /** No inventory location found or enabled. */
+  InventoryAllocationsNotFound = 'INVENTORY_ALLOCATIONS_NOT_FOUND'
+}
 
 /** The inventory policy for a billing attempt. */
 export enum SubscriptionBillingAttemptInventoryPolicy {
@@ -18197,6 +22418,121 @@ export enum SubscriptionBillingAttemptInventoryPolicy {
    *         inventory policy for this billing attempt.
    */
   ProductVariantInventoryPolicy = 'PRODUCT_VARIANT_INVENTORY_POLICY'
+}
+
+/** The status of the billing attempt authentication process. */
+export enum SubscriptionBillingAttemptPaymentChallengeStatus {
+  /** The billing attempt is rejected because the customer action was required. The customer has not yet attempted to complete the challenge. */
+  OffSessionRejected = 'OFF_SESSION_REJECTED',
+  /** The customer was brought on session and challenged. */
+  OnSessionChallenged = 'ON_SESSION_CHALLENGED'
+}
+
+/** Error codes for payment-related billing attempt failures. */
+export enum SubscriptionBillingAttemptPaymentErrorCode {
+  /** The transaction amount is too large. */
+  AmountTooLarge = 'AMOUNT_TOO_LARGE',
+  /** The transaction amount is too small. */
+  AmountTooSmall = 'AMOUNT_TOO_SMALL',
+  /** There was an error during the authentication. */
+  AuthenticationError = 'AUTHENTICATION_ERROR',
+  /** Authentication failed during the payment processing. */
+  AuthenticationFailed = 'AUTHENTICATION_FAILED',
+  /** Additional authentication is required for this payment. */
+  AuthenticationRequired = 'AUTHENTICATION_REQUIRED',
+  /** The buyer canceled the payment method. */
+  BuyerCanceledPaymentMethod = 'BUYER_CANCELED_PAYMENT_METHOD',
+  /** The card issuer requires the cardholder to call. */
+  CallIssuer = 'CALL_ISSUER',
+  /** The payment was cancelled. */
+  CancelledPayment = 'CANCELLED_PAYMENT',
+  /** The card was declined. */
+  CardDeclined = 'CARD_DECLINED',
+  /** The card number is incorrect. */
+  CardNumberIncorrect = 'CARD_NUMBER_INCORRECT',
+  /** The payment confirmation was rejected. */
+  ConfirmationRejected = 'CONFIRMATION_REJECTED',
+  /** The card issuer returned 'do not honor'. The customer should reach out to their card-issuing bank for more information. */
+  DoNotHonor = 'DO_NOT_HONOR',
+  /** The required buyer action has expired. */
+  ExpiredBuyerAction = 'EXPIRED_BUYER_ACTION',
+  /** The card has expired. */
+  ExpiredCard = 'EXPIRED_CARD',
+  /** Payment method has expired. */
+  ExpiredPaymentMethod = 'EXPIRED_PAYMENT_METHOD',
+  /** Fraud was suspected on this transaction. */
+  FraudSuspected = 'FRAUD_SUSPECTED',
+  /** A generic payment error occurred. */
+  GenericError = 'GENERIC_ERROR',
+  /** The billing address is incorrect. */
+  IncorrectAddress = 'INCORRECT_ADDRESS',
+  /** The card security code is incorrect. */
+  IncorrectCvc = 'INCORRECT_CVC',
+  /** The card number is incorrect. */
+  IncorrectNumber = 'INCORRECT_NUMBER',
+  /** The PIN is incorrect. */
+  IncorrectPin = 'INCORRECT_PIN',
+  /** The postal/ZIP code is incorrect. */
+  IncorrectZip = 'INCORRECT_ZIP',
+  /** The payment method has insufficient funds to complete the payment. */
+  InsufficientFunds = 'INSUFFICIENT_FUNDS',
+  /** The transaction amount is invalid. */
+  InvalidAmount = 'INVALID_AMOUNT',
+  /** The currency is not supported. */
+  InvalidCurrency = 'INVALID_CURRENCY',
+  /** The customer billing agreement is invalid. */
+  InvalidCustomerBillingAgreement = 'INVALID_CUSTOMER_BILLING_AGREEMENT',
+  /** The card security code is invalid. */
+  InvalidCvc = 'INVALID_CVC',
+  /** The expiry date is invalid. */
+  InvalidExpiryDate = 'INVALID_EXPIRY_DATE',
+  /** The card number is invalid. */
+  InvalidNumber = 'INVALID_NUMBER',
+  /** Payment method is invalid. */
+  InvalidPaymentMethod = 'INVALID_PAYMENT_METHOD',
+  /** The purchase type is invalid. */
+  InvalidPurchaseType = 'INVALID_PURCHASE_TYPE',
+  /** The payment request is invalid. */
+  InvalidRequest = 'INVALID_REQUEST',
+  /** The shipping address is invalid. */
+  InvalidShippingAddress = 'INVALID_SHIPPING_ADDRESS',
+  /** The invoice has already been paid. */
+  InvoiceAlreadyPaid = 'INVOICE_ALREADY_PAID',
+  /** The payment was declined due to a merchant rule. */
+  MerchantRule = 'MERCHANT_RULE',
+  /** The off-session payment was rejected. */
+  OffSessionRejected = 'OFF_SESSION_REJECTED',
+  /** Payment method was declined. */
+  PaymentMethodDeclined = 'PAYMENT_METHOD_DECLINED',
+  /** The payment method type is not supported. */
+  PaymentMethodUnsupported = 'PAYMENT_METHOD_UNSUPPORTED',
+  /** An exception occurred with the payment provider. */
+  PaymentProviderError = 'PAYMENT_PROVIDER_ERROR',
+  /** A general PayPal error occurred. */
+  PaypalErrorGeneral = 'PAYPAL_ERROR_GENERAL',
+  /** A processing error occurred. */
+  ProcessingError = 'PROCESSING_ERROR',
+  /** Purchase type is not supported. */
+  PurchaseTypeNotSupported = 'PURCHASE_TYPE_NOT_SUPPORTED',
+  /** The payment retry was declined. */
+  RetryDeclined = 'RETRY_DECLINED',
+  /** A test mode error occurred. */
+  TestMode = 'TEST_MODE',
+  /** The transaction exceeded the limit. */
+  TransactionLimitExceeded = 'TRANSACTION_LIMIT_EXCEEDED',
+  /** A transient error occurred, try again later. */
+  TransientError = 'TRANSIENT_ERROR'
+}
+
+/** The payment processing policy for a billing attempt. */
+export enum SubscriptionBillingAttemptPaymentProcessingPolicy {
+  /**
+   * Attempt to process payment on the billing attempt and fail the billing attempt if
+   *         the payment method is not valid or if a payment method does not exist.
+   */
+  FailUnlessValidPaymentMethod = 'FAIL_UNLESS_VALID_PAYMENT_METHOD',
+  /** Skip payment processing on the billing attempt and create an unpaid order. */
+  SkipPaymentAndCreateUnpaidOrder = 'SKIP_PAYMENT_AND_CREATE_UNPAID_ORDER'
 }
 
 /** The set of valid sort keys for the SubscriptionBillingAttempts query. */
@@ -18371,6 +22707,8 @@ export type SubscriptionBillingPolicyInput = {
 
 /** The input fields required to create a Subscription Contract. */
 export type SubscriptionContractAtomicCreateInput = {
+  /** The actor who initiated a subscription action. */
+  actor?: InputMaybe<SubscriptionActor>;
   /** The attributes used as input for the Subscription Draft. */
   contract: SubscriptionDraftInput;
   /** The currency used for the subscription contract. */
@@ -18387,6 +22725,8 @@ export type SubscriptionContractAtomicCreateInput = {
 
 /** The input fields required to create a Subscription Contract. */
 export type SubscriptionContractCreateInput = {
+  /** The actor who initiated a subscription action. */
+  actor?: InputMaybe<SubscriptionActor>;
   /** The attributes used as input for the Subscription Draft. */
   contract: SubscriptionDraftInput;
   /** The currency used for the subscription contract. */
@@ -19021,6 +23361,14 @@ export enum TaxPartnerState {
   Ready = 'READY'
 }
 
+/** Possible error codes that can be returned by `TaxSummaryCreateUserError`. */
+export enum TaxSummaryCreateUserErrorCode {
+  /** There was an error during enqueueing of the tax summary creation job(s). */
+  GeneralError = 'GENERAL_ERROR',
+  /** No order was not found. */
+  OrderNotFound = 'ORDER_NOT_FOUND'
+}
+
 /** Possible error codes that can be returned by `ThemeCreateUserError`. */
 export enum ThemeCreateUserErrorCode {
   /** Invalid theme role for theme creation. */
@@ -19615,6 +23963,8 @@ export type WebhookSubscriptionInput = {
   metafieldNamespaces?: InputMaybe<Array<Scalars['String']['input']>>;
   /** A list of identifiers specifying metafields to include in the webhook payload. */
   metafields?: InputMaybe<Array<HasMetafieldsMetafieldIdentifierInput>>;
+  /** A human-readable name for the webhook subscription. */
+  name?: InputMaybe<Scalars['String']['input']>;
   /** The URI where the webhook subscription should send events. Supports an HTTPS URL, a Google Pub/Sub URI (pubsub://{project-id}:{topic-id}) or an Amazon EventBridge event source ARN. */
   uri?: InputMaybe<Scalars['String']['input']>;
 };
@@ -19729,6 +24079,8 @@ export enum WebhookSubscriptionTopic {
   CustomersPurchasingSummary = 'CUSTOMERS_PURCHASING_SUMMARY',
   /** The webhook topic for `customers/update` events. Occurs whenever a customer is updated. Requires the `read_customers` scope. */
   CustomersUpdate = 'CUSTOMERS_UPDATE',
+  /** The webhook topic for `customers_whats_app_marketing_consent/update` events. Occurs whenever a customer's WhatsApp marketing consent is updated. Requires the `read_customers` scope. */
+  CustomersWhatsAppMarketingConsentUpdate = 'CUSTOMERS_WHATS_APP_MARKETING_CONSENT_UPDATE',
   /** The webhook topic for `customer_account_settings/update` events. Triggers when merchants change customer account setting. */
   CustomerAccountSettingsUpdate = 'CUSTOMER_ACCOUNT_SETTINGS_UPDATE',
   /** The webhook topic for `customer_groups/create` events. Occurs whenever a customer saved search is created. Requires the `read_customers` scope. */
@@ -19837,6 +24189,8 @@ export enum WebhookSubscriptionTopic {
   FulfillmentOrdersLineItemsPreparedForLocalDelivery = 'FULFILLMENT_ORDERS_LINE_ITEMS_PREPARED_FOR_LOCAL_DELIVERY',
   /** The webhook topic for `fulfillment_orders/line_items_prepared_for_pickup` events. Triggers when one or more of the line items for a fulfillment order are prepared for pickup Requires at least one of the following scopes: read_merchant_managed_fulfillment_orders, read_assigned_fulfillment_orders, read_third_party_fulfillment_orders, read_marketplace_fulfillment_orders. */
   FulfillmentOrdersLineItemsPreparedForPickup = 'FULFILLMENT_ORDERS_LINE_ITEMS_PREPARED_FOR_PICKUP',
+  /** The webhook topic for `fulfillment_orders/manually_reported_progress_stopped` events. Occurs when a fulfillment order that has previously been manually marked as in progress is marked back as open. Requires at least one of the following scopes: read_merchant_managed_fulfillment_orders, read_assigned_fulfillment_orders, read_third_party_fulfillment_orders. */
+  FulfillmentOrdersManuallyReportedProgressStopped = 'FULFILLMENT_ORDERS_MANUALLY_REPORTED_PROGRESS_STOPPED',
   /** The webhook topic for `fulfillment_orders/merged` events. Occurs when multiple fulfillment orders are merged into a single fulfillment order. Requires at least one of the following scopes: read_merchant_managed_fulfillment_orders, read_assigned_fulfillment_orders, read_third_party_fulfillment_orders. */
   FulfillmentOrdersMerged = 'FULFILLMENT_ORDERS_MERGED',
   /**
@@ -19864,6 +24218,8 @@ export enum WebhookSubscriptionTopic {
    *  Requires at least one of the following scopes: read_merchant_managed_fulfillment_orders, read_assigned_fulfillment_orders, read_third_party_fulfillment_orders, read_marketplace_fulfillment_orders.
    */
   FulfillmentOrdersPlacedOnHold = 'FULFILLMENT_ORDERS_PLACED_ON_HOLD',
+  /** The webhook topic for `fulfillment_orders/progress_reported` events. Occurs when progress is reported for a fulfillment order. Requires at least one of the following scopes: read_merchant_managed_fulfillment_orders, read_assigned_fulfillment_orders, read_third_party_fulfillment_orders. */
+  FulfillmentOrdersProgressReported = 'FULFILLMENT_ORDERS_PROGRESS_REPORTED',
   /**
    * The webhook topic for `fulfillment_orders/rescheduled` events. Triggers when a fulfillment order is rescheduled.
    *
@@ -19915,6 +24271,8 @@ export enum WebhookSubscriptionTopic {
   InventoryTransfersReadyToShip = 'INVENTORY_TRANSFERS_READY_TO_SHIP',
   /** The webhook topic for `inventory_transfers/remove_items` events. Occurs any time items are removed from a transfer. Requires the `read_inventory_transfers` scope. */
   InventoryTransfersRemoveItems = 'INVENTORY_TRANSFERS_REMOVE_ITEMS',
+  /** The webhook topic for `inventory_transfers/updated` events. Triggers when a shipment belonging to the transfer is created, edited, or removed. Re-fetch the transfer to get the latest state. Requires the `read_inventory_transfers` scope. */
+  InventoryTransfersUpdated = 'INVENTORY_TRANSFERS_UPDATED',
   /** The webhook topic for `inventory_transfers/update_item_quantities` events. Occurs whenever the quantity of transfer line items changes. Requires the `read_inventory_transfers` scope. */
   InventoryTransfersUpdateItemQuantities = 'INVENTORY_TRANSFERS_UPDATE_ITEM_QUANTITIES',
   /** The webhook topic for `locales/create` events. Occurs whenever a shop locale is created Requires the `read_locales` scope. */
@@ -19965,6 +24323,8 @@ export enum WebhookSubscriptionTopic {
   OrdersEdited = 'ORDERS_EDITED',
   /** The webhook topic for `orders/fulfilled` events. Occurs whenever an order is fulfilled. Requires at least one of the following scopes: read_orders, read_marketplace_orders. */
   OrdersFulfilled = 'ORDERS_FULFILLED',
+  /** The webhook topic for `orders/link_requested` events. Occurs whenever a customer requests a new order link from the expired order status page. Requires at least one of the following scopes: read_orders, read_marketplace_orders, read_buyer_membership_orders. */
+  OrdersLinkRequested = 'ORDERS_LINK_REQUESTED',
   /** The webhook topic for `orders/paid` events. Occurs whenever an order is paid. Requires at least one of the following scopes: read_orders, read_marketplace_orders. */
   OrdersPaid = 'ORDERS_PAID',
   /** The webhook topic for `orders/partially_fulfilled` events. Occurs whenever an order is partially fulfilled. Requires at least one of the following scopes: read_orders, read_marketplace_orders. */
@@ -20121,6 +24481,8 @@ export enum WebhookSubscriptionTopic {
   TaxServicesCreate = 'TAX_SERVICES_CREATE',
   /** The webhook topic for `tax_services/update` events. Occurs whenver a tax service is updated. Requires the `read_taxes` scope. */
   TaxServicesUpdate = 'TAX_SERVICES_UPDATE',
+  /** The webhook topic for `tax_summaries/create` events. Occurs when a tax summary is created. Consumed by tax partners. Requires at least one of the following scopes: read_fulfillments, read_marketplace_orders, read_orders. */
+  TaxSummariesCreate = 'TAX_SUMMARIES_CREATE',
   /** The webhook topic for `tender_transactions/create` events. Occurs when a tender transaction is created. Requires the `read_orders` scope. */
   TenderTransactionsCreate = 'TENDER_TRANSACTIONS_CREATE',
   /** The webhook topic for `themes/create` events. Occurs whenever a theme is created. Does not occur when theme files are created. Requires the `read_themes` scope. */

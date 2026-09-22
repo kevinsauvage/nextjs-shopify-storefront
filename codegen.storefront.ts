@@ -6,7 +6,7 @@ const getStorefrontSchemaUrl = (): string => {
   if (!url) {
     throw new Error(
       'Missing NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL environment variable. ' +
-        'Set it to your Shopify Storefront API endpoint (e.g., https://your-store.myshopify.com/api/2025-01/graphql.json)',
+        'Set it to your Shopify Storefront API endpoint (e.g., https://your-store.myshopify.com/api/2026-07/graphql.json)',
     );
   }
 

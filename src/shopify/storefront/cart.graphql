@@ -65,7 +65,7 @@ mutation cartCreate(
 
 mutation cartDiscountCodesUpdate(
   $cartId: ID!
-  $discountCodes: [String!]
+  $discountCodes: [String!]!
   $first: Int
   $last: Int
   $after: String

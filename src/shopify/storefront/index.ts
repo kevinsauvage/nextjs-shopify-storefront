@@ -331,6 +331,28 @@ export type AutomaticDiscountApplication = DiscountApplication & {
 };
 
 /**
+ * Captures the intent of a discount source at the time it was applied to a cart.
+ * This includes the discount value, how it's allocated across entitled items, and
+ * which line types it targets.
+ *
+ * The actual discounted amounts on specific cart lines are represented by [`CartDiscountAllocation`](https://shopify.dev/docs/api/storefront/current/interfaces/CartDiscountAllocation)
+ * objects, which reference this application.
+ *
+ */
+export type BaseCartDiscountApplication = {
+  /** The method by which the discount's value is allocated to its entitled items. */
+  allocationMethod: DiscountApplicationAllocationMethod;
+  /** Which lines of targetType that the discount is allocated over. */
+  targetSelection: DiscountApplicationTargetSelection;
+  /** The type of line that the discount is applicable towards. */
+  targetType: DiscountApplicationTargetType;
+  /** The total amount allocated by this discount application across all entitled items. */
+  totalAllocatedAmount: MoneyV2;
+  /** The value of the discount application. */
+  value: PricingValue;
+};
+
+/**
  * Defines the shared fields for items in a shopping cart. Implemented by [`CartLine`](https://shopify.dev/docs/api/storefront/current/objects/CartLine) for individual merchandise and [`ComponentizableCartLine`](https://shopify.dev/docs/api/storefront/current/objects/ComponentizableCartLine) for grouped merchandise like bundles.
  *
  * Each implementation includes the merchandise being purchased, quantity, cost breakdown, applied discounts, custom attributes, and any associated [`SellingPlan`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlan).
@@ -358,6 +380,8 @@ export type BaseCartLine = {
   quantity: Scalars['Int']['output'];
   /** The selling plan associated with the cart line and the effect that each selling plan has on variants when they're purchased. */
   sellingPlanAllocation?: Maybe<SellingPlanAllocation>;
+  /** A stable identifier for the line matching the value exposed in Liquid via the `view_key` filter and accepted as input on `cartLinesUpdate` and `cartLinesRemove`. */
+  viewKey?: Maybe<Scalars['String']['output']>;
 };
 
 /**
@@ -368,6 +392,16 @@ export type BaseCartLine = {
  */
 export type BaseCartLineAttributeArgs = {
   key: Scalars['String']['input'];
+};
+
+/**
+ * Defines the shared fields for items in a shopping cart. Implemented by [`CartLine`](https://shopify.dev/docs/api/storefront/current/objects/CartLine) for individual merchandise and [`ComponentizableCartLine`](https://shopify.dev/docs/api/storefront/current/objects/ComponentizableCartLine) for grouped merchandise like bundles.
+ *
+ * Each implementation includes the merchandise being purchased, quantity, cost breakdown, applied discounts, custom attributes, and any associated [`SellingPlan`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlan).
+ *
+ */
+export type BaseCartLineDiscountAllocationsArgs = {
+  lineLevelOnly?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 /**
@@ -631,6 +665,8 @@ export type Cart = HasMetafields &
      * @deprecated Use `cart.lines[].discountAllocations(lineLevelOnly: false)` and `cart.deliveryGroups[].discountAllocations` instead.
      */
     discountAllocations: Array<CartDiscountAllocation>;
+    /** The discount applications applied to the cart. */
+    discountApplications: Array<BaseCartDiscountApplication>;
     /** The case-insensitive discount codes that the customer added at checkout. */
     discountCodes: Array<CartDiscountCode>;
     /**
@@ -762,10 +798,29 @@ export type CartAutomaticDiscountAllocation = CartDiscountAllocation & {
   discountApplication: CartDiscountApplication;
   /** The discounted amount that has been applied to the cart line. */
   discountedAmount: MoneyV2;
+  /** The discount application that created this allocation, with corrected value semantics. */
+  sourceDiscountApplication: BaseCartDiscountApplication;
   /** The type of line that the discount is applicable towards. */
   targetType: DiscountApplicationTargetType;
   /** The title of the allocated discount. */
   title: Scalars['String']['output'];
+};
+
+/** The discount application automatically applied based on prerequisites. */
+export type CartAutomaticDiscountApplication = BaseCartDiscountApplication & {
+  __typename?: 'CartAutomaticDiscountApplication';
+  /** The method by which the discount's value is allocated to its entitled items. */
+  allocationMethod: DiscountApplicationAllocationMethod;
+  /** Which lines of targetType that the discount is allocated over. */
+  targetSelection: DiscountApplicationTargetSelection;
+  /** The type of line that the discount is applicable towards. */
+  targetType: DiscountApplicationTargetType;
+  /** The title of the discount. */
+  title: Scalars['String']['output'];
+  /** The total amount allocated by this discount application across all entitled items. */
+  totalAllocatedAmount: MoneyV2;
+  /** The value of the discount application. */
+  value: PricingValue;
 };
 
 /** Return type for `cartBillingAddressUpdate` mutation. */
@@ -897,8 +952,27 @@ export type CartCodeDiscountAllocation = CartDiscountAllocation & {
   discountApplication: CartDiscountApplication;
   /** The discounted amount that has been applied to the cart line. */
   discountedAmount: MoneyV2;
+  /** The discount application that created this allocation, with corrected value semantics. */
+  sourceDiscountApplication: BaseCartDiscountApplication;
   /** The type of line that the discount is applicable towards. */
   targetType: DiscountApplicationTargetType;
+};
+
+/** The discount application applied using a discount code. */
+export type CartCodeDiscountApplication = BaseCartDiscountApplication & {
+  __typename?: 'CartCodeDiscountApplication';
+  /** The method by which the discount's value is allocated to its entitled items. */
+  allocationMethod: DiscountApplicationAllocationMethod;
+  /** The code used to apply the discount. */
+  code: Scalars['String']['output'];
+  /** Which lines of targetType that the discount is allocated over. */
+  targetSelection: DiscountApplicationTargetSelection;
+  /** The type of line that the discount is applicable towards. */
+  targetType: DiscountApplicationTargetType;
+  /** The total amount allocated by this discount application across all entitled items. */
+  totalAllocatedAmount: MoneyV2;
+  /** The value of the discount application. */
+  value: PricingValue;
 };
 
 /** The completion action to checkout a cart. */
@@ -1024,10 +1098,29 @@ export type CartCustomDiscountAllocation = CartDiscountAllocation & {
   discountApplication: CartDiscountApplication;
   /** The discounted amount that has been applied to the cart line. */
   discountedAmount: MoneyV2;
+  /** The discount application that created this allocation, with corrected value semantics. */
+  sourceDiscountApplication: BaseCartDiscountApplication;
   /** The type of line that the discount is applicable towards. */
   targetType: DiscountApplicationTargetType;
   /** The title of the allocated discount. */
   title: Scalars['String']['output'];
+};
+
+/** The discount application applied by a custom script or function. */
+export type CartCustomDiscountApplication = BaseCartDiscountApplication & {
+  __typename?: 'CartCustomDiscountApplication';
+  /** The method by which the discount's value is allocated to its entitled items. */
+  allocationMethod: DiscountApplicationAllocationMethod;
+  /** Which lines of targetType that the discount is allocated over. */
+  targetSelection: DiscountApplicationTargetSelection;
+  /** The type of line that the discount is applicable towards. */
+  targetType: DiscountApplicationTargetType;
+  /** The title of the discount. */
+  title: Scalars['String']['output'];
+  /** The total amount allocated by this discount application across all entitled items. */
+  totalAllocatedAmount: MoneyV2;
+  /** The value of the discount application. */
+  value: PricingValue;
 };
 
 /**
@@ -1237,6 +1330,8 @@ export type CartDeliveryGroup = {
   deliveryAddress: MailingAddress;
   /** The delivery options available for the delivery group. */
   deliveryOptions: Array<CartDeliveryOption>;
+  /** The discount allocations applied to the delivery group. */
+  discountAllocations: Array<CartDiscountAllocation>;
   /** The type of merchandise in the delivery group. */
   groupType: CartDeliveryGroupType;
   /** The ID for the delivery group. */
@@ -1399,6 +1494,8 @@ export type CartDiscountAllocation = {
   discountApplication: CartDiscountApplication;
   /** The discounted amount that has been applied to the cart line. */
   discountedAmount: MoneyV2;
+  /** The discount application that created this allocation, with corrected value semantics. */
+  sourceDiscountApplication: BaseCartDiscountApplication;
   /** The type of line that the discount is applicable towards. */
   targetType: DiscountApplicationTargetType;
 };
@@ -1469,6 +1566,8 @@ export enum CartErrorCode {
   BuyerCannotPurchaseForCompanyLocation = 'BUYER_CANNOT_PURCHASE_FOR_COMPANY_LOCATION',
   /** The cart is too large to save. */
   CartTooLarge = 'CART_TOO_LARGE',
+  /** The specified gift card recipient is invalid. */
+  GiftCardRecipientInvalid = 'GIFT_CARD_RECIPIENT_INVALID',
   /** The input value is invalid. */
   Invalid = 'INVALID',
   /** Company location not found or not allowed. */
@@ -1499,6 +1598,8 @@ export enum CartErrorCode {
   LessThan = 'LESS_THAN',
   /** The quantity must be below the specified maximum for the item. */
   MaximumExceeded = 'MAXIMUM_EXCEEDED',
+  /** An error occurred while processing cart transformations. */
+  MerchandiseLineTransformersRunError = 'MERCHANDISE_LINE_TRANSFORMERS_RUN_ERROR',
   /** Item cannot be purchased as configured. */
   MerchandiseNotApplicable = 'MERCHANDISE_NOT_APPLICABLE',
   /** The quantity must be above the specified minimum for the item. */
@@ -1513,6 +1614,8 @@ export enum CartErrorCode {
   NoteTooLong = 'NOTE_TOO_LONG',
   /** Only one delivery address can be selected. */
   OnlyOneDeliveryAddressCanBeSelected = 'ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED',
+  /** Cannot reference existing parent lines by variant_id. */
+  ParentLineInvalidReference = 'PARENT_LINE_INVALID_REFERENCE',
   /** Parent line nesting is too deep or circular. */
   ParentLineNestingTooDeep = 'PARENT_LINE_NESTING_TOO_DEEP',
   /** Parent line not found. */
@@ -1676,6 +1779,12 @@ export type CartInput = {
    *
    */
   note?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * The source name of the channel to use for order attribution.
+   * The value must match the source name of a channel that the client, identified by the storefront access token, owns.
+   *
+   */
+  sourceName?: InputMaybe<Scalars['String']['input']>;
 };
 
 /**
@@ -1734,6 +1843,8 @@ export type CartLine = BaseCartLine &
     quantity: Scalars['Int']['output'];
     /** The selling plan associated with the cart line and the effect that each selling plan has on variants when they're purchased. */
     sellingPlanAllocation?: Maybe<SellingPlanAllocation>;
+    /** A stable identifier for the line matching the value exposed in Liquid via the `view_key` filter and accepted as input on `cartLinesUpdate` and `cartLinesRemove`. */
+    viewKey?: Maybe<Scalars['String']['output']>;
   };
 
 /**
@@ -1744,6 +1855,16 @@ export type CartLine = BaseCartLine &
  */
 export type CartLineAttributeArgs = {
   key: Scalars['String']['input'];
+};
+
+/**
+ * An item in a customer's [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) representing a product variant they intend to purchase. Each cart line tracks the merchandise, quantity, cost breakdown, and any applied discounts.
+ *
+ * Cart lines can include custom attributes for additional information like gift wrapping requests, and can be associated with a [`SellingPlanAllocation`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlanAllocation) for purchase options like subscriptions, pre-orders, or try-before-you-buy. The [`instructions`](https://shopify.dev/docs/api/storefront/current/objects/CartLine#field-CartLine.fields.instructions) field indicates whether the line can be removed or have its quantity updated.
+ *
+ */
+export type CartLineDiscountAllocationsArgs = {
+  lineLevelOnly?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 /**
@@ -1840,14 +1961,16 @@ export type CartLineUpdateInput = {
    * The input must not contain more than `250` values.
    */
   attributes?: InputMaybe<Array<AttributeInput>>;
-  /** The ID of the merchandise line. */
-  id: Scalars['ID']['input'];
+  /** The ID of the merchandise line. Mutually exclusive with `viewKey`. */
+  id?: InputMaybe<Scalars['ID']['input']>;
   /** The ID of the merchandise for the line item. */
   merchandiseId?: InputMaybe<Scalars['ID']['input']>;
   /** The quantity of the line item. */
   quantity?: InputMaybe<Scalars['Int']['input']>;
   /** The ID of the selling plan that the merchandise is being purchased with. */
   sellingPlanId?: InputMaybe<Scalars['ID']['input']>;
+  /** The `view_key` of the merchandise line, as exposed in Liquid via the cart line `view_key` filter. Mutually exclusive with `id`. */
+  viewKey?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Return type for `cartLinesAdd` mutation. */
@@ -2239,6 +2362,8 @@ export enum CartWarningCode {
   MerchandiseSellingPlanNotApplicableOnCompanyLocation = 'MERCHANDISE_SELLING_PLAN_NOT_APPLICABLE_ON_COMPANY_LOCATION',
   /** Gift cards are not available as a payment method. */
   PaymentsGiftCardsUnavailable = 'PAYMENTS_GIFT_CARDS_UNAVAILABLE',
+  /** The product is unavailable in the current buyer location. */
+  ProductUnavailableInBuyerLocation = 'PRODUCT_UNAVAILABLE_IN_BUYER_LOCATION',
 }
 
 /**
@@ -2606,11 +2731,18 @@ export type ComponentizableCartLine = BaseCartLine &
     quantity: Scalars['Int']['output'];
     /** The selling plan associated with the cart line and the effect that each selling plan has on variants when they're purchased. */
     sellingPlanAllocation?: Maybe<SellingPlanAllocation>;
+    /** A stable identifier for the line matching the value exposed in Liquid via the `view_key` filter and accepted as input on `cartLinesUpdate` and `cartLinesRemove`. */
+    viewKey?: Maybe<Scalars['String']['output']>;
   };
 
 /** Represents information about the grouped merchandise in the cart. */
 export type ComponentizableCartLineAttributeArgs = {
   key: Scalars['String']['input'];
+};
+
+/** Represents information about the grouped merchandise in the cart. */
+export type ComponentizableCartLineDiscountAllocationsArgs = {
+  lineLevelOnly?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 /** Details for count of elements. */
@@ -3536,6 +3668,8 @@ export type Customer = HasMetafields & {
   acceptsMarketing: Scalars['Boolean']['output'];
   /** A list of addresses for the customer. */
   addresses: MailingAddressConnection;
+  /** The URL of the customer's avatar image. */
+  avatarUrl?: Maybe<Scalars['String']['output']>;
   /** The date and time when the customer was created. */
   createdAt: Scalars['DateTime']['output'];
   /** The customer’s default address. */
@@ -3560,6 +3694,8 @@ export type Customer = HasMetafields & {
   orders: OrderConnection;
   /** The customer’s phone number. */
   phone?: Maybe<Scalars['String']['output']>;
+  /** The social login provider associated with the customer. */
+  socialLoginProvider?: Maybe<SocialLoginProvider>;
   /**
    * A comma separated list of tags that have been added to the customer.
    * Additional access scope required: unauthenticated_read_customer_tags.
@@ -6225,7 +6361,7 @@ export type MutationCartDeliveryAddressesUpdateArgs = {
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartDiscountCodesUpdateArgs = {
   cartId: Scalars['ID']['input'];
-  discountCodes?: InputMaybe<Array<Scalars['String']['input']>>;
+  discountCodes: Array<Scalars['String']['input']>;
 };
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
@@ -6255,7 +6391,8 @@ export type MutationCartLinesAddArgs = {
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartLinesRemoveArgs = {
   cartId: Scalars['ID']['input'];
-  lineIds: Array<Scalars['ID']['input']>;
+  lineIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+  viewKeys?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
@@ -9094,12 +9231,18 @@ export type Shop = HasMetafields &
     __typename?: 'Shop';
     /** The shop's branding configuration. */
     brand?: Maybe<Brand>;
+    /** The shop's contact information. */
+    contactInformation?: Maybe<ShopPolicy>;
+    /** Translations for customer accounts. */
+    customerAccountTranslations?: Maybe<Array<Translation>>;
     /** The URL for the customer account (only present if shop has a customer account vanity domain). */
     customerAccountUrl?: Maybe<Scalars['String']['output']>;
     /** A description of the shop. */
     description?: Maybe<Scalars['String']['output']>;
     /** A globally-unique ID. */
     id: Scalars['ID']['output'];
+    /** The shop's legal notice. */
+    legalNotice?: Maybe<ShopPolicy>;
     /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
     metafield?: Maybe<Metafield>;
     /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
@@ -9122,8 +9265,12 @@ export type Shop = HasMetafields &
     shipsToCountries: Array<CountryCode>;
     /** The Shop Pay Installments pricing information for the shop. */
     shopPayInstallmentsPricing?: Maybe<ShopPayInstallmentsPricing>;
+    /** The social login providers for customer accounts. */
+    socialLoginProviders: Array<SocialLoginProvider>;
     /** The shop’s subscription policy. */
     subscriptionPolicy?: Maybe<ShopPolicyWithDefault>;
+    /** The shop's terms of sale. */
+    termsOfSale?: Maybe<ShopPolicy>;
     /** The shop’s terms of service. */
     termsOfService?: Maybe<ShopPolicy>;
   };
@@ -9694,6 +9841,13 @@ export enum SitemapType {
   Product = 'PRODUCT',
 }
 
+/** A social login provider for customer accounts. */
+export type SocialLoginProvider = {
+  __typename?: 'SocialLoginProvider';
+  /** The handle of the social login provider. */
+  handle: Scalars['String']['output'];
+};
+
 /**
  * Inventory information for a product variant at a physical store location. Includes stock availability, quantity on hand, and estimated pickup readiness time. Availability also includes inventory that can be moved to the location through a store transfer route, so a variant can be available for pickup with no on-hand stock at the location.
  *
@@ -9960,6 +10114,15 @@ export type TaxonomyMetafieldFilter = {
 export type Trackable = {
   /** URL parameters to be added to a page URL to track the origin of on-site search traffic for [analytics reporting](https://help.shopify.com/manual/reports-and-analytics/shopify-reports/report-types/default-reports/behaviour-reports). Returns a result when accessed through the [search](https://shopify.dev/docs/api/storefront/current/queries/search) or [predictiveSearch](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch) queries, otherwise returns null. */
   trackingParameters?: Maybe<Scalars['String']['output']>;
+};
+
+/** Translation represents a translation of a key-value pair. */
+export type Translation = {
+  __typename?: 'Translation';
+  /** The key of the translation. */
+  key: Scalars['String']['output'];
+  /** The value of the translation. */
+  value: Scalars['String']['output'];
 };
 
 /**
@@ -11181,7 +11344,7 @@ export type CartCreateMutation = {
 
 export type CartDiscountCodesUpdateMutationVariables = Exact<{
   cartId: Scalars['ID']['input'];
-  discountCodes?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  discountCodes: Array<Scalars['String']['input']> | Scalars['String']['input'];
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   after?: InputMaybe<Scalars['String']['input']>;
@@ -18281,7 +18444,7 @@ export const CartCreateDocument = gql`
 export const CartDiscountCodesUpdateDocument = gql`
   mutation cartDiscountCodesUpdate(
     $cartId: ID!
-    $discountCodes: [String!]
+    $discountCodes: [String!]!
     $first: Int
     $last: Int
     $after: String

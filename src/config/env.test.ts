@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 const validEnv = {
   NEXT_PUBLIC_BASE_URL: 'https://shop.example.com',
-  NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL: 'https://shop.example.com/api/2025-01/graphql.json',
+  NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL: 'https://shop.example.com/api/2026-07/graphql.json',
   SHOPIFY_STORE_FRONT_ACCESS_TOKEN: 'storefront-token',
   UPSTASH_REDIS_REST_URL: 'https://example.upstash.io',
   UPSTASH_REDIS_REST_TOKEN: 'upstash-rest-token',
@@ -19,7 +19,7 @@ describe('validateEnv', () => {
     expect(() =>
       validateEnv({
         ...validEnv,
-        SHOPIFY_ADMIN_URL: 'https://shop.example.com/admin/api/2025-01/graphql.json',
+        SHOPIFY_ADMIN_URL: 'https://shop.example.com/admin/api/2026-07/graphql.json',
         SHOPIFY_STORE_FRONT_ADMIN_TOKEN: 'admin-token',
       }),
     ).not.toThrow();

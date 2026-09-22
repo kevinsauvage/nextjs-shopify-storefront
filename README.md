@@ -59,14 +59,14 @@ Create a `.env.local` file in the root directory with the following variables:
 ```env
 # Required: Shopify Storefront API
 SHOPIFY_STORE_FRONT_ACCESS_TOKEN=your_storefront_access_token
-NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL=https://your-store.myshopify.com/api/2025-01/graphql.json
+NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL=https://your-store.myshopify.com/api/2026-07/graphql.json
 
 # Required: canonical site URL
 NEXT_PUBLIC_BASE_URL=https://yourdomain.com
 
 # Optional: Shopify Admin API (for admin operations)
 SHOPIFY_STORE_FRONT_ADMIN_TOKEN=your_admin_access_token
-SHOPIFY_ADMIN_URL=https://your-store.myshopify.com/admin/api/2025-01/graphql.json
+SHOPIFY_ADMIN_URL=https://your-store.myshopify.com/admin/api/2026-07/graphql.json
 
 # Optional: Delegate token scope (comma-separated)
 SHOPIFY_SCOPE=unauthenticated_read_product_listings,unauthenticated_read_product_inventory
