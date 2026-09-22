@@ -8,7 +8,7 @@ import useUserContext from '@/contexts/UserContext/useUserContext';
 import { cn } from '@/utils/cn';
 import { formatDate } from '@/utils/format';
 
-import { Calendar, Heart, MapPin, Package } from 'lucide-react';
+import { ArrowRight, Calendar, Heart, MapPin, Package } from 'lucide-react';
 
 type StatCardProps = {
   title: string;
@@ -21,25 +21,47 @@ type StatCardProps = {
 
 const StatCard = ({ title, value, icon, href, description, className }: StatCardProps) => {
   const content = (
-    <Card className={cn('transition-all hover:shadow-md h-full', className)}>
-      <CardContent className="p-4 md:p-6 h-full flex flex-col">
-        <div className="flex items-start justify-between gap-3 md:gap-4 flex-1 min-w-0">
-          <div className="space-y-1 flex-1 min-w-0">
-            <p className="text-body-sm text-secondary truncate">{title}</p>
-            <p className="text-heading-3 font-semibold">{value}</p>
-            {description && (
-              <p className="text-caption-sm text-secondary mt-1 line-clamp-2">{description}</p>
-            )}
-          </div>
-          <div className="text-secondary shrink-0">{icon}</div>
+    <Card
+      className={cn(
+        'h-full py-0',
+        href &&
+          'group transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-md',
+        className,
+      )}
+    >
+      <CardContent className="flex h-full flex-col p-5">
+        <span
+          className={cn(
+            'flex size-10 items-center justify-center rounded-lg bg-muted text-secondary transition-colors',
+            href && 'group-hover:bg-foreground group-hover:text-background',
+          )}
+        >
+          {icon}
+        </span>
+        <div className="mt-4 flex-1 space-y-1">
+          <p className="text-eyebrow">{title}</p>
+          <p className="text-heading-3 tabular-nums">{value}</p>
+          {description && <p className="text-caption-sm text-secondary">{description}</p>}
         </div>
+        {href && (
+          <span className="mt-3 inline-flex items-center gap-1 text-caption-sm font-medium text-secondary transition-colors group-hover:text-foreground">
+            View
+            <ArrowRight
+              size={14}
+              className="transition-transform duration-200 group-hover:translate-x-0.5"
+            />
+          </span>
+        )}
       </CardContent>
     </Card>
   );
 
   if (href) {
     return (
-      <Link href={href} className="block">
+      <Link
+        href={href}
+        className="block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      >
         {content}
       </Link>
     );
@@ -67,33 +89,33 @@ const AccountStats = ({
 
   return (
     <div
-      className={cn('grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr', className)}
+      className={cn('grid auto-rows-fr grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4', className)}
     >
       <StatCard
-        title="Total Orders"
+        title="Total orders"
         value={ordersCount}
-        icon={<Package size={24} className="shrink-0" />}
+        icon={<Package size={20} />}
         href={config.routes.orders}
         description="View order history"
       />
       <StatCard
-        title="Saved Addresses"
+        title="Saved addresses"
         value={addressesCount}
-        icon={<MapPin size={24} className="shrink-0" />}
+        icon={<MapPin size={20} />}
         href={config.routes.addresses}
         description="Manage addresses"
       />
       <StatCard
-        title="Wishlist Items"
+        title="Wishlist items"
         value={wishlistIds.length}
-        icon={<Heart size={24} className="shrink-0" />}
+        icon={<Heart size={20} />}
         href={config.routes.wishlist}
         description="View saved items"
       />
       <StatCard
-        title="Member Since"
+        title="Member since"
         value={formatDate(memberSince, { month: 'short', year: 'numeric' })}
-        icon={<Calendar size={24} className="shrink-0" />}
+        icon={<Calendar size={20} />}
         description="Account created"
       />
     </div>

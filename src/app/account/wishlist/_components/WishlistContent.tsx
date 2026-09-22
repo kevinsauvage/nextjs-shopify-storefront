@@ -66,7 +66,7 @@ const WishlistContent = () => {
   if (!wishlistIds.length) {
     return (
       <Card>
-        <CardContent>
+        <CardContent className="py-8">
           <EmptyState
             variant="wishlist"
             image={NoFavoriteIllustration}
@@ -92,6 +92,7 @@ const WishlistContent = () => {
   return (
     <Card>
       <CardHeaderPattern
+        as="h2"
         title={`Wishlist (${wishlistIds.length})`}
         size={3}
         actions={<BackButton />}

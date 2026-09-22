@@ -66,7 +66,7 @@ const Addresses = async ({
   if (!hasAddresses) {
     return (
       <Card>
-        <CardContent>
+        <CardContent className="py-8">
           <EmptyState
             variant="addresses"
             image={NoAddressIllustration}
@@ -74,12 +74,12 @@ const Addresses = async ({
             subtitle="Add shipping addresses to speed up checkout. You can save multiple addresses and set a default for faster ordering."
             altText="No Address Yet"
             primaryAction={
-              <Link href={config.routes.createAddress}>
-                <Button variant="default" className="gap-2">
+              <Button variant="default" asChild>
+                <Link href={config.routes.createAddress}>
                   <Plus size={16} />
                   Add new address
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             }
           />
         </CardContent>
@@ -94,15 +94,16 @@ const Addresses = async ({
   return (
     <Card>
       <CardHeaderPattern
+        as="h2"
         title="Addresses"
         size={3}
         actions={
-          <div className="flex items-center gap-2 flex-wrap justify-end">
+          <div className="flex flex-wrap items-center justify-end gap-2">
             <BackButton />
             <Button variant="default" asChild>
               <Link href={config.routes.createAddress} className="gap-2">
-                Add new address
                 <Plus size={16} />
+                Add new address
               </Link>
             </Button>
           </div>

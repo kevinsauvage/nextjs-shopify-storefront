@@ -24,12 +24,13 @@ const CreateAddresses = () => {
   return (
     <Card>
       <CardHeaderPattern
-        title="Addresses"
+        as="h2"
+        title="Add address"
         size={3}
         descriptionClassName="max-w-md"
         description="Add a new shipping address to your account."
         actions={
-          <Button variant="secondary" size="sm" asChild>
+          <Button variant="ghost" size="sm" asChild>
             <Link href={config.routes.addresses} className="gap-2">
               <ArrowLeft size={16} />
               Back to addresses

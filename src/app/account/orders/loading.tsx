@@ -15,7 +15,7 @@ const Loading = () => {
           {Array.from({ length: 3 }).map((_, index) => (
             <div
               key={`skeleton-order-${index + 1}`}
-              className="space-y-4 rounded-[var(--radius)] border p-4 md:p-6"
+              className="space-y-4 rounded-xl border p-4 md:p-6"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-2">

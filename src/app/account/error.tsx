@@ -6,6 +6,7 @@ import Link from 'next/link';
 import NotFoundIllustration from '@/assets/NotFoundIllustration.png';
 import EmptyState from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import config from '@/config';
 
 const AccountError = ({
@@ -20,30 +21,32 @@ const AccountError = ({
   }, [error]);
 
   return (
-    <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 min-h-[calc(100vh-76px)] flex items-center justify-center">
-      <EmptyState
-        variant="error"
-        altText="Account error illustration"
-        image={NotFoundIllustration}
-        subtitle="We couldn't load your account information. Please try again or contact support if the problem continues."
-        title="Unable to load account"
-        tips={[
-          'Try refreshing the page',
-          'Clear your browser cache',
-          'Contact support if the problem continues',
-        ]}
-        primaryAction={
-          <Button onClick={reset} variant="default">
-            Try again
-          </Button>
-        }
-        secondaryAction={
-          <Link href={config.routes.home} className="link">
-            Go home
-          </Link>
-        }
-      />
-    </div>
+    <Card>
+      <CardContent className="py-12">
+        <EmptyState
+          variant="error"
+          altText="Account error illustration"
+          image={NotFoundIllustration}
+          subtitle="We couldn't load your account information. Please try again or contact support if the problem continues."
+          title="Unable to load account"
+          tips={[
+            'Try refreshing the page',
+            'Clear your browser cache',
+            'Contact support if the problem continues',
+          ]}
+          primaryAction={
+            <Button onClick={reset} variant="default">
+              Try again
+            </Button>
+          }
+          secondaryAction={
+            <Link href={config.routes.home} className="link">
+              Go home
+            </Link>
+          }
+        />
+      </CardContent>
+    </Card>
   );
 };
 

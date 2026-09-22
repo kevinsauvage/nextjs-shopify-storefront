@@ -6,7 +6,7 @@ import config from '@/config';
 import type { GetCustomerOrdersQuery } from '@/shopify/storefront';
 import { formatDate, formatPrice } from '@/utils/format';
 
-import { ArrowRight, Package } from 'lucide-react';
+import { ArrowRight, ChevronRight, Package } from 'lucide-react';
 
 type RecentOrdersPreviewProps = {
   orders: NonNullable<GetCustomerOrdersQuery['customer']>['orders']['edges'];
@@ -19,18 +19,19 @@ const RecentOrdersPreview = ({ orders }: RecentOrdersPreviewProps) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
-          <Package size={20} className="text-secondary" />
-          <h3 className="text-heading-4">Recent Orders</h3>
+          <Package size={18} className="text-secondary" />
+          <h3 className="text-heading-4">Recent orders</h3>
         </div>
         <Button variant="ghost" size="sm" asChild>
           <Link href={config.routes.orders}>
             View all
-            <ArrowRight size={16} className="ml-1" />
+            <ArrowRight size={16} />
           </Link>
         </Button>
       </div>
+
       <div className="grid grid-cols-1 gap-3">
         {orders.slice(0, 3).map((order) => {
           const { node } = order;
@@ -38,25 +39,29 @@ const RecentOrdersPreview = ({ orders }: RecentOrdersPreviewProps) => {
           const orderDate = node.processedAt;
 
           return (
-            <Link key={node.id} href={config.routes.orders}>
-              <Card className="transition-all hover:shadow-md hover:border-primary/50">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="space-y-1 flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="text-body font-medium">Order {node.name}</p>
-                      </div>
-                      <p className="text-body-sm text-secondary">
-                        {formatDate(orderDate, { day: 'numeric', month: 'short', year: 'numeric' })}
-                      </p>
-                    </div>
+            <Link
+              key={node.id}
+              href={config.routes.orders}
+              className="group rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <Card className="py-0 transition-all duration-200 group-hover:border-foreground/20 group-hover:shadow-md">
+                <CardContent className="flex items-center justify-between gap-4 p-4">
+                  <div className="min-w-0 space-y-1">
+                    <p className="truncate text-body font-medium">Order {node.name}</p>
+                    <p className="text-body-sm text-secondary">
+                      {formatDate(orderDate, { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-3">
                     {orderTotal && (
-                      <div className="text-right">
-                        <p className="text-body font-semibold">
-                          {formatPrice(orderTotal.amount, orderTotal.currencyCode)}
-                        </p>
-                      </div>
+                      <p className="text-body font-semibold tabular-nums">
+                        {formatPrice(orderTotal.amount, orderTotal.currencyCode)}
+                      </p>
                     )}
+                    <ChevronRight
+                      size={18}
+                      className="text-secondary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-foreground"
+                    />
                   </div>
                 </CardContent>
               </Card>

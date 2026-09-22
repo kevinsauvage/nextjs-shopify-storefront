@@ -14,42 +14,36 @@ import {
 
 import AccountNavigation from './AccountNavigation';
 
-import { User } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
 const AccountNavigationSheet = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const handleOpenChange = (open: boolean) => {
-    setIsOpen(open);
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
 
   return (
-    <Sheet open={isOpen} onOpenChange={handleOpenChange}>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button variant="outline" className="w-full flex justify-between">
-          <span>Account Navigation</span>
-          <User className="h-4 w-4 ml-2" />
+        <Button variant="outline" className="w-full justify-between">
+          <span>Account menu</span>
+          <Menu className="h-4 w-4" />
         </Button>
       </SheetTrigger>
-      <SheetContent
-        side="left"
-        className="w-full sm:max-w-md p-0"
-        aria-describedby='"Account Navigation">'
-      >
-        <SheetHeader className="px-4 pt-6 pb-4">
-          <SheetTitle className="text-heading-3">Account Navigation</SheetTitle>
+      <SheetContent side="left" className="w-full gap-0 p-0 sm:max-w-sm">
+        <SheetHeader className="border-b border-border px-6 pt-6 pb-5">
+          <SheetTitle className="text-heading-3">Account</SheetTitle>
           <SheetDescription className="text-body-sm text-secondary">
             Navigate through your account settings and information.
           </SheetDescription>
         </SheetHeader>
-        <div className="px-0">
-          <AccountNavigation handleClose={handleClose} />
+        <div className="overflow-y-auto px-3 py-3">
+          <AccountNavigation
+            handleClose={() => {
+              setIsOpen(false);
+            }}
+          />
         </div>
       </SheetContent>
     </Sheet>
   );
 };
+
 export default AccountNavigationSheet;

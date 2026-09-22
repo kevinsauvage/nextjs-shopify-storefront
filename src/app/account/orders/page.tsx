@@ -53,22 +53,26 @@ const Page = async ({
 
   if (response?.customer?.orders === undefined) {
     return (
-      <EmptyState
-        variant="orders"
-        title="No orders yet"
-        subtitle="When you place an order, it will appear here. Start shopping to see your order history."
-        altText="Order List is Empty"
-        primaryAction={
-          <Button variant="default" asChild>
-            <Link href="/">Start Shopping</Link>
-          </Button>
-        }
-        secondaryAction={
-          <Link href="/collections" className="link">
-            Browse collections
-          </Link>
-        }
-      />
+      <Card>
+        <CardContent className="py-8">
+          <EmptyState
+            variant="orders"
+            title="No orders yet"
+            subtitle="When you place an order, it will appear here. Start shopping to see your order history."
+            altText="Order List is Empty"
+            primaryAction={
+              <Button variant="default" asChild>
+                <Link href="/">Start Shopping</Link>
+              </Button>
+            }
+            secondaryAction={
+              <Link href="/collections" className="link">
+                Browse collections
+              </Link>
+            }
+          />
+        </CardContent>
+      </Card>
     );
   }
 
@@ -77,7 +81,7 @@ const Page = async ({
   if (!edges?.length) {
     return (
       <Card>
-        <CardContent>
+        <CardContent className="py-8">
           <EmptyState
             variant="orders"
             title="No orders found"
@@ -102,6 +106,7 @@ const Page = async ({
   return (
     <Card>
       <CardHeaderPattern
+        as="h2"
         title={`Your Orders (${response.customer?.orders?.totalCount})`}
         size={3}
         actions={<BackButton />}

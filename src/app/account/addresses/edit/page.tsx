@@ -125,12 +125,13 @@ const EditAddress = async ({ searchParams }: PageProperties) => {
   return (
     <Card>
       <CardHeaderPattern
-        title="Edit Addresses"
+        as="h2"
+        title="Edit address"
         size={3}
         descriptionClassName="max-w-md"
         description="Update your shipping address information."
         actions={
-          <Button variant="secondary" size="sm" asChild>
+          <Button variant="ghost" size="sm" asChild>
             <Link href={config.routes.addresses} className="gap-2">
               <ArrowLeft size={16} />
               Back to addresses

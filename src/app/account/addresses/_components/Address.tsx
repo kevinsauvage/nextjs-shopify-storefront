@@ -16,7 +16,7 @@ import {
 import config from '@/config';
 import type { MailingAddress } from '@/shopify/storefront';
 
-import { Edit, Heart, MoreVerticalIcon, Trash2 } from 'lucide-react';
+import { Edit, Heart, MapPin, MoreVerticalIcon, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Address = ({
@@ -30,6 +30,8 @@ const Address = ({
 }) => {
   const { id, address1, address2, name, city, country, province, zip, company, phone } =
     address || {};
+
+  const cityLine = [city, province, zip].filter(Boolean).join(', ');
 
   const handleDelete = async (): Promise<void> => {
     if (!id) {
@@ -62,95 +64,96 @@ const Address = ({
   };
 
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-md py-0">
-      <CardContent className="px-4 md:px-6 py-4 md:py-6 flex justify-between gap-4">
-        <div className="space-y-2 flex-1">
-          <div className="flex items-center gap-2">
-            <p className="text-body font-semibold">{name}</p>
-            {isDefault && (
-              <Badge variant="default" className="text-caption-sm">
-                Default
-              </Badge>
-            )}
-          </div>
-          <div className="space-y-1 text-body-sm text-secondary">
-            <p>
-              {address1}
-              {address2 && `, ${address2}`}
-            </p>
-            <p>
-              {city}, {province} {zip}
-            </p>
-            <p>{country}</p>
-          </div>
-          {(company || phone) && (
-            <div className="pt-2 space-y-1 border-t">
-              {company && (
-                <p className="text-body-sm text-secondary">
-                  <span className="font-medium">Company:</span> {company}
-                </p>
-              )}
-              {phone && (
-                <p className="text-body-sm text-secondary">
-                  <span className="font-medium">Phone:</span> {phone}
-                </p>
+    <Card className="py-0 transition-all duration-200 hover:shadow-md">
+      <CardContent className="flex items-start justify-between gap-4 p-4 md:p-5">
+        <div className="flex min-w-0 flex-1 items-start gap-3">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-secondary">
+            <MapPin size={18} />
+          </span>
+          <div className="min-w-0 flex-1 space-y-1.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-body font-semibold">{name}</p>
+              {isDefault && (
+                <Badge variant="default" className="text-caption-sm">
+                  Default
+                </Badge>
               )}
             </div>
-          )}
+            <address className="space-y-0.5 text-body-sm not-italic text-secondary">
+              <p>
+                {address1}
+                {address2 && `, ${address2}`}
+              </p>
+              {cityLine && <p>{cityLine}</p>}
+              {country && <p>{country}</p>}
+            </address>
+            {(company || phone) && (
+              <div className="flex flex-wrap gap-x-4 gap-y-0.5 pt-1 text-body-sm text-secondary">
+                {company && (
+                  <span>
+                    <span className="font-medium text-foreground">Company:</span> {company}
+                  </span>
+                )}
+                {phone && (
+                  <span>
+                    <span className="font-medium text-foreground">Phone:</span> {phone}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="flex flex-col items-end justify-start gap-2 shrink-0">
-          {displayButton && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="flex size-9 text-secondary data-[state=open]:bg-muted hover:bg-muted"
-                  size="icon"
-                  aria-label="Address actions menu"
+        {displayButton && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="shrink-0 text-secondary hover:bg-muted data-[state=open]:bg-muted"
+                size="icon"
+                aria-label="Address actions"
+              >
+                <MoreVerticalIcon size={18} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem asChild>
+                <Link
+                  href={`${config.routes.editAddress}?id=${id}`}
+                  className="flex cursor-pointer items-center gap-2"
                 >
-                  <MoreVerticalIcon size={18} />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem asChild>
-                  <Link
-                    href={`${config.routes.editAddress}?id=${id}`}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <Edit size={16} />
-                    <span>Edit address</span>
-                  </Link>
-                </DropdownMenuItem>
-                {!isDefault && (
-                  <DropdownMenuItem
-                    className="cursor-pointer"
-                    onClick={() => {
-                      handleSetAsDefault().catch((error) => {
-                        console.error('Error setting address as default:', error);
-                      });
-                    }}
-                  >
-                    <Heart size={16} />
-                    <span>Set as default</span>
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuSeparator />
+                  <Edit size={16} />
+                  <span>Edit address</span>
+                </Link>
+              </DropdownMenuItem>
+              {!isDefault && (
                 <DropdownMenuItem
-                  className="cursor-pointer text-destructive focus:text-destructive"
+                  className="cursor-pointer"
                   onClick={() => {
-                    handleDelete().catch((error) => {
-                      console.error('Error deleting address:', error);
+                    handleSetAsDefault().catch((error) => {
+                      console.error('Error setting address as default:', error);
                     });
                   }}
                 >
-                  <Trash2 size={16} />
-                  <span className="whitespace-nowrap">Remove address</span>
+                  <Heart size={16} />
+                  <span>Set as default</span>
                 </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        </div>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer text-destructive focus:text-destructive"
+                onClick={() => {
+                  handleDelete().catch((error) => {
+                    console.error('Error deleting address:', error);
+                  });
+                }}
+              >
+                <Trash2 size={16} />
+                <span className="whitespace-nowrap">Remove address</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </CardContent>
     </Card>
   );

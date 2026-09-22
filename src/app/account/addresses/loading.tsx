@@ -20,19 +20,16 @@ const Loading = () => {
           {Array.from({ length: 3 }).map((_, index) => (
             <div
               key={`skeleton-address-${index + 1}`}
-              className="space-y-4 rounded-[var(--radius)] border p-4 md:p-6"
+              className="flex items-start gap-4 rounded-xl border p-4 md:p-5"
             >
-              <div className="flex items-start justify-between gap-4">
+              <Skeleton className="size-10 shrink-0 rounded-lg" />
+              <div className="flex flex-1 items-start justify-between gap-4">
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-5 w-32" />
                   <Skeleton className="h-4 w-full" />
                   <Skeleton className="h-4 w-3/4" />
                 </div>
-                <Skeleton className="h-6 w-20 rounded-full" />
-              </div>
-              <div className="flex gap-2">
-                <Skeleton className="h-11 w-24" />
-                <Skeleton className="h-11 w-24" />
+                <Skeleton className="h-9 w-9 rounded-lg" />
               </div>
             </div>
           ))}

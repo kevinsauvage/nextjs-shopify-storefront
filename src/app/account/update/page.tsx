@@ -37,7 +37,8 @@ const Page = async () => {
     <div className="space-y-6">
       <Card>
         <CardHeaderPattern
-          title="Update Account"
+          as="h2"
+          title="Update account"
           size={3}
           actions={<BackButton />}
           description="Update your account information and preferences."
@@ -50,7 +51,8 @@ const Page = async () => {
       {user && (
         <Card>
           <CardHeaderPattern
-            title="Account Statistics"
+            as="h2"
+            title="Account statistics"
             size={4}
             description="Overview of your account activity"
           />

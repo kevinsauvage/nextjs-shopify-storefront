@@ -13,9 +13,10 @@ import type {
   OrderFinancialStatus,
   OrderFulfillmentStatus,
 } from '@/shopify/storefront';
+import { cn } from '@/utils/cn';
 import { formatDate, formatPrice } from '@/utils/format';
 
-import { ChevronDown, ChevronUp, Package } from 'lucide-react';
+import { ChevronDown, Package } from 'lucide-react';
 
 function formatStatus(status?: OrderFulfillmentStatus | OrderFinancialStatus | null) {
   return status
@@ -44,10 +45,10 @@ const getStatusBadgeVariant = (
   return 'outline';
 };
 
-const Row = ({ label, value }: { label: string; value: string | number | null }) => (
-  <div className="flex justify-between gap-4 py-1 border-b border-border last:border-none">
-    <span className="text-body-sm text-secondary">{label}</span>
-    <span className="text-body-sm font-medium">{value}</span>
+const Detail = ({ label, value }: { label: string; value: string | number | null }) => (
+  <div className="flex items-baseline justify-between gap-4 border-b border-border/70 py-2">
+    <dt className="whitespace-nowrap text-body-sm text-secondary">{label}</dt>
+    <dd className="text-right text-body-sm font-medium">{value}</dd>
   </div>
 );
 
@@ -77,16 +78,63 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
 
   const itemsCount = orderItems.reduce((sum, item) => sum + (item?.quantity || 0), 0);
 
+  const details: Array<{ label: string; value: string | number | null }> = [];
+
+  if (subtotalPrice) {
+    details.push({
+      label: 'Subtotal',
+      value: formatPrice(subtotalPrice.amount, subtotalPrice.currencyCode),
+    });
+  }
+  if (totalPrice) {
+    details.push({
+      label: 'Total',
+      value: formatPrice(totalPrice.amount, totalPrice.currencyCode),
+    });
+  }
+  if (totalRefunded?.amount && Number(totalRefunded.amount) > 0) {
+    details.push({
+      label: 'Refunded',
+      value: formatPrice(totalRefunded.amount, totalRefunded.currencyCode),
+    });
+  }
+
+  details.push(
+    { label: 'Financial status', value: formatStatus(financialStatus) },
+    { label: 'Fulfillment status', value: formatStatus(fulfillmentStatus) },
+    { label: 'Email', value: email || DEFAULTS.na },
+  );
+
+  if (phone) {
+    details.push({ label: 'Phone', value: phone });
+  }
+  if (typeof order.processedAt === 'string') {
+    details.push({ label: 'Processed at', value: formatDate(order.processedAt) });
+  }
+  if (shippingAddress?.name) {
+    details.push({ label: 'Shipping to', value: shippingAddress.formatted.join(', ') });
+  }
+  if (typeof order.canceledAt === 'string' && typeof cancelReason === 'string') {
+    details.push(
+      { label: 'Cancel reason', value: cancelReason },
+      { label: 'Canceled at', value: formatDate(order.canceledAt) },
+    );
+  }
+
   return (
     <li className="list-none">
       <Collapsible open={open} onOpenChange={setOpen}>
-        <Card className="w-full transition-all hover:shadow-md">
-          <CardHeader className="flex flex-row items-center justify-between p-4 md:p-6">
+        <Card className="w-full py-0 transition-all duration-200 hover:shadow-md">
+          <CardHeader className="flex flex-row items-center justify-between gap-4 p-4 md:p-6">
             <CollapsibleTrigger asChild>
-              <button className="group flex items-center justify-between gap-4 w-full text-left">
+              <button
+                type="button"
+                aria-expanded={open}
+                className="group flex w-full items-center justify-between gap-4 rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
                 <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <h5 className="text-heading-4">Order {order.name}</h5>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h3 className="text-heading-4">Order {order.name}</h3>
                     {fulfillmentStatus && (
                       <Badge variant={getStatusBadgeVariant(fulfillmentStatus)}>
                         {formatStatus(fulfillmentStatus)}
@@ -98,38 +146,39 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                       </Badge>
                     )}
                   </div>
-                  <div className="flex items-center gap-4 flex-wrap text-body-sm text-secondary">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-body-sm text-secondary">
                     {typeof order.processedAt === 'string' && (
                       <span>{formatDate(order.processedAt)}</span>
                     )}
                     {totalPrice && (
-                      <span className="font-medium text-foreground">
+                      <span className="font-medium text-foreground tabular-nums">
                         {formatPrice(totalPrice.amount, totalPrice.currencyCode)}
                       </span>
                     )}
                     {itemsCount > 0 && (
-                      <span className="flex items-center gap-1">
+                      <span className="inline-flex items-center gap-1">
                         <Package size={14} />
                         {itemsCount} {itemsCount === 1 ? 'item' : 'items'}
                       </span>
                     )}
                   </div>
                 </div>
-                {open ? (
-                  <ChevronUp className="w-5 h-5 text-secondary group-hover:text-primary transition-colors shrink-0" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-secondary group-hover:text-primary transition-colors shrink-0" />
-                )}
+                <ChevronDown
+                  className={cn(
+                    'size-5 shrink-0 text-secondary transition-transform duration-200 group-hover:text-foreground',
+                    open && 'rotate-180',
+                  )}
+                />
               </button>
             </CollapsibleTrigger>
           </CardHeader>
 
           <CollapsibleContent>
-            <CardContent className="space-y-6 px-4 md:px-6 pb-4 md:pb-6">
+            <CardContent className="space-y-6 px-4 pb-5 md:px-6 md:pb-6">
               {orderItems.length > 0 && (
-                <div className="space-y-3 pb-4 border-b">
-                  <h6 className="text-heading-4">Order Items</h6>
-                  <div className="space-y-2">
+                <div className="space-y-3">
+                  <h4 className="text-heading-4">Order items</h4>
+                  <div className="divide-y divide-border/70">
                     {orderItems.slice(0, 3).map((item, index) => {
                       if (!item) return null;
                       const product = item.variant?.product;
@@ -138,31 +187,31 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                       return (
                         <div
                           key={`order-item-${index + 1}`}
-                          className="flex items-center justify-between gap-4 py-2 text-body-sm"
+                          className="flex items-center justify-between gap-4 py-3 text-body-sm first:pt-0 last:pb-0"
                         >
-                          <div className="flex items-center gap-3 flex-1">
+                          <div className="flex min-w-0 flex-1 items-center gap-3">
                             {item.variant?.image && (
-                              <div className="relative w-12 h-12 rounded overflow-hidden bg-muted shrink-0">
+                              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted">
                                 <img
                                   src={item.variant.image.small || item.variant.image.url}
                                   alt={item.variant.image.altText || item.title}
-                                  className="w-full h-full object-cover"
+                                  className="h-full w-full object-cover"
                                 />
                               </div>
                             )}
-                            <div className="flex-1 min-w-0">
+                            <div className="min-w-0 flex-1">
                               {productHandle ? (
                                 <Link
                                   href={`${config.routes.collection}/products/${productHandle}`}
-                                  className="font-medium hover:underline line-clamp-1"
+                                  className="line-clamp-1 font-medium hover:underline"
                                 >
                                   {item.title}
                                 </Link>
                               ) : (
-                                <p className="font-medium line-clamp-1">{item.title}</p>
+                                <p className="line-clamp-1 font-medium">{item.title}</p>
                               )}
                               {item.variant?.title && item.variant.title !== 'Default Title' && (
-                                <p className="text-secondary text-caption-sm">
+                                <p className="text-caption-sm text-secondary">
                                   {item.variant.title}
                                 </p>
                               )}
@@ -170,7 +219,7 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                             </div>
                           </div>
                           {item.discountedTotalPrice && (
-                            <div className="text-body font-medium shrink-0">
+                            <div className="shrink-0 text-body font-medium tabular-nums">
                               {formatPrice(
                                 item.discountedTotalPrice.amount,
                                 item.discountedTotalPrice.currencyCode,
@@ -180,62 +229,27 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                         </div>
                       );
                     })}
-                    {orderItems.length > 3 && (
-                      <p className="text-body-sm text-secondary pt-2">
-                        +{orderItems.length - 3} more{' '}
-                        {orderItems.length - 3 === 1 ? 'item' : 'items'}
-                      </p>
-                    )}
                   </div>
+                  {orderItems.length > 3 && (
+                    <p className="text-body-sm text-secondary">
+                      +{orderItems.length - 3} more {orderItems.length - 3 === 1 ? 'item' : 'items'}
+                    </p>
+                  )}
                 </div>
               )}
 
-              <div className="space-y-1">
-                <h6 className="text-heading-4">Order Details</h6>
-
-                {subtotalPrice && (
-                  <Row
-                    label="Subtotal"
-                    value={formatPrice(subtotalPrice.amount, subtotalPrice.currencyCode)}
-                  />
-                )}
-                {totalPrice && (
-                  <Row
-                    label="Total"
-                    value={formatPrice(totalPrice.amount, totalPrice.currencyCode)}
-                  />
-                )}
-
-                {totalRefunded?.amount && Number(totalRefunded.amount) > 0 && (
-                  <Row
-                    label="Refunded"
-                    value={formatPrice(totalRefunded.amount, totalRefunded.currencyCode)}
-                  />
-                )}
-
-                <Row label="Financial Status" value={formatStatus(financialStatus)} />
-                <Row label="Fulfillment Status" value={formatStatus(fulfillmentStatus)} />
-                <Row label="Email" value={email || DEFAULTS.na} />
-                {phone && <Row label="Phone" value={phone} />}
-                {typeof order?.processedAt === 'string' && (
-                  <Row label="Processed At" value={formatDate(order.processedAt)} />
-                )}
-
-                {shippingAddress?.name && (
-                  <Row label="Shipping To" value={shippingAddress.formatted.join(', ')} />
-                )}
-
-                {typeof order?.canceledAt === 'string' && typeof cancelReason === 'string' && (
-                  <>
-                    <Row label="Cancel Reason" value={cancelReason} />
-                    <Row label="Canceled At" value={formatDate(order.canceledAt)} />
-                  </>
-                )}
+              <div className="space-y-3">
+                <h4 className="text-heading-4">Order details</h4>
+                <dl className="grid grid-cols-1 gap-x-8 sm:grid-cols-2">
+                  {details.map((detail) => (
+                    <Detail key={detail.label} label={detail.label} value={detail.value} />
+                  ))}
+                </dl>
               </div>
 
               {successfulFulfillments && successfulFulfillments.length > 0 && (
-                <div className="mt-4 space-y-3">
-                  <h6 className="text-heading-4">Tracking Information</h6>
+                <div className="space-y-3">
+                  <h4 className="text-heading-4">Tracking information</h4>
 
                   {successfulFulfillments.map((fulfillment, index) => {
                     const { trackingInfo, trackingCompany } = fulfillment;
@@ -247,7 +261,7 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                         key={`${fulfillment.trackingCompany ?? 'carrier'}-${index}`}
                         className="space-y-2"
                       >
-                        <div className={`flex justify-between py-1 border-b border-border `}>
+                        <div className="flex justify-between border-b border-border/70 py-1">
                           <span className="text-body-sm text-secondary">
                             {trackingCompany || DEFAULTS.carrier}
                             {successfulFulfillments.length > 1 ? ` (${index + 1})` : ''}
@@ -260,7 +274,7 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                         {trackingInfo.map((trackInfo, trackingIndex) => (
                           <div
                             key={trackInfo.number ?? `tracking-${trackingIndex}`}
-                            className="flex justify-between py-1 border-b border-border"
+                            className="flex justify-between border-b border-border/70 py-1"
                           >
                             <span className="text-body-sm text-secondary">
                               {trackInfo.number || DEFAULTS.trackingNumber}

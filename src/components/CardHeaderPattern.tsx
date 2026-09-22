@@ -38,7 +38,9 @@ const CardHeaderPattern = ({
   return (
     <CardHeader className={cn('space-y-2', className)}>
       <div className="flex items-start justify-between gap-4">
-        <HeadingTag className={cn(sizeToTitleClass[size], titleClassName)}>{title}</HeadingTag>
+        <HeadingTag className={cn(sizeToTitleClass[size], 'mb-0', titleClassName)}>
+          {title}
+        </HeadingTag>
         {actions ? <div className="shrink-0">{actions}</div> : null}
       </div>
 
