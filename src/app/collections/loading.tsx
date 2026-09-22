@@ -17,7 +17,10 @@ const Loading = () => {
       <div className="container mx-auto px-4 md:px-6">
         <ul className="grid auto-rows-[160px] grid-cols-2 gap-3 sm:auto-rows-[200px] sm:gap-4 md:auto-rows-[240px] md:grid-cols-4 md:gap-5 lg:auto-rows-[280px] lg:gap-6">
           {Array.from({ length: 7 }).map((_, index) => (
-            <li key={`collection-${index + 1}`} className={index === 0 ? 'col-span-2 row-span-2' : ''}>
+            <li
+              key={`collection-${index + 1}`}
+              className={index === 0 ? 'col-span-2 row-span-2' : ''}
+            >
               <Skeleton className="media-frame skeleton-shimmer h-full w-full rounded-[var(--radius)] bg-muted" />
             </li>
           ))}

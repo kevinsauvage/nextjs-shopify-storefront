@@ -6,7 +6,7 @@ import { useFormStatus } from 'react-dom';
 import { resetPasswordAction } from '@/actions/authActions';
 import { Button } from '@/components/ui/button';
 import { useFormToast } from '@/hooks/useFormToast';
-import { emptyFormState,type FormState } from '@/types/formActions';
+import { emptyFormState, type FormState } from '@/types/formActions';
 
 import Form from '../../_components/Form';
 import PasswordField from '../../_components/PasswordField';

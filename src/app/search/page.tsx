@@ -28,6 +28,7 @@ export const metadata: Metadata = generateMetadataUtil({
   title: seo.search.title,
   description: seo.search.description,
   url: config.routes.search,
+  noindex: true, // Search result pages have no crawl value and are disallowed in robots.ts
 });
 
 type SearchParameters = {
@@ -58,7 +59,7 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
     sortKey: SearchSortKeys[sortKey] || SearchSortKeys.Relevance,
   });
 
-  const {pageInfo} = response.search;
+  const { pageInfo } = response.search;
   const filters = response.search.productFilters;
 
   const products = response.search?.edges.map((edge) => ({

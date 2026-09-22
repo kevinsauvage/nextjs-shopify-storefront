@@ -51,4 +51,3 @@ export const setCookieFront = (
     console.error(`Failed to set cookie: ${JSON.stringify(error, undefined, 2)}`);
   }
 };
-

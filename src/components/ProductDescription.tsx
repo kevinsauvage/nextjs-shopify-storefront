@@ -16,7 +16,7 @@ type ProductDescriptionProps = {
 const ProductDescription = ({ product, isModal, className }: ProductDescriptionProps) => {
   if (!product) return null;
 
-  const {images} = product;
+  const { images } = product;
   const descriptionHtml = sanitizeHtml(
     typeof product.descriptionHtml === 'string' ? product.descriptionHtml : '',
   );

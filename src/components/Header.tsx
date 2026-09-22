@@ -10,7 +10,11 @@ import HamburgerMenu from './HamburgerMenu';
 
 import { Truck } from 'lucide-react';
 
-const Header = ({ headerMenu }: { headerMenu: GetMenuByHandleQuery['menu'] | null | undefined }) => {
+const Header = ({
+  headerMenu,
+}: {
+  headerMenu: GetMenuByHandleQuery['menu'] | null | undefined;
+}) => {
   const navItems = (headerMenu?.items ?? []).slice(0, 5);
 
   return (

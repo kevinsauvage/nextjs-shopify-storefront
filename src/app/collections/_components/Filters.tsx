@@ -34,6 +34,27 @@ const FILTER_TYPE = {
   priceRange: 'PRICE_RANGE',
 } as const;
 
+/**
+ * Shopify reports the collection's real price span on the price-range filter's
+ * first value, so the slider bounds come from the catalog data instead of a
+ * hardcoded ceiling that would clip expensive products.
+ */
+const getPriceBounds = (filters: Filter[]): [number, number] | undefined => {
+  const priceRangeFilter = filters?.find((filter) => filter.type === FILTER_TYPE.priceRange);
+  const input = priceRangeFilter?.values?.[0]?.input as string | undefined;
+  if (!input) return undefined;
+
+  try {
+    const parsedInput = JSON.parse(input) as { price?: { min?: number; max?: number } };
+    const min = parsedInput?.price?.min;
+    const max = parsedInput?.price?.max;
+    if (typeof min !== 'number' || typeof max !== 'number') return undefined;
+    return [min, max];
+  } catch {
+    return undefined;
+  }
+};
+
 const Filters = ({
   filters,
   query,
@@ -46,9 +67,12 @@ const Filters = ({
     sort_key?: string;
   };
 }) => {
+  const priceBounds = getPriceBounds(filters);
   const [selectedFilters, setSelectedFilters] = useState<{ filterId: string; input: string }[]>([]);
   const [open, setOpen] = useState(false);
-  const [priceRange, setPriceRange] = useState([0, 200]);
+  const [priceRange, setPriceRange] = useState<number[]>(() =>
+    priceBounds ? [...priceBounds] : [0, 0],
+  );
   const [priceTouched, setPriceTouched] = useState(false);
 
   const pathname = usePathname();
@@ -123,15 +147,7 @@ const Filters = ({
 
     router.push(`${pathname}?${newSearchParameters.toString()}`);
     setOpen(false);
-  }, [
-    filters,
-    pathname,
-    priceRange,
-    priceTouched,
-    router,
-    selectedFilters,
-    toSearchParameters,
-  ]);
+  }, [filters, pathname, priceRange, priceTouched, router, selectedFilters, toSearchParameters]);
 
   useEffect(() => {
     const currentFilters_ = typeof query.filters === 'string' ? [query.filters] : query.filters;
@@ -151,32 +167,18 @@ const Filters = ({
     }, 0);
   }, [query.filters]);
 
-  const getMinMaxPrice = useCallback((): [number, number] | undefined => {
-    const priceRangeFilter = filters?.find((filter) => filter.type === FILTER_TYPE.priceRange);
-    if (!priceRangeFilter || !priceRangeFilter.values?.[0]) {
-      return undefined;
-    }
-    const input = priceRangeFilter.values[0].input as string;
-    if (!input) return undefined;
-
-    try {
-      const parsedInput = JSON.parse(input) as { price?: { min?: number; max?: number } };
-      const min = parsedInput?.price?.min ?? 0;
-      const max = parsedInput?.price?.max ?? 200;
-      return [min, max];
-    } catch {
-      return undefined;
-    }
-  }, [filters]);
+  // Keep the slider in sync when the collection (and therefore its price span)
+  // changes, without clobbering a value the user is actively dragging.
+  const boundMin = priceBounds?.[0];
+  const boundMax = priceBounds?.[1];
 
   useEffect(() => {
-    const priceRange_ = getMinMaxPrice();
-    if (priceRange_) {
-      setTimeout(() => {
-        setPriceRange(priceRange_);
-      }, 0);
-    }
-  }, [getMinMaxPrice]);
+    if (boundMin === undefined || boundMax === undefined) return;
+    // Defer so the reset happens after the render triggered by the new props.
+    setTimeout(() => {
+      setPriceRange([boundMin, boundMax]);
+    }, 0);
+  }, [boundMin, boundMax]);
 
   const countFor = (filterId: string) =>
     selectedFilters.filter((filter) => filter.filterId === filterId).length;
@@ -260,20 +262,20 @@ const Filters = ({
                     {filter.type === FILTER_TYPE.priceRange && (
                       <div className="space-y-4 rounded-xl bg-[var(--sidebar)]/70 p-4">
                         <Slider
-                          defaultValue={[getMinMaxPrice()?.[0] || 0, getMinMaxPrice()?.[1] || 200]}
-                          max={getMinMaxPrice()?.[1] || 200}
-                          min={getMinMaxPrice()?.[0] || 0}
+                          defaultValue={[boundMin ?? 0, boundMax ?? 0]}
+                          max={boundMax ?? 0}
+                          min={boundMin ?? 0}
                           step={0.1}
                           value={priceRange}
                           onValueChange={handlePriceChange}
                         />
                         <div className="flex items-center justify-between gap-2">
                           <span className="rounded-full border border-border/70 bg-card px-3 py-1 text-body-sm font-semibold tabular-nums">
-                            ${(priceRange?.[0] ?? 0).toFixed(0)}
+                            ${(priceRange?.[0] ?? boundMin ?? 0).toFixed(0)}
                           </span>
                           <span aria-hidden="true" className="h-px w-6 bg-border" />
                           <span className="rounded-full border border-border/70 bg-card px-3 py-1 text-body-sm font-semibold tabular-nums">
-                            ${(priceRange?.[1] ?? 200).toFixed(0)}
+                            ${(priceRange?.[1] ?? boundMax ?? 0).toFixed(0)}
                           </span>
                         </div>
                       </div>

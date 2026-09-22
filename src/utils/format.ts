@@ -8,6 +8,11 @@ const DEFAULT_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
 /**
  * Formats a date with `Intl.DateTimeFormat`. Returns `fallback` for missing or
  * invalid values so callers do not have to guard every optional timestamp.
+ *
+ * Formatting is pinned to UTC so the server-rendered markup and the client
+ * hydration produce identical strings; otherwise a visitor in a different
+ * timezone than the server would see a hydration mismatch. Pass `timeZone` in
+ * `options` to opt back into a specific zone.
  */
 export const formatDate = (
   value: string | number | Date | null | undefined,
@@ -19,7 +24,7 @@ export const formatDate = (
   const date = value instanceof Date ? value : new Date(value);
   if (Number.isNaN(date.getTime())) return fallback;
 
-  return date.toLocaleDateString('en-US', options);
+  return date.toLocaleDateString('en-US', { timeZone: 'UTC', ...options });
 };
 
 /**
@@ -44,4 +49,3 @@ export const formatPrice = (amount: string | number, currencyCode: string): stri
     return `${currencyCode} ${formatted}`;
   }
 };
-

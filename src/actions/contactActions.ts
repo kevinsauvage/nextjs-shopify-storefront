@@ -49,12 +49,24 @@ export const contactAction = async (input: ContactInput): Promise<FormState> => 
   }
 
   const ip = await getClientIp();
-  if (await isRateLimited(CONTACT_RATE_LIMIT.key, ip, CONTACT_RATE_LIMIT.tokens, CONTACT_RATE_LIMIT.window)) {
+  if (
+    await isRateLimited(
+      CONTACT_RATE_LIMIT.key,
+      ip,
+      CONTACT_RATE_LIMIT.tokens,
+      CONTACT_RATE_LIMIT.window,
+    )
+  ) {
     return formError('Too many messages sent. Please try again later.');
   }
 
-  const { EMAIL_ADDRESS, EMAIL_PASSWORD, NEXT_PUBLIC_SITE_NAME, NEXT_PUBLIC_SITE_EMAIL, CONTACT_EMAIL } =
-    process.env;
+  const {
+    EMAIL_ADDRESS,
+    EMAIL_PASSWORD,
+    NEXT_PUBLIC_SITE_NAME,
+    NEXT_PUBLIC_SITE_EMAIL,
+    CONTACT_EMAIL,
+  } = process.env;
   const recipient = CONTACT_EMAIL || NEXT_PUBLIC_SITE_EMAIL || EMAIL_ADDRESS;
 
   if (!EMAIL_ADDRESS || !EMAIL_PASSWORD || !recipient) {

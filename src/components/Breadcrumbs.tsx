@@ -4,9 +4,22 @@ import { usePathname } from 'next/navigation';
 
 import { ChevronRight } from 'lucide-react';
 
+/**
+ * `decodeURIComponent` throws a `URIError` on malformed input (e.g. a bare `%`).
+ * Breadcrumb labels come straight from the URL, so fall back to the raw segment
+ * instead of crashing the render.
+ */
+const safeDecode = (value: string): string => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+
 const Crumbs = ({ title, href, last }: { title: string; href: string; last: boolean }) => {
   if (last) {
-    const t = decodeURIComponent(title)
+    const t = safeDecode(title)
       .replace('gid://shopify/Order/', '')
       .replace('gid://shopify/MailingAddress/', '')
       .split('?')[0];
@@ -23,7 +36,7 @@ const Crumbs = ({ title, href, last }: { title: string; href: string; last: bool
         href={href}
         className="text-body-sm text-secondary hover:text-primary transition-colors text-ellipsis whitespace-nowrap font-medium"
       >
-        {decodeURIComponent(title)}
+        {safeDecode(title)}
       </Link>
       {!last && <ChevronRight size={16} className="text-secondary shrink-0" />}
     </>

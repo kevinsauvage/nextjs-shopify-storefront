@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -102,7 +100,10 @@ const ProductCardDefault = ({ product, priority, className }: ProductCardDefault
 
         <div className="pointer-events-none absolute left-3 top-3 z-10 flex flex-col items-start gap-1.5">
           {isSoldOut ? (
-            <Badge variant="secondary" className="border-border/50 bg-background/90 backdrop-blur-md">
+            <Badge
+              variant="secondary"
+              className="border-border/50 bg-background/90 backdrop-blur-md"
+            >
               Sold out
             </Badge>
           ) : null}

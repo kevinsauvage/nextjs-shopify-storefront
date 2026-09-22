@@ -40,7 +40,9 @@ const PageBanner = ({
         className={cn(
           'container relative mx-auto flex flex-col px-4 md:px-6',
           variant === 'hero' ? 'py-14 md:py-20' : 'py-10 md:py-14',
-          centered ? 'items-center justify-center text-center' : 'items-start justify-center text-left',
+          centered
+            ? 'items-center justify-center text-center'
+            : 'items-start justify-center text-left',
         )}
       >
         {eyebrow && (
@@ -58,12 +60,7 @@ const PageBanner = ({
         )}
         <h1 className="max-w-3xl text-balance">{title}</h1>
         {description && (
-          <p
-            className={cn(
-              'text-body-lg mt-5 max-w-2xl text-secondary',
-              centered && 'mx-auto',
-            )}
-          >
+          <p className={cn('text-body-lg mt-5 max-w-2xl text-secondary', centered && 'mx-auto')}>
             {description}
           </p>
         )}

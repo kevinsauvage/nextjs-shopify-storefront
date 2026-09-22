@@ -59,4 +59,3 @@ export class UserService {
     return { error: 'Failed to update user' };
   }
 }
-

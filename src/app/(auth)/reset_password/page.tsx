@@ -11,6 +11,7 @@ import ResetForm from './_components/ResetPasswordForm';
 export const metadata: Metadata = {
   description: seo.reset.description,
   title: seo.reset.title,
+  robots: { index: false, follow: false },
 };
 
 const ResetPasswordPage = async ({

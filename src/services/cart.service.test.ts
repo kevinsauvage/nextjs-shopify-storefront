@@ -85,9 +85,7 @@ describe('CartService', () => {
 
       expect(sdk.cartCreate).toHaveBeenCalledTimes(1);
       expect(cookieSet).toHaveBeenCalledWith(CART_ID_COOKIE, NEW_CART, expect.anything());
-      expect(sdk.cartLinesAdd).toHaveBeenCalledWith(
-        expect.objectContaining({ cartId: NEW_CART }),
-      );
+      expect(sdk.cartLinesAdd).toHaveBeenCalledWith(expect.objectContaining({ cartId: NEW_CART }));
       expect(cart).toEqual({ id: NEW_CART, totalQuantity: 1 });
     });
 
@@ -107,9 +105,7 @@ describe('CartService', () => {
 
       const cart = await CartService.addLines([{ merchandiseId: VARIANT_ID, quantity: 1 }]);
 
-      expect(cookieDelete).toHaveBeenCalledWith(
-        expect.objectContaining({ name: CART_ID_COOKIE }),
-      );
+      expect(cookieDelete).toHaveBeenCalledWith(expect.objectContaining({ name: CART_ID_COOKIE }));
       expect(sdk.cartCreate).toHaveBeenCalledTimes(1);
       expect(cart).toEqual({ id: FRESH_CART });
     });
@@ -121,9 +117,9 @@ describe('CartService', () => {
       });
       sdk.getCart.mockResolvedValue({ cart: { id: EXISTING_CART } });
 
-      await expect(
-        CartService.addLines([{ merchandiseId: 'bad', quantity: 1 }]),
-      ).rejects.toThrow('Invalid merchandise');
+      await expect(CartService.addLines([{ merchandiseId: 'bad', quantity: 1 }])).rejects.toThrow(
+        'Invalid merchandise',
+      );
 
       expect(cookieDelete).not.toHaveBeenCalled();
       expect(sdk.cartCreate).not.toHaveBeenCalled();

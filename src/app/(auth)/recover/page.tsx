@@ -10,6 +10,7 @@ import RecoverForm from './_components/RecoverForm';
 export const metadata: Metadata = {
   description: seo.recover.description,
   title: seo.recover.title,
+  robots: { index: false, follow: false },
 };
 
 const ResetPassword = () => {

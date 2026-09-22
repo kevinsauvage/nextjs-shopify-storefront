@@ -192,9 +192,7 @@ const HamburgerMenu = ({
         <div
           className={cn(
             'grid transition-all duration-300 ease-out',
-            isExpanded && hasChildren
-              ? 'grid-rows-[1fr] opacity-100'
-              : 'grid-rows-[0fr] opacity-0',
+            isExpanded && hasChildren ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
           )}
         >
           <div className="overflow-hidden">
@@ -262,10 +260,7 @@ const HamburgerMenu = ({
           </div>
         </SheetHeader>
 
-        <nav
-          aria-label="Shop categories"
-          className="min-h-0 flex-1 overflow-y-auto px-4 py-4"
-        >
+        <nav aria-label="Shop categories" className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
           {menuItems.length > 0 ? (
             <div className="space-y-2">
               {menuItems.map((item, index) => renderMenuItem(item as MenuItem, 0, index))}
@@ -276,7 +271,12 @@ const HamburgerMenu = ({
               <p className="text-caption mt-1 text-secondary">
                 Browse the full collection instead.
               </p>
-              <Button size="sm" asChild className="mt-4 rounded-full" onClick={() => setOpen(false)}>
+              <Button
+                size="sm"
+                asChild
+                className="mt-4 rounded-full"
+                onClick={() => setOpen(false)}
+              >
                 <Link href={config.routes.collection}>Shop all products</Link>
               </Button>
             </div>

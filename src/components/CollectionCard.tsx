@@ -51,10 +51,7 @@ const CollectionCard = ({
       <div className="absolute inset-x-0 bottom-0 flex flex-col justify-end gap-2 p-5 text-white [text-shadow:0_1px_16px_rgba(0,0,0,0.5)] md:p-6">
         <span className="text-eyebrow text-white/80">Collection</span>
         <h3
-          className={cn(
-            'font-semibold text-white',
-            featured ? 'text-heading-2' : 'text-heading-3',
-          )}
+          className={cn('font-semibold text-white', featured ? 'text-heading-2' : 'text-heading-3')}
         >
           {title}
         </h3>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
@@ -192,9 +193,12 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                           <div className="flex min-w-0 flex-1 items-center gap-3">
                             {item.variant?.image && (
                               <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted">
-                                <img
+                                <Image
                                   src={item.variant.image.small || item.variant.image.url}
                                   alt={item.variant.image.altText || item.title}
+                                  width={56}
+                                  height={56}
+                                  sizes="56px"
                                   className="h-full w-full object-cover"
                                 />
                               </div>
@@ -280,14 +284,14 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                               {trackInfo.number || DEFAULTS.trackingNumber}
                             </span>
                             {typeof trackInfo.url === 'string' ? (
-                              <Link
+                              <a
                                 href={trackInfo.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-body-sm font-medium link"
                               >
                                 Track
-                              </Link>
+                              </a>
                             ) : (
                               <span className="text-body-sm font-medium text-muted">
                                 {DEFAULTS.link}

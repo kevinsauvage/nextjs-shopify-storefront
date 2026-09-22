@@ -71,7 +71,9 @@ const envSchema = z
  * Validates the environment once at boot. Throws with a readable list of
  * problems so misconfiguration fails fast instead of at request time.
  */
-export const validateEnv = (environment: Record<string, string | undefined> = process.env): void => {
+export const validateEnv = (
+  environment: Record<string, string | undefined> = process.env,
+): void => {
   const result = envSchema.safeParse(environment);
 
   if (result.success) return;

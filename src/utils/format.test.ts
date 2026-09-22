@@ -17,7 +17,7 @@ describe('formatPrice', () => {
 });
 
 describe('formatDate', () => {
-  const date = new Date(2024, 0, 5);
+  const date = new Date(Date.UTC(2024, 0, 5));
 
   it('formats with the default long format', () => {
     expect(formatDate(date)).toBe('Friday, January 5, 2024');
@@ -25,6 +25,13 @@ describe('formatDate', () => {
 
   it('accepts custom options', () => {
     expect(formatDate(date, { month: 'short', year: 'numeric' })).toBe('Jan 2024');
+  });
+
+  it('formats in UTC regardless of the runtime timezone', () => {
+    // 00:30Z is still the previous day in any negative-offset timezone, so a
+    // local-time format would differ between server and client. Pinning to UTC
+    // keeps the output stable (no hydration mismatch).
+    expect(formatDate('2024-01-05T00:30:00.000Z')).toBe('Friday, January 5, 2024');
   });
 
   it('returns the fallback for missing or invalid values', () => {

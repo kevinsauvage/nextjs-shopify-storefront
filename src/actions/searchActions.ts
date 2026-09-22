@@ -13,4 +13,3 @@ export const searchAction = async (searchQuery: string) => {
 
   redirect(`${config.routes.search}?${new URLSearchParams({ searchQuery: query }).toString()}`);
 };
-

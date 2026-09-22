@@ -39,6 +39,12 @@ type QuickBuyProps = {
 
 const QuickBuy = ({ product, triggerLabel, triggerClassName }: QuickBuyProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  // A product grid can hold dozens of cards; mounting a Radix dialog for each
+  // one is the bulk of the per-card client cost. Mount the sheet only after the
+  // visitor shows intent (hover/focus/tap), while the trigger stays cheap.
+  const [isReady, setIsReady] = useState(false);
+
+  const activate = useCallback(() => setIsReady(true), []);
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
@@ -57,7 +63,12 @@ const QuickBuy = ({ product, triggerLabel, triggerClassName }: QuickBuyProps) =>
           )}
           type="button"
           aria-label={triggerLabel ? `Quick add ${product.title}` : 'Quick view'}
-          onClick={(event) => event.stopPropagation()}
+          onFocus={activate}
+          onPointerEnter={activate}
+          onClick={(event) => {
+            activate();
+            event.stopPropagation();
+          }}
         >
           {triggerLabel ? (
             <>
@@ -69,12 +80,14 @@ const QuickBuy = ({ product, triggerLabel, triggerClassName }: QuickBuyProps) =>
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-full sm:max-w-md p-0 flex flex-col h-full gap-0">
-        <SheetHeader className="p-4 border-b">
-          <SheetTitle>Quick view</SheetTitle>
-        </SheetHeader>
-        {isOpen && <QuickBuyContent product={product} onClose={handleClose} />}
-      </SheetContent>
+      {isReady && (
+        <SheetContent side="right" className="w-full sm:max-w-md p-0 flex flex-col h-full gap-0">
+          <SheetHeader className="p-4 border-b">
+            <SheetTitle>Quick view</SheetTitle>
+          </SheetHeader>
+          {isOpen && <QuickBuyContent product={product} onClose={handleClose} />}
+        </SheetContent>
+      )}
     </Sheet>
   );
 };

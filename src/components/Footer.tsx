@@ -74,7 +74,8 @@ const Footer = ({ menuItems }: FooterProps) => {
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-caption text-secondary md:justify-between">
           <span className="inline-flex items-center gap-2">
-            <Truck className="size-4 text-[var(--gold)]" aria-hidden="true" /> Free shipping over $150
+            <Truck className="size-4 text-[var(--gold)]" aria-hidden="true" /> Free shipping over
+            $150
           </span>
           <span className="inline-flex items-center gap-2">
             <RotateCcw className="size-4 text-[var(--gold)]" aria-hidden="true" /> 30-day returns

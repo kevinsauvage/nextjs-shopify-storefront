@@ -3,11 +3,7 @@
 import { getClientIp } from '@/lib/server/client-ip';
 import { isRateLimited } from '@/lib/server/rate-limit';
 import { CartService } from '@/services/cart.service';
-import type {
-  CartFieldsFragment,
-  CartLineInput,
-  CartLineUpdateInput,
-} from '@/shopify/storefront';
+import type { CartFieldsFragment, CartLineInput, CartLineUpdateInput } from '@/shopify/storefront';
 
 import { z } from 'zod';
 

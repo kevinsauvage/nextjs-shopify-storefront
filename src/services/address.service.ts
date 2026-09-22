@@ -97,8 +97,7 @@ export class AddressService {
       customerAccessToken,
     });
 
-    const { customerUserErrors, deletedCustomerAddressId } =
-      response?.customerAddressDelete || {};
+    const { customerUserErrors, deletedCustomerAddressId } = response?.customerAddressDelete || {};
 
     if (deletedCustomerAddressId) {
       return { success: true, deletedCustomerAddressId };

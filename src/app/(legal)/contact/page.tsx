@@ -35,15 +35,27 @@ const ContactPage = () => {
                 <span>{siteMetadata.email}</span>
               </li>
               <li className="flex items-start gap-3">
-                <Phone size={17} className="mt-0.5 shrink-0 text-[var(--gold)]" aria-hidden="true" />
+                <Phone
+                  size={17}
+                  className="mt-0.5 shrink-0 text-[var(--gold)]"
+                  aria-hidden="true"
+                />
                 <span>{siteMetadata.phoneNumber}</span>
               </li>
               <li className="flex items-start gap-3">
-                <Clock size={17} className="mt-0.5 shrink-0 text-[var(--gold)]" aria-hidden="true" />
+                <Clock
+                  size={17}
+                  className="mt-0.5 shrink-0 text-[var(--gold)]"
+                  aria-hidden="true"
+                />
                 <span>Mon–Fri, 9am–6pm CET · replies within 24h</span>
               </li>
               <li className="flex items-start gap-3">
-                <MapPin size={17} className="mt-0.5 shrink-0 text-[var(--gold)]" aria-hidden="true" />
+                <MapPin
+                  size={17}
+                  className="mt-0.5 shrink-0 text-[var(--gold)]"
+                  aria-hidden="true"
+                />
                 <span>Flagship studio — see shipping page for delivery zones</span>
               </li>
             </ul>

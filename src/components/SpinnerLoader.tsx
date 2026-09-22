@@ -15,10 +15,7 @@ const SpinnerLoader = ({ size = 'md', className }: SpinnerLoaderProps) => (
   <div role="status" className={cn('inline-flex items-center justify-center', className)}>
     <svg
       aria-hidden="true"
-      className={cn(
-        'animate-spin text-muted fill-primary',
-        sizeClasses[size],
-      )}
+      className={cn('animate-spin text-muted fill-primary', sizeClasses[size])}
       viewBox="0 0 100 101"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -740,16 +740,36 @@ button[aria-disabled='true'] {
   /* Warm mesh hero surface: paper gradient + gold/rose washes (light) */
   .hero-mesh {
     background:
-      radial-gradient(42rem 22rem at 12% -8%, color-mix(in oklab, var(--gold-soft) 90%, transparent), transparent 70%),
-      radial-gradient(36rem 20rem at 88% 8%, color-mix(in oklab, #f5d0a9 55%, transparent), transparent 70%),
-      radial-gradient(30rem 18rem at 50% 110%, color-mix(in oklab, var(--muted) 90%, transparent), transparent 70%),
+      radial-gradient(
+        42rem 22rem at 12% -8%,
+        color-mix(in oklab, var(--gold-soft) 90%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        36rem 20rem at 88% 8%,
+        color-mix(in oklab, #f5d0a9 55%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        30rem 18rem at 50% 110%,
+        color-mix(in oklab, var(--muted) 90%, transparent),
+        transparent 70%
+      ),
       var(--background);
   }
 
   .dark .hero-mesh {
     background:
-      radial-gradient(42rem 22rem at 12% -8%, color-mix(in oklab, var(--gold) 22%, transparent), transparent 70%),
-      radial-gradient(36rem 20rem at 88% 8%, color-mix(in oklab, #7c2d12 28%, transparent), transparent 70%),
+      radial-gradient(
+        42rem 22rem at 12% -8%,
+        color-mix(in oklab, var(--gold) 22%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        36rem 20rem at 88% 8%,
+        color-mix(in oklab, #7c2d12 28%, transparent),
+        transparent 70%
+      ),
       var(--background);
   }
 
@@ -761,7 +781,10 @@ button[aria-disabled='true'] {
 
   /* Soft lift for cards, buttons, tiles */
   .lift {
-    transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    transition:
+      transform 0.35s ease,
+      box-shadow 0.35s ease,
+      border-color 0.35s ease;
   }
 
   .lift:hover {
@@ -772,7 +795,14 @@ button[aria-disabled='true'] {
   /* Hairline gradient divider */
   .rule-gradient {
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border) 18%, var(--gold) 50%, var(--border) 82%, transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--border) 18%,
+      var(--gold) 50%,
+      var(--border) 82%,
+      transparent
+    );
   }
 }
 

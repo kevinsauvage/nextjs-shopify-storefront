@@ -1,9 +1,9 @@
 export const logo = (
-  <svg 
-    width="94" 
-    height="44" 
-    viewBox="0 0 94 44" 
-    fill="none" 
+  <svg
+    width="94"
+    height="44"
+    viewBox="0 0 94 44"
+    fill="none"
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
     role="img"

@@ -109,9 +109,7 @@ const recoverSchema = z.object({
 
 type RecoverPasswordInput = z.infer<typeof recoverSchema>;
 
-export const recoverPasswordAction = async (
-  input: RecoverPasswordInput,
-): Promise<FormState> => {
+export const recoverPasswordAction = async (input: RecoverPasswordInput): Promise<FormState> => {
   const result = recoverSchema.safeParse(input);
   if (!result.success) {
     return zodErrorsToFormState(result.error);
@@ -144,9 +142,7 @@ const resetSchema = z.object({
 
 type ResetPasswordInput = z.infer<typeof resetSchema>;
 
-export const resetPasswordAction = async (
-  input: ResetPasswordInput,
-): Promise<FormState> => {
+export const resetPasswordAction = async (input: ResetPasswordInput): Promise<FormState> => {
   const result = resetSchema.safeParse(input);
   if (!result.success) {
     return zodErrorsToFormState(result.error);

@@ -6,8 +6,8 @@ import { useFormStatus } from 'react-dom';
 import { searchAction } from '@/actions/searchActions';
 
 import { Input } from './ui/input';
+import { Label } from './ui/label';
 
-import { Label } from '@radix-ui/react-dropdown-menu';
 import { Search } from 'lucide-react';
 
 const SubmitButton = ({ ...properties }: React.ComponentProps<'button'>) => {

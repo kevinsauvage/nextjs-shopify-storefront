@@ -22,9 +22,10 @@ const parseOrigin = (value?: string | null): string | null => {
 
 /** Origins owned by this storefront that must never be linked to directly. */
 const internalOrigins = new Set(
-  [parseOrigin(process.env.NEXT_PUBLIC_BASE_URL), parseOrigin(process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL)].filter(
-    (origin): origin is string => Boolean(origin),
-  ),
+  [
+    parseOrigin(process.env.NEXT_PUBLIC_BASE_URL),
+    parseOrigin(process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL),
+  ].filter((origin): origin is string => Boolean(origin)),
 );
 
 const isShopifyHost = (hostname: string): boolean =>

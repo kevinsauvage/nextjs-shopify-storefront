@@ -52,6 +52,10 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    return handleApiError('GET /api/search/predictive', error, 'Failed to fetch predictive search results');
+    return handleApiError(
+      'GET /api/search/predictive',
+      error,
+      'Failed to fetch predictive search results',
+    );
   }
 }

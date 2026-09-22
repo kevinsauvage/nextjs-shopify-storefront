@@ -156,6 +156,8 @@ describe('updateDiscountCodesAction', () => {
   });
 
   it('rejects codes longer than 64 characters', async () => {
-    await expect(updateDiscountCodesAction(['x'.repeat(65)])).rejects.toThrow(INVALID_DISCOUNT_CODE);
+    await expect(updateDiscountCodesAction(['x'.repeat(65)])).rejects.toThrow(
+      INVALID_DISCOUNT_CODE,
+    );
   });
 });

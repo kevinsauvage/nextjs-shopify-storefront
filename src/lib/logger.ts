@@ -51,9 +51,7 @@ const sanitizeValue = (value: unknown): unknown => {
   return value;
 };
 
-const sanitizeMeta = (
-  meta?: Record<string, unknown>,
-): Record<string, unknown> | undefined =>
+const sanitizeMeta = (meta?: Record<string, unknown>): Record<string, unknown> | undefined =>
   meta ? (sanitizeValue(meta) as Record<string, unknown>) : undefined;
 
 const toError = (error: unknown): Error => {
@@ -96,9 +94,7 @@ export const reportError = (
   // Hand the reporter redacted copies only — never the raw error/meta, which
   // can contain credentials or access tokens from GraphQL variables.
   const reportedError = new Error(message);
-  reportedError.stack = normalized.stack
-    ? sanitizeErrorMessage(normalized.stack)
-    : undefined;
+  reportedError.stack = normalized.stack ? sanitizeErrorMessage(normalized.stack) : undefined;
 
   errorReporter?.({ context, error: reportedError, meta: safeMeta });
 };

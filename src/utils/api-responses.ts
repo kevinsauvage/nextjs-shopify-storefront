@@ -107,7 +107,10 @@ const ERROR_STATUS_MAP: Array<[RegExp, number]> = [
   [/\b(validation|invalid)\b/i, HTTP_STATUS.BAD_REQUEST],
 ];
 
-export function getErrorStatus(error: unknown, defaultStatus = HTTP_STATUS.INTERNAL_SERVER_ERROR): number {
+export function getErrorStatus(
+  error: unknown,
+  defaultStatus = HTTP_STATUS.INTERNAL_SERVER_ERROR,
+): number {
   if (!(error instanceof Error)) return defaultStatus;
 
   const message = error.message.toLowerCase();
@@ -124,4 +127,3 @@ export function handleApiError(context: string, error: unknown, defaultMessage: 
   // Never echo the raw error message: it can leak Shopify/GraphQL internals.
   return createErrorResponse(defaultMessage, { status });
 }
-
