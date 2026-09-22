@@ -88,13 +88,15 @@ const CartView = () => {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
-      <PageBanner
-        title="Your Cart"
-        eyebrow="Secure checkout"
-        description="Review your pieces — taxes and shipping are calculated at checkout."
-        className="w-full rounded-[var(--radius)]"
-      >
-        {!isEmpty && (
+      {/* The empty state carries its own heading, so the banner would only
+          repeat it — skip it and let the empty state be the page content. */}
+      {!isEmpty && (
+        <PageBanner
+          title="Your Cart"
+          eyebrow="Secure checkout"
+          description="Review your pieces — taxes and shipping are calculated at checkout."
+          className="w-full rounded-[var(--radius)]"
+        >
           <div className="flex w-full flex-wrap items-center justify-between gap-4">
             <Link
               href="/collections"
@@ -105,8 +107,8 @@ const CartView = () => {
             </Link>
             <CartHeader />
           </div>
-        )}
-      </PageBanner>
+        </PageBanner>
+      )}
 
       {isEmpty ? (
         <CartEmptyState />

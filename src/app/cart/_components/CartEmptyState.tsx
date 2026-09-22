@@ -26,7 +26,7 @@ const CartEmptyState = () => {
   return (
     <section
       aria-labelledby="empty-cart-title"
-      className="hero-mesh relative mt-8 overflow-hidden rounded-[var(--radius)] border border-border/70"
+      className="hero-mesh relative overflow-hidden rounded-[var(--radius)] border border-border/70"
     >
       <div className="grid items-center gap-8 px-6 py-12 md:px-10 md:py-16 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14">
         {/* Copy + actions */}
