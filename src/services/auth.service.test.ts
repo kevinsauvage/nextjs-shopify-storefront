@@ -1,9 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { getCartId, getUser, revalidate, sdk, setShopifyToken } = vi.hoisted(() => ({
+const { getCartId, getUser, sdk, setShopifyToken } = vi.hoisted(() => ({
   getCartId: vi.fn(),
   getUser: vi.fn(),
-  revalidate: vi.fn(),
   sdk: {
     cartBuyerIdentityUpdate: vi.fn(),
     customerAccessTokenCreate: vi.fn(),
@@ -22,7 +21,7 @@ vi.mock('@/lib/server/shopify-helpers', () => ({ setShopifyToken }));
 vi.mock('@/utils/users', () => ({ getUser }));
 vi.mock('@/utils/api-responses', () => ({ safeLogError: vi.fn() }));
 vi.mock('@/services/cart.service', () => ({
-  CartService: { getCartId, revalidate },
+  CartService: { getCartId },
 }));
 
 import { AuthService } from './auth.service';
@@ -37,7 +36,6 @@ describe('AuthService', () => {
     Object.values(sdk).forEach((mock) => mock.mockReset());
     getCartId.mockReset();
     getUser.mockReset();
-    revalidate.mockReset();
     setShopifyToken.mockReset();
     getCartId.mockResolvedValue(null);
     getUser.mockResolvedValue(undefined);

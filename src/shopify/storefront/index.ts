@@ -12850,6 +12850,7 @@ export type CollectionQuery = {
           id: string;
           title: string;
           availableForSale: boolean;
+          description: string;
           descriptionHtml: string;
           productType: string;
           tags: Array<string>;
@@ -13139,6 +13140,7 @@ export type CollectionsQuery = {
               id: string;
               title: string;
               availableForSale: boolean;
+              description: string;
               descriptionHtml: string;
               productType: string;
               tags: Array<string>;
@@ -14996,6 +14998,7 @@ export type ProductFieldsFragment = {
   id: string;
   title: string;
   availableForSale: boolean;
+  description: string;
   descriptionHtml: string;
   productType: string;
   tags: Array<string>;
@@ -15544,6 +15547,7 @@ export type GetProductByHandleQuery = {
     id: string;
     title: string;
     availableForSale: boolean;
+    description: string;
     descriptionHtml: string;
     productType: string;
     tags: Array<string>;
@@ -15720,6 +15724,7 @@ export type ProductRecommendationsQuery = {
     id: string;
     title: string;
     availableForSale: boolean;
+    description: string;
     descriptionHtml: string;
     productType: string;
     tags: Array<string>;
@@ -15897,6 +15902,7 @@ export type GetProductsQuery = {
         id: string;
         title: string;
         availableForSale: boolean;
+        description: string;
         descriptionHtml: string;
         productType: string;
         tags: Array<string>;
@@ -16066,6 +16072,7 @@ export type GetProductWithVariantQuery = {
     id: string;
     title: string;
     availableForSale: boolean;
+    description: string;
     descriptionHtml: string;
     productType: string;
     tags: Array<string>;
@@ -16290,6 +16297,7 @@ export type GetProductsByIdsQuery = {
         id: string;
         title: string;
         availableForSale: boolean;
+        description: string;
         descriptionHtml: string;
         productType: string;
         tags: Array<string>;
@@ -16529,6 +16537,7 @@ export type PredictiveSearchQuery = {
       id: string;
       title: string;
       availableForSale: boolean;
+      description: string;
       descriptionHtml: string;
       productType: string;
       tags: Array<string>;
@@ -16703,6 +16712,7 @@ export type SearchProductsQuery = {
             id: string;
             title: string;
             availableForSale: boolean;
+            description: string;
             descriptionHtml: string;
             productType: string;
             tags: Array<string>;
@@ -17580,6 +17590,7 @@ export const ProductFieldsFragmentDoc = gql`
     id
     title
     availableForSale
+    description
     descriptionHtml
     featuredImage {
       ...ImageFields

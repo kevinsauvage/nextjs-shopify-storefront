@@ -172,15 +172,10 @@ export class AuthService {
         ...adjustPaginationVariables({ first: 100 }),
       });
 
-      const { cart, userErrors } = response?.cartBuyerIdentityUpdate || {};
+      const { userErrors } = response?.cartBuyerIdentityUpdate || {};
 
       if (userErrors && userErrors.length > 0) {
         safeLogError('AuthService.updateCartBuyerIdentity - user errors', userErrors);
-        return;
-      }
-
-      if (cart) {
-        CartService.revalidate();
       }
     } catch (error) {
       safeLogError('AuthService.updateCartBuyerIdentity', error);

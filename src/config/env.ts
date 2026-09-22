@@ -37,6 +37,19 @@ const envSchema = z
     NEXT_PUBLIC_SITE_DOMAIN: optionalString,
     NEXT_PUBLIC_GTM_ID: optionalString,
 
+    // Optional: site metadata (SEO / Open Graph fallbacks in data/siteMetadata.ts)
+    NEXT_PUBLIC_SITE_NAME: optionalString,
+    NEXT_PUBLIC_SITE_EMAIL: optionalEmail,
+    NEXT_PUBLIC_SITE_PHONE: optionalString,
+    NEXT_PUBLIC_SITE_LOGO: optionalUrl,
+    NEXT_PUBLIC_SITE_LOGO_SQUARE: optionalUrl,
+    NEXT_PUBLIC_SITE_FACEBOOK: optionalUrl,
+    NEXT_PUBLIC_SITE_INSTAGRAM: optionalUrl,
+    NEXT_PUBLIC_SITE_TWITTER: optionalUrl,
+    NEXT_PUBLIC_SITE_TWITTER_HANDLE: optionalString,
+    NEXT_PUBLIC_SITE_LINKEDIN: optionalUrl,
+    NEXT_PUBLIC_SITE_ABOUT_SHORT: optionalString,
+
     // Optional: error reporting drain
     ERROR_REPORTING_URL: optionalUrl,
   })

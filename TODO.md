@@ -1,34 +1,5 @@
 # Global Project Audit — TODO
 
-### P1 — High
-
-### [x] Add the missing auth guard on `/account/update`
-
-**Why:** The page renders without redirecting when `getUser()`/token is null (expired or
-invalid token), unlike `/account`, `/orders`, `/addresses`. Middleware only checks cookie
-presence, so this is a real gap.
-
-**Where:** `src/app/account/update/page.tsx:22-28` (compare `src/app/account/page.tsx:62-64`).
-
-**Change:** `if (!user) redirect(config.routes.login);` before rendering.
-
-**Impact:** High
-
-### [x] Sanitize merchant/store HTML before injection
-
-**Why:** `descriptionHtml` and legal-policy `body` (store-controlled) are injected via
-`dangerouslySetInnerHTML` under a CSP that allows `'unsafe-inline'`, so any injected markup has
-no backstop.
-
-**Where:** `src/components/ProductDescriptionClient.tsx:148-152`;
-`src/app/(legal)/terms/page.tsx:28` (and shipping/privacy/refund);
-`next.config.ts:21-28`.
-
-**Change:** Sanitize with a maintained package (e.g. `isomorphic-dompurify`) before rendering,
-or move to a nonce-based `script-src`.
-
-**Impact:** Medium
-
 ### P2 — Medium
 
 ### [ ] Add a 404 page and fix Suspense boundaries

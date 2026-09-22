@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { sdk, cookieGet, cookieSet, cookieDelete, revalidatePath } = vi.hoisted(() => ({
+const { sdk, cookieGet, cookieSet, cookieDelete } = vi.hoisted(() => ({
   cookieDelete: vi.fn(),
   cookieGet: vi.fn(),
   cookieSet: vi.fn(),
-  revalidatePath: vi.fn(),
   sdk: {
     cartCreate: vi.fn(),
     cartDiscountCodesUpdate: vi.fn(),
@@ -18,8 +17,6 @@ const { sdk, cookieGet, cookieSet, cookieDelete, revalidatePath } = vi.hoisted((
 vi.mock('next/headers', () => ({
   cookies: async () => ({ delete: cookieDelete, get: cookieGet, set: cookieSet }),
 }));
-
-vi.mock('next/cache', () => ({ revalidatePath }));
 
 vi.mock('@/shopify', () => ({ storefrontSdk: () => sdk }));
 
@@ -51,7 +48,6 @@ describe('CartService', () => {
     cookieGet.mockReset();
     cookieSet.mockReset();
     cookieDelete.mockReset();
-    revalidatePath.mockReset();
     Object.values(sdk).forEach((mock) => mock.mockReset());
   });
 

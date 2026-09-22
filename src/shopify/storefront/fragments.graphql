@@ -270,6 +270,7 @@ fragment ProductFields on Product {
   id
   title
   availableForSale
+  description
   descriptionHtml
   featuredImage {
     ...ImageFields

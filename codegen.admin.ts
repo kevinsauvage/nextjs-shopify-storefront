@@ -28,6 +28,13 @@ const config: CodegenConfig | null = adminEnv
         'src/shopify/admin/index.ts': {
           plugins: ['typescript', 'typescript-operations', 'typescript-graphql-request'],
           config: {
+            /**
+             * The React app only consumes a couple of Admin operations. Without
+             * this the `typescript` plugin emits the entire Admin schema, which
+             * is ~60k lines; `onlyOperationTypes` restricts the output to the
+             * types reachable from the queries in `src/shopify/admin/**`.
+             */
+            onlyOperationTypes: true,
             scalars: {
               ARN: 'string',
               BigInt: 'string',

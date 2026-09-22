@@ -1,6 +1,3 @@
-import { revalidatePath } from 'next/cache';
-
-import config from '@/config';
 import { getShopifyToken, setShopifyToken } from '@/lib/server/shopify-helpers';
 import { storefrontSdk } from '@/shopify';
 import { handleCustomerUserErrors } from '@/utils/form-actions';
@@ -56,7 +53,6 @@ export class UserService {
     }
 
     if (customer) {
-      revalidatePath(config.routes.updateAccount);
       return { success: 'User updated successfully', customer };
     }
 

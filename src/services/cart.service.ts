@@ -1,4 +1,3 @@
-import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import config from '@/config';
@@ -80,8 +79,6 @@ export class CartService {
     const cookieStore = await cookies();
     cookieStore.set(config.cookies.cartId, cart.id, getSecureCookieOptions());
 
-    this.revalidate();
-
     return cart;
   }
 
@@ -146,7 +143,6 @@ export class CartService {
       throw new Error(fallbackMessage);
     }
 
-    this.revalidate();
     return cart;
   }
 
@@ -226,12 +222,5 @@ export class CartService {
         })
         .then((response) => response?.cartDiscountCodesUpdate),
     );
-  }
-
-  /**
-   * Revalidate cart cache
-   */
-  static revalidate(): void {
-    revalidatePath(config.routes.cart);
   }
 }

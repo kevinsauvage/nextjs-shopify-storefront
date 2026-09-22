@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -6,11 +7,25 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import ProductDescription from '@/components/ProductDescription';
 import ProductRecommendations from '@/components/ProductRecommendations';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
-import { storefrontSdk } from '@/shopify/index';
+import { storefrontSdk } from '@/shopify';
 
 export const revalidate = 3600;
 
 const STATIC_PARAMS_PAGE_SIZE = 250;
+
+/**
+ * Product lookup memoized for the lifetime of a single request. `generateMetadata`
+ * and the page body both need the product, and without this they each issue the
+ * same Shopify round-trip.
+ */
+const getProduct = cache(async (handle: string) => {
+  const response = await storefrontSdk().getProductByHandle({
+    handle,
+    identifiers: [],
+  });
+
+  return response.product ?? null;
+});
 
 /**
  * Pre-render product pages so they are statically served and revalidated
@@ -56,11 +71,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { productSlug } = await params;
 
-  const productResponse = await storefrontSdk().getProductSeoByHandle({
-    handle: productSlug,
-  });
-
-  const { product } = productResponse;
+  const product = await getProduct(productSlug);
 
   if (!product) {
     return generateMetadataUtil({
@@ -89,12 +100,7 @@ type PageProperties = {
 const ProductPage = async ({ params }: PageProperties) => {
   const parameters = await params;
 
-  const productResponse = await storefrontSdk().getProductByHandle({
-    handle: parameters.productSlug,
-    identifiers: [],
-  });
-
-  const { product } = productResponse;
+  const product = await getProduct(parameters.productSlug);
 
   if (!product) {
     notFound();

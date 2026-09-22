@@ -8,7 +8,7 @@ A modern, full-featured e-commerce application built with Next.js and Shopify St
 - **React**: 19.2
 - **Language**: TypeScript 5.9.3
 - **E-commerce Backend**: [Shopify Storefront API](https://shopify.dev/api/storefront)
-- **Styling**: Tailwind CSS 4.1.4, SCSS
+- **Styling**: Tailwind CSS 4.1.18, SCSS
 - **UI Components**: Radix UI, shadcn/ui
 - **GraphQL**: graphql-request, GraphQL Code Generator
 - **State Management**: React Context (Cart, User)
@@ -83,6 +83,9 @@ NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
 NODE_ENV=development
 ```
 
+See `.env.example` for the complete, commented list (including the optional
+`NEXT_PUBLIC_SITE_*` metadata variables).
+
 ### 4. Generate GraphQL types
 
 Before running the application, you need to generate TypeScript types from your Shopify GraphQL schema:
@@ -95,7 +98,7 @@ This command:
 
 - Fetches the GraphQL schema from your Shopify store
 - Generates TypeScript types and SDK functions
-- Outputs to `src/shopify/storefront/index.ts`
+- Outputs to `src/shopify/storefront/index.ts` (and `src/shopify/admin/index.ts` when Admin credentials are set)
 
 **Note**: The build script automatically runs codegen, but you should run it manually after:
 
@@ -118,10 +121,13 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - `npm run dev` - Start development server
 - `npm run build` - Build for production (includes codegen)
 - `npm run start` - Start production server
+- `npm run analyze` - Analyze the production bundle
 - `npm run lint` - Run ESLint
 - `npm run lint-fix` - Fix ESLint errors automatically
-- `npm run lint-ts` - Type check with TypeScript
-- `npm run type-check` - Alias for lint-ts
+- `npm run lint-ts` - Type check with TypeScript using `tsconfig.json`
+- `npm run type-check` - Type check with TypeScript
+- `npm run test` - Run the Vitest suite once
+- `npm run test:watch` - Run Vitest in watch mode
 - `npm run codegen` - Generate GraphQL types from Shopify schema
 - `npm run codegen:watch` - Watch mode for codegen (auto-regenerate on changes)
 - `npm run lint:css` - Lint CSS/SCSS files
@@ -135,18 +141,25 @@ src/
 │   ├── (auth)/            # Authentication routes
 │   ├── (legal)/           # Legal pages (privacy, terms, etc.)
 │   ├── account/           # User account pages
+│   ├── api/               # Route handlers (e.g. predictive search)
 │   ├── cart/              # Shopping cart
-│   ├── collections/       # Product collections
+│   ├── collections/       # Product collections and product pages
 │   └── search/            # Product search
 ├── actions/               # Server actions
 ├── components/            # React components
 │   └── ui/                # shadcn/ui components
+├── config/                # App config and env validation
 ├── contexts/              # React contexts (Cart, User)
+├── data/                  # Static data (site metadata, SEO defaults)
+├── hooks/                 # Reusable React hooks
+├── lib/                   # Framework-agnostic server/client helpers
+├── services/              # Business logic (cart, auth, addresses, users)
 ├── shopify/               # Shopify GraphQL queries and SDK
 │   ├── admin/            # Admin API queries
 │   └── storefront/       # Storefront API queries
-├── utils/                 # Utility functions
-└── styles/                # Global styles
+├── styles/                # Global styles
+├── types/                 # Ambient type declarations
+└── utils/                 # Utility functions
 ```
 
 ## GraphQL Code Generation
@@ -204,6 +217,19 @@ These are validated at server startup by `src/config/env.ts`; the app fails fast
 | `EMAIL_ADDRESS` / `EMAIL_PASSWORD` | Sending mailbox used by the contact form                |
 | `CONTACT_EMAIL`                   | Recipient of contact submissions (defaults to `EMAIL_ADDRESS`) |
 | `ERROR_REPORTING_URL`             | Optional webhook that receives logged errors            |
+| `NEXT_PUBLIC_SITE_NAME`           | Company name used across SEO / Open Graph metadata      |
+| `NEXT_PUBLIC_SITE_EMAIL`          | Public contact email shown in metadata / structured data |
+| `NEXT_PUBLIC_SITE_PHONE`          | Public phone number                                     |
+| `NEXT_PUBLIC_SITE_LOGO`           | Absolute URL to the Open Graph logo image               |
+| `NEXT_PUBLIC_SITE_LOGO_SQUARE`    | Absolute URL to the square logo image                   |
+| `NEXT_PUBLIC_SITE_FACEBOOK`       | Facebook profile URL                                    |
+| `NEXT_PUBLIC_SITE_INSTAGRAM`      | Instagram profile URL                                   |
+| `NEXT_PUBLIC_SITE_TWITTER`        | Twitter/X profile URL                                   |
+| `NEXT_PUBLIC_SITE_TWITTER_HANDLE` | Twitter/X handle (e.g. `@yourhandle`)                   |
+| `NEXT_PUBLIC_SITE_LINKEDIN`       | LinkedIn profile URL                                    |
+| `NEXT_PUBLIC_SITE_ABOUT_SHORT`    | Short company description used as a metadata fallback   |
+
+When unset, the `NEXT_PUBLIC_SITE_*` values fall back to the defaults in `src/data/siteMetadata.ts`.
 
 ## Deployment
 

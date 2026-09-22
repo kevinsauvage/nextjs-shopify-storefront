@@ -1,6 +1,3 @@
-import { revalidatePath } from 'next/cache';
-
-import config from '@/config';
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { storefrontSdk } from '@/shopify';
 import { safeLogError } from '@/utils/api-responses';
@@ -45,7 +42,6 @@ export class AddressService {
     const { customerUserErrors, customerAddress } = response?.customerAddressCreate || {};
 
     if (customerAddress) {
-      revalidatePath(config.routes.addresses);
       return { success: true, customerAddress };
     }
 
@@ -81,8 +77,6 @@ export class AddressService {
     if (errorResult) return errorResult;
 
     if (customerAddress) {
-      revalidatePath(`${config.routes.addresses}/edit`);
-      revalidatePath(config.routes.addresses);
       return { success: true, customerAddress };
     }
 
@@ -107,7 +101,6 @@ export class AddressService {
       response?.customerAddressDelete || {};
 
     if (deletedCustomerAddressId) {
-      revalidatePath(config.routes.addresses);
       return { success: true, deletedCustomerAddressId };
     }
 
@@ -143,11 +136,9 @@ export class AddressService {
     if (errorResult) return errorResult;
 
     if (customer) {
-      revalidatePath(config.routes.addresses);
       return { success: true, customer };
     }
 
     return { error: this.DEFAULT_ERROR };
   }
 }
-
