@@ -45,4 +45,25 @@ describe('validateEnv', () => {
       validateEnv({ ...validEnv, SHOPIFY_ADMIN_URL: 'https://shop.example.com/admin' }),
     ).toThrow(/set together/);
   });
+
+  it('accepts optional site metadata overrides', () => {
+    expect(() =>
+      validateEnv({
+        ...validEnv,
+        NEXT_PUBLIC_SITE_NAME: 'Example Store',
+        NEXT_PUBLIC_SITE_EMAIL: 'hello@example.com',
+        NEXT_PUBLIC_SITE_LOGO: 'https://example.com/images/logo.png',
+        NEXT_PUBLIC_SITE_INSTAGRAM: 'https://www.instagram.com/example',
+      }),
+    ).not.toThrow();
+  });
+
+  it('rejects malformed optional site metadata values', () => {
+    expect(() => validateEnv({ ...validEnv, NEXT_PUBLIC_SITE_LOGO: 'not-a-url' })).toThrow(
+      /NEXT_PUBLIC_SITE_LOGO/,
+    );
+    expect(() => validateEnv({ ...validEnv, NEXT_PUBLIC_SITE_EMAIL: 'not-an-email' })).toThrow(
+      /NEXT_PUBLIC_SITE_EMAIL/,
+    );
+  });
 });

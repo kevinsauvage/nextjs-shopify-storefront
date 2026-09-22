@@ -30,6 +30,16 @@ describe('GET /api/search/predictive', () => {
     expect(body.data.predictiveSearch).toEqual({ products: [] });
   });
 
+  it('marks successful responses cacheable at the edge', async () => {
+    predictiveSearch.mockResolvedValue({ predictiveSearch: { products: [] } });
+
+    const response = await GET(request('hat'));
+
+    expect(response.headers.get('Cache-Control')).toBe(
+      'public, s-maxage=60, stale-while-revalidate=300',
+    );
+  });
+
   it('returns null without calling Shopify for queries shorter than 2 chars', async () => {
     const response = await GET(request('a'));
     const body = await response.json();
