@@ -9,7 +9,6 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "baseUrl": ".",
     "typeRoots": ["src/types", "node_modules/@types"],
     "incremental": true,
     "skipLibCheck": true,
