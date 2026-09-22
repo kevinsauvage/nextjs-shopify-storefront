@@ -212,7 +212,7 @@ These are validated at server startup by `src/config/env.ts`; the app fails fast
 | `SHOPIFY_STORE_FRONT_ADMIN_TOKEN` | Shopify Admin API access token (set with `SHOPIFY_ADMIN_URL`) |
 | `SHOPIFY_ADMIN_URL`               | Shopify Admin API GraphQL endpoint URL                  |
 | `SHOPIFY_SCOPE`                   | Comma-separated list of delegate token scopes           |
-| `NEXT_PUBLIC_SITE_DOMAIN`         | Your site domain (for cookie settings)                  |
+| `NEXT_PUBLIC_SITE_DOMAIN`         | Cookie `Domain` attribute: a registrable parent such as `example.com` (or `www.example.com`). Leave empty on `*.vercel.app`/preview or `localhost` deployments so the session cookie stays host-only. |
 | `NEXT_PUBLIC_GTM_ID`              | Google Tag Manager container ID (format: `GTM-XXXXXXX`) |
 | `EMAIL_ADDRESS` / `EMAIL_PASSWORD` | Sending mailbox used by the contact form                |
 | `CONTACT_EMAIL`                   | Recipient of contact submissions (defaults to `EMAIL_ADDRESS`) |
@@ -312,7 +312,11 @@ Key configuration includes:
 ### Cart not persisting
 
 - Check cookie settings in `src/config/index.ts`
-- Verify `NEXT_PUBLIC_SITE_DOMAIN` is set correctly for production
+- Verify `NEXT_PUBLIC_SITE_DOMAIN` is a registrable parent (`example.com`), not a `*.vercel.app` host; invalid values are now ignored automatically, but custom domains need it set correctly for cookies to be shared across subdomains
+
+### Logged in, then redirected back to login on reload
+
+- Almost always the session cookie being rejected: `NEXT_PUBLIC_SITE_DOMAIN` must be empty on `*.vercel.app`/preview hosts (a `Domain=` cookie on the deployment host is dropped by the browser). `getCookieDomain()` now filters these out and falls back to a host-only cookie.
 
 ## Contributing
 

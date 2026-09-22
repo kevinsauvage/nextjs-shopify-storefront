@@ -1,10 +1,47 @@
 import config from '@/config';
 
-export function getCookieDomain(): string | undefined {
-  if (process.env.NODE_ENV === 'development') {
-    return config.constants.domains.localhost;
+/**
+ * Hosts that a `Domain=` cookie attribute cannot be used with. A domain cookie
+ * must be a *parent* of the request host (browsers reject it otherwise), and
+ * single-label hosts like `localhost` are not valid domains at all.
+ */
+const isUnusableCookieDomain = (domain: string): boolean => {
+  const normalized = domain.toLowerCase();
+
+  // Single-label hosts (`localhost`) and IP addresses have no parent domain.
+  if (!normalized.includes('.') || /^\d{1,3}(\.\d{1,3}){3}$/.test(normalized)) {
+    return true;
   }
-  return process.env.NEXT_PUBLIC_SITE_DOMAIN;
+
+  // Vercel/Fly preview hostnames are not registrable parents of themselves, and
+  // a `Domain=` cookie set on the deployment host is rejected by the browser —
+  // which silently drops the whole session. Fall back to a host-only cookie.
+  return (
+    normalized.endsWith('.vercel.app') ||
+    normalized.endsWith('.now.sh') ||
+    normalized.endsWith('.fly.dev') ||
+    normalized.endsWith('.netlify.app')
+  );
+};
+
+/**
+ * Cookie `Domain` attribute, or `undefined` for a host-only cookie.
+ *
+ * Host-only cookies are the safe default: they are always accepted, and they
+ * still work on the custom apex/www domain once `NEXT_PUBLIC_SITE_DOMAIN` is
+ * configured to a registrable parent (e.g. `example.com`).
+ */
+export function getCookieDomain(): string | undefined {
+  const configured =
+    process.env.NODE_ENV === 'development'
+      ? config.constants.domains.localhost
+      : process.env.NEXT_PUBLIC_SITE_DOMAIN;
+
+  const domain = configured?.trim().replace(/^\./, '');
+
+  if (!domain || isUnusableCookieDomain(domain)) return undefined;
+
+  return domain;
 }
 
 export function shouldUseSecureCookies(): boolean {

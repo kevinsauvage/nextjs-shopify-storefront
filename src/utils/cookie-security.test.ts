@@ -1,5 +1,6 @@
 import {
   getCookieDeleteOptions,
+  getCookieDomain,
   getSecureCookieOptions,
   getStandardCookieOptions,
   shouldUseSecureCookies,
@@ -18,6 +19,51 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
+describe('getCookieDomain', () => {
+  it('uses the configured registrable domain in production', () => {
+    vi.stubEnv(NODE_ENV, PRODUCTION);
+    vi.stubEnv(SITE_DOMAIN, PRODUCTION_DOMAIN);
+
+    expect(getCookieDomain()).toBe(PRODUCTION_DOMAIN);
+  });
+
+  it('strips a leading dot from the configured domain', () => {
+    vi.stubEnv(NODE_ENV, PRODUCTION);
+    vi.stubEnv(SITE_DOMAIN, `.${PRODUCTION_DOMAIN}`);
+
+    expect(getCookieDomain()).toBe(PRODUCTION_DOMAIN);
+  });
+
+  it('ignores a .vercel.app host so the session cookie is not rejected', () => {
+    vi.stubEnv(NODE_ENV, PRODUCTION);
+    vi.stubEnv(SITE_DOMAIN, 'my-app-abc.vercel.app');
+
+    expect(getCookieDomain()).toBeUndefined();
+  });
+
+  it('ignores single-label and IP hosts', () => {
+    vi.stubEnv(NODE_ENV, PRODUCTION);
+    vi.stubEnv(SITE_DOMAIN, 'localhost');
+    expect(getCookieDomain()).toBeUndefined();
+
+    vi.stubEnv(SITE_DOMAIN, '127.0.0.1');
+    expect(getCookieDomain()).toBeUndefined();
+  });
+
+  it('returns undefined when nothing is configured', () => {
+    vi.stubEnv(NODE_ENV, PRODUCTION);
+    vi.stubEnv(SITE_DOMAIN, '');
+
+    expect(getCookieDomain()).toBeUndefined();
+  });
+
+  it('uses a host-only cookie in development (localhost is not a valid domain)', () => {
+    vi.stubEnv(NODE_ENV, DEVELOPMENT);
+
+    expect(getCookieDomain()).toBeUndefined();
+  });
+});
+
 describe('getCookieDeleteOptions', () => {
   it('omits the domain when none is configured', () => {
     vi.stubEnv(NODE_ENV, TEST);
@@ -33,10 +79,10 @@ describe('getCookieDeleteOptions', () => {
     expect(getCookieDeleteOptions()).toEqual({ domain: PRODUCTION_DOMAIN, path: '/' });
   });
 
-  it('uses the localhost domain in development', () => {
+  it('omits the domain in development because localhost is not a valid domain', () => {
     vi.stubEnv(NODE_ENV, DEVELOPMENT);
 
-    expect(getCookieDeleteOptions()).toEqual({ domain: 'localhost', path: '/' });
+    expect(getCookieDeleteOptions()).toEqual({ path: '/' });
   });
 });
 
@@ -60,7 +106,7 @@ describe('getSecureCookieOptions', () => {
     const expires = new Date('2030-01-01T00:00:00.000Z');
 
     expect(getSecureCookieOptions({ expires, maxAge: 60, path: '/cart' })).toEqual({
-      domain: '',
+      domain: undefined,
       expires,
       httpOnly: true,
       maxAge: 60,
@@ -77,7 +123,7 @@ describe('getStandardCookieOptions', () => {
     vi.stubEnv(SITE_DOMAIN, '');
 
     expect(getStandardCookieOptions()).toEqual({
-      domain: '',
+      domain: undefined,
       path: '/',
       sameSite: 'lax',
       secure: false,
