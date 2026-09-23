@@ -85,3 +85,37 @@ export function getSecureCookieOptions(
     ...(options.expires && { expires: options.expires }),
   };
 }
+
+/**
+ * Options for a readable (non-httpOnly) presence marker.
+ *
+ * Markers carry no secret — only whether a cookie-backed cart/session exists —
+ * so client providers can skip a server-action round-trip when there is nothing
+ * to resolve. They use the same domain/path/secure flags as the cookie they
+ * mirror so both expire together.
+ */
+export function getReadableCookieOptions(
+  options: {
+    maxAge?: number;
+    expires?: Date;
+    path?: string;
+  } = {},
+): {
+  domain?: string;
+  expires?: Date;
+  httpOnly: boolean;
+  maxAge?: number;
+  path: string;
+  sameSite: 'lax' | 'strict' | 'none';
+  secure: boolean;
+} {
+  return {
+    domain: getCookieDomain(),
+    httpOnly: false,
+    path: options.path || '/',
+    sameSite: 'lax',
+    secure: shouldUseSecureCookies(),
+    ...(options.maxAge && { maxAge: options.maxAge }),
+    ...(options.expires && { expires: options.expires }),
+  };
+}

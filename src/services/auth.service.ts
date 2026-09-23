@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { setShopifyToken } from '@/lib/server/shopify-helpers';
 import { CartService } from '@/services/cart.service';
 import { storefrontSdk } from '@/shopify';

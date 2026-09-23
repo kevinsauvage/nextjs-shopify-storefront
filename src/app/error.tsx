@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import config from '@/config';
 import { reportError } from '@/lib/logger';
 
-const Error = ({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) => {
+const Error = ({ error, retry }: { error: Error & { digest?: string }; retry: () => void }) => {
   useEffect(() => {
     reportError('app/error-boundary', error, { digest: error.digest });
   }, [error]);
@@ -28,7 +28,7 @@ const Error = ({ error, reset }: { error: Error & { digest?: string }; reset: ()
           'Check your internet connection',
         ]}
         primaryAction={
-          <Button onClick={reset} variant="default">
+          <Button onClick={() => retry()} variant="default">
             Try again
           </Button>
         }

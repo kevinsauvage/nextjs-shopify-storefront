@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { cookies } from 'next/headers';
 
 import config from '@/config';
@@ -5,7 +7,11 @@ import { storefrontSdk } from '@/shopify';
 import { adjustPaginationVariables } from '@/shopify/helpers';
 import type { CartFieldsFragment, CartLineInput, CartLineUpdateInput } from '@/shopify/storefront';
 import { mapShopifyUserErrors, safeLogError } from '@/utils/api-responses';
-import { getCookieDeleteOptions, getSecureCookieOptions } from '@/utils/cookie-security';
+import {
+  getCookieDeleteOptions,
+  getReadableCookieOptions,
+  getSecureCookieOptions,
+} from '@/utils/cookie-security';
 
 type CartMutationPayload =
   | {
@@ -71,6 +77,14 @@ export class CartService {
 
     const cookieStore = await cookies();
     cookieStore.set(config.cookies.cartId, cart.id, getSecureCookieOptions());
+    // Readable marker so the client can skip `getCartAction` until a cart exists.
+    cookieStore.set(
+      config.cookies.cartPresent,
+      '1',
+      getReadableCookieOptions({
+        maxAge: config.constants.cookieExpiryDays * 24 * 60 * 60,
+      }),
+    );
 
     return cart;
   }
@@ -105,6 +119,7 @@ export class CartService {
   private static async clearCartId(): Promise<void> {
     const cookieStore = await cookies();
     cookieStore.delete({ name: config.cookies.cartId, ...getCookieDeleteOptions() });
+    cookieStore.delete({ name: config.cookies.cartPresent, ...getCookieDeleteOptions() });
   }
 
   /**

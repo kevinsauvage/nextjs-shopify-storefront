@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { getShopifyToken, setShopifyToken } from '@/lib/server/shopify-helpers';
 import { storefrontSdk } from '@/shopify';
 import { handleCustomerUserErrors } from '@/utils/form-actions';

@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { storefrontSdk } from '@/shopify';
 import type { GetCustomerOrdersQuery } from '@/shopify/storefront';
 import { LanguageCode, OrderSortKeys } from '@/shopify/storefront';

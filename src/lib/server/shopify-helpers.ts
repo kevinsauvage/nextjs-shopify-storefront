@@ -1,9 +1,15 @@
+import 'server-only';
+
 import { cache } from 'react';
 import { cookies } from 'next/headers';
 
 import config from '@/config';
 import type { CustomerAccessToken } from '@/shopify/storefront';
-import { getCookieDeleteOptions, getSecureCookieOptions } from '@/utils/cookie-security';
+import {
+  getCookieDeleteOptions,
+  getReadableCookieOptions,
+  getSecureCookieOptions,
+} from '@/utils/cookie-security';
 
 /**
  * Shopify token management helpers
@@ -29,6 +35,13 @@ export const setShopifyToken = async (customerAccessToken: CustomerAccessToken):
     value: expiresAtDate.toISOString(),
     ...getSecureCookieOptions({ expires: expiresAtDate }),
   });
+
+  // Readable marker so the client can skip `getSessionAction` when signed out.
+  cookieStore.set({
+    name: config.cookies.sessionPresent,
+    value: '1',
+    ...getReadableCookieOptions({ expires: expiresAtDate }),
+  });
 };
 
 /**
@@ -48,6 +61,7 @@ export const clearShopifyToken = async (): Promise<void> => {
   const options = getCookieDeleteOptions();
   cookieStore.delete({ name: config.cookies.shopifyToken, ...options });
   cookieStore.delete({ name: config.cookies.shopifyTokenExpire, ...options });
+  cookieStore.delete({ name: config.cookies.sessionPresent, ...options });
 };
 
 /**

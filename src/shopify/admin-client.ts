@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { getSdk as getAdminSdk } from './admin/index';
 
 import { GraphQLClient } from 'graphql-request';

@@ -9,6 +9,8 @@ import {
   updateCartLinesAction,
   updateDiscountCodesAction,
 } from '@/actions/cartActions';
+import config from '@/config';
+import { getCookieFront } from '@/lib/client/cookies';
 import type { CartFieldsFragment } from '@/shopify/storefront';
 
 import { toast } from 'sonner';
@@ -50,7 +52,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     let cancelled = false;
 
-    getCartAction()
+    // No readable marker → no cookie-backed cart exists yet, so skip the
+    // server-action round-trip entirely on a first visit.
+    const hasCart = Boolean(getCookieFront(config.cookies.cartPresent));
+
+    (hasCart ? getCartAction() : Promise.resolve(null))
       .then((initialCart) => {
         if (!cancelled) setCart(initialCart);
       })

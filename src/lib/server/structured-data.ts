@@ -1,3 +1,5 @@
+import 'server-only';
+
 import siteMetadata from '@/data/siteMetadata';
 import { getBaseUrl } from '@/lib/server/metadata';
 

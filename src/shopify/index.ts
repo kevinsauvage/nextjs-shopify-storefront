@@ -1,3 +1,5 @@
+import 'server-only';
+
 import config from '@/config';
 import { safeLogError } from '@/utils/api-responses';
 
@@ -44,7 +46,9 @@ const createStorefrontClient = (cacheOption: 'default' | 'no-store' = 'default')
         fetchOptions.cache = 'no-store';
         fetchOptions.next = { revalidate: 0 };
       } else {
-        fetchOptions.next = { revalidate: config.constants.revalidate.shopify };
+        // Cache public catalog reads under a shared tag so a Shopify webhook can
+        // call `revalidateTag('shopify', 'max')` for on-demand invalidation.
+        fetchOptions.next = { revalidate: config.constants.revalidate.shopify, tags: ['shopify'] };
       }
 
       const response = await fetch(url, fetchOptions);

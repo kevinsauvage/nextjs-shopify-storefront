@@ -17,7 +17,7 @@ const CARD_SIZES = '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw';
 
 type ProductCardDefaultProps = {
   product: ProductFieldsFragment;
-  priority: boolean;
+  preload?: boolean;
   /** Classes applied to the card root (e.g. carousel item sizing). */
   className?: string;
 };
@@ -29,7 +29,7 @@ type ProductCardDefaultProps = {
  * Renders only card *content* — the surrounding `<li>`/grid cell is owned by
  * the parent (`ListDisplay`, `CarouselItem`), so no list element is nested.
  */
-const ProductCardDefault = ({ product, priority, className }: ProductCardDefaultProps) => {
+const ProductCardDefault = ({ product, preload = false, className }: ProductCardDefaultProps) => {
   const { title, images, handle, variants, id, priceRange, vendor, availableForSale } = product;
   const firstVariant = variants?.edges?.[0]?.node;
   const price = firstVariant?.price ?? priceRange?.minVariantPrice ?? null;
@@ -67,7 +67,7 @@ const ProductCardDefault = ({ product, priority, className }: ProductCardDefault
                 src={primary.medium || primary.src}
                 alt={primary.altText || title || 'Product image'}
                 fill
-                priority={priority}
+                preload={preload}
                 quality={78}
                 sizes={CARD_SIZES}
                 placeholder={primary.blurDataURL ? 'blur' : 'empty'}

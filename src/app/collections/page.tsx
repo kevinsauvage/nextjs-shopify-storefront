@@ -37,7 +37,7 @@ const CollectionsPage = async () => {
 
       <div className="container mx-auto px-4 md:px-6">
         {collections.length > 0 ? (
-          <CollectionGrid collections={collections} />
+          <CollectionGrid collections={collections} preloadFeatured />
         ) : (
           <div className="rounded-[var(--radius)] border border-dashed border-border py-16 text-center">
             <h2 className="text-heading-3">Nothing here yet</h2>

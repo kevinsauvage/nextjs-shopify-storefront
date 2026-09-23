@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { reportError } from '@/lib/logger';
 
 import { Ratelimit } from '@upstash/ratelimit';

@@ -13,7 +13,7 @@ type OptimizedImageProps = {
   width?: number;
   height?: number;
   blurDataURL?: string;
-  priority?: boolean;
+  preload?: boolean;
   className?: string;
   sizes?: string;
   quality?: number;
@@ -31,7 +31,7 @@ const OptimizedImage = ({
   width,
   height,
   blurDataURL,
-  priority = false,
+  preload = false,
   className,
   sizes,
   quality = 75,
@@ -107,7 +107,7 @@ const OptimizedImage = ({
         width={fill ? undefined : defaultWidth}
         height={fill ? undefined : defaultHeight}
         fill={fill}
-        priority={priority}
+        preload={preload}
         quality={quality}
         sizes={responsiveSizes}
         placeholder={blurDataURL ? 'blur' : 'empty'}
@@ -119,7 +119,7 @@ const OptimizedImage = ({
         )}
         onLoad={handleLoad}
         onError={handleError}
-        loading={priority ? undefined : 'lazy'}
+        loading={preload ? undefined : 'lazy'}
       />
     </div>
   );

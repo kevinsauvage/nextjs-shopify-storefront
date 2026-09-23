@@ -14,10 +14,10 @@ import '../styles/globals.css';
 
 const GlobalError = ({
   error,
-  reset,
+  retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  retry: () => void;
 }) => {
   useEffect(() => {
     reportError('app/global-error-boundary', error, { digest: error.digest });
@@ -39,7 +39,7 @@ const GlobalError = ({
               'Contact support if the problem continues',
             ]}
             primaryAction={
-              <Button onClick={reset} variant="default">
+              <Button onClick={() => retry()} variant="default">
                 Try again
               </Button>
             }

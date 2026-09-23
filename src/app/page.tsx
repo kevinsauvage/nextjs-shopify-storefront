@@ -138,7 +138,7 @@ const Home = async () => {
                     heroImage.altText || featuredCollections[0]?.node.title || 'Featured collection'
                   }
                   fill
-                  priority
+                  preload
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover"
                 />

@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { storefrontSdk } from '@/shopify';
 import { safeLogError } from '@/utils/api-responses';

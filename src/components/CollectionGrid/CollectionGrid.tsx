@@ -6,11 +6,17 @@ import { cn } from '@/utils/cn';
  * Editorial bento grid: the first collection becomes a large hero tile and the
  * rest flow into a responsive mosaic. Deterministic row heights keep the
  * layout stable as images load.
+ *
+ * `preloadFeatured` marks the first tile as the LCP image; callers set it only
+ * when the grid is above the fold (e.g. the collections index, not the home
+ * page where the hero image is the LCP).
  */
 const CollectionGrid = ({
   collections,
+  preloadFeatured = false,
 }: {
   collections: CollectionsQuery['collections']['edges'];
+  preloadFeatured?: boolean;
 }) => {
   if (!Array.isArray(collections) || collections.length === 0) {
     return null;
@@ -25,7 +31,7 @@ const CollectionGrid = ({
         >
           <CollectionCard
             collection={collection.node}
-            priority={index < 5}
+            preload={preloadFeatured && index === 0}
             featured={index === 0}
           />
         </li>

@@ -11,10 +11,10 @@ import { reportError } from '@/lib/logger';
 
 const ProductError = ({
   error,
-  reset,
+  retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  retry: () => void;
 }) => {
   useEffect(() => {
     reportError('app/product-error-boundary', error, { digest: error.digest });
@@ -30,7 +30,7 @@ const ProductError = ({
         title="Unable to load product"
         tips={['Try refreshing the page', 'Browse similar products', 'Check back later']}
         primaryAction={
-          <Button onClick={reset} variant="default">
+          <Button onClick={() => retry()} variant="default">
             Try again
           </Button>
         }

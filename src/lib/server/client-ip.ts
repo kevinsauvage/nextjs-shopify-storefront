@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { headers } from 'next/headers';
 
 /** Sentinel returned when no trustworthy client IP header is present. */

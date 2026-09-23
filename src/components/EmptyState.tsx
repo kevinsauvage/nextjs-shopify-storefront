@@ -1,6 +1,3 @@
-'use client';
-
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 import NotFoundIllustration from '@/assets/NotFoundIllustration.png';
@@ -28,6 +25,11 @@ type EmptyStateProps = {
   variant?: 'default' | 'cart' | 'search' | 'wishlist' | 'orders' | 'addresses' | 'error';
 };
 
+/**
+ * Server-rendered empty/error state. The entrance animation is pure CSS
+ * (`.animate-rise` in `globals.css`) so the content is visible on first paint
+ * instead of waiting for hydration.
+ */
 const EmptyState = ({
   primaryAction,
   secondaryAction,
@@ -38,28 +40,12 @@ const EmptyState = ({
   tips,
   variant = 'default',
 }: EmptyStateProps) => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsVisible(true);
-    }, 0);
-  }, []);
-
   // Tips only shown for error variant
   const shouldShowTips = variant === 'error' && tips && tips.length > 0;
 
   return (
-    <div
-      className={`flex flex-col items-center justify-center h-full transition-all duration-500 ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-      }`}
-    >
-      <div
-        className={`relative mb-6 transition-all duration-700 delay-150 ${
-          isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-        }`}
-      >
+    <div className="animate-rise flex flex-col items-center justify-center h-full">
+      <div className="animate-rise animate-rise-1 relative mb-6">
         <Image
           className="object-contain animate-pulse-subtle"
           alt={altText}
@@ -69,11 +55,7 @@ const EmptyState = ({
           style={{ maxHeight: '200px', width: 'auto', height: 'auto' }}
         />
       </div>
-      <div
-        className={`text-center transition-all duration-500 delay-300 ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-        }`}
-      >
+      <div className="animate-rise animate-rise-2 text-center">
         <h2 className="text-heading-3 mb-2 px-4">{title}</h2>
         <p className="max-w-xl mx-auto px-4 text-center text-body-sm md:text-body text-secondary mb-6">
           {subtitle}
@@ -86,10 +68,8 @@ const EmptyState = ({
               {tips.map((tip, index) => (
                 <li
                   key={tip || `tip-${index}`}
-                  className={`flex items-start gap-2 text-body-sm text-secondary transition-all duration-300 ${
-                    isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
-                  }`}
-                  style={{ transitionDelay: `${300 + index * 100}ms` }}
+                  className="animate-rise flex items-start gap-2 text-body-sm text-secondary"
+                  style={{ animationDelay: `${300 + index * 100}ms` }}
                 >
                   <span className="text-primary mt-0.5 shrink-0">•</span>
                   <span>{tip}</span>
@@ -100,11 +80,7 @@ const EmptyState = ({
         )}
 
         {(primaryAction || secondaryAction) && (
-          <div
-            className={`flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto px-4 transition-all duration-500 delay-500 ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-            }`}
-          >
+          <div className="animate-rise animate-rise-3 flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto px-4">
             {primaryAction && (
               <div className="w-full sm:w-auto [&>a]:w-full sm:[&>a]:w-auto [&>button]:w-full sm:[&>button]:w-auto">
                 {primaryAction}

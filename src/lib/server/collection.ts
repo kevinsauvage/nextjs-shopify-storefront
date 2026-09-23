@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { storefrontSdk } from '@/shopify';
 import { adjustPaginationVariables, parseFiltersQuery } from '@/shopify/helpers';
 import { ProductCollectionSortKeys } from '@/shopify/storefront';

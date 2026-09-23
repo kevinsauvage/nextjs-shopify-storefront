@@ -208,7 +208,7 @@ const PhotoGallery = ({ images, className }: PhotoGalleryProps) => {
               selectedImage?.altText ?? `Product image ${selectedImageIndex + 1} of ${imageCount}`
             }
             fill
-            priority={selectedImageIndex === 0}
+            preload={selectedImageIndex === 0}
             quality={85}
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 60vw, 40vw"
             className="relative z-10 object-cover"

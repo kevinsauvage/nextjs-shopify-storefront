@@ -179,7 +179,7 @@ const CollectionSlugPage = async ({
               src={collectionImage.src}
               alt={collectionImage.altText || collection.title || 'Collection image'}
               fill
-              priority
+              preload
               quality={82}
               sizes="100vw"
               placeholder={collectionImage.blurDataURL ? 'blur' : 'empty'}

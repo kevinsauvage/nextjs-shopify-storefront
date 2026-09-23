@@ -6,6 +6,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      // `server-only` throws outside the React Server Components condition
+      // (which vitest's node environment does not set), so resolve it to the
+      // package's no-op module in tests.
+      'server-only': path.resolve(__dirname, 'node_modules/server-only/empty.js'),
     },
   },
   test: {

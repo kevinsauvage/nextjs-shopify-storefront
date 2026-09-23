@@ -8,7 +8,7 @@ import EmptyState from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
 import { reportError } from '@/lib/logger';
 
-const CartError = ({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) => {
+const CartError = ({ error, retry }: { error: Error & { digest?: string }; retry: () => void }) => {
   useEffect(() => {
     reportError('app/cart-error-boundary', error, { digest: error.digest });
   }, [error]);
@@ -27,7 +27,7 @@ const CartError = ({ error, reset }: { error: Error & { digest?: string }; reset
           'Contact support if the problem continues',
         ]}
         primaryAction={
-          <Button onClick={reset} variant="default">
+          <Button onClick={() => retry()} variant="default">
             Try again
           </Button>
         }

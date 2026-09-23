@@ -2,7 +2,11 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 import { isTokenExpired, renewCustomerToken, shouldRenewToken } from './lib/token-renewal';
-import { getCookieDeleteOptions, getSecureCookieOptions } from './utils/cookie-security';
+import {
+  getCookieDeleteOptions,
+  getReadableCookieOptions,
+  getSecureCookieOptions,
+} from './utils/cookie-security';
 import globalConfig from './config';
 
 /**
@@ -58,6 +62,7 @@ async function proxy(request: NextRequest) {
     const deleteOptions = getCookieDeleteOptions();
     response.cookies.delete({ name: globalConfig.cookies.shopifyToken, ...deleteOptions });
     response.cookies.delete({ name: globalConfig.cookies.shopifyTokenExpire, ...deleteOptions });
+    response.cookies.delete({ name: globalConfig.cookies.sessionPresent, ...deleteOptions });
   }
 
   if (renewedToken) {
@@ -69,6 +74,20 @@ async function proxy(request: NextRequest) {
       globalConfig.cookies.shopifyTokenExpire,
       expiresAt.toISOString(),
       tokenOptions,
+    );
+    response.cookies.set(
+      globalConfig.cookies.sessionPresent,
+      '1',
+      getReadableCookieOptions({ expires: expiresAt }),
+    );
+  } else if (hasSession && !cookies.get(globalConfig.cookies.sessionPresent)) {
+    // Repair sessions created before the marker existed so the client does not
+    // resolve a signed-in visitor as signed out. Set once; no cookie on
+    // anonymous catalog responses, which keeps static pages CDN-cacheable.
+    response.cookies.set(
+      globalConfig.cookies.sessionPresent,
+      '1',
+      getReadableCookieOptions({ maxAge: globalConfig.constants.cookieExpiryDays * 24 * 60 * 60 }),
     );
   }
 

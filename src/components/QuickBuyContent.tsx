@@ -95,7 +95,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
                 quality={75}
                 className="object-cover transition-opacity duration-300"
                 sizes="(max-width: 640px) 100vw, 500px"
-                priority
+                loading="eager"
               />
             )}
 

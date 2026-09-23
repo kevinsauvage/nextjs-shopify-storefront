@@ -19,9 +19,9 @@ const ProductsList = ({
   return (
     <div className="mb-12">
       <ListDisplay layout={layout} loading={loading}>
-        {(products ?? []).map((product, index) => (
+        {(products ?? []).map((product) => (
           <li key={product.id}>
-            <ProductCardDefault product={product} priority={index < 5} />
+            <ProductCardDefault product={product} />
           </li>
         ))}
       </ListDisplay>

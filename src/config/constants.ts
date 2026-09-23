@@ -1,6 +1,11 @@
 export const COOKIES = {
   cartId: 'x-cart-id',
+  // Readable (non-httpOnly) markers so client providers can skip the
+  // cart/session server action entirely when no cookie-backed state exists.
+  // They hold no secret, only presence, and are cleared with their source cookie.
+  cartPresent: 'x-has-cart',
   delegateToken: 'shopify-delegate-token',
+  sessionPresent: 'x-has-session',
   shopifyToken: 'shopify-storefront-access-token',
   shopifyTokenExpire: 'shopify-access-token-expire',
 };

@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { adminSdk, storefrontSdk } from '@/shopify';
 import type { ProductFieldsFragment } from '@/shopify/storefront';

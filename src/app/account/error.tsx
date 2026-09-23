@@ -12,10 +12,10 @@ import { reportError } from '@/lib/logger';
 
 const AccountError = ({
   error,
-  reset,
+  retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  retry: () => void;
 }) => {
   useEffect(() => {
     reportError('app/account-error-boundary', error, { digest: error.digest });
@@ -36,7 +36,7 @@ const AccountError = ({
             'Contact support if the problem continues',
           ]}
           primaryAction={
-            <Button onClick={reset} variant="default">
+            <Button onClick={() => retry()} variant="default">
               Try again
             </Button>
           }

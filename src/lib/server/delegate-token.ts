@@ -1,3 +1,5 @@
+import 'server-only';
+
 import config from '@/config';
 import { adminSdk } from '@/shopify/admin-client';
 import { safeLogError } from '@/utils/api-responses';
