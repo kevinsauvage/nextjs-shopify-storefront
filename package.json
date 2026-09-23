@@ -7,8 +7,8 @@
     "node": "24.x"
   },
   "scripts": {
-    "dev": "next dev --turbo",
-    "build": "yarn codegen && next build --turbo",
+    "dev": "next dev",
+    "build": "yarn codegen && next build",
     "analyze": "next experimental-analyze",
     "start": "next start",
     "typegen": "next typegen",

@@ -2,22 +2,14 @@
 
 ## 0. Upgrade hygiene (do first)
 
-- [ ] **P0 — Silence the Turbopack root warning.** `next dev`/`next build` both print:
-      _"Next.js ignored pnpm-lock.yaml in /Users/ksauvage because it is outside the current Git
-      repository. To use this directory, set `turbopack.root`."_
+- [x] **P0 — DONE: Silence the Turbopack root warning.** `next.config.ts` now pins
+      `turbopack: { root: import.meta.dirname }`. Verified: `next dev` and `next build` on 16.3.6
+      no longer print the *"ignored pnpm-lock.yaml … set `turbopack.root`"* warning.
       Doc: `01-app/03-api-reference/05-config/01-next-config-js/turbopack.md` → _Root directory_.
-      Fix in `next.config.ts`:
-      `ts
-turbopack: { root: import.meta.dirname }, // or path.resolve(process.cwd())
-`
-      (Root cause: a stray `pnpm-lock.yaml` in the home directory. Removing it also fixes this,
-      but the docs' supported fix is `turbopack.root`.)
 
-- [ ] **P0 — Drop the now-redundant Turbopack flags.** Turbopack is the default in 16; `--turbo`
-      on `dev`/`build` is no longer needed. Doc: `01-app/02-guides/upgrading/version-16.md` →
-      _Turbopack by default_.
-      `package.json`: `"dev": "next dev --turbo"` → `"next dev"`, `"build": "yarn codegen && next
-build --turbo"` → `... next build`.
+- [x] **P0 — DONE: Drop the now-redundant Turbopack flags.** `package.json` scripts are now
+      `"dev": "next dev"` and `"build": "yarn codegen && next build"` (Turbopack is the 16 default).
+      Doc: `01-app/02-guides/upgrading/version-16.md` → _Turbopack by default_.
 
 ---
 

@@ -3,6 +3,12 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   poweredByHeader: false,
 
+  // Pin Turbopack's root to this project so a stray lockfile in a parent
+  // directory (e.g. ~/pnpm-lock.yaml) cannot be mistaken for the workspace root.
+  turbopack: {
+    root: import.meta.dirname,
+  },
+
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
   },
