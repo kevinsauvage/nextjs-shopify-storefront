@@ -26,13 +26,16 @@
 
 ## 3. Data security & server/client boundary
 
-- [ ] **P1 — DEFERRED: Make generated enums type-only for client safety.** `codegen.storefront.ts` does not
-      set `enumsAsTypes`, so `src/shopify/storefront/index.ts` emits runtime `export enum`
-      (e.g. `OrderFinancialStatus`). Client components currently import them only via
-      `import type` (verified — no runtime leaks today), but the storefront SDK still shares one
-      module with the token-bearing `src/shopify/index.ts` graph. Set `enumsAsTypes: true` in the
-      codegen config (or split types from the SDK) so a future non-type import cannot pull the
-      SDK/token into a client bundle. Doc: `05-server-and-client-components.md`.
+- [x] **P1 — DONE: Make generated enums type-only for client safety.** `enumsAsTypes: true` added to
+      `codegen.storefront.ts` and the SDK regenerated — `src/shopify/storefront/index.ts` now has
+      **0** runtime `export enum` (all string-literal unions), so a stray value import can no longer
+      pull the SDK/graphql-request into a client bundle. The 7 runtime enum usages were replaced
+      with string literals (`page.tsx`, `collections/page.tsx`, `[collectionSlug]/page.tsx`,
+      `search/page.tsx`, `account/orders/page.tsx`, `lib/server/account.ts`,
+      `lib/server/collection.ts`). Bonus fix: `resolveCollectionSortKey`/`resolveSearchSortKey` now
+      match enum **values** (`best-selling` ≡ `BEST_SELLING`) instead of member names, so sorting
+      actually takes effect server-side. Admin SDK left as-is (server-only). Doc:
+      `05-server-and-client-components.md`.
 
 - [ ] **P2 — Enable React Taint.** `experimental.taint` is off; `data-security.md` recommends
       `experimental_taintUniqueValue` / `experimental_taintObjectReference` for secrets
@@ -60,13 +63,3 @@
 - [ ] **P2 — Use `useOptimistic` for wishlist/cart toggles.** Docs recommend optimistic UI for
       mutations (`forms.md:386`); the current rollback logic also has a concurrency bug
       (`todo.md` #4).
-
-## 7. Optional next-gen features (evaluate, not required)
-
-- [ ] **P2 — React Compiler.** Stable in 16 but opt-in; install `babel-plugin-react-compiler` and
-      set `reactCompiler: true` to auto-memoize. Expect slower builds. Doc:
-      `05-config/01-next-config-js/reactCompiler.md`.
-
-- [ ] **P2 — View Transitions / Partial Prefetching.** `react`'s `ViewTransition` is available in
-      the bundled canary; useful for PDP/gallery morphs. Docs: `02-guides/view-transitions.md`,
-      `adopting-partial-prefetching.md`, `instant-navigation.md`.

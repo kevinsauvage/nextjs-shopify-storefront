@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import config from '@/config';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
 import { storefrontSdk } from '@/shopify/index';
-import { CollectionSortKeys } from '@/shopify/storefront/index';
 
 export const metadata: Metadata = generateMetadataUtil({
   title: 'Collections',
@@ -20,7 +19,7 @@ const CollectionsPage = async () => {
     first: 100,
     firstProducts: 1,
     identifiers: [],
-    sortKey: CollectionSortKeys.Title,
+    sortKey: 'TITLE',
   });
 
   const collections = response.collections.edges;

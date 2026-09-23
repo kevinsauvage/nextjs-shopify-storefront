@@ -18,11 +18,21 @@ import {
   parseFiltersQuery,
 } from '@/shopify/helpers';
 import { storefrontSdk } from '@/shopify/index';
-import type { ProductFieldsFragment, SearchProductsQuery } from '@/shopify/storefront';
-import { SearchSortKeys } from '@/shopify/storefront';
+import type { ProductFieldsFragment, SearchProductsQuery, SearchSortKeys } from '@/shopify/storefront';
 
 import Filters from '../collections/_components/Filters';
 import Sort from '../collections/_components/Sort';
+
+/** Valid `SearchSortKeys` values, for runtime query-param parsing. */
+const SEARCH_SORT_KEYS = ['PRICE', 'RELEVANCE'] as const satisfies readonly SearchSortKeys[];
+
+const normalizeSortKey = (value: string): string => value.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+const resolveSearchSortKey = (raw?: string): SearchSortKeys => {
+  const normalized = raw ? normalizeSortKey(raw) : '';
+
+  return SEARCH_SORT_KEYS.find((key) => normalizeSortKey(key) === normalized) ?? 'RELEVANCE';
+};
 
 export const metadata: Metadata = generateMetadataUtil({
   title: seo.search.title,
@@ -44,10 +54,6 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
   const searchParameters = await searchParams;
   const hasQuery = Boolean(searchParameters.searchQuery?.trim());
 
-  const sortKey = Object.keys(SearchSortKeys).find(
-    (key) => key.toLowerCase() === searchParameters.sort_key?.toLowerCase(),
-  ) as keyof typeof SearchSortKeys;
-
   const response: SearchProductsQuery = await storefrontSdk().searchProducts({
     ...adjustPaginationVariables({
       after: searchParameters.after,
@@ -57,7 +63,7 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
     identifiers: [],
     productFilters: parseFiltersQuery(searchParameters?.filters),
     query: buildShopifySearchQuery(searchParameters.searchQuery),
-    sortKey: SearchSortKeys[sortKey] || SearchSortKeys.Relevance,
+    sortKey: resolveSearchSortKey(searchParameters.sort_key),
   });
 
   const { pageInfo } = response.search;
@@ -70,11 +76,11 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
   const sortingOptions = [
     {
       label: 'Relevance',
-      name: SearchSortKeys.Relevance,
+      name: 'RELEVANCE',
     },
     {
       label: 'Price, low to high',
-      name: SearchSortKeys.Price,
+      name: 'PRICE',
     },
   ];
 
@@ -119,7 +125,7 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 space-y-6">
           <ListingHeader>
             <Sort
-              query={{ sort_key: searchParameters?.sort_key || SearchSortKeys.Relevance }}
+              query={{ sort_key: searchParameters?.sort_key || 'RELEVANCE' }}
               sortingOptions={sortingOptions}
             />
             <Filters filters={filters} query={searchParameters} />

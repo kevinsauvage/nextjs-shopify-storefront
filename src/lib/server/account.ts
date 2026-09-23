@@ -2,7 +2,6 @@ import 'server-only';
 
 import { storefrontSdk } from '@/shopify';
 import type { GetCustomerOrdersQuery } from '@/shopify/storefront';
-import { LanguageCode, OrderSortKeys } from '@/shopify/storefront';
 
 export type AccountStats = {
   addressesCount: number;
@@ -20,9 +19,9 @@ export const getAccountStats = async (customerAccessToken: string): Promise<Acco
       customerAccessToken,
       first: 3,
       identifiers: [],
-      language: LanguageCode.En,
+      language: 'EN',
       reverse: true,
-      sortKey: OrderSortKeys.ProcessedAt,
+      sortKey: 'PROCESSED_AT',
     }),
     storefrontSdk('private').getCustomerAddresses({
       customerAccessToken,

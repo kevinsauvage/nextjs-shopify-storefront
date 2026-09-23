@@ -13202,6 +13202,8 @@ export enum MarketUserErrorCode {
   SpecifiedNotValidForInput = 'SPECIFIED_NOT_VALID_FOR_INPUT',
   /** The subdivision doesn't exist. */
   SubdivisionDoesNotExist = 'SUBDIVISION_DOES_NOT_EXIST',
+  /** A market that includes a subdivision requires another market that includes the whole country. If the subdivision market is active, the country market must also be active. */
+  SubdivisionMarketRequiresCountryCoverage = 'SUBDIVISION_MARKET_REQUIRES_COUNTRY_COVERAGE',
   /** The selected subdivision does not belong to the selected country. */
   SubdivisionMustBelongToCountry = 'SUBDIVISION_MUST_BELONG_TO_COUNTRY',
   /** The subfolder suffix is invalid, please provide a different value. */

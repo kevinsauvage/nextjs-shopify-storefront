@@ -5,28 +5,24 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = {
-  [_ in K]?: never;
-};
-export type Incremental<T> =
-  | T
-  | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 type GraphQLClientRequestHeaders = RequestOptions['requestHeaders'];
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string };
-  String: { input: string; output: string };
-  Boolean: { input: boolean; output: boolean };
-  Int: { input: number; output: number };
-  Float: { input: number; output: number };
-  Color: { input: string; output: string };
-  DateTime: { input: string; output: string };
-  Decimal: { input: string; output: string };
-  HTML: { input: string; output: string };
-  ISO8601DateTime: { input: string; output: string };
-  JSON: { input: any; output: any };
-  URL: { input: string; output: string };
-  UnsignedInt64: { input: string; output: string };
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  Color: { input: string; output: string; }
+  DateTime: { input: string; output: string; }
+  Decimal: { input: string; output: string; }
+  HTML: { input: string; output: string; }
+  ISO8601DateTime: { input: string; output: string; }
+  JSON: { input: any; output: any; }
+  URL: { input: string; output: string; }
+  UnsignedInt64: { input: string; output: string; }
 };
 
 /**
@@ -110,56 +106,54 @@ export type AppliedGiftCard = Node & {
  * Articles can be organized with tags and include [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) metadata. You can manage [comments](https://shopify.dev/docs/api/storefront/current/objects/Comment) when the blog's comment policy enables them.
  *
  */
-export type Article = HasMetafields &
-  Node &
-  OnlineStorePublishable &
-  Trackable & {
-    __typename?: 'Article';
-    /**
-     * The article's author.
-     * @deprecated Use `authorV2` instead.
-     */
-    author: ArticleAuthor;
-    /** The article's author. */
-    authorV2?: Maybe<ArticleAuthor>;
-    /** The blog that the article belongs to. */
-    blog: Blog;
-    /** List of comments posted on the article. */
-    comments: CommentConnection;
-    /** Stripped content of the article, single line with HTML tags removed. */
-    content: Scalars['String']['output'];
-    /** The content of the article, complete with HTML formatting. */
-    contentHtml: Scalars['HTML']['output'];
-    /** Stripped excerpt of the article, single line with HTML tags removed. */
-    excerpt?: Maybe<Scalars['String']['output']>;
-    /** The excerpt of the article, complete with HTML formatting. */
-    excerptHtml?: Maybe<Scalars['HTML']['output']>;
-    /** A human-friendly unique string for the Article automatically generated from its title. */
-    handle: Scalars['String']['output'];
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** The image associated with the article. */
-    image?: Maybe<Image>;
-    /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
-    metafield?: Maybe<Metafield>;
-    /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
-    metafields: Array<Maybe<Metafield>>;
-    /** The URL used for viewing the resource on the shop's Online Store. Returns `null` if the resource is currently not published to the Online Store sales channel. */
-    onlineStoreUrl?: Maybe<Scalars['URL']['output']>;
-    /** The date and time when the article was published. */
-    publishedAt: Scalars['DateTime']['output'];
-    /** The article’s SEO information. */
-    seo?: Maybe<Seo>;
-    /**
-     * A categorization that a article can be tagged with.
-     *
-     */
-    tags: Array<Scalars['String']['output']>;
-    /** The article’s name. */
-    title: Scalars['String']['output'];
-    /** URL parameters to be added to a page URL to track the origin of on-site search traffic for [analytics reporting](https://help.shopify.com/manual/reports-and-analytics/shopify-reports/report-types/default-reports/behaviour-reports). Returns a result when accessed through the [search](https://shopify.dev/docs/api/storefront/current/queries/search) or [predictiveSearch](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch) queries, otherwise returns null. */
-    trackingParameters?: Maybe<Scalars['String']['output']>;
-  };
+export type Article = HasMetafields & Node & OnlineStorePublishable & Trackable & {
+  __typename?: 'Article';
+  /**
+   * The article's author.
+   * @deprecated Use `authorV2` instead.
+   */
+  author: ArticleAuthor;
+  /** The article's author. */
+  authorV2?: Maybe<ArticleAuthor>;
+  /** The blog that the article belongs to. */
+  blog: Blog;
+  /** List of comments posted on the article. */
+  comments: CommentConnection;
+  /** Stripped content of the article, single line with HTML tags removed. */
+  content: Scalars['String']['output'];
+  /** The content of the article, complete with HTML formatting. */
+  contentHtml: Scalars['HTML']['output'];
+  /** Stripped excerpt of the article, single line with HTML tags removed. */
+  excerpt?: Maybe<Scalars['String']['output']>;
+  /** The excerpt of the article, complete with HTML formatting. */
+  excerptHtml?: Maybe<Scalars['HTML']['output']>;
+  /** A human-friendly unique string for the Article automatically generated from its title. */
+  handle: Scalars['String']['output'];
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** The image associated with the article. */
+  image?: Maybe<Image>;
+  /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
+  metafield?: Maybe<Metafield>;
+  /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
+  metafields: Array<Maybe<Metafield>>;
+  /** The URL used for viewing the resource on the shop's Online Store. Returns `null` if the resource is currently not published to the Online Store sales channel. */
+  onlineStoreUrl?: Maybe<Scalars['URL']['output']>;
+  /** The date and time when the article was published. */
+  publishedAt: Scalars['DateTime']['output'];
+  /** The article’s SEO information. */
+  seo?: Maybe<Seo>;
+  /**
+   * A categorization that a article can be tagged with.
+   *
+   */
+  tags: Array<Scalars['String']['output']>;
+  /** The article’s name. */
+  title: Scalars['String']['output'];
+  /** URL parameters to be added to a page URL to track the origin of on-site search traffic for [analytics reporting](https://help.shopify.com/manual/reports-and-analytics/shopify-reports/report-types/default-reports/behaviour-reports). Returns a result when accessed through the [search](https://shopify.dev/docs/api/storefront/current/queries/search) or [predictiveSearch](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch) queries, otherwise returns null. */
+  trackingParameters?: Maybe<Scalars['String']['output']>;
+};
+
 
 /**
  * A post that belongs to a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog). Each article includes content with optional HTML formatting, an excerpt for previews, [`ArticleAuthor`](https://shopify.dev/docs/api/storefront/current/objects/ArticleAuthor) information, and an associated [`Image`](https://shopify.dev/docs/api/storefront/current/objects/Image).
@@ -175,6 +169,7 @@ export type ArticleCommentsArgs = {
   reverse?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+
 /**
  * A post that belongs to a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog). Each article includes content with optional HTML formatting, an excerpt for previews, [`ArticleAuthor`](https://shopify.dev/docs/api/storefront/current/objects/ArticleAuthor) information, and an associated [`Image`](https://shopify.dev/docs/api/storefront/current/objects/Image).
  *
@@ -184,6 +179,7 @@ export type ArticleCommentsArgs = {
 export type ArticleContentArgs = {
   truncateAt?: InputMaybe<Scalars['Int']['input']>;
 };
+
 
 /**
  * A post that belongs to a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog). Each article includes content with optional HTML formatting, an excerpt for previews, [`ArticleAuthor`](https://shopify.dev/docs/api/storefront/current/objects/ArticleAuthor) information, and an associated [`Image`](https://shopify.dev/docs/api/storefront/current/objects/Image).
@@ -195,6 +191,7 @@ export type ArticleExcerptArgs = {
   truncateAt?: InputMaybe<Scalars['Int']['input']>;
 };
 
+
 /**
  * A post that belongs to a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog). Each article includes content with optional HTML formatting, an excerpt for previews, [`ArticleAuthor`](https://shopify.dev/docs/api/storefront/current/objects/ArticleAuthor) information, and an associated [`Image`](https://shopify.dev/docs/api/storefront/current/objects/Image).
  *
@@ -205,6 +202,7 @@ export type ArticleMetafieldArgs = {
   key: Scalars['String']['input'];
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /**
  * A post that belongs to a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog). Each article includes content with optional HTML formatting, an excerpt for previews, [`ArticleAuthor`](https://shopify.dev/docs/api/storefront/current/objects/ArticleAuthor) information, and an associated [`Image`](https://shopify.dev/docs/api/storefront/current/objects/Image).
@@ -258,26 +256,25 @@ export type ArticleEdge = {
 };
 
 /** The set of valid sort keys for the Article query. */
-export enum ArticleSortKeys {
+export type ArticleSortKeys =
   /** Sort by the `author` value. */
-  Author = 'AUTHOR',
+  | 'AUTHOR'
   /** Sort by the `blog_title` value. */
-  BlogTitle = 'BLOG_TITLE',
+  | 'BLOG_TITLE'
   /** Sort by the `id` value. */
-  Id = 'ID',
+  | 'ID'
   /** Sort by the `published_at` value. */
-  PublishedAt = 'PUBLISHED_AT',
+  | 'PUBLISHED_AT'
   /**
    * Sort by relevance to the search terms when the `query` parameter is specified on the connection.
    * Don't use this sort key when no search query is specified.
    *
    */
-  Relevance = 'RELEVANCE',
+  | 'RELEVANCE'
   /** Sort by the `title` value. */
-  Title = 'TITLE',
+  | 'TITLE'
   /** Sort by the `updated_at` value. */
-  UpdatedAt = 'UPDATED_AT',
-}
+  | 'UPDATED_AT';
 
 /**
  * A custom key-value pair for storing additional information on [carts](https://shopify.dev/docs/api/storefront/current/objects/Cart), [cart lines](https://shopify.dev/docs/api/storefront/current/objects/CartLine), [orders](https://shopify.dev/docs/api/storefront/current/objects/Order), and [order line items](https://shopify.dev/docs/api/storefront/current/objects/OrderLineItem). Common uses include gift wrapping requests, customer notes, and tracking whether a customer is a first-time buyer.
@@ -384,6 +381,7 @@ export type BaseCartLine = {
   viewKey?: Maybe<Scalars['String']['output']>;
 };
 
+
 /**
  * Defines the shared fields for items in a shopping cart. Implemented by [`CartLine`](https://shopify.dev/docs/api/storefront/current/objects/CartLine) for individual merchandise and [`ComponentizableCartLine`](https://shopify.dev/docs/api/storefront/current/objects/ComponentizableCartLine) for grouped merchandise like bundles.
  *
@@ -393,6 +391,7 @@ export type BaseCartLine = {
 export type BaseCartLineAttributeArgs = {
   key: Scalars['String']['input'];
 };
+
 
 /**
  * Defines the shared fields for items in a shopping cart. Implemented by [`CartLine`](https://shopify.dev/docs/api/storefront/current/objects/CartLine) for individual merchandise and [`ComponentizableCartLine`](https://shopify.dev/docs/api/storefront/current/objects/ComponentizableCartLine) for grouped merchandise like bundles.
@@ -436,34 +435,33 @@ export type BaseCartLineEdge = {
  * Each blog provides access to its articles, contributing [`ArticleAuthor`](https://shopify.dev/docs/api/storefront/current/objects/ArticleAuthor) objects, and [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) information. You can retrieve articles individually [by handle](https://shopify.dev/docs/api/storefront/current/objects/Blog#field-Blog.fields.articleByHandle) or as a [paginated list](https://shopify.dev/docs/api/storefront/current/objects/Blog#field-Blog.fields.articles).
  *
  */
-export type Blog = HasMetafields &
-  Node &
-  OnlineStorePublishable & {
-    __typename?: 'Blog';
-    /** Find an article by its handle. */
-    articleByHandle?: Maybe<Article>;
-    /** List of the blog's articles. */
-    articles: ArticleConnection;
-    /** The authors who have contributed to the blog. */
-    authors: Array<ArticleAuthor>;
-    /**
-     * A human-friendly unique string for the Blog automatically generated from its title.
-     *
-     */
-    handle: Scalars['String']['output'];
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
-    metafield?: Maybe<Metafield>;
-    /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
-    metafields: Array<Maybe<Metafield>>;
-    /** The URL used for viewing the resource on the shop's Online Store. Returns `null` if the resource is currently not published to the Online Store sales channel. */
-    onlineStoreUrl?: Maybe<Scalars['URL']['output']>;
-    /** The blog's SEO information. */
-    seo?: Maybe<Seo>;
-    /** The blogs’s title. */
-    title: Scalars['String']['output'];
-  };
+export type Blog = HasMetafields & Node & OnlineStorePublishable & {
+  __typename?: 'Blog';
+  /** Find an article by its handle. */
+  articleByHandle?: Maybe<Article>;
+  /** List of the blog's articles. */
+  articles: ArticleConnection;
+  /** The authors who have contributed to the blog. */
+  authors: Array<ArticleAuthor>;
+  /**
+   * A human-friendly unique string for the Blog automatically generated from its title.
+   *
+   */
+  handle: Scalars['String']['output'];
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
+  metafield?: Maybe<Metafield>;
+  /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
+  metafields: Array<Maybe<Metafield>>;
+  /** The URL used for viewing the resource on the shop's Online Store. Returns `null` if the resource is currently not published to the Online Store sales channel. */
+  onlineStoreUrl?: Maybe<Scalars['URL']['output']>;
+  /** The blog's SEO information. */
+  seo?: Maybe<Seo>;
+  /** The blogs’s title. */
+  title: Scalars['String']['output'];
+};
+
 
 /**
  * A blog container for [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) objects. Stores can have multiple blogs, for example to organize content by topic or purpose.
@@ -474,6 +472,7 @@ export type Blog = HasMetafields &
 export type BlogArticleByHandleArgs = {
   handle: Scalars['String']['input'];
 };
+
 
 /**
  * A blog container for [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) objects. Stores can have multiple blogs, for example to organize content by topic or purpose.
@@ -491,6 +490,7 @@ export type BlogArticlesArgs = {
   sortKey?: InputMaybe<ArticleSortKeys>;
 };
 
+
 /**
  * A blog container for [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) objects. Stores can have multiple blogs, for example to organize content by topic or purpose.
  *
@@ -501,6 +501,7 @@ export type BlogMetafieldArgs = {
   key: Scalars['String']['input'];
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /**
  * A blog container for [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) objects. Stores can have multiple blogs, for example to organize content by topic or purpose.
@@ -539,20 +540,19 @@ export type BlogEdge = {
 };
 
 /** The set of valid sort keys for the Blog query. */
-export enum BlogSortKeys {
+export type BlogSortKeys =
   /** Sort by the `handle` value. */
-  Handle = 'HANDLE',
+  | 'HANDLE'
   /** Sort by the `id` value. */
-  Id = 'ID',
+  | 'ID'
   /**
    * Sort by relevance to the search terms when the `query` parameter is specified on the connection.
    * Don't use this sort key when no search query is specified.
    *
    */
-  Relevance = 'RELEVANCE',
+  | 'RELEVANCE'
   /** Sort by the `title` value. */
-  Title = 'TITLE',
-}
+  | 'TITLE';
 
 /**
  * The store's [branding configuration](https://help.shopify.com/manual/promoting-marketing/managing-brand-assets), such as logos, colors, and slogan. Access this through the [`Shop`](https://shopify.dev/docs/api/storefront/current/objects/Shop#field-Shop.fields.brand) object to display consistent brand assets across your storefront.
@@ -612,20 +612,19 @@ export type BuyerInput = {
 };
 
 /** Card brand, such as Visa or Mastercard, which can be used for payments. */
-export enum CardBrand {
+export type CardBrand =
   /** American Express. */
-  AmericanExpress = 'AMERICAN_EXPRESS',
+  | 'AMERICAN_EXPRESS'
   /** Diners Club. */
-  DinersClub = 'DINERS_CLUB',
+  | 'DINERS_CLUB'
   /** Discover. */
-  Discover = 'DISCOVER',
+  | 'DISCOVER'
   /** JCB. */
-  Jcb = 'JCB',
+  | 'JCB'
   /** Mastercard. */
-  Mastercard = 'MASTERCARD',
+  | 'MASTERCARD'
   /** Visa. */
-  Visa = 'VISA',
-}
+  | 'VISA';
 
 /**
  * A cart represents the merchandise that a buyer intends to purchase, and the estimated cost associated with the cart, throughout a customer's session.
@@ -635,60 +634,60 @@ export enum CardBrand {
  * Learn more about [interacting with carts](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/cart/manage).
  *
  */
-export type Cart = HasMetafields &
-  Node & {
-    __typename?: 'Cart';
-    /** The gift cards that have been applied to the cart. */
-    appliedGiftCards: Array<AppliedGiftCard>;
-    /** An attribute associated with the cart. */
-    attribute?: Maybe<Attribute>;
-    /** The attributes associated with the cart. Attributes are represented as key-value pairs. */
-    attributes: Array<Attribute>;
-    /** Information about the buyer that's interacting with the cart. */
-    buyerIdentity: CartBuyerIdentity;
-    /** The URL of the checkout for the cart. */
-    checkoutUrl: Scalars['URL']['output'];
-    /** The estimated costs that the buyer will pay at checkout. The costs are subject to change and changes will be reflected at checkout. The `cost` field uses the `buyerIdentity` field to determine [international pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing). */
-    cost: CartCost;
-    /** The date and time when the cart was created. */
-    createdAt: Scalars['DateTime']['output'];
-    /** The delivery properties of the cart. */
-    delivery: CartDelivery;
-    /**
-     * The delivery groups available for the cart, based on the buyer identity default
-     * delivery address preference or the default address of the logged-in customer.
-     *
-     */
-    deliveryGroups: CartDeliveryGroupConnection;
-    /**
-     * The discounts that have been applied to the entire cart.
-     * @deprecated Use `cart.lines[].discountAllocations(lineLevelOnly: false)` and `cart.deliveryGroups[].discountAllocations` instead.
-     */
-    discountAllocations: Array<CartDiscountAllocation>;
-    /** The discount applications applied to the cart. */
-    discountApplications: Array<BaseCartDiscountApplication>;
-    /** The case-insensitive discount codes that the customer added at checkout. */
-    discountCodes: Array<CartDiscountCode>;
-    /**
-     * The estimated costs that the buyer will pay at checkout. The estimated costs are subject to change and changes will be reflected at checkout. The `estimatedCost` field uses the `buyerIdentity` field to determine [international pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
-     * @deprecated Use `cost` instead.
-     */
-    estimatedCost: CartEstimatedCost;
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** A list of lines containing information about the items the customer intends to purchase. */
-    lines: BaseCartLineConnection;
-    /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
-    metafield?: Maybe<Metafield>;
-    /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
-    metafields: Array<Maybe<Metafield>>;
-    /** A note that's associated with the cart. For example, the note can be a personalized message to the buyer. */
-    note?: Maybe<Scalars['String']['output']>;
-    /** The total number of items in the cart. */
-    totalQuantity: Scalars['Int']['output'];
-    /** The date and time when the cart was updated. */
-    updatedAt: Scalars['DateTime']['output'];
-  };
+export type Cart = HasMetafields & Node & {
+  __typename?: 'Cart';
+  /** The gift cards that have been applied to the cart. */
+  appliedGiftCards: Array<AppliedGiftCard>;
+  /** An attribute associated with the cart. */
+  attribute?: Maybe<Attribute>;
+  /** The attributes associated with the cart. Attributes are represented as key-value pairs. */
+  attributes: Array<Attribute>;
+  /** Information about the buyer that's interacting with the cart. */
+  buyerIdentity: CartBuyerIdentity;
+  /** The URL of the checkout for the cart. */
+  checkoutUrl: Scalars['URL']['output'];
+  /** The estimated costs that the buyer will pay at checkout. The costs are subject to change and changes will be reflected at checkout. The `cost` field uses the `buyerIdentity` field to determine [international pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing). */
+  cost: CartCost;
+  /** The date and time when the cart was created. */
+  createdAt: Scalars['DateTime']['output'];
+  /** The delivery properties of the cart. */
+  delivery: CartDelivery;
+  /**
+   * The delivery groups available for the cart, based on the buyer identity default
+   * delivery address preference or the default address of the logged-in customer.
+   *
+   */
+  deliveryGroups: CartDeliveryGroupConnection;
+  /**
+   * The discounts that have been applied to the entire cart.
+   * @deprecated Use `cart.lines[].discountAllocations(lineLevelOnly: false)` and `cart.deliveryGroups[].discountAllocations` instead.
+   */
+  discountAllocations: Array<CartDiscountAllocation>;
+  /** The discount applications applied to the cart. */
+  discountApplications: Array<BaseCartDiscountApplication>;
+  /** The case-insensitive discount codes that the customer added at checkout. */
+  discountCodes: Array<CartDiscountCode>;
+  /**
+   * The estimated costs that the buyer will pay at checkout. The estimated costs are subject to change and changes will be reflected at checkout. The `estimatedCost` field uses the `buyerIdentity` field to determine [international pricing](https://shopify.dev/custom-storefronts/internationalization/international-pricing).
+   * @deprecated Use `cost` instead.
+   */
+  estimatedCost: CartEstimatedCost;
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** A list of lines containing information about the items the customer intends to purchase. */
+  lines: BaseCartLineConnection;
+  /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
+  metafield?: Maybe<Metafield>;
+  /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
+  metafields: Array<Maybe<Metafield>>;
+  /** A note that's associated with the cart. For example, the note can be a personalized message to the buyer. */
+  note?: Maybe<Scalars['String']['output']>;
+  /** The total number of items in the cart. */
+  totalQuantity: Scalars['Int']['output'];
+  /** The date and time when the cart was updated. */
+  updatedAt: Scalars['DateTime']['output'];
+};
+
 
 /**
  * A cart represents the merchandise that a buyer intends to purchase, and the estimated cost associated with the cart, throughout a customer's session.
@@ -701,6 +700,7 @@ export type Cart = HasMetafields &
 export type CartAttributeArgs = {
   key: Scalars['String']['input'];
 };
+
 
 /**
  * A cart represents the merchandise that a buyer intends to purchase, and the estimated cost associated with the cart, throughout a customer's session.
@@ -719,6 +719,7 @@ export type CartDeliveryGroupsArgs = {
   withCarrierRates?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+
 /**
  * A cart represents the merchandise that a buyer intends to purchase, and the estimated cost associated with the cart, throughout a customer's session.
  *
@@ -735,6 +736,7 @@ export type CartLinesArgs = {
   reverse?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+
 /**
  * A cart represents the merchandise that a buyer intends to purchase, and the estimated cost associated with the cart, throughout a customer's session.
  *
@@ -747,6 +749,7 @@ export type CartMetafieldArgs = {
   key: Scalars['String']['input'];
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /**
  * A cart represents the merchandise that a buyer intends to purchase, and the estimated cost associated with the cart, throughout a customer's session.
@@ -917,14 +920,13 @@ export type CartBuyerIdentityUpdatePayload = {
  * Represents how credit card details are provided for a direct payment.
  *
  */
-export enum CartCardSource {
+export type CartCardSource =
   /**
    * The credit card was provided by a third party and vaulted on their system.
    * Using this value requires a separate permission from Shopify.
    *
    */
-  SavedCreditCard = 'SAVED_CREDIT_CARD',
-}
+  | 'SAVED_CREDIT_CARD';
 
 /** Return type for `cartClone` mutation. */
 export type CartClonePayload = {
@@ -988,11 +990,7 @@ export type CartCompletionActionRequired = {
 };
 
 /** The result of a cart completion attempt. */
-export type CartCompletionAttemptResult =
-  | CartCompletionActionRequired
-  | CartCompletionFailed
-  | CartCompletionProcessing
-  | CartCompletionSuccess;
+export type CartCompletionAttemptResult = CartCompletionActionRequired | CartCompletionFailed | CartCompletionProcessing | CartCompletionSuccess;
 
 /** A failed completion to checkout a cart. */
 export type CartCompletionFailed = {
@@ -1133,6 +1131,7 @@ export type CartDelivery = {
   addresses: Array<CartSelectableAddress>;
 };
 
+
 /**
  * The delivery properties of the cart.
  *
@@ -1193,6 +1192,7 @@ export type CartDeliveryAddress = {
   /** The zip or postal code of the address. */
   zip?: Maybe<Scalars['String']['output']>;
 };
+
 
 /** Represents a mailing address for customers and shipping. */
 export type CartDeliveryAddressFormattedArgs = {
@@ -1340,6 +1340,7 @@ export type CartDeliveryGroup = {
   selectedDeliveryOption?: Maybe<CartDeliveryOption>;
 };
 
+
 /**
  * Groups cart line items that share the same delivery destination. Each group provides the available [`CartDeliveryOption`](https://shopify.dev/docs/api/storefront/current/objects/CartDeliveryOption) choices for that address, along with the customer's selected option.
  *
@@ -1384,16 +1385,15 @@ export type CartDeliveryGroupEdge = {
  * Defines what type of merchandise is in the delivery group.
  *
  */
-export enum CartDeliveryGroupType {
+export type CartDeliveryGroupType =
   /**
    * The delivery group only contains merchandise that is either a one time purchase or a first delivery of
    * subscription merchandise.
    *
    */
-  OneTimePurchase = 'ONE_TIME_PURCHASE',
+  | 'ONE_TIME_PURCHASE'
   /** The delivery group only contains subscription merchandise. */
-  Subscription = 'SUBSCRIPTION',
-}
+  | 'SUBSCRIPTION';
 
 /** The input fields for the cart's delivery properties. */
 export type CartDeliveryInput = {
@@ -1547,124 +1547,123 @@ export type CartDiscountCodesUpdatePayload = {
  * Error codes returned by [`CartUserError`](https://shopify.dev/docs/api/storefront/current/objects/CartUserError) during cart mutations. Covers validation failures for addresses, quantities, delivery options, merchandise lines, discount codes, and metafields.
  *
  */
-export enum CartErrorCode {
+export type CartErrorCode =
   /** The specified address field contains emojis. */
-  AddressFieldContainsEmojis = 'ADDRESS_FIELD_CONTAINS_EMOJIS',
+  | 'ADDRESS_FIELD_CONTAINS_EMOJIS'
   /** The specified address field contains HTML tags. */
-  AddressFieldContainsHtmlTags = 'ADDRESS_FIELD_CONTAINS_HTML_TAGS',
+  | 'ADDRESS_FIELD_CONTAINS_HTML_TAGS'
   /** The specified address field contains a URL. */
-  AddressFieldContainsUrl = 'ADDRESS_FIELD_CONTAINS_URL',
+  | 'ADDRESS_FIELD_CONTAINS_URL'
   /** The specified address field does not match the expected pattern. */
-  AddressFieldDoesNotMatchExpectedPattern = 'ADDRESS_FIELD_DOES_NOT_MATCH_EXPECTED_PATTERN',
+  | 'ADDRESS_FIELD_DOES_NOT_MATCH_EXPECTED_PATTERN'
   /** The specified address field is required. */
-  AddressFieldIsRequired = 'ADDRESS_FIELD_IS_REQUIRED',
+  | 'ADDRESS_FIELD_IS_REQUIRED'
   /** The specified address field is too long. */
-  AddressFieldIsTooLong = 'ADDRESS_FIELD_IS_TOO_LONG',
+  | 'ADDRESS_FIELD_IS_TOO_LONG'
   /** Bundles and addons cannot be mixed. */
-  BundlesAndAddonsCannotBeMixed = 'BUNDLES_AND_ADDONS_CANNOT_BE_MIXED',
+  | 'BUNDLES_AND_ADDONS_CANNOT_BE_MIXED'
   /** Buyer cannot purchase for company location. */
-  BuyerCannotPurchaseForCompanyLocation = 'BUYER_CANNOT_PURCHASE_FOR_COMPANY_LOCATION',
+  | 'BUYER_CANNOT_PURCHASE_FOR_COMPANY_LOCATION'
   /** The cart is too large to save. */
-  CartTooLarge = 'CART_TOO_LARGE',
+  | 'CART_TOO_LARGE'
   /** The specified gift card recipient is invalid. */
-  GiftCardRecipientInvalid = 'GIFT_CARD_RECIPIENT_INVALID',
+  | 'GIFT_CARD_RECIPIENT_INVALID'
   /** The input value is invalid. */
-  Invalid = 'INVALID',
+  | 'INVALID'
   /** Company location not found or not allowed. */
-  InvalidCompanyLocation = 'INVALID_COMPANY_LOCATION',
+  | 'INVALID_COMPANY_LOCATION'
   /** The delivery address was not found. */
-  InvalidDeliveryAddressId = 'INVALID_DELIVERY_ADDRESS_ID',
+  | 'INVALID_DELIVERY_ADDRESS_ID'
   /** Delivery group was not found in cart. */
-  InvalidDeliveryGroup = 'INVALID_DELIVERY_GROUP',
+  | 'INVALID_DELIVERY_GROUP'
   /** Delivery option was not valid. */
-  InvalidDeliveryOption = 'INVALID_DELIVERY_OPTION',
+  | 'INVALID_DELIVERY_OPTION'
   /** The quantity must be a multiple of the specified increment. */
-  InvalidIncrement = 'INVALID_INCREMENT',
+  | 'INVALID_INCREMENT'
   /** Merchandise line was not found in cart. */
-  InvalidMerchandiseLine = 'INVALID_MERCHANDISE_LINE',
+  | 'INVALID_MERCHANDISE_LINE'
   /** The metafields were not valid. */
-  InvalidMetafields = 'INVALID_METAFIELDS',
+  | 'INVALID_METAFIELDS'
   /** The payment wasn't valid. */
-  InvalidPayment = 'INVALID_PAYMENT',
+  | 'INVALID_PAYMENT'
   /** The payment is invalid. Deferred payment is required. */
-  InvalidPaymentDeferredPaymentRequired = 'INVALID_PAYMENT_DEFERRED_PAYMENT_REQUIRED',
+  | 'INVALID_PAYMENT_DEFERRED_PAYMENT_REQUIRED'
   /** Cannot update payment on an empty cart */
-  InvalidPaymentEmptyCart = 'INVALID_PAYMENT_EMPTY_CART',
+  | 'INVALID_PAYMENT_EMPTY_CART'
   /** The given zip code is invalid for the provided country. */
-  InvalidZipCodeForCountry = 'INVALID_ZIP_CODE_FOR_COUNTRY',
+  | 'INVALID_ZIP_CODE_FOR_COUNTRY'
   /** The given zip code is invalid for the provided province. */
-  InvalidZipCodeForProvince = 'INVALID_ZIP_CODE_FOR_PROVINCE',
+  | 'INVALID_ZIP_CODE_FOR_PROVINCE'
   /** The input value should be less than the maximum value allowed. */
-  LessThan = 'LESS_THAN',
+  | 'LESS_THAN'
   /** The quantity must be below the specified maximum for the item. */
-  MaximumExceeded = 'MAXIMUM_EXCEEDED',
+  | 'MAXIMUM_EXCEEDED'
   /** An error occurred while processing cart transformations. */
-  MerchandiseLineTransformersRunError = 'MERCHANDISE_LINE_TRANSFORMERS_RUN_ERROR',
+  | 'MERCHANDISE_LINE_TRANSFORMERS_RUN_ERROR'
   /** Item cannot be purchased as configured. */
-  MerchandiseNotApplicable = 'MERCHANDISE_NOT_APPLICABLE',
+  | 'MERCHANDISE_NOT_APPLICABLE'
   /** The quantity must be above the specified minimum for the item. */
-  MinimumNotMet = 'MINIMUM_NOT_MET',
+  | 'MINIMUM_NOT_MET'
   /** The customer access token is required when setting a company location. */
-  MissingCustomerAccessToken = 'MISSING_CUSTOMER_ACCESS_TOKEN',
+  | 'MISSING_CUSTOMER_ACCESS_TOKEN'
   /** Missing discount code. */
-  MissingDiscountCode = 'MISSING_DISCOUNT_CODE',
+  | 'MISSING_DISCOUNT_CODE'
   /** Missing note. */
-  MissingNote = 'MISSING_NOTE',
+  | 'MISSING_NOTE'
   /** The note length must be below the specified maximum. */
-  NoteTooLong = 'NOTE_TOO_LONG',
+  | 'NOTE_TOO_LONG'
   /** Only one delivery address can be selected. */
-  OnlyOneDeliveryAddressCanBeSelected = 'ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED',
+  | 'ONLY_ONE_DELIVERY_ADDRESS_CAN_BE_SELECTED'
   /** Cannot reference existing parent lines by variant_id. */
-  ParentLineInvalidReference = 'PARENT_LINE_INVALID_REFERENCE',
+  | 'PARENT_LINE_INVALID_REFERENCE'
   /** Parent line nesting is too deep or circular. */
-  ParentLineNestingTooDeep = 'PARENT_LINE_NESTING_TOO_DEEP',
+  | 'PARENT_LINE_NESTING_TOO_DEEP'
   /** Parent line not found. */
-  ParentLineNotFound = 'PARENT_LINE_NOT_FOUND',
+  | 'PARENT_LINE_NOT_FOUND'
   /** Nested cartlines are blocked due to an incompatibility. */
-  ParentLineOperationBlocked = 'PARENT_LINE_OPERATION_BLOCKED',
+  | 'PARENT_LINE_OPERATION_BLOCKED'
   /** Credit card has expired. */
-  PaymentsCreditCardBaseExpired = 'PAYMENTS_CREDIT_CARD_BASE_EXPIRED',
+  | 'PAYMENTS_CREDIT_CARD_BASE_EXPIRED'
   /** Credit card gateway is not supported. */
-  PaymentsCreditCardBaseGatewayNotSupported = 'PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED',
+  | 'PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED'
   /** Credit card error. */
-  PaymentsCreditCardGeneric = 'PAYMENTS_CREDIT_CARD_GENERIC',
+  | 'PAYMENTS_CREDIT_CARD_GENERIC'
   /** Credit card month is invalid. */
-  PaymentsCreditCardMonthInclusion = 'PAYMENTS_CREDIT_CARD_MONTH_INCLUSION',
+  | 'PAYMENTS_CREDIT_CARD_MONTH_INCLUSION'
   /** Credit card number is invalid. */
-  PaymentsCreditCardNumberInvalid = 'PAYMENTS_CREDIT_CARD_NUMBER_INVALID',
+  | 'PAYMENTS_CREDIT_CARD_NUMBER_INVALID'
   /** Credit card number format is invalid. */
-  PaymentsCreditCardNumberInvalidFormat = 'PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT',
+  | 'PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT'
   /** Credit card verification value is blank. */
-  PaymentsCreditCardVerificationValueBlank = 'PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK',
+  | 'PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK'
   /** Credit card verification value is invalid for card type. */
-  PaymentsCreditCardVerificationValueInvalidForCardType = 'PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE',
+  | 'PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE'
   /** Credit card has expired. */
-  PaymentsCreditCardYearExpired = 'PAYMENTS_CREDIT_CARD_YEAR_EXPIRED',
+  | 'PAYMENTS_CREDIT_CARD_YEAR_EXPIRED'
   /** Credit card expiry year is invalid. */
-  PaymentsCreditCardYearInvalidExpiryYear = 'PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR',
+  | 'PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR'
   /** The payment method is not applicable. */
-  PaymentMethodNotApplicable = 'PAYMENT_METHOD_NOT_APPLICABLE',
+  | 'PAYMENT_METHOD_NOT_APPLICABLE'
   /** The payment method is not supported. */
-  PaymentMethodNotSupported = 'PAYMENT_METHOD_NOT_SUPPORTED',
+  | 'PAYMENT_METHOD_NOT_SUPPORTED'
   /** The delivery group is in a pending state. */
-  PendingDeliveryGroups = 'PENDING_DELIVERY_GROUPS',
+  | 'PENDING_DELIVERY_GROUPS'
   /** The given province cannot be found. */
-  ProvinceNotFound = 'PROVINCE_NOT_FOUND',
+  | 'PROVINCE_NOT_FOUND'
   /** Selling plan is not applicable. */
-  SellingPlanNotApplicable = 'SELLING_PLAN_NOT_APPLICABLE',
+  | 'SELLING_PLAN_NOT_APPLICABLE'
   /** An error occurred while saving the cart. */
-  ServiceUnavailable = 'SERVICE_UNAVAILABLE',
+  | 'SERVICE_UNAVAILABLE'
   /** Too many delivery addresses on Cart. */
-  TooManyDeliveryAddresses = 'TOO_MANY_DELIVERY_ADDRESSES',
+  | 'TOO_MANY_DELIVERY_ADDRESSES'
   /** A general error occurred during address validation. */
-  UnspecifiedAddressError = 'UNSPECIFIED_ADDRESS_ERROR',
+  | 'UNSPECIFIED_ADDRESS_ERROR'
   /** Validation failed. */
-  ValidationCustom = 'VALIDATION_CUSTOM',
+  | 'VALIDATION_CUSTOM'
   /** Variant can only be purchased with a selling plan. */
-  VariantRequiresSellingPlan = 'VARIANT_REQUIRES_SELLING_PLAN',
+  | 'VARIANT_REQUIRES_SELLING_PLAN'
   /** The given zip code is unsupported. */
-  ZipCodeNotSupported = 'ZIP_CODE_NOT_SUPPORTED',
-}
+  | 'ZIP_CODE_NOT_SUPPORTED';
 
 /**
  * The estimated costs that the buyer pays at checkout. Uses [`CartBuyerIdentity`](https://shopify.dev/docs/api/storefront/current/objects/CartBuyerIdentity) to determine [international pricing](https://shopify.dev/docs/custom-storefronts/internationalization/international-pricing).
@@ -1815,37 +1814,37 @@ export type CartInputMetafieldInput = {
  * Cart lines can include custom attributes for additional information like gift wrapping requests, and can be associated with a [`SellingPlanAllocation`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlanAllocation) for purchase options like subscriptions, pre-orders, or try-before-you-buy. The [`instructions`](https://shopify.dev/docs/api/storefront/current/objects/CartLine#field-CartLine.fields.instructions) field indicates whether the line can be removed or have its quantity updated.
  *
  */
-export type CartLine = BaseCartLine &
-  Node & {
-    __typename?: 'CartLine';
-    /** An attribute associated with the cart line. */
-    attribute?: Maybe<Attribute>;
-    /** The attributes associated with the cart line. Attributes are represented as key-value pairs. */
-    attributes: Array<Attribute>;
-    /** The cost of the merchandise that the buyer will pay for at checkout. The costs are subject to change and changes will be reflected at checkout. */
-    cost: CartLineCost;
-    /** The discounts that have been applied to the cart line. */
-    discountAllocations: Array<CartDiscountAllocation>;
-    /**
-     * The estimated cost of the merchandise that the buyer will pay for at checkout. The estimated costs are subject to change and changes will be reflected at checkout.
-     * @deprecated Use `cost` instead.
-     */
-    estimatedCost: CartLineEstimatedCost;
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** The instructions for the line item. */
-    instructions: CartLineInstructions;
-    /** The merchandise that the buyer intends to purchase. */
-    merchandise: Merchandise;
-    /** The parent of the line item. */
-    parentRelationship?: Maybe<CartLineParentRelationship>;
-    /** The quantity of the merchandise that the customer intends to purchase. */
-    quantity: Scalars['Int']['output'];
-    /** The selling plan associated with the cart line and the effect that each selling plan has on variants when they're purchased. */
-    sellingPlanAllocation?: Maybe<SellingPlanAllocation>;
-    /** A stable identifier for the line matching the value exposed in Liquid via the `view_key` filter and accepted as input on `cartLinesUpdate` and `cartLinesRemove`. */
-    viewKey?: Maybe<Scalars['String']['output']>;
-  };
+export type CartLine = BaseCartLine & Node & {
+  __typename?: 'CartLine';
+  /** An attribute associated with the cart line. */
+  attribute?: Maybe<Attribute>;
+  /** The attributes associated with the cart line. Attributes are represented as key-value pairs. */
+  attributes: Array<Attribute>;
+  /** The cost of the merchandise that the buyer will pay for at checkout. The costs are subject to change and changes will be reflected at checkout. */
+  cost: CartLineCost;
+  /** The discounts that have been applied to the cart line. */
+  discountAllocations: Array<CartDiscountAllocation>;
+  /**
+   * The estimated cost of the merchandise that the buyer will pay for at checkout. The estimated costs are subject to change and changes will be reflected at checkout.
+   * @deprecated Use `cost` instead.
+   */
+  estimatedCost: CartLineEstimatedCost;
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** The instructions for the line item. */
+  instructions: CartLineInstructions;
+  /** The merchandise that the buyer intends to purchase. */
+  merchandise: Merchandise;
+  /** The parent of the line item. */
+  parentRelationship?: Maybe<CartLineParentRelationship>;
+  /** The quantity of the merchandise that the customer intends to purchase. */
+  quantity: Scalars['Int']['output'];
+  /** The selling plan associated with the cart line and the effect that each selling plan has on variants when they're purchased. */
+  sellingPlanAllocation?: Maybe<SellingPlanAllocation>;
+  /** A stable identifier for the line matching the value exposed in Liquid via the `view_key` filter and accepted as input on `cartLinesUpdate` and `cartLinesRemove`. */
+  viewKey?: Maybe<Scalars['String']['output']>;
+};
+
 
 /**
  * An item in a customer's [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) representing a product variant they intend to purchase. Each cart line tracks the merchandise, quantity, cost breakdown, and any applied discounts.
@@ -1856,6 +1855,7 @@ export type CartLine = BaseCartLine &
 export type CartLineAttributeArgs = {
   key: Scalars['String']['input'];
 };
+
 
 /**
  * An item in a customer's [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) representing a product variant they intend to purchase. Each cart line tracks the merchandise, quantity, cost breakdown, and any applied discounts.
@@ -2269,11 +2269,7 @@ export type CartSubmitForCompletionPayload = {
 };
 
 /** The result of cart submit completion. */
-export type CartSubmitForCompletionResult =
-  | SubmitAlreadyAccepted
-  | SubmitFailed
-  | SubmitSuccess
-  | SubmitThrottled;
+export type CartSubmitForCompletionResult = SubmitAlreadyAccepted | SubmitFailed | SubmitSuccess | SubmitThrottled;
 
 /**
  * Response signifying that the access to cart request is currently being throttled.
@@ -2327,44 +2323,43 @@ export type CartWarning = {
 };
 
 /** The code for the cart warning. */
-export enum CartWarningCode {
+export type CartWarningCode =
   /** The discount code cannot be honored. */
-  DiscountCodeNotHonoured = 'DISCOUNT_CODE_NOT_HONOURED',
+  | 'DISCOUNT_CODE_NOT_HONOURED'
   /** The discount is currently inactive. */
-  DiscountCurrentlyInactive = 'DISCOUNT_CURRENTLY_INACTIVE',
+  | 'DISCOUNT_CURRENTLY_INACTIVE'
   /** The customer is not eligible for this discount. */
-  DiscountCustomerNotEligible = 'DISCOUNT_CUSTOMER_NOT_ELIGIBLE',
+  | 'DISCOUNT_CUSTOMER_NOT_ELIGIBLE'
   /** The customer's discount usage limit has been reached. */
-  DiscountCustomerUsageLimitReached = 'DISCOUNT_CUSTOMER_USAGE_LIMIT_REACHED',
+  | 'DISCOUNT_CUSTOMER_USAGE_LIMIT_REACHED'
   /** An eligible customer is missing for this discount. */
-  DiscountEligibleCustomerMissing = 'DISCOUNT_ELIGIBLE_CUSTOMER_MISSING',
+  | 'DISCOUNT_ELIGIBLE_CUSTOMER_MISSING'
   /** The purchase type is incompatible with this discount. */
-  DiscountIncompatiblePurchaseType = 'DISCOUNT_INCOMPATIBLE_PURCHASE_TYPE',
+  | 'DISCOUNT_INCOMPATIBLE_PURCHASE_TYPE'
   /** The discount was not found. */
-  DiscountNotFound = 'DISCOUNT_NOT_FOUND',
+  | 'DISCOUNT_NOT_FOUND'
   /** There are no entitled line items for this discount. */
-  DiscountNoEntitledLineItems = 'DISCOUNT_NO_ENTITLED_LINE_ITEMS',
+  | 'DISCOUNT_NO_ENTITLED_LINE_ITEMS'
   /** There are no entitled shipping lines for this discount. */
-  DiscountNoEntitledShippingLines = 'DISCOUNT_NO_ENTITLED_SHIPPING_LINES',
+  | 'DISCOUNT_NO_ENTITLED_SHIPPING_LINES'
   /** The purchase is not in range for this discount. */
-  DiscountPurchaseNotInRange = 'DISCOUNT_PURCHASE_NOT_IN_RANGE',
+  | 'DISCOUNT_PURCHASE_NOT_IN_RANGE'
   /** The quantity is not in range for this discount. */
-  DiscountQuantityNotInRange = 'DISCOUNT_QUANTITY_NOT_IN_RANGE',
+  | 'DISCOUNT_QUANTITY_NOT_IN_RANGE'
   /** The discount usage limit has been reached. */
-  DiscountUsageLimitReached = 'DISCOUNT_USAGE_LIMIT_REACHED',
+  | 'DISCOUNT_USAGE_LIMIT_REACHED'
   /** A delivery address with the same details already exists on this cart. */
-  DuplicateDeliveryAddress = 'DUPLICATE_DELIVERY_ADDRESS',
+  | 'DUPLICATE_DELIVERY_ADDRESS'
   /** The merchandise does not have enough stock. */
-  MerchandiseNotEnoughStock = 'MERCHANDISE_NOT_ENOUGH_STOCK',
+  | 'MERCHANDISE_NOT_ENOUGH_STOCK'
   /** The merchandise is out of stock. */
-  MerchandiseOutOfStock = 'MERCHANDISE_OUT_OF_STOCK',
+  | 'MERCHANDISE_OUT_OF_STOCK'
   /** Only one-time purchase is available for B2B orders. */
-  MerchandiseSellingPlanNotApplicableOnCompanyLocation = 'MERCHANDISE_SELLING_PLAN_NOT_APPLICABLE_ON_COMPANY_LOCATION',
+  | 'MERCHANDISE_SELLING_PLAN_NOT_APPLICABLE_ON_COMPANY_LOCATION'
   /** Gift cards are not available as a payment method. */
-  PaymentsGiftCardsUnavailable = 'PAYMENTS_GIFT_CARDS_UNAVAILABLE',
+  | 'PAYMENTS_GIFT_CARDS_UNAVAILABLE'
   /** The product is unavailable in the current buyer location. */
-  ProductUnavailableInBuyerLocation = 'PRODUCT_UNAVAILABLE_IN_BUYER_LOCATION',
-}
+  | 'PRODUCT_UNAVAILABLE_IN_BUYER_LOCATION';
 
 /**
  * A filter used to view a subset of products in a collection matching a specific category value.
@@ -2381,42 +2376,40 @@ export type CategoryFilter = {
  * Query a collection's products with [filtering options](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-collections/filter-products) like availability, price range, vendor, and tags. Each collection includes [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) information, an optional [`Image`](https://shopify.dev/docs/api/storefront/current/objects/Image), and supports custom data through [`metafields`](https://shopify.dev/docs/api/storefront/current/objects/Metafield).
  *
  */
-export type Collection = HasMetafields &
-  Node &
-  OnlineStorePublishable &
-  Trackable & {
-    __typename?: 'Collection';
-    /** Stripped description of the collection, single line with HTML tags removed. */
-    description: Scalars['String']['output'];
-    /** The description of the collection, complete with HTML formatting. */
-    descriptionHtml: Scalars['HTML']['output'];
-    /**
-     * A human-friendly unique string for the collection automatically generated from its title.
-     * Limit of 255 characters.
-     *
-     */
-    handle: Scalars['String']['output'];
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** Image associated with the collection. */
-    image?: Maybe<Image>;
-    /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
-    metafield?: Maybe<Metafield>;
-    /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
-    metafields: Array<Maybe<Metafield>>;
-    /** The URL used for viewing the resource on the shop's Online Store. Returns `null` if the resource is currently not published to the Online Store sales channel. */
-    onlineStoreUrl?: Maybe<Scalars['URL']['output']>;
-    /** List of products in the collection. */
-    products: ProductConnection;
-    /** The collection's SEO information. */
-    seo: Seo;
-    /** The collection’s name. Limit of 255 characters. */
-    title: Scalars['String']['output'];
-    /** URL parameters to be added to a page URL to track the origin of on-site search traffic for [analytics reporting](https://help.shopify.com/manual/reports-and-analytics/shopify-reports/report-types/default-reports/behaviour-reports). Returns a result when accessed through the [search](https://shopify.dev/docs/api/storefront/current/queries/search) or [predictiveSearch](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch) queries, otherwise returns null. */
-    trackingParameters?: Maybe<Scalars['String']['output']>;
-    /** The date and time when the collection was last modified. */
-    updatedAt: Scalars['DateTime']['output'];
-  };
+export type Collection = HasMetafields & Node & OnlineStorePublishable & Trackable & {
+  __typename?: 'Collection';
+  /** Stripped description of the collection, single line with HTML tags removed. */
+  description: Scalars['String']['output'];
+  /** The description of the collection, complete with HTML formatting. */
+  descriptionHtml: Scalars['HTML']['output'];
+  /**
+   * A human-friendly unique string for the collection automatically generated from its title.
+   * Limit of 255 characters.
+   *
+   */
+  handle: Scalars['String']['output'];
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** Image associated with the collection. */
+  image?: Maybe<Image>;
+  /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
+  metafield?: Maybe<Metafield>;
+  /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
+  metafields: Array<Maybe<Metafield>>;
+  /** The URL used for viewing the resource on the shop's Online Store. Returns `null` if the resource is currently not published to the Online Store sales channel. */
+  onlineStoreUrl?: Maybe<Scalars['URL']['output']>;
+  /** List of products in the collection. */
+  products: ProductConnection;
+  /** The collection's SEO information. */
+  seo: Seo;
+  /** The collection’s name. Limit of 255 characters. */
+  title: Scalars['String']['output'];
+  /** URL parameters to be added to a page URL to track the origin of on-site search traffic for [analytics reporting](https://help.shopify.com/manual/reports-and-analytics/shopify-reports/report-types/default-reports/behaviour-reports). Returns a result when accessed through the [search](https://shopify.dev/docs/api/storefront/current/queries/search) or [predictiveSearch](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch) queries, otherwise returns null. */
+  trackingParameters?: Maybe<Scalars['String']['output']>;
+  /** The date and time when the collection was last modified. */
+  updatedAt: Scalars['DateTime']['output'];
+};
+
 
 /**
  * A group of products [organized by a merchant](https://help.shopify.com/manual/products/collections) to make their store easier to browse. Collections can help customers discover related products by category, season, promotion, or other criteria.
@@ -2427,6 +2420,7 @@ export type Collection = HasMetafields &
 export type CollectionDescriptionArgs = {
   truncateAt?: InputMaybe<Scalars['Int']['input']>;
 };
+
 
 /**
  * A group of products [organized by a merchant](https://help.shopify.com/manual/products/collections) to make their store easier to browse. Collections can help customers discover related products by category, season, promotion, or other criteria.
@@ -2439,6 +2433,7 @@ export type CollectionMetafieldArgs = {
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
 
+
 /**
  * A group of products [organized by a merchant](https://help.shopify.com/manual/products/collections) to make their store easier to browse. Collections can help customers discover related products by category, season, promotion, or other criteria.
  *
@@ -2448,6 +2443,7 @@ export type CollectionMetafieldArgs = {
 export type CollectionMetafieldsArgs = {
   identifiers: Array<HasMetafieldsIdentifier>;
 };
+
 
 /**
  * A group of products [organized by a merchant](https://help.shopify.com/manual/products/collections) to make their store easier to browse. Collections can help customers discover related products by category, season, promotion, or other criteria.
@@ -2494,20 +2490,19 @@ export type CollectionEdge = {
 };
 
 /** The set of valid sort keys for the Collection query. */
-export enum CollectionSortKeys {
+export type CollectionSortKeys =
   /** Sort by the `id` value. */
-  Id = 'ID',
+  | 'ID'
   /**
    * Sort by relevance to the search terms when the `query` parameter is specified on the connection.
    * Don't use this sort key when no search query is specified.
    *
    */
-  Relevance = 'RELEVANCE',
+  | 'RELEVANCE'
   /** Sort by the `title` value. */
-  Title = 'TITLE',
+  | 'TITLE'
   /** Sort by the `updated_at` value. */
-  UpdatedAt = 'UPDATED_AT',
-}
+  | 'UPDATED_AT';
 
 /** A comment on an article. */
 export type Comment = Node & {
@@ -2521,6 +2516,7 @@ export type Comment = Node & {
   /** A globally-unique ID. */
   id: Scalars['ID']['output'];
 };
+
 
 /** A comment on an article. */
 export type CommentContentArgs = {
@@ -2568,24 +2564,24 @@ export type CommentEdge = {
  * You can store custom data using [metafields](https://shopify.dev/docs/apps/build/metafields).
  *
  */
-export type Company = HasMetafields &
-  Node & {
-    __typename?: 'Company';
-    /** The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company was created in Shopify. */
-    createdAt: Scalars['DateTime']['output'];
-    /** A unique externally-supplied ID for the company. */
-    externalId?: Maybe<Scalars['String']['output']>;
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
-    metafield?: Maybe<Metafield>;
-    /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
-    metafields: Array<Maybe<Metafield>>;
-    /** The name of the company. */
-    name: Scalars['String']['output'];
-    /** The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company was last modified. */
-    updatedAt: Scalars['DateTime']['output'];
-  };
+export type Company = HasMetafields & Node & {
+  __typename?: 'Company';
+  /** The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company was created in Shopify. */
+  createdAt: Scalars['DateTime']['output'];
+  /** A unique externally-supplied ID for the company. */
+  externalId?: Maybe<Scalars['String']['output']>;
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
+  metafield?: Maybe<Metafield>;
+  /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
+  metafields: Array<Maybe<Metafield>>;
+  /** The name of the company. */
+  name: Scalars['String']['output'];
+  /** The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company was last modified. */
+  updatedAt: Scalars['DateTime']['output'];
+};
+
 
 /**
  * A B2B organization that purchases from the shop. In the Storefront API, company information is accessed through the [`PurchasingCompany`](https://shopify.dev/docs/api/storefront/current/objects/PurchasingCompany) object on [`CartBuyerIdentity`](https://shopify.dev/docs/api/storefront/current/objects/CartBuyerIdentity), which provides the associated location and contact for the current purchasing context.
@@ -2597,6 +2593,7 @@ export type CompanyMetafieldArgs = {
   key: Scalars['String']['input'];
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /**
  * A B2B organization that purchases from the shop. In the Storefront API, company information is accessed through the [`PurchasingCompany`](https://shopify.dev/docs/api/storefront/current/objects/PurchasingCompany) object on [`CartBuyerIdentity`](https://shopify.dev/docs/api/storefront/current/objects/CartBuyerIdentity), which provides the associated location and contact for the current purchasing context.
@@ -2629,26 +2626,26 @@ export type CompanyContact = Node & {
  * Access through the [`PurchasingCompany`](https://shopify.dev/docs/api/storefront/current/objects/PurchasingCompany) object, which associates the location with the buyer's [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart).
  *
  */
-export type CompanyLocation = HasMetafields &
-  Node & {
-    __typename?: 'CompanyLocation';
-    /** The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company location was created in Shopify. */
-    createdAt: Scalars['DateTime']['output'];
-    /** A unique externally-supplied ID for the company. */
-    externalId?: Maybe<Scalars['String']['output']>;
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** The preferred locale of the company location. */
-    locale?: Maybe<Scalars['String']['output']>;
-    /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
-    metafield?: Maybe<Metafield>;
-    /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
-    metafields: Array<Maybe<Metafield>>;
-    /** The name of the company location. */
-    name: Scalars['String']['output'];
-    /** The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company location was last modified. */
-    updatedAt: Scalars['DateTime']['output'];
-  };
+export type CompanyLocation = HasMetafields & Node & {
+  __typename?: 'CompanyLocation';
+  /** The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company location was created in Shopify. */
+  createdAt: Scalars['DateTime']['output'];
+  /** A unique externally-supplied ID for the company. */
+  externalId?: Maybe<Scalars['String']['output']>;
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** The preferred locale of the company location. */
+  locale?: Maybe<Scalars['String']['output']>;
+  /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
+  metafield?: Maybe<Metafield>;
+  /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
+  metafields: Array<Maybe<Metafield>>;
+  /** The name of the company location. */
+  name: Scalars['String']['output'];
+  /** The date and time ([ISO 8601 format](http://en.wikipedia.org/wiki/ISO_8601)) at which the company location was last modified. */
+  updatedAt: Scalars['DateTime']['output'];
+};
+
 
 /**
  * A branch or office of a [`Company`](https://shopify.dev/docs/api/storefront/current/objects/Company) where B2B customers can place orders. When a B2B customer selects a location after logging in, the Storefront API contextualizes product queries to return location-specific pricing and quantity rules.
@@ -2660,6 +2657,7 @@ export type CompanyLocationMetafieldArgs = {
   key: Scalars['String']['input'];
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /**
  * A branch or office of a [`Company`](https://shopify.dev/docs/api/storefront/current/objects/Company) where B2B customers can place orders. When a B2B customer selects a location after logging in, the Storefront API contextualizes product queries to return location-specific pricing and quantity rules.
@@ -2688,57 +2686,57 @@ export type CompletionError = {
 };
 
 /** The code of the error that occurred during a cart completion attempt. */
-export enum CompletionErrorCode {
-  Error = 'ERROR',
-  InventoryReservationError = 'INVENTORY_RESERVATION_ERROR',
-  PaymentAmountTooSmall = 'PAYMENT_AMOUNT_TOO_SMALL',
-  PaymentCallIssuer = 'PAYMENT_CALL_ISSUER',
-  PaymentCardDeclined = 'PAYMENT_CARD_DECLINED',
-  PaymentError = 'PAYMENT_ERROR',
-  PaymentGatewayNotEnabledError = 'PAYMENT_GATEWAY_NOT_ENABLED_ERROR',
-  PaymentInsufficientFunds = 'PAYMENT_INSUFFICIENT_FUNDS',
-  PaymentInvalidBillingAddress = 'PAYMENT_INVALID_BILLING_ADDRESS',
-  PaymentInvalidCreditCard = 'PAYMENT_INVALID_CREDIT_CARD',
-  PaymentInvalidCurrency = 'PAYMENT_INVALID_CURRENCY',
-  PaymentInvalidPaymentMethod = 'PAYMENT_INVALID_PAYMENT_METHOD',
-  PaymentTransientError = 'PAYMENT_TRANSIENT_ERROR',
-}
+export type CompletionErrorCode =
+  | 'ERROR'
+  | 'INVENTORY_RESERVATION_ERROR'
+  | 'PAYMENT_AMOUNT_TOO_SMALL'
+  | 'PAYMENT_CALL_ISSUER'
+  | 'PAYMENT_CARD_DECLINED'
+  | 'PAYMENT_ERROR'
+  | 'PAYMENT_GATEWAY_NOT_ENABLED_ERROR'
+  | 'PAYMENT_INSUFFICIENT_FUNDS'
+  | 'PAYMENT_INVALID_BILLING_ADDRESS'
+  | 'PAYMENT_INVALID_CREDIT_CARD'
+  | 'PAYMENT_INVALID_CURRENCY'
+  | 'PAYMENT_INVALID_PAYMENT_METHOD'
+  | 'PAYMENT_TRANSIENT_ERROR';
 
 /** Represents information about the grouped merchandise in the cart. */
-export type ComponentizableCartLine = BaseCartLine &
-  Node & {
-    __typename?: 'ComponentizableCartLine';
-    /** An attribute associated with the cart line. */
-    attribute?: Maybe<Attribute>;
-    /** The attributes associated with the cart line. Attributes are represented as key-value pairs. */
-    attributes: Array<Attribute>;
-    /** The cost of the merchandise that the buyer will pay for at checkout. The costs are subject to change and changes will be reflected at checkout. */
-    cost: CartLineCost;
-    /** The discounts that have been applied to the cart line. */
-    discountAllocations: Array<CartDiscountAllocation>;
-    /**
-     * The estimated cost of the merchandise that the buyer will pay for at checkout. The estimated costs are subject to change and changes will be reflected at checkout.
-     * @deprecated Use `cost` instead.
-     */
-    estimatedCost: CartLineEstimatedCost;
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** The components of the line item. */
-    lineComponents: Array<CartLine>;
-    /** The merchandise that the buyer intends to purchase. */
-    merchandise: Merchandise;
-    /** The quantity of the merchandise that the customer intends to purchase. */
-    quantity: Scalars['Int']['output'];
-    /** The selling plan associated with the cart line and the effect that each selling plan has on variants when they're purchased. */
-    sellingPlanAllocation?: Maybe<SellingPlanAllocation>;
-    /** A stable identifier for the line matching the value exposed in Liquid via the `view_key` filter and accepted as input on `cartLinesUpdate` and `cartLinesRemove`. */
-    viewKey?: Maybe<Scalars['String']['output']>;
-  };
+export type ComponentizableCartLine = BaseCartLine & Node & {
+  __typename?: 'ComponentizableCartLine';
+  /** An attribute associated with the cart line. */
+  attribute?: Maybe<Attribute>;
+  /** The attributes associated with the cart line. Attributes are represented as key-value pairs. */
+  attributes: Array<Attribute>;
+  /** The cost of the merchandise that the buyer will pay for at checkout. The costs are subject to change and changes will be reflected at checkout. */
+  cost: CartLineCost;
+  /** The discounts that have been applied to the cart line. */
+  discountAllocations: Array<CartDiscountAllocation>;
+  /**
+   * The estimated cost of the merchandise that the buyer will pay for at checkout. The estimated costs are subject to change and changes will be reflected at checkout.
+   * @deprecated Use `cost` instead.
+   */
+  estimatedCost: CartLineEstimatedCost;
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** The components of the line item. */
+  lineComponents: Array<CartLine>;
+  /** The merchandise that the buyer intends to purchase. */
+  merchandise: Merchandise;
+  /** The quantity of the merchandise that the customer intends to purchase. */
+  quantity: Scalars['Int']['output'];
+  /** The selling plan associated with the cart line and the effect that each selling plan has on variants when they're purchased. */
+  sellingPlanAllocation?: Maybe<SellingPlanAllocation>;
+  /** A stable identifier for the line matching the value exposed in Liquid via the `view_key` filter and accepted as input on `cartLinesUpdate` and `cartLinesRemove`. */
+  viewKey?: Maybe<Scalars['String']['output']>;
+};
+
 
 /** Represents information about the grouped merchandise in the cart. */
 export type ComponentizableCartLineAttributeArgs = {
   key: Scalars['String']['input'];
 };
+
 
 /** Represents information about the grouped merchandise in the cart. */
 export type ComponentizableCartLineDiscountAllocationsArgs = {
@@ -2755,12 +2753,11 @@ export type Count = {
 };
 
 /** The precision of the value returned by a count field. */
-export enum CountPrecision {
+export type CountPrecision =
   /** The count is at least the value. A limit was reached. */
-  AtLeast = 'AT_LEAST',
+  | 'AT_LEAST'
   /** The count is exactly the value. */
-  Exact = 'EXACT',
-}
+  | 'EXACT';
 
 /**
  * A country with localization settings for a storefront. Includes the country's currency, available languages, default language, and unit system (metric or imperial).
@@ -2796,512 +2793,510 @@ export type Country = {
  * and the territories associated with the United States of America are represented by the country code `US`.
  *
  */
-export enum CountryCode {
+export type CountryCode =
   /** Ascension Island. */
-  Ac = 'AC',
+  | 'AC'
   /** Andorra. */
-  Ad = 'AD',
+  | 'AD'
   /** United Arab Emirates. */
-  Ae = 'AE',
+  | 'AE'
   /** Afghanistan. */
-  Af = 'AF',
+  | 'AF'
   /** Antigua & Barbuda. */
-  Ag = 'AG',
+  | 'AG'
   /** Anguilla. */
-  Ai = 'AI',
+  | 'AI'
   /** Albania. */
-  Al = 'AL',
+  | 'AL'
   /** Armenia. */
-  Am = 'AM',
+  | 'AM'
   /** Netherlands Antilles. */
-  An = 'AN',
+  | 'AN'
   /** Angola. */
-  Ao = 'AO',
+  | 'AO'
   /** Argentina. */
-  Ar = 'AR',
+  | 'AR'
   /** Austria. */
-  At = 'AT',
+  | 'AT'
   /** Australia. */
-  Au = 'AU',
+  | 'AU'
   /** Aruba. */
-  Aw = 'AW',
+  | 'AW'
   /** Åland Islands. */
-  Ax = 'AX',
+  | 'AX'
   /** Azerbaijan. */
-  Az = 'AZ',
+  | 'AZ'
   /** Bosnia & Herzegovina. */
-  Ba = 'BA',
+  | 'BA'
   /** Barbados. */
-  Bb = 'BB',
+  | 'BB'
   /** Bangladesh. */
-  Bd = 'BD',
+  | 'BD'
   /** Belgium. */
-  Be = 'BE',
+  | 'BE'
   /** Burkina Faso. */
-  Bf = 'BF',
+  | 'BF'
   /** Bulgaria. */
-  Bg = 'BG',
+  | 'BG'
   /** Bahrain. */
-  Bh = 'BH',
+  | 'BH'
   /** Burundi. */
-  Bi = 'BI',
+  | 'BI'
   /** Benin. */
-  Bj = 'BJ',
+  | 'BJ'
   /** St. Barthélemy. */
-  Bl = 'BL',
+  | 'BL'
   /** Bermuda. */
-  Bm = 'BM',
+  | 'BM'
   /** Brunei. */
-  Bn = 'BN',
+  | 'BN'
   /** Bolivia. */
-  Bo = 'BO',
+  | 'BO'
   /** Caribbean Netherlands. */
-  Bq = 'BQ',
+  | 'BQ'
   /** Brazil. */
-  Br = 'BR',
+  | 'BR'
   /** Bahamas. */
-  Bs = 'BS',
+  | 'BS'
   /** Bhutan. */
-  Bt = 'BT',
+  | 'BT'
   /** Bouvet Island. */
-  Bv = 'BV',
+  | 'BV'
   /** Botswana. */
-  Bw = 'BW',
+  | 'BW'
   /** Belarus. */
-  By = 'BY',
+  | 'BY'
   /** Belize. */
-  Bz = 'BZ',
+  | 'BZ'
   /** Canada. */
-  Ca = 'CA',
+  | 'CA'
   /** Cocos (Keeling) Islands. */
-  Cc = 'CC',
+  | 'CC'
   /** Congo - Kinshasa. */
-  Cd = 'CD',
+  | 'CD'
   /** Central African Republic. */
-  Cf = 'CF',
+  | 'CF'
   /** Congo - Brazzaville. */
-  Cg = 'CG',
+  | 'CG'
   /** Switzerland. */
-  Ch = 'CH',
+  | 'CH'
   /** Côte d’Ivoire. */
-  Ci = 'CI',
+  | 'CI'
   /** Cook Islands. */
-  Ck = 'CK',
+  | 'CK'
   /** Chile. */
-  Cl = 'CL',
+  | 'CL'
   /** Cameroon. */
-  Cm = 'CM',
+  | 'CM'
   /** China. */
-  Cn = 'CN',
+  | 'CN'
   /** Colombia. */
-  Co = 'CO',
+  | 'CO'
   /** Costa Rica. */
-  Cr = 'CR',
+  | 'CR'
   /** Cuba. */
-  Cu = 'CU',
+  | 'CU'
   /** Cape Verde. */
-  Cv = 'CV',
+  | 'CV'
   /** Curaçao. */
-  Cw = 'CW',
+  | 'CW'
   /** Christmas Island. */
-  Cx = 'CX',
+  | 'CX'
   /** Cyprus. */
-  Cy = 'CY',
+  | 'CY'
   /** Czechia. */
-  Cz = 'CZ',
+  | 'CZ'
   /** Germany. */
-  De = 'DE',
+  | 'DE'
   /** Djibouti. */
-  Dj = 'DJ',
+  | 'DJ'
   /** Denmark. */
-  Dk = 'DK',
+  | 'DK'
   /** Dominica. */
-  Dm = 'DM',
+  | 'DM'
   /** Dominican Republic. */
-  Do = 'DO',
+  | 'DO'
   /** Algeria. */
-  Dz = 'DZ',
+  | 'DZ'
   /** Ecuador. */
-  Ec = 'EC',
+  | 'EC'
   /** Estonia. */
-  Ee = 'EE',
+  | 'EE'
   /** Egypt. */
-  Eg = 'EG',
+  | 'EG'
   /** Western Sahara. */
-  Eh = 'EH',
+  | 'EH'
   /** Eritrea. */
-  Er = 'ER',
+  | 'ER'
   /** Spain. */
-  Es = 'ES',
+  | 'ES'
   /** Ethiopia. */
-  Et = 'ET',
+  | 'ET'
   /** Finland. */
-  Fi = 'FI',
+  | 'FI'
   /** Fiji. */
-  Fj = 'FJ',
+  | 'FJ'
   /** Falkland Islands. */
-  Fk = 'FK',
+  | 'FK'
   /** Faroe Islands. */
-  Fo = 'FO',
+  | 'FO'
   /** France. */
-  Fr = 'FR',
+  | 'FR'
   /** Gabon. */
-  Ga = 'GA',
+  | 'GA'
   /** United Kingdom. */
-  Gb = 'GB',
+  | 'GB'
   /** Grenada. */
-  Gd = 'GD',
+  | 'GD'
   /** Georgia. */
-  Ge = 'GE',
+  | 'GE'
   /** French Guiana. */
-  Gf = 'GF',
+  | 'GF'
   /** Guernsey. */
-  Gg = 'GG',
+  | 'GG'
   /** Ghana. */
-  Gh = 'GH',
+  | 'GH'
   /** Gibraltar. */
-  Gi = 'GI',
+  | 'GI'
   /** Greenland. */
-  Gl = 'GL',
+  | 'GL'
   /** Gambia. */
-  Gm = 'GM',
+  | 'GM'
   /** Guinea. */
-  Gn = 'GN',
+  | 'GN'
   /** Guadeloupe. */
-  Gp = 'GP',
+  | 'GP'
   /** Equatorial Guinea. */
-  Gq = 'GQ',
+  | 'GQ'
   /** Greece. */
-  Gr = 'GR',
+  | 'GR'
   /** South Georgia & South Sandwich Islands. */
-  Gs = 'GS',
+  | 'GS'
   /** Guatemala. */
-  Gt = 'GT',
+  | 'GT'
   /** Guinea-Bissau. */
-  Gw = 'GW',
+  | 'GW'
   /** Guyana. */
-  Gy = 'GY',
+  | 'GY'
   /** Hong Kong SAR. */
-  Hk = 'HK',
+  | 'HK'
   /** Heard & McDonald Islands. */
-  Hm = 'HM',
+  | 'HM'
   /** Honduras. */
-  Hn = 'HN',
+  | 'HN'
   /** Croatia. */
-  Hr = 'HR',
+  | 'HR'
   /** Haiti. */
-  Ht = 'HT',
+  | 'HT'
   /** Hungary. */
-  Hu = 'HU',
+  | 'HU'
   /** Indonesia. */
-  Id = 'ID',
+  | 'ID'
   /** Ireland. */
-  Ie = 'IE',
+  | 'IE'
   /** Israel. */
-  Il = 'IL',
+  | 'IL'
   /** Isle of Man. */
-  Im = 'IM',
+  | 'IM'
   /** India. */
-  In = 'IN',
+  | 'IN'
   /** British Indian Ocean Territory. */
-  Io = 'IO',
+  | 'IO'
   /** Iraq. */
-  Iq = 'IQ',
+  | 'IQ'
   /** Iran. */
-  Ir = 'IR',
+  | 'IR'
   /** Iceland. */
-  Is = 'IS',
+  | 'IS'
   /** Italy. */
-  It = 'IT',
+  | 'IT'
   /** Jersey. */
-  Je = 'JE',
+  | 'JE'
   /** Jamaica. */
-  Jm = 'JM',
+  | 'JM'
   /** Jordan. */
-  Jo = 'JO',
+  | 'JO'
   /** Japan. */
-  Jp = 'JP',
+  | 'JP'
   /** Kenya. */
-  Ke = 'KE',
+  | 'KE'
   /** Kyrgyzstan. */
-  Kg = 'KG',
+  | 'KG'
   /** Cambodia. */
-  Kh = 'KH',
+  | 'KH'
   /** Kiribati. */
-  Ki = 'KI',
+  | 'KI'
   /** Comoros. */
-  Km = 'KM',
+  | 'KM'
   /** St. Kitts & Nevis. */
-  Kn = 'KN',
+  | 'KN'
   /** North Korea. */
-  Kp = 'KP',
+  | 'KP'
   /** South Korea. */
-  Kr = 'KR',
+  | 'KR'
   /** Kuwait. */
-  Kw = 'KW',
+  | 'KW'
   /** Cayman Islands. */
-  Ky = 'KY',
+  | 'KY'
   /** Kazakhstan. */
-  Kz = 'KZ',
+  | 'KZ'
   /** Laos. */
-  La = 'LA',
+  | 'LA'
   /** Lebanon. */
-  Lb = 'LB',
+  | 'LB'
   /** St. Lucia. */
-  Lc = 'LC',
+  | 'LC'
   /** Liechtenstein. */
-  Li = 'LI',
+  | 'LI'
   /** Sri Lanka. */
-  Lk = 'LK',
+  | 'LK'
   /** Liberia. */
-  Lr = 'LR',
+  | 'LR'
   /** Lesotho. */
-  Ls = 'LS',
+  | 'LS'
   /** Lithuania. */
-  Lt = 'LT',
+  | 'LT'
   /** Luxembourg. */
-  Lu = 'LU',
+  | 'LU'
   /** Latvia. */
-  Lv = 'LV',
+  | 'LV'
   /** Libya. */
-  Ly = 'LY',
+  | 'LY'
   /** Morocco. */
-  Ma = 'MA',
+  | 'MA'
   /** Monaco. */
-  Mc = 'MC',
+  | 'MC'
   /** Moldova. */
-  Md = 'MD',
+  | 'MD'
   /** Montenegro. */
-  Me = 'ME',
+  | 'ME'
   /** St. Martin. */
-  Mf = 'MF',
+  | 'MF'
   /** Madagascar. */
-  Mg = 'MG',
+  | 'MG'
   /** North Macedonia. */
-  Mk = 'MK',
+  | 'MK'
   /** Mali. */
-  Ml = 'ML',
+  | 'ML'
   /** Myanmar (Burma). */
-  Mm = 'MM',
+  | 'MM'
   /** Mongolia. */
-  Mn = 'MN',
+  | 'MN'
   /** Macao SAR. */
-  Mo = 'MO',
+  | 'MO'
   /** Martinique. */
-  Mq = 'MQ',
+  | 'MQ'
   /** Mauritania. */
-  Mr = 'MR',
+  | 'MR'
   /** Montserrat. */
-  Ms = 'MS',
+  | 'MS'
   /** Malta. */
-  Mt = 'MT',
+  | 'MT'
   /** Mauritius. */
-  Mu = 'MU',
+  | 'MU'
   /** Maldives. */
-  Mv = 'MV',
+  | 'MV'
   /** Malawi. */
-  Mw = 'MW',
+  | 'MW'
   /** Mexico. */
-  Mx = 'MX',
+  | 'MX'
   /** Malaysia. */
-  My = 'MY',
+  | 'MY'
   /** Mozambique. */
-  Mz = 'MZ',
+  | 'MZ'
   /** Namibia. */
-  Na = 'NA',
+  | 'NA'
   /** New Caledonia. */
-  Nc = 'NC',
+  | 'NC'
   /** Niger. */
-  Ne = 'NE',
+  | 'NE'
   /** Norfolk Island. */
-  Nf = 'NF',
+  | 'NF'
   /** Nigeria. */
-  Ng = 'NG',
+  | 'NG'
   /** Nicaragua. */
-  Ni = 'NI',
+  | 'NI'
   /** Netherlands. */
-  Nl = 'NL',
+  | 'NL'
   /** Norway. */
-  No = 'NO',
+  | 'NO'
   /** Nepal. */
-  Np = 'NP',
+  | 'NP'
   /** Nauru. */
-  Nr = 'NR',
+  | 'NR'
   /** Niue. */
-  Nu = 'NU',
+  | 'NU'
   /** New Zealand. */
-  Nz = 'NZ',
+  | 'NZ'
   /** Oman. */
-  Om = 'OM',
+  | 'OM'
   /** Panama. */
-  Pa = 'PA',
+  | 'PA'
   /** Peru. */
-  Pe = 'PE',
+  | 'PE'
   /** French Polynesia. */
-  Pf = 'PF',
+  | 'PF'
   /** Papua New Guinea. */
-  Pg = 'PG',
+  | 'PG'
   /** Philippines. */
-  Ph = 'PH',
+  | 'PH'
   /** Pakistan. */
-  Pk = 'PK',
+  | 'PK'
   /** Poland. */
-  Pl = 'PL',
+  | 'PL'
   /** St. Pierre & Miquelon. */
-  Pm = 'PM',
+  | 'PM'
   /** Pitcairn Islands. */
-  Pn = 'PN',
+  | 'PN'
   /** Palestinian Territories. */
-  Ps = 'PS',
+  | 'PS'
   /** Portugal. */
-  Pt = 'PT',
+  | 'PT'
   /** Paraguay. */
-  Py = 'PY',
+  | 'PY'
   /** Qatar. */
-  Qa = 'QA',
+  | 'QA'
   /** Réunion. */
-  Re = 'RE',
+  | 'RE'
   /** Romania. */
-  Ro = 'RO',
+  | 'RO'
   /** Serbia. */
-  Rs = 'RS',
+  | 'RS'
   /** Russia. */
-  Ru = 'RU',
+  | 'RU'
   /** Rwanda. */
-  Rw = 'RW',
+  | 'RW'
   /** Saudi Arabia. */
-  Sa = 'SA',
+  | 'SA'
   /** Solomon Islands. */
-  Sb = 'SB',
+  | 'SB'
   /** Seychelles. */
-  Sc = 'SC',
+  | 'SC'
   /** Sudan. */
-  Sd = 'SD',
+  | 'SD'
   /** Sweden. */
-  Se = 'SE',
+  | 'SE'
   /** Singapore. */
-  Sg = 'SG',
+  | 'SG'
   /** St. Helena. */
-  Sh = 'SH',
+  | 'SH'
   /** Slovenia. */
-  Si = 'SI',
+  | 'SI'
   /** Svalbard & Jan Mayen. */
-  Sj = 'SJ',
+  | 'SJ'
   /** Slovakia. */
-  Sk = 'SK',
+  | 'SK'
   /** Sierra Leone. */
-  Sl = 'SL',
+  | 'SL'
   /** San Marino. */
-  Sm = 'SM',
+  | 'SM'
   /** Senegal. */
-  Sn = 'SN',
+  | 'SN'
   /** Somalia. */
-  So = 'SO',
+  | 'SO'
   /** Suriname. */
-  Sr = 'SR',
+  | 'SR'
   /** South Sudan. */
-  Ss = 'SS',
+  | 'SS'
   /** São Tomé & Príncipe. */
-  St = 'ST',
+  | 'ST'
   /** El Salvador. */
-  Sv = 'SV',
+  | 'SV'
   /** Sint Maarten. */
-  Sx = 'SX',
+  | 'SX'
   /** Syria. */
-  Sy = 'SY',
+  | 'SY'
   /** Eswatini. */
-  Sz = 'SZ',
+  | 'SZ'
   /** Tristan da Cunha. */
-  Ta = 'TA',
+  | 'TA'
   /** Turks & Caicos Islands. */
-  Tc = 'TC',
+  | 'TC'
   /** Chad. */
-  Td = 'TD',
+  | 'TD'
   /** French Southern Territories. */
-  Tf = 'TF',
+  | 'TF'
   /** Togo. */
-  Tg = 'TG',
+  | 'TG'
   /** Thailand. */
-  Th = 'TH',
+  | 'TH'
   /** Tajikistan. */
-  Tj = 'TJ',
+  | 'TJ'
   /** Tokelau. */
-  Tk = 'TK',
+  | 'TK'
   /** Timor-Leste. */
-  Tl = 'TL',
+  | 'TL'
   /** Turkmenistan. */
-  Tm = 'TM',
+  | 'TM'
   /** Tunisia. */
-  Tn = 'TN',
+  | 'TN'
   /** Tonga. */
-  To = 'TO',
+  | 'TO'
   /** Türkiye. */
-  Tr = 'TR',
+  | 'TR'
   /** Trinidad & Tobago. */
-  Tt = 'TT',
+  | 'TT'
   /** Tuvalu. */
-  Tv = 'TV',
+  | 'TV'
   /** Taiwan. */
-  Tw = 'TW',
+  | 'TW'
   /** Tanzania. */
-  Tz = 'TZ',
+  | 'TZ'
   /** Ukraine. */
-  Ua = 'UA',
+  | 'UA'
   /** Uganda. */
-  Ug = 'UG',
+  | 'UG'
   /** U.S. Outlying Islands. */
-  Um = 'UM',
+  | 'UM'
   /** United States. */
-  Us = 'US',
+  | 'US'
   /** Uruguay. */
-  Uy = 'UY',
+  | 'UY'
   /** Uzbekistan. */
-  Uz = 'UZ',
+  | 'UZ'
   /** Vatican City. */
-  Va = 'VA',
+  | 'VA'
   /** St. Vincent & Grenadines. */
-  Vc = 'VC',
+  | 'VC'
   /** Venezuela. */
-  Ve = 'VE',
+  | 'VE'
   /** British Virgin Islands. */
-  Vg = 'VG',
+  | 'VG'
   /** Vietnam. */
-  Vn = 'VN',
+  | 'VN'
   /** Vanuatu. */
-  Vu = 'VU',
+  | 'VU'
   /** Wallis & Futuna. */
-  Wf = 'WF',
+  | 'WF'
   /** Samoa. */
-  Ws = 'WS',
+  | 'WS'
   /** Kosovo. */
-  Xk = 'XK',
+  | 'XK'
   /** Yemen. */
-  Ye = 'YE',
+  | 'YE'
   /** Mayotte. */
-  Yt = 'YT',
+  | 'YT'
   /** South Africa. */
-  Za = 'ZA',
+  | 'ZA'
   /** Zambia. */
-  Zm = 'ZM',
+  | 'ZM'
   /** Zimbabwe. */
-  Zw = 'ZW',
+  | 'ZW'
   /** Unknown Region. */
-  Zz = 'ZZ',
-}
+  | 'ZZ';
 
 /** The part of the image that should remain after cropping. */
-export enum CropRegion {
+export type CropRegion =
   /** Keep the bottom of the image. */
-  Bottom = 'BOTTOM',
+  | 'BOTTOM'
   /** Keep the center of the image. */
-  Center = 'CENTER',
+  | 'CENTER'
   /** Keep the left of the image. */
-  Left = 'LEFT',
+  | 'LEFT'
   /** Keep the right of the image. */
-  Right = 'RIGHT',
+  | 'RIGHT'
   /** Keep the top of the image. */
-  Top = 'TOP',
-}
+  | 'TOP';
 
 /** A currency. */
 export type Currency = {
@@ -3320,339 +3315,329 @@ export type Currency = {
  * and non-standard codes.
  *
  */
-export enum CurrencyCode {
+export type CurrencyCode =
   /** United Arab Emirates Dirham (AED). */
-  Aed = 'AED',
+  | 'AED'
   /** Afghan Afghani (AFN). */
-  Afn = 'AFN',
+  | 'AFN'
   /** Albanian Lek (ALL). */
-  All = 'ALL',
+  | 'ALL'
   /** Armenian Dram (AMD). */
-  Amd = 'AMD',
+  | 'AMD'
   /** Netherlands Antillean Guilder. */
-  Ang = 'ANG',
+  | 'ANG'
   /** Angolan Kwanza (AOA). */
-  Aoa = 'AOA',
+  | 'AOA'
   /** Argentine Pesos (ARS). */
-  Ars = 'ARS',
+  | 'ARS'
   /** Australian Dollars (AUD). */
-  Aud = 'AUD',
+  | 'AUD'
   /** Aruban Florin (AWG). */
-  Awg = 'AWG',
+  | 'AWG'
   /** Azerbaijani Manat (AZN). */
-  Azn = 'AZN',
+  | 'AZN'
   /** Bosnia and Herzegovina Convertible Mark (BAM). */
-  Bam = 'BAM',
+  | 'BAM'
   /** Barbadian Dollar (BBD). */
-  Bbd = 'BBD',
+  | 'BBD'
   /** Bangladesh Taka (BDT). */
-  Bdt = 'BDT',
+  | 'BDT'
   /** Bulgarian Lev (BGN). */
-  Bgn = 'BGN',
+  | 'BGN'
   /** Bahraini Dinar (BHD). */
-  Bhd = 'BHD',
+  | 'BHD'
   /** Burundian Franc (BIF). */
-  Bif = 'BIF',
+  | 'BIF'
   /** Bermudian Dollar (BMD). */
-  Bmd = 'BMD',
+  | 'BMD'
   /** Brunei Dollar (BND). */
-  Bnd = 'BND',
+  | 'BND'
   /** Bolivian Boliviano (BOB). */
-  Bob = 'BOB',
+  | 'BOB'
   /** Brazilian Real (BRL). */
-  Brl = 'BRL',
+  | 'BRL'
   /** Bahamian Dollar (BSD). */
-  Bsd = 'BSD',
+  | 'BSD'
   /** Bhutanese Ngultrum (BTN). */
-  Btn = 'BTN',
+  | 'BTN'
   /** Botswana Pula (BWP). */
-  Bwp = 'BWP',
+  | 'BWP'
   /** Belarusian Ruble (BYN). */
-  Byn = 'BYN',
-  /**
-   * Belarusian Ruble (BYR).
-   * @deprecated `BYR` is deprecated. Use `BYN` available from version `2021-01` onwards instead.
-   */
-  Byr = 'BYR',
+  | 'BYN'
+  /** Belarusian Ruble (BYR). */
+  | 'BYR'
   /** Belize Dollar (BZD). */
-  Bzd = 'BZD',
+  | 'BZD'
   /** Canadian Dollars (CAD). */
-  Cad = 'CAD',
+  | 'CAD'
   /** Congolese franc (CDF). */
-  Cdf = 'CDF',
+  | 'CDF'
   /** Swiss Francs (CHF). */
-  Chf = 'CHF',
+  | 'CHF'
   /** Chilean Peso (CLP). */
-  Clp = 'CLP',
+  | 'CLP'
   /** Chinese Yuan Renminbi (CNY). */
-  Cny = 'CNY',
+  | 'CNY'
   /** Colombian Peso (COP). */
-  Cop = 'COP',
+  | 'COP'
   /** Costa Rican Colones (CRC). */
-  Crc = 'CRC',
+  | 'CRC'
   /** Cape Verdean escudo (CVE). */
-  Cve = 'CVE',
+  | 'CVE'
   /** Czech Koruny (CZK). */
-  Czk = 'CZK',
+  | 'CZK'
   /** Djiboutian Franc (DJF). */
-  Djf = 'DJF',
+  | 'DJF'
   /** Danish Kroner (DKK). */
-  Dkk = 'DKK',
+  | 'DKK'
   /** Dominican Peso (DOP). */
-  Dop = 'DOP',
+  | 'DOP'
   /** Algerian Dinar (DZD). */
-  Dzd = 'DZD',
+  | 'DZD'
   /** Egyptian Pound (EGP). */
-  Egp = 'EGP',
+  | 'EGP'
   /** Eritrean Nakfa (ERN). */
-  Ern = 'ERN',
+  | 'ERN'
   /** Ethiopian Birr (ETB). */
-  Etb = 'ETB',
+  | 'ETB'
   /** Euro (EUR). */
-  Eur = 'EUR',
+  | 'EUR'
   /** Fijian Dollars (FJD). */
-  Fjd = 'FJD',
+  | 'FJD'
   /** Falkland Islands Pounds (FKP). */
-  Fkp = 'FKP',
+  | 'FKP'
   /** United Kingdom Pounds (GBP). */
-  Gbp = 'GBP',
+  | 'GBP'
   /** Georgian Lari (GEL). */
-  Gel = 'GEL',
+  | 'GEL'
   /** Ghanaian Cedi (GHS). */
-  Ghs = 'GHS',
+  | 'GHS'
   /** Gibraltar Pounds (GIP). */
-  Gip = 'GIP',
+  | 'GIP'
   /** Gambian Dalasi (GMD). */
-  Gmd = 'GMD',
+  | 'GMD'
   /** Guinean Franc (GNF). */
-  Gnf = 'GNF',
+  | 'GNF'
   /** Guatemalan Quetzal (GTQ). */
-  Gtq = 'GTQ',
+  | 'GTQ'
   /** Guyanese Dollar (GYD). */
-  Gyd = 'GYD',
+  | 'GYD'
   /** Hong Kong Dollars (HKD). */
-  Hkd = 'HKD',
+  | 'HKD'
   /** Honduran Lempira (HNL). */
-  Hnl = 'HNL',
+  | 'HNL'
   /** Croatian Kuna (HRK). */
-  Hrk = 'HRK',
+  | 'HRK'
   /** Haitian Gourde (HTG). */
-  Htg = 'HTG',
+  | 'HTG'
   /** Hungarian Forint (HUF). */
-  Huf = 'HUF',
+  | 'HUF'
   /** Indonesian Rupiah (IDR). */
-  Idr = 'IDR',
+  | 'IDR'
   /** Israeli New Shekel (NIS). */
-  Ils = 'ILS',
+  | 'ILS'
   /** Indian Rupees (INR). */
-  Inr = 'INR',
+  | 'INR'
   /** Iraqi Dinar (IQD). */
-  Iqd = 'IQD',
+  | 'IQD'
   /** Iranian Rial (IRR). */
-  Irr = 'IRR',
+  | 'IRR'
   /** Icelandic Kronur (ISK). */
-  Isk = 'ISK',
+  | 'ISK'
   /** Jersey Pound. */
-  Jep = 'JEP',
+  | 'JEP'
   /** Jamaican Dollars (JMD). */
-  Jmd = 'JMD',
+  | 'JMD'
   /** Jordanian Dinar (JOD). */
-  Jod = 'JOD',
+  | 'JOD'
   /** Japanese Yen (JPY). */
-  Jpy = 'JPY',
+  | 'JPY'
   /** Kenyan Shilling (KES). */
-  Kes = 'KES',
+  | 'KES'
   /** Kyrgyzstani Som (KGS). */
-  Kgs = 'KGS',
+  | 'KGS'
   /** Cambodian Riel. */
-  Khr = 'KHR',
+  | 'KHR'
   /** Kiribati Dollar (KID). */
-  Kid = 'KID',
+  | 'KID'
   /** Comorian Franc (KMF). */
-  Kmf = 'KMF',
+  | 'KMF'
   /** South Korean Won (KRW). */
-  Krw = 'KRW',
+  | 'KRW'
   /** Kuwaiti Dinar (KWD). */
-  Kwd = 'KWD',
+  | 'KWD'
   /** Cayman Dollars (KYD). */
-  Kyd = 'KYD',
+  | 'KYD'
   /** Kazakhstani Tenge (KZT). */
-  Kzt = 'KZT',
+  | 'KZT'
   /** Laotian Kip (LAK). */
-  Lak = 'LAK',
+  | 'LAK'
   /** Lebanese Pounds (LBP). */
-  Lbp = 'LBP',
+  | 'LBP'
   /** Sri Lankan Rupees (LKR). */
-  Lkr = 'LKR',
+  | 'LKR'
   /** Liberian Dollar (LRD). */
-  Lrd = 'LRD',
+  | 'LRD'
   /** Lesotho Loti (LSL). */
-  Lsl = 'LSL',
+  | 'LSL'
   /** Lithuanian Litai (LTL). */
-  Ltl = 'LTL',
+  | 'LTL'
   /** Latvian Lati (LVL). */
-  Lvl = 'LVL',
+  | 'LVL'
   /** Libyan Dinar (LYD). */
-  Lyd = 'LYD',
+  | 'LYD'
   /** Moroccan Dirham. */
-  Mad = 'MAD',
+  | 'MAD'
   /** Moldovan Leu (MDL). */
-  Mdl = 'MDL',
+  | 'MDL'
   /** Malagasy Ariary (MGA). */
-  Mga = 'MGA',
+  | 'MGA'
   /** Macedonia Denar (MKD). */
-  Mkd = 'MKD',
+  | 'MKD'
   /** Burmese Kyat (MMK). */
-  Mmk = 'MMK',
+  | 'MMK'
   /** Mongolian Tugrik. */
-  Mnt = 'MNT',
+  | 'MNT'
   /** Macanese Pataca (MOP). */
-  Mop = 'MOP',
+  | 'MOP'
   /** Mauritanian Ouguiya (MRU). */
-  Mru = 'MRU',
+  | 'MRU'
   /** Mauritian Rupee (MUR). */
-  Mur = 'MUR',
+  | 'MUR'
   /** Maldivian Rufiyaa (MVR). */
-  Mvr = 'MVR',
+  | 'MVR'
   /** Malawian Kwacha (MWK). */
-  Mwk = 'MWK',
+  | 'MWK'
   /** Mexican Pesos (MXN). */
-  Mxn = 'MXN',
+  | 'MXN'
   /** Malaysian Ringgits (MYR). */
-  Myr = 'MYR',
+  | 'MYR'
   /** Mozambican Metical. */
-  Mzn = 'MZN',
+  | 'MZN'
   /** Namibian Dollar. */
-  Nad = 'NAD',
+  | 'NAD'
   /** Nigerian Naira (NGN). */
-  Ngn = 'NGN',
+  | 'NGN'
   /** Nicaraguan Córdoba (NIO). */
-  Nio = 'NIO',
+  | 'NIO'
   /** Norwegian Kroner (NOK). */
-  Nok = 'NOK',
+  | 'NOK'
   /** Nepalese Rupee (NPR). */
-  Npr = 'NPR',
+  | 'NPR'
   /** New Zealand Dollars (NZD). */
-  Nzd = 'NZD',
+  | 'NZD'
   /** Omani Rial (OMR). */
-  Omr = 'OMR',
+  | 'OMR'
   /** Panamian Balboa (PAB). */
-  Pab = 'PAB',
+  | 'PAB'
   /** Peruvian Nuevo Sol (PEN). */
-  Pen = 'PEN',
+  | 'PEN'
   /** Papua New Guinean Kina (PGK). */
-  Pgk = 'PGK',
+  | 'PGK'
   /** Philippine Peso (PHP). */
-  Php = 'PHP',
+  | 'PHP'
   /** Pakistani Rupee (PKR). */
-  Pkr = 'PKR',
+  | 'PKR'
   /** Polish Zlotych (PLN). */
-  Pln = 'PLN',
+  | 'PLN'
   /** Paraguayan Guarani (PYG). */
-  Pyg = 'PYG',
+  | 'PYG'
   /** Qatari Rial (QAR). */
-  Qar = 'QAR',
+  | 'QAR'
   /** Romanian Lei (RON). */
-  Ron = 'RON',
+  | 'RON'
   /** Serbian dinar (RSD). */
-  Rsd = 'RSD',
+  | 'RSD'
   /** Russian Rubles (RUB). */
-  Rub = 'RUB',
+  | 'RUB'
   /** Rwandan Franc (RWF). */
-  Rwf = 'RWF',
+  | 'RWF'
   /** Saudi Riyal (SAR). */
-  Sar = 'SAR',
+  | 'SAR'
   /** Solomon Islands Dollar (SBD). */
-  Sbd = 'SBD',
+  | 'SBD'
   /** Seychellois Rupee (SCR). */
-  Scr = 'SCR',
+  | 'SCR'
   /** Sudanese Pound (SDG). */
-  Sdg = 'SDG',
+  | 'SDG'
   /** Swedish Kronor (SEK). */
-  Sek = 'SEK',
+  | 'SEK'
   /** Singapore Dollars (SGD). */
-  Sgd = 'SGD',
+  | 'SGD'
   /** Saint Helena Pounds (SHP). */
-  Shp = 'SHP',
+  | 'SHP'
   /** Sierra Leonean Leone (SLL). */
-  Sll = 'SLL',
+  | 'SLL'
   /** Somali Shilling (SOS). */
-  Sos = 'SOS',
+  | 'SOS'
   /** Surinamese Dollar (SRD). */
-  Srd = 'SRD',
+  | 'SRD'
   /** South Sudanese Pound (SSP). */
-  Ssp = 'SSP',
-  /**
-   * Sao Tome And Principe Dobra (STD).
-   * @deprecated `STD` is deprecated. Use `STN` available from version `2022-07` onwards instead.
-   */
-  Std = 'STD',
+  | 'SSP'
+  /** Sao Tome And Principe Dobra (STD). */
+  | 'STD'
   /** Sao Tome And Principe Dobra (STN). */
-  Stn = 'STN',
+  | 'STN'
   /** Syrian Pound (SYP). */
-  Syp = 'SYP',
+  | 'SYP'
   /** Swazi Lilangeni (SZL). */
-  Szl = 'SZL',
+  | 'SZL'
   /** Thai baht (THB). */
-  Thb = 'THB',
+  | 'THB'
   /** Tajikistani Somoni (TJS). */
-  Tjs = 'TJS',
+  | 'TJS'
   /** Turkmenistani Manat (TMT). */
-  Tmt = 'TMT',
+  | 'TMT'
   /** Tunisian Dinar (TND). */
-  Tnd = 'TND',
+  | 'TND'
   /** Tongan Pa'anga (TOP). */
-  Top = 'TOP',
+  | 'TOP'
   /** Turkish Lira (TRY). */
-  Try = 'TRY',
+  | 'TRY'
   /** Trinidad and Tobago Dollars (TTD). */
-  Ttd = 'TTD',
+  | 'TTD'
   /** Taiwan Dollars (TWD). */
-  Twd = 'TWD',
+  | 'TWD'
   /** Tanzanian Shilling (TZS). */
-  Tzs = 'TZS',
+  | 'TZS'
   /** Ukrainian Hryvnia (UAH). */
-  Uah = 'UAH',
+  | 'UAH'
   /** Ugandan Shilling (UGX). */
-  Ugx = 'UGX',
+  | 'UGX'
   /** United States Dollars (USD). */
-  Usd = 'USD',
+  | 'USD'
   /** Uruguayan Pesos (UYU). */
-  Uyu = 'UYU',
+  | 'UYU'
   /** Uzbekistan som (UZS). */
-  Uzs = 'UZS',
+  | 'UZS'
   /** Venezuelan Bolivares (VED). */
-  Ved = 'VED',
-  /**
-   * Venezuelan Bolivares (VEF).
-   * @deprecated `VEF` is deprecated. Use `VES` available from version `2020-10` onwards instead.
-   */
-  Vef = 'VEF',
+  | 'VED'
+  /** Venezuelan Bolivares (VEF). */
+  | 'VEF'
   /** Venezuelan Bolivares Soberanos (VES). */
-  Ves = 'VES',
+  | 'VES'
   /** Vietnamese đồng (VND). */
-  Vnd = 'VND',
+  | 'VND'
   /** Vanuatu Vatu (VUV). */
-  Vuv = 'VUV',
+  | 'VUV'
   /** Samoan Tala (WST). */
-  Wst = 'WST',
+  | 'WST'
   /** Central African CFA Franc (XAF). */
-  Xaf = 'XAF',
+  | 'XAF'
   /** East Caribbean Dollar (XCD). */
-  Xcd = 'XCD',
+  | 'XCD'
   /** West African CFA franc (XOF). */
-  Xof = 'XOF',
+  | 'XOF'
   /** CFP Franc (XPF). */
-  Xpf = 'XPF',
+  | 'XPF'
   /** Unrecognized currency. */
-  Xxx = 'XXX',
+  | 'XXX'
   /** Yemeni Rial (YER). */
-  Yer = 'YER',
+  | 'YER'
   /** South African Rand (ZAR). */
-  Zar = 'ZAR',
+  | 'ZAR'
   /** Zambian Kwacha (ZMW). */
-  Zmw = 'ZMW',
-}
+  | 'ZMW';
 
 /**
  * A customer account with the shop. Includes data such as contact information, [addresses](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress) and marketing preferences for logged-in customers, so they don't have to provide these details at every checkout.
@@ -3706,6 +3691,7 @@ export type Customer = HasMetafields & {
   updatedAt: Scalars['DateTime']['output'];
 };
 
+
 /**
  * A customer account with the shop. Includes data such as contact information, [addresses](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress) and marketing preferences for logged-in customers, so they don't have to provide these details at every checkout.
  *
@@ -3722,6 +3708,7 @@ export type CustomerAddressesArgs = {
   reverse?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+
 /**
  * A customer account with the shop. Includes data such as contact information, [addresses](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress) and marketing preferences for logged-in customers, so they don't have to provide these details at every checkout.
  *
@@ -3735,6 +3722,7 @@ export type CustomerMetafieldArgs = {
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
 
+
 /**
  * A customer account with the shop. Includes data such as contact information, [addresses](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress) and marketing preferences for logged-in customers, so they don't have to provide these details at every checkout.
  *
@@ -3746,6 +3734,7 @@ export type CustomerMetafieldArgs = {
 export type CustomerMetafieldsArgs = {
   identifiers: Array<HasMetafieldsIdentifier>;
 };
+
 
 /**
  * A customer account with the shop. Includes data such as contact information, [addresses](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress) and marketing preferences for logged-in customers, so they don't have to provide these details at every checkout.
@@ -3971,38 +3960,37 @@ export type CustomerDefaultAddressUpdatePayload = {
  * Error codes returned by the [`CustomerUserError`](https://shopify.dev/docs/api/storefront/current/objects/CustomerUserError) object. These codes identify specific validation and processing failures for customer-related mutations, including account creation, updates, password resets, and address management.
  *
  */
-export enum CustomerErrorCode {
+export type CustomerErrorCode =
   /** Customer already enabled. */
-  AlreadyEnabled = 'ALREADY_ENABLED',
+  | 'ALREADY_ENABLED'
   /** Input email contains an invalid domain name. */
-  BadDomain = 'BAD_DOMAIN',
+  | 'BAD_DOMAIN'
   /** The input value is blank. */
-  Blank = 'BLANK',
+  | 'BLANK'
   /** Input contains HTML tags. */
-  ContainsHtmlTags = 'CONTAINS_HTML_TAGS',
+  | 'CONTAINS_HTML_TAGS'
   /** Input contains URL. */
-  ContainsUrl = 'CONTAINS_URL',
+  | 'CONTAINS_URL'
   /** Customer is disabled. */
-  CustomerDisabled = 'CUSTOMER_DISABLED',
+  | 'CUSTOMER_DISABLED'
   /** The input value is invalid. */
-  Invalid = 'INVALID',
+  | 'INVALID'
   /** Multipass token is not valid. */
-  InvalidMultipassRequest = 'INVALID_MULTIPASS_REQUEST',
+  | 'INVALID_MULTIPASS_REQUEST'
   /** Address does not exist. */
-  NotFound = 'NOT_FOUND',
+  | 'NOT_FOUND'
   /** Input password starts or ends with whitespace. */
-  PasswordStartsOrEndsWithWhitespace = 'PASSWORD_STARTS_OR_ENDS_WITH_WHITESPACE',
+  | 'PASSWORD_STARTS_OR_ENDS_WITH_WHITESPACE'
   /** The input value is already taken. */
-  Taken = 'TAKEN',
+  | 'TAKEN'
   /** Invalid activation token. */
-  TokenInvalid = 'TOKEN_INVALID',
+  | 'TOKEN_INVALID'
   /** The input value is too long. */
-  TooLong = 'TOO_LONG',
+  | 'TOO_LONG'
   /** The input value is too short. */
-  TooShort = 'TOO_SHORT',
+  | 'TOO_SHORT'
   /** Unidentified customer. */
-  UnidentifiedCustomer = 'UNIDENTIFIED_CUSTOMER',
-}
+  | 'UNIDENTIFIED_CUSTOMER';
 
 /** Return type for `customerRecover` mutation. */
 export type CustomerRecoverPayload = {
@@ -4145,44 +4133,41 @@ export type DeliveryAddressInput = {
  * Used by [`DeliveryAddressInput`](https://shopify.dev/docs/api/storefront/current/input-objects/DeliveryAddressInput) when setting buyer identity preferences, and by [`CartSelectableAddressInput`](https://shopify.dev/docs/api/storefront/current/input-objects/CartSelectableAddressInput) and [`CartSelectableAddressUpdateInput`](https://shopify.dev/docs/api/storefront/current/input-objects/CartSelectableAddressUpdateInput) when managing cart delivery addresses.
  *
  */
-export enum DeliveryAddressValidationStrategy {
+export type DeliveryAddressValidationStrategy =
   /** Only the country code is validated. */
-  CountryCodeOnly = 'COUNTRY_CODE_ONLY',
+  | 'COUNTRY_CODE_ONLY'
   /**
    * Strict validation is performed, i.e. all fields in the address are validated
    * according to Shopify's checkout rules. If the address fails validation, the cart will not be updated.
    *
    */
-  Strict = 'STRICT',
-}
+  | 'STRICT';
 
 /** List of different delivery method types. */
-export enum DeliveryMethodType {
+export type DeliveryMethodType =
   /** Local Delivery. */
-  Local = 'LOCAL',
+  | 'LOCAL'
   /** None. */
-  None = 'NONE',
+  | 'NONE'
   /** Shipping to a Pickup Point. */
-  PickupPoint = 'PICKUP_POINT',
+  | 'PICKUP_POINT'
   /** Local Pickup. */
-  PickUp = 'PICK_UP',
+  | 'PICK_UP'
   /** Retail. */
-  Retail = 'RETAIL',
+  | 'RETAIL'
   /** Shipping. */
-  Shipping = 'SHIPPING',
-}
+  | 'SHIPPING';
 
 /** Digital wallet, such as Apple Pay, which can be used for accelerated checkouts. */
-export enum DigitalWallet {
+export type DigitalWallet =
   /** Android Pay. */
-  AndroidPay = 'ANDROID_PAY',
+  | 'ANDROID_PAY'
   /** Apple Pay. */
-  ApplePay = 'APPLE_PAY',
+  | 'APPLE_PAY'
   /** Google Pay. */
-  GooglePay = 'GOOGLE_PAY',
+  | 'GOOGLE_PAY'
   /** Shopify Pay. */
-  ShopifyPay = 'SHOPIFY_PAY',
-}
+  | 'SHOPIFY_PAY';
 
 /**
  * The calculated discount amount applied to a line item or shipping line. While a [`DiscountApplication`](https://shopify.dev/docs/api/storefront/current/interfaces/DiscountApplication) captures the discount's rules and intentions, the allocation shows how much was actually deducted.
@@ -4221,17 +4206,13 @@ export type DiscountApplication = {
  * Used by the [`DiscountApplication`](https://shopify.dev/docs/api/storefront/current/interfaces/DiscountApplication) interface and its implementations to capture the intentions of a discount source at the time of application.
  *
  */
-export enum DiscountApplicationAllocationMethod {
+export type DiscountApplicationAllocationMethod =
   /** The value is spread across all entitled lines. */
-  Across = 'ACROSS',
+  | 'ACROSS'
   /** The value is applied onto every entitled line. */
-  Each = 'EACH',
-  /**
-   * The value is specifically applied onto a particular line.
-   * @deprecated Use ACROSS instead.
-   */
-  One = 'ONE',
-}
+  | 'EACH'
+  /** The value is specifically applied onto a particular line. */
+  | 'ONE';
 
 /**
  * An auto-generated type for paginating through multiple DiscountApplications.
@@ -4266,25 +4247,23 @@ export type DiscountApplicationEdge = {
  * The value `ALL`, combined with a `targetType` of `SHIPPING_LINE`, applies the discount on all shipping lines.
  *
  */
-export enum DiscountApplicationTargetSelection {
+export type DiscountApplicationTargetSelection =
   /** The discount is allocated onto all the lines. */
-  All = 'ALL',
+  | 'ALL'
   /** The discount is allocated onto only the lines that it's entitled for. */
-  Entitled = 'ENTITLED',
+  | 'ENTITLED'
   /** The discount is allocated onto explicitly chosen lines. */
-  Explicit = 'EXPLICIT',
-}
+  | 'EXPLICIT';
 
 /**
  * The type of line (i.e. line item or shipping line) on an order that the discount is applicable towards.
  *
  */
-export enum DiscountApplicationTargetType {
+export type DiscountApplicationTargetType =
   /** The discount applies onto line items. */
-  LineItem = 'LINE_ITEM',
+  | 'LINE_ITEM'
   /** The discount applies onto shipping lines. */
-  ShippingLine = 'SHIPPING_LINE',
-}
+  | 'SHIPPING_LINE';
 
 /**
  * Records the configuration and intent of a [discount code](https://help.shopify.com/manual/discounts/discount-methods/discount-codes) when a customer applies it. This includes the code string, allocation method, target type, and discount value at the time of application. The [`applicable`](https://shopify.dev/docs/api/storefront/latest/objects/DiscountCodeApplication#field-DiscountCodeApplication.fields.applicable) field indicates whether the code was successfully applied.
@@ -4332,31 +4311,30 @@ export type Domain = {
 };
 
 /** Represents a video hosted outside of Shopify. */
-export type ExternalVideo = Media &
-  Node & {
-    __typename?: 'ExternalVideo';
-    /** A word or phrase to share the nature or contents of a media. */
-    alt?: Maybe<Scalars['String']['output']>;
-    /** The embed URL of the video for the respective host. */
-    embedUrl: Scalars['URL']['output'];
-    /**
-     * The URL.
-     * @deprecated Use `originUrl` instead.
-     */
-    embeddedUrl: Scalars['URL']['output'];
-    /** The host of the external video. */
-    host: MediaHost;
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** The media content type. */
-    mediaContentType: MediaContentType;
-    /** The origin URL of the video on the respective host. */
-    originUrl: Scalars['URL']['output'];
-    /** The presentation for a media. */
-    presentation?: Maybe<MediaPresentation>;
-    /** The preview image for the media. */
-    previewImage?: Maybe<Image>;
-  };
+export type ExternalVideo = Media & Node & {
+  __typename?: 'ExternalVideo';
+  /** A word or phrase to share the nature or contents of a media. */
+  alt?: Maybe<Scalars['String']['output']>;
+  /** The embed URL of the video for the respective host. */
+  embedUrl: Scalars['URL']['output'];
+  /**
+   * The URL.
+   * @deprecated Use `originUrl` instead.
+   */
+  embeddedUrl: Scalars['URL']['output'];
+  /** The host of the external video. */
+  host: MediaHost;
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** The media content type. */
+  mediaContentType: MediaContentType;
+  /** The origin URL of the video on the respective host. */
+  originUrl: Scalars['URL']['output'];
+  /** The presentation for a media. */
+  presentation?: Maybe<MediaPresentation>;
+  /** The preview image for the media. */
+  previewImage?: Maybe<Image>;
+};
 
 /**
  * A filter option available on collection and search results pages. Each filter includes a type, display label, and selectable values that customers can use to narrow down products.
@@ -4386,14 +4364,13 @@ export type Filter = {
  * Defines how to present the filter values, specifies the presentation of the filter.
  *
  */
-export enum FilterPresentation {
+export type FilterPresentation =
   /** Image presentation, filter values display an image. */
-  Image = 'IMAGE',
+  | 'IMAGE'
   /** Swatch presentation, filter values display color or image patterns. */
-  Swatch = 'SWATCH',
+  | 'SWATCH'
   /** Text presentation, no additional visual display for filter values. */
-  Text = 'TEXT',
-}
+  | 'TEXT';
 
 /**
  * The type of data that the filter group represents.
@@ -4402,14 +4379,13 @@ export enum FilterPresentation {
  * (https://shopify.dev/custom-storefronts/products-collections/filter-products).
  *
  */
-export enum FilterType {
+export type FilterType =
   /** A boolean value. */
-  Boolean = 'BOOLEAN',
+  | 'BOOLEAN'
   /** A list of selectable values. */
-  List = 'LIST',
+  | 'LIST'
   /** A range of prices. */
-  PriceRange = 'PRICE_RANGE',
-}
+  | 'PRICE_RANGE';
 
 /**
  * A selectable option within a [`Filter`](https://shopify.dev/docs/api/storefront/current/objects/Filter), such as a specific color, size, or product type. Each value includes a count of matching results and a human-readable label for display.
@@ -4460,6 +4436,7 @@ export type Fulfillment = {
   trackingInfo: Array<FulfillmentTrackingInfo>;
 };
 
+
 /**
  * A shipment of one or more items in an order. Accessed through the [`Order`](https://shopify.dev/docs/api/storefront/current/objects/Order) object's [`successfulFulfillments`](https://shopify.dev/docs/api/storefront/current/objects/Order#field-Order.fields.successfulFulfillments) field.
  *
@@ -4473,6 +4450,7 @@ export type FulfillmentFulfillmentLineItemsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   reverse?: InputMaybe<Scalars['Boolean']['input']>;
 };
+
 
 /**
  * A shipment of one or more items in an order. Accessed through the [`Order`](https://shopify.dev/docs/api/storefront/current/objects/Order) object's [`successfulFulfillments`](https://shopify.dev/docs/api/storefront/current/objects/Order#field-Order.fields.successfulFulfillments) field.
@@ -4576,6 +4554,7 @@ export type HasMetafields = {
   metafields: Array<Maybe<Metafield>>;
 };
 
+
 /**
  * Implemented by resources that support custom metadata through [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) objects. Types like [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product), [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection), and [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) implement this interface to provide consistent access to metafields.
  *
@@ -4586,6 +4565,7 @@ export type HasMetafieldsMetafieldArgs = {
   key: Scalars['String']['input'];
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /**
  * Implemented by resources that support custom metadata through [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) objects. Types like [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product), [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection), and [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) implement this interface to provide consistent access to metafields.
@@ -4670,6 +4650,7 @@ export type Image = {
   width?: Maybe<Scalars['Int']['output']>;
 };
 
+
 /**
  * An image resource with URL, dimensions, and transformation options. Used for product images, collection images, media previews, and other visual content throughout the storefront.
  *
@@ -4683,6 +4664,7 @@ export type ImageTransformedSrcArgs = {
   preferredContentType?: InputMaybe<ImageContentType>;
   scale?: InputMaybe<Scalars['Int']['input']>;
 };
+
 
 /**
  * An image resource with URL, dimensions, and transformation options. Used for product images, collection images, media previews, and other visual content throughout the storefront.
@@ -4709,14 +4691,13 @@ export type ImageConnection = {
 };
 
 /** List of supported image content types. */
-export enum ImageContentType {
+export type ImageContentType =
   /** A JPG image. */
-  Jpg = 'JPG',
+  | 'JPG'
   /** A PNG image. */
-  Png = 'PNG',
+  | 'PNG'
   /** A WEBP image. */
-  Webp = 'WEBP',
-}
+  | 'WEBP';
 
 /**
  * An auto-generated type which holds one Image and a cursor during pagination.
@@ -4808,296 +4789,295 @@ export type Language = {
  * The [`Localization`](https://shopify.dev/docs/api/storefront/current/objects/Localization) object provides the list of available languages for the active country, and each [`Country`](https://shopify.dev/docs/api/storefront/current/objects/Country) in [`availableCountries`](https://shopify.dev/docs/api/storefront/current/objects/Localization#field-Localization.fields.availableCountries) includes its own available languages.
  *
  */
-export enum LanguageCode {
+export type LanguageCode =
   /** Afrikaans. */
-  Af = 'AF',
+  | 'AF'
   /** Akan. */
-  Ak = 'AK',
+  | 'AK'
   /** Amharic. */
-  Am = 'AM',
+  | 'AM'
   /** Arabic. */
-  Ar = 'AR',
+  | 'AR'
   /** Assamese. */
-  As = 'AS',
+  | 'AS'
   /** Azerbaijani. */
-  Az = 'AZ',
+  | 'AZ'
   /** Belarusian. */
-  Be = 'BE',
+  | 'BE'
   /** Bulgarian. */
-  Bg = 'BG',
+  | 'BG'
   /** Bambara. */
-  Bm = 'BM',
+  | 'BM'
   /** Bangla. */
-  Bn = 'BN',
+  | 'BN'
   /** Tibetan. */
-  Bo = 'BO',
+  | 'BO'
   /** Breton. */
-  Br = 'BR',
+  | 'BR'
   /** Bosnian. */
-  Bs = 'BS',
+  | 'BS'
   /** Catalan. */
-  Ca = 'CA',
+  | 'CA'
   /** Chechen. */
-  Ce = 'CE',
+  | 'CE'
   /** Central Kurdish. */
-  Ckb = 'CKB',
+  | 'CKB'
   /** Czech. */
-  Cs = 'CS',
+  | 'CS'
   /** Church Slavic. */
-  Cu = 'CU',
+  | 'CU'
   /** Welsh. */
-  Cy = 'CY',
+  | 'CY'
   /** Danish. */
-  Da = 'DA',
+  | 'DA'
   /** German. */
-  De = 'DE',
+  | 'DE'
   /** Dzongkha. */
-  Dz = 'DZ',
+  | 'DZ'
   /** Ewe. */
-  Ee = 'EE',
+  | 'EE'
   /** Greek. */
-  El = 'EL',
+  | 'EL'
   /** English. */
-  En = 'EN',
+  | 'EN'
   /** Esperanto. */
-  Eo = 'EO',
+  | 'EO'
   /** Spanish. */
-  Es = 'ES',
+  | 'ES'
   /** Estonian. */
-  Et = 'ET',
+  | 'ET'
   /** Basque. */
-  Eu = 'EU',
+  | 'EU'
   /** Persian. */
-  Fa = 'FA',
+  | 'FA'
   /** Fulah. */
-  Ff = 'FF',
+  | 'FF'
   /** Finnish. */
-  Fi = 'FI',
+  | 'FI'
   /** Filipino. */
-  Fil = 'FIL',
+  | 'FIL'
   /** Faroese. */
-  Fo = 'FO',
+  | 'FO'
   /** French. */
-  Fr = 'FR',
+  | 'FR'
   /** Western Frisian. */
-  Fy = 'FY',
+  | 'FY'
   /** Irish. */
-  Ga = 'GA',
+  | 'GA'
   /** Scottish Gaelic. */
-  Gd = 'GD',
+  | 'GD'
   /** Galician. */
-  Gl = 'GL',
+  | 'GL'
   /** Gujarati. */
-  Gu = 'GU',
+  | 'GU'
   /** Manx. */
-  Gv = 'GV',
+  | 'GV'
   /** Hausa. */
-  Ha = 'HA',
+  | 'HA'
   /** Hebrew. */
-  He = 'HE',
+  | 'HE'
   /** Hindi. */
-  Hi = 'HI',
+  | 'HI'
   /** Croatian. */
-  Hr = 'HR',
+  | 'HR'
   /** Hungarian. */
-  Hu = 'HU',
+  | 'HU'
   /** Armenian. */
-  Hy = 'HY',
+  | 'HY'
   /** Interlingua. */
-  Ia = 'IA',
+  | 'IA'
   /** Indonesian. */
-  Id = 'ID',
+  | 'ID'
   /** Igbo. */
-  Ig = 'IG',
+  | 'IG'
   /** Sichuan Yi. */
-  Ii = 'II',
+  | 'II'
   /** Icelandic. */
-  Is = 'IS',
+  | 'IS'
   /** Italian. */
-  It = 'IT',
+  | 'IT'
   /** Japanese. */
-  Ja = 'JA',
+  | 'JA'
   /** Javanese. */
-  Jv = 'JV',
+  | 'JV'
   /** Georgian. */
-  Ka = 'KA',
+  | 'KA'
   /** Kikuyu. */
-  Ki = 'KI',
+  | 'KI'
   /** Kazakh. */
-  Kk = 'KK',
+  | 'KK'
   /** Kalaallisut. */
-  Kl = 'KL',
+  | 'KL'
   /** Khmer. */
-  Km = 'KM',
+  | 'KM'
   /** Kannada. */
-  Kn = 'KN',
+  | 'KN'
   /** Korean. */
-  Ko = 'KO',
+  | 'KO'
   /** Kashmiri. */
-  Ks = 'KS',
+  | 'KS'
   /** Kurdish. */
-  Ku = 'KU',
+  | 'KU'
   /** Cornish. */
-  Kw = 'KW',
+  | 'KW'
   /** Kyrgyz. */
-  Ky = 'KY',
+  | 'KY'
   /** Latin. */
-  La = 'LA',
+  | 'LA'
   /** Luxembourgish. */
-  Lb = 'LB',
+  | 'LB'
   /** Ganda. */
-  Lg = 'LG',
+  | 'LG'
   /** Lingala. */
-  Ln = 'LN',
+  | 'LN'
   /** Lao. */
-  Lo = 'LO',
+  | 'LO'
   /** Lithuanian. */
-  Lt = 'LT',
+  | 'LT'
   /** Luba-Katanga. */
-  Lu = 'LU',
+  | 'LU'
   /** Latvian. */
-  Lv = 'LV',
+  | 'LV'
   /** Malagasy. */
-  Mg = 'MG',
+  | 'MG'
   /** Māori. */
-  Mi = 'MI',
+  | 'MI'
   /** Macedonian. */
-  Mk = 'MK',
+  | 'MK'
   /** Malayalam. */
-  Ml = 'ML',
+  | 'ML'
   /** Mongolian. */
-  Mn = 'MN',
+  | 'MN'
   /** Moldavian. */
-  Mo = 'MO',
+  | 'MO'
   /** Marathi. */
-  Mr = 'MR',
+  | 'MR'
   /** Malay. */
-  Ms = 'MS',
+  | 'MS'
   /** Maltese. */
-  Mt = 'MT',
+  | 'MT'
   /** Burmese. */
-  My = 'MY',
+  | 'MY'
   /** Norwegian (Bokmål). */
-  Nb = 'NB',
+  | 'NB'
   /** North Ndebele. */
-  Nd = 'ND',
+  | 'ND'
   /** Nepali. */
-  Ne = 'NE',
+  | 'NE'
   /** Dutch. */
-  Nl = 'NL',
+  | 'NL'
   /** Norwegian Nynorsk. */
-  Nn = 'NN',
+  | 'NN'
   /** Norwegian. */
-  No = 'NO',
+  | 'NO'
   /** Oromo. */
-  Om = 'OM',
+  | 'OM'
   /** Odia. */
-  Or = 'OR',
+  | 'OR'
   /** Ossetic. */
-  Os = 'OS',
+  | 'OS'
   /** Punjabi. */
-  Pa = 'PA',
+  | 'PA'
   /** Polish. */
-  Pl = 'PL',
+  | 'PL'
   /** Pashto. */
-  Ps = 'PS',
+  | 'PS'
   /** Portuguese. */
-  Pt = 'PT',
+  | 'PT'
   /** Portuguese (Brazil). */
-  PtBr = 'PT_BR',
+  | 'PT_BR'
   /** Portuguese (Portugal). */
-  PtPt = 'PT_PT',
+  | 'PT_PT'
   /** Quechua. */
-  Qu = 'QU',
+  | 'QU'
   /** Romansh. */
-  Rm = 'RM',
+  | 'RM'
   /** Rundi. */
-  Rn = 'RN',
+  | 'RN'
   /** Romanian. */
-  Ro = 'RO',
+  | 'RO'
   /** Russian. */
-  Ru = 'RU',
+  | 'RU'
   /** Kinyarwanda. */
-  Rw = 'RW',
+  | 'RW'
   /** Sanskrit. */
-  Sa = 'SA',
+  | 'SA'
   /** Sardinian. */
-  Sc = 'SC',
+  | 'SC'
   /** Sindhi. */
-  Sd = 'SD',
+  | 'SD'
   /** Northern Sami. */
-  Se = 'SE',
+  | 'SE'
   /** Sango. */
-  Sg = 'SG',
+  | 'SG'
   /** Serbo-Croatian. */
-  Sh = 'SH',
+  | 'SH'
   /** Sinhala. */
-  Si = 'SI',
+  | 'SI'
   /** Slovak. */
-  Sk = 'SK',
+  | 'SK'
   /** Slovenian. */
-  Sl = 'SL',
+  | 'SL'
   /** Shona. */
-  Sn = 'SN',
+  | 'SN'
   /** Somali. */
-  So = 'SO',
+  | 'SO'
   /** Albanian. */
-  Sq = 'SQ',
+  | 'SQ'
   /** Serbian. */
-  Sr = 'SR',
+  | 'SR'
   /** Sundanese. */
-  Su = 'SU',
+  | 'SU'
   /** Swedish. */
-  Sv = 'SV',
+  | 'SV'
   /** Swahili. */
-  Sw = 'SW',
+  | 'SW'
   /** Tamil. */
-  Ta = 'TA',
+  | 'TA'
   /** Telugu. */
-  Te = 'TE',
+  | 'TE'
   /** Tajik. */
-  Tg = 'TG',
+  | 'TG'
   /** Thai. */
-  Th = 'TH',
+  | 'TH'
   /** Tigrinya. */
-  Ti = 'TI',
+  | 'TI'
   /** Turkmen. */
-  Tk = 'TK',
+  | 'TK'
   /** Tongan. */
-  To = 'TO',
+  | 'TO'
   /** Turkish. */
-  Tr = 'TR',
+  | 'TR'
   /** Tatar. */
-  Tt = 'TT',
+  | 'TT'
   /** Uyghur. */
-  Ug = 'UG',
+  | 'UG'
   /** Ukrainian. */
-  Uk = 'UK',
+  | 'UK'
   /** Urdu. */
-  Ur = 'UR',
+  | 'UR'
   /** Uzbek. */
-  Uz = 'UZ',
+  | 'UZ'
   /** Vietnamese. */
-  Vi = 'VI',
+  | 'VI'
   /** Volapük. */
-  Vo = 'VO',
+  | 'VO'
   /** Wolof. */
-  Wo = 'WO',
+  | 'WO'
   /** Xhosa. */
-  Xh = 'XH',
+  | 'XH'
   /** Yiddish. */
-  Yi = 'YI',
+  | 'YI'
   /** Yoruba. */
-  Yo = 'YO',
+  | 'YO'
   /** Chinese. */
-  Zh = 'ZH',
+  | 'ZH'
   /** Chinese (Simplified). */
-  ZhCn = 'ZH_CN',
+  | 'ZH_CN'
   /** Chinese (Traditional). */
-  ZhTw = 'ZH_TW',
+  | 'ZH_TW'
   /** Zulu. */
-  Zu = 'ZU',
-}
+  | 'ZU';
 
 /**
  * Information about the shop's configured localized experiences, including available countries and languages. The [`country`](https://shopify.dev/docs/api/storefront/current/objects/Localization#field-Localization.fields.country) and [`language`](https://shopify.dev/docs/api/storefront/current/objects/Localization#field-Localization.fields.language) fields reflect the active localization context, which you can change using the `@inContext` directive on queries.
@@ -5128,20 +5108,20 @@ export type Localization = {
  * Learn more about [supporting local pickup on storefronts](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-collections/local-pickup).
  *
  */
-export type Location = HasMetafields &
-  Node & {
-    __typename?: 'Location';
-    /** The address of the location. */
-    address: LocationAddress;
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
-    metafield?: Maybe<Metafield>;
-    /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
-    metafields: Array<Maybe<Metafield>>;
-    /** The name of the location. */
-    name: Scalars['String']['output'];
-  };
+export type Location = HasMetafields & Node & {
+  __typename?: 'Location';
+  /** The address of the location. */
+  address: LocationAddress;
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
+  metafield?: Maybe<Metafield>;
+  /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
+  metafields: Array<Maybe<Metafield>>;
+  /** The name of the location. */
+  name: Scalars['String']['output'];
+};
+
 
 /**
  * A physical store location where product inventory is held and that supports in-store pickup. Provides the location's name, address, and geographic coordinates for proximity-based sorting. Use with [`StoreAvailability`](https://shopify.dev/docs/api/storefront/current/objects/StoreAvailability) to show customers where a [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) is available for pickup.
@@ -5153,6 +5133,7 @@ export type LocationMetafieldArgs = {
   key: Scalars['String']['input'];
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /**
  * A physical store location where product inventory is held and that supports in-store pickup. Provides the location's name, address, and geographic coordinates for proximity-based sorting. Use with [`StoreAvailability`](https://shopify.dev/docs/api/storefront/current/objects/StoreAvailability) to show customers where a [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) is available for pickup.
@@ -5226,16 +5207,15 @@ export type LocationEdge = {
 };
 
 /** The set of valid sort keys for the Location query. */
-export enum LocationSortKeys {
+export type LocationSortKeys =
   /** Sort by the `city` value. */
-  City = 'CITY',
+  | 'CITY'
   /** Sort by the `distance` value. */
-  Distance = 'DISTANCE',
+  | 'DISTANCE'
   /** Sort by the `id` value. */
-  Id = 'ID',
+  | 'ID'
   /** Sort by the `name` value. */
-  Name = 'NAME',
-}
+  | 'NAME';
 
 /**
  * A physical mailing address associated with a [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) or [`Order`](https://shopify.dev/docs/api/storefront/current/objects/Order). Stores standard address components including street address, city, province, country, and postal code, along with customer name and company information.
@@ -5308,6 +5288,7 @@ export type MailingAddress = Node & {
   /** The zip or postal code of the address. */
   zip?: Maybe<Scalars['String']['output']>;
 };
+
 
 /**
  * A physical mailing address associated with a [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer) or [`Order`](https://shopify.dev/docs/api/storefront/current/objects/Order). Stores standard address components including street address, city, province, country, and postal code, along with customer name and company information.
@@ -5418,21 +5399,21 @@ export type ManualDiscountApplication = DiscountApplication & {
  * Each market has a unique [`handle`](https://shopify.dev/docs/api/storefront/current/objects/Market#field-Market.fields.handle) for identification and supports custom data through [`metafields`](https://shopify.dev/docs/api/storefront/current/objects/Metafield). Learn more about [building localized experiences with Shopify Markets](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/markets).
  *
  */
-export type Market = HasMetafields &
-  Node & {
-    __typename?: 'Market';
-    /**
-     * A human-readable unique string for the market automatically generated from its title.
-     *
-     */
-    handle: Scalars['String']['output'];
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
-    metafield?: Maybe<Metafield>;
-    /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
-    metafields: Array<Maybe<Metafield>>;
-  };
+export type Market = HasMetafields & Node & {
+  __typename?: 'Market';
+  /**
+   * A human-readable unique string for the market automatically generated from its title.
+   *
+   */
+  handle: Scalars['String']['output'];
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
+  metafield?: Maybe<Metafield>;
+  /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
+  metafields: Array<Maybe<Metafield>>;
+};
+
 
 /**
  * An audience of buyers that a merchant targets for sales. Audiences can include geographic regions, company locations, and retail locations. Markets enable localized shopping experiences with region-specific languages, currencies, and pricing.
@@ -5444,6 +5425,7 @@ export type MarketMetafieldArgs = {
   key: Scalars['String']['input'];
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /**
  * An audience of buyers that a merchant targets for sales. Audiences can include geographic regions, company locations, and retail locations. Markets enable localized shopping experiences with region-specific languages, currencies, and pricing.
@@ -5489,16 +5471,15 @@ export type MediaConnection = {
 };
 
 /** The possible content types for a media object. */
-export enum MediaContentType {
+export type MediaContentType =
   /** An externally hosted video. */
-  ExternalVideo = 'EXTERNAL_VIDEO',
+  | 'EXTERNAL_VIDEO'
   /** A Shopify hosted image. */
-  Image = 'IMAGE',
+  | 'IMAGE'
   /** A 3d model. */
-  Model_3D = 'MODEL_3D',
+  | 'MODEL_3D'
   /** A Shopify hosted video. */
-  Video = 'VIDEO',
-}
+  | 'VIDEO';
 
 /**
  * An auto-generated type which holds one Media and a cursor during pagination.
@@ -5513,12 +5494,11 @@ export type MediaEdge = {
 };
 
 /** Host for a Media Resource. */
-export enum MediaHost {
+export type MediaHost =
   /** Host for Vimeo embedded videos. */
-  Vimeo = 'VIMEO',
+  | 'VIMEO'
   /** Host for YouTube embedded videos. */
-  Youtube = 'YOUTUBE',
-}
+  | 'YOUTUBE';
 
 /**
  * An image hosted on Shopify's content delivery network (CDN). Used for product images, brand logos, and other visual content across the storefront.
@@ -5526,22 +5506,21 @@ export enum MediaHost {
  * The [`image`](https://shopify.dev/docs/api/storefront/current/objects/MediaImage#field-MediaImage.fields.image) field provides the actual image data with transformation options. Implements the [`Media`](https://shopify.dev/docs/api/storefront/current/interfaces/Media) interface alongside other media types like [`Video`](https://shopify.dev/docs/api/storefront/current/objects/Video) and [`Model3d`](https://shopify.dev/docs/api/storefront/current/objects/Model3d).
  *
  */
-export type MediaImage = Media &
-  Node & {
-    __typename?: 'MediaImage';
-    /** A word or phrase to share the nature or contents of a media. */
-    alt?: Maybe<Scalars['String']['output']>;
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** The image for the media. */
-    image?: Maybe<Image>;
-    /** The media content type. */
-    mediaContentType: MediaContentType;
-    /** The presentation for a media. */
-    presentation?: Maybe<MediaPresentation>;
-    /** The preview image for the media. */
-    previewImage?: Maybe<Image>;
-  };
+export type MediaImage = Media & Node & {
+  __typename?: 'MediaImage';
+  /** A word or phrase to share the nature or contents of a media. */
+  alt?: Maybe<Scalars['String']['output']>;
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** The image for the media. */
+  image?: Maybe<Image>;
+  /** The media content type. */
+  mediaContentType: MediaContentType;
+  /** The presentation for a media. */
+  presentation?: Maybe<MediaPresentation>;
+  /** The preview image for the media. */
+  previewImage?: Maybe<Image>;
+};
 
 /** A media presentation. */
 export type MediaPresentation = Node & {
@@ -5555,18 +5534,18 @@ export type MediaPresentation = Node & {
   id: Scalars['ID']['output'];
 };
 
+
 /** A media presentation. */
 export type MediaPresentationAsJsonArgs = {
   format: MediaPresentationFormat;
 };
 
 /** The possible formats for a media presentation. */
-export enum MediaPresentationFormat {
+export type MediaPresentationFormat =
   /** A media image presentation. */
-  Image = 'IMAGE',
+  | 'IMAGE'
   /** A model viewer presentation. */
-  ModelViewer = 'MODEL_VIEWER',
-}
+  | 'MODEL_VIEWER';
 
 /**
  * A navigation structure for building store [menus](https://help.shopify.com/manual/online-store/menus-and-links). Each menu contains [`MenuItem`](https://shopify.dev/docs/api/storefront/current/objects/MenuItem) objects that can be nested to create multi-level navigation hierarchies.
@@ -5618,44 +5597,36 @@ export type MenuItem = Node & {
  * The list of possible resources a `MenuItem` can reference.
  *
  */
-export type MenuItemResource =
-  | Article
-  | Blog
-  | Collection
-  | Metaobject
-  | Page
-  | Product
-  | ShopPolicy;
+export type MenuItemResource = Article | Blog | Collection | Metaobject | Page | Product | ShopPolicy;
 
 /** A menu item type. */
-export enum MenuItemType {
+export type MenuItemType =
   /** An article link. */
-  Article = 'ARTICLE',
+  | 'ARTICLE'
   /** A blog link. */
-  Blog = 'BLOG',
+  | 'BLOG'
   /** A catalog link. */
-  Catalog = 'CATALOG',
+  | 'CATALOG'
   /** A collection link. */
-  Collection = 'COLLECTION',
+  | 'COLLECTION'
   /** A collection link. */
-  Collections = 'COLLECTIONS',
+  | 'COLLECTIONS'
   /** A customer account page link. */
-  CustomerAccountPage = 'CUSTOMER_ACCOUNT_PAGE',
+  | 'CUSTOMER_ACCOUNT_PAGE'
   /** A frontpage link. */
-  Frontpage = 'FRONTPAGE',
+  | 'FRONTPAGE'
   /** An http link. */
-  Http = 'HTTP',
+  | 'HTTP'
   /** A metaobject page link. */
-  Metaobject = 'METAOBJECT',
+  | 'METAOBJECT'
   /** A page link. */
-  Page = 'PAGE',
+  | 'PAGE'
   /** A product link. */
-  Product = 'PRODUCT',
+  | 'PRODUCT'
   /** A search link. */
-  Search = 'SEARCH',
+  | 'SEARCH'
   /** A shop policy link. */
-  ShopPolicy = 'SHOP_POLICY',
-}
+  | 'SHOP_POLICY';
 
 /**
  * A [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) that a buyer intends to purchase at checkout.
@@ -5701,6 +5672,7 @@ export type Metafield = Node & {
   value: Scalars['String']['output'];
 };
 
+
 /**
  * [Custom metadata](https://shopify.dev/docs/apps/build/metafields) attached to a Shopify resource such as a [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product), [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection), or [`Customer`](https://shopify.dev/docs/api/storefront/current/objects/Customer). Each metafield is identified by a namespace and key, and stores a value with an associated type.
  *
@@ -5715,14 +5687,13 @@ export type MetafieldReferencesArgs = {
 };
 
 /** Possible error codes that can be returned by `MetafieldDeleteUserError`. */
-export enum MetafieldDeleteErrorCode {
+export type MetafieldDeleteErrorCode =
   /** The current app is not authorized to perform this action. */
-  AppNotAuthorized = 'APP_NOT_AUTHORIZED',
+  | 'APP_NOT_AUTHORIZED'
   /** The owner ID is invalid. */
-  InvalidOwner = 'INVALID_OWNER',
+  | 'INVALID_OWNER'
   /** Metafield not found. */
-  MetafieldDoesNotExist = 'METAFIELD_DOES_NOT_EXIST',
-}
+  | 'METAFIELD_DOES_NOT_EXIST';
 
 /** An error that occurs during the execution of cart metafield deletion. */
 export type MetafieldDeleteUserError = DisplayableError & {
@@ -5754,22 +5725,7 @@ export type MetafieldFilter = {
  * The Shopify resource that owns a metafield. Returned by the `Metafield` object's [`parentResource`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield.fields.parentResource) field, enabling traversal from a metafield back to the resource it's attached to.
  *
  */
-export type MetafieldParentResource =
-  | Article
-  | Blog
-  | Cart
-  | Collection
-  | Company
-  | CompanyLocation
-  | Customer
-  | Location
-  | Market
-  | Order
-  | Page
-  | Product
-  | ProductVariant
-  | SellingPlan
-  | Shop;
+export type MetafieldParentResource = Article | Blog | Cart | Collection | Company | CompanyLocation | Customer | Location | Market | Order | Page | Product | ProductVariant | SellingPlan | Shop;
 
 /**
  * The resource that a metafield points to when its type is a resource reference. Metafields can store references to other Shopify resources, and this union provides access to the actual referenced object.
@@ -5777,17 +5733,7 @@ export type MetafieldParentResource =
  * Returned by the `Metafield` object's [`reference`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield.fields.reference) field for single references or the [`references`](https://shopify.dev/docs/api/storefront/current/objects/Metafield#field-Metafield.fields.references) field for lists.
  *
  */
-export type MetafieldReference =
-  | Article
-  | Collection
-  | GenericFile
-  | MediaImage
-  | Metaobject
-  | Model3d
-  | Page
-  | Product
-  | ProductVariant
-  | Video;
+export type MetafieldReference = Article | Collection | GenericFile | MediaImage | Metaobject | Model3d | Page | Product | ProductVariant | Video;
 
 /**
  * An auto-generated type for paginating through multiple MetafieldReferences.
@@ -5829,28 +5775,27 @@ export type MetafieldsSetUserError = DisplayableError & {
 };
 
 /** Possible error codes that can be returned by `MetafieldsSetUserError`. */
-export enum MetafieldsSetUserErrorCode {
+export type MetafieldsSetUserErrorCode =
   /** The current app is not authorized to perform this action. */
-  AppNotAuthorized = 'APP_NOT_AUTHORIZED',
+  | 'APP_NOT_AUTHORIZED'
   /** The input value is blank. */
-  Blank = 'BLANK',
+  | 'BLANK'
   /** The input value isn't included in the list. */
-  Inclusion = 'INCLUSION',
+  | 'INCLUSION'
   /** The owner ID is invalid. */
-  InvalidOwner = 'INVALID_OWNER',
+  | 'INVALID_OWNER'
   /** The type is invalid. */
-  InvalidType = 'INVALID_TYPE',
+  | 'INVALID_TYPE'
   /** The value is invalid for metafield type or for definition options. */
-  InvalidValue = 'INVALID_VALUE',
+  | 'INVALID_VALUE'
   /** The input value should be less than or equal to the maximum value allowed. */
-  LessThanOrEqualTo = 'LESS_THAN_OR_EQUAL_TO',
+  | 'LESS_THAN_OR_EQUAL_TO'
   /** The input value needs to be blank. */
-  Present = 'PRESENT',
+  | 'PRESENT'
   /** The input value is too long. */
-  TooLong = 'TOO_LONG',
+  | 'TOO_LONG'
   /** The input value is too short. */
-  TooShort = 'TOO_SHORT',
-}
+  | 'TOO_SHORT';
 
 /**
  * An instance of [custom structured data](https://shopify.dev/docs/apps/build/metaobjects) defined by a metaobject definition. Metaobjects store reusable content that extends beyond standard Shopify resources, such as size charts, author profiles, or custom content sections.
@@ -5858,34 +5803,34 @@ export enum MetafieldsSetUserErrorCode {
  * Each metaobject contains fields that match the types and validation rules specified in its definition. [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) references can point to metaobjects, connecting custom data with products, collections, and other resources. If the definition has the `renderable` capability, then the [`seo`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject#field-Metaobject.fields.seo) field provides SEO metadata. If it has the `online_store` capability, then the [`onlineStoreUrl`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject#field-Metaobject.fields.onlineStoreUrl) field returns the public URL.
  *
  */
-export type Metaobject = Node &
-  OnlineStorePublishable & {
-    __typename?: 'Metaobject';
-    /** Accesses a field of the object by key. */
-    field?: Maybe<MetaobjectField>;
-    /**
-     * All object fields with defined values.
-     * Omitted object keys can be assumed null, and no guarantees are made about field order.
-     *
-     */
-    fields: Array<MetaobjectField>;
-    /** The unique handle of the metaobject. Useful as a custom ID. */
-    handle: Scalars['String']['output'];
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** The URL used for viewing the metaobject on the shop's Online Store. Returns `null` if the metaobject definition doesn't have the `online_store` capability. */
-    onlineStoreUrl?: Maybe<Scalars['URL']['output']>;
-    /**
-     * The metaobject's SEO information. Returns `null` if the metaobject definition
-     * doesn't have the `renderable` capability.
-     *
-     */
-    seo?: Maybe<MetaobjectSeo>;
-    /** The type of the metaobject. */
-    type: Scalars['String']['output'];
-    /** The date and time when the metaobject was last updated. */
-    updatedAt: Scalars['DateTime']['output'];
-  };
+export type Metaobject = Node & OnlineStorePublishable & {
+  __typename?: 'Metaobject';
+  /** Accesses a field of the object by key. */
+  field?: Maybe<MetaobjectField>;
+  /**
+   * All object fields with defined values.
+   * Omitted object keys can be assumed null, and no guarantees are made about field order.
+   *
+   */
+  fields: Array<MetaobjectField>;
+  /** The unique handle of the metaobject. Useful as a custom ID. */
+  handle: Scalars['String']['output'];
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** The URL used for viewing the metaobject on the shop's Online Store. Returns `null` if the metaobject definition doesn't have the `online_store` capability. */
+  onlineStoreUrl?: Maybe<Scalars['URL']['output']>;
+  /**
+   * The metaobject's SEO information. Returns `null` if the metaobject definition
+   * doesn't have the `renderable` capability.
+   *
+   */
+  seo?: Maybe<MetaobjectSeo>;
+  /** The type of the metaobject. */
+  type: Scalars['String']['output'];
+  /** The date and time when the metaobject was last updated. */
+  updatedAt: Scalars['DateTime']['output'];
+};
+
 
 /**
  * An instance of [custom structured data](https://shopify.dev/docs/apps/build/metaobjects) defined by a metaobject definition. Metaobjects store reusable content that extends beyond standard Shopify resources, such as size charts, author profiles, or custom content sections.
@@ -5945,6 +5890,7 @@ export type MetaobjectField = {
   value?: Maybe<Scalars['String']['output']>;
 };
 
+
 /**
  * The value of a field within a [`Metaobject`](https://shopify.dev/docs/api/storefront/current/objects/Metaobject). For fields that reference other resources, use the [`reference`](https://shopify.dev/docs/api/storefront/current/objects/MetaobjectField#field-MetaobjectField.fields.reference) field for single references or [`references`](https://shopify.dev/docs/api/storefront/current/objects/MetaobjectField#field-MetaobjectField.fields.references) for lists.
  *
@@ -5974,22 +5920,21 @@ export type MetaobjectSeo = {
 };
 
 /** Represents a Shopify hosted 3D model. */
-export type Model3d = Media &
-  Node & {
-    __typename?: 'Model3d';
-    /** A word or phrase to share the nature or contents of a media. */
-    alt?: Maybe<Scalars['String']['output']>;
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** The media content type. */
-    mediaContentType: MediaContentType;
-    /** The presentation for a media. */
-    presentation?: Maybe<MediaPresentation>;
-    /** The preview image for the media. */
-    previewImage?: Maybe<Image>;
-    /** The sources for a 3d model. */
-    sources: Array<Model3dSource>;
-  };
+export type Model3d = Media & Node & {
+  __typename?: 'Model3d';
+  /** A word or phrase to share the nature or contents of a media. */
+  alt?: Maybe<Scalars['String']['output']>;
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** The media content type. */
+  mediaContentType: MediaContentType;
+  /** The presentation for a media. */
+  presentation?: Maybe<MediaPresentation>;
+  /** The preview image for the media. */
+  previewImage?: Maybe<Image>;
+  /** The sources for a 3d model. */
+  sources: Array<Model3dSource>;
+};
 
 /** Represents a source for a Shopify hosted 3d model. */
 export type Model3dSource = {
@@ -6306,11 +6251,13 @@ export type Mutation = {
   shopPayPaymentRequestSessionSubmit?: Maybe<ShopPayPaymentRequestSessionSubmitPayload>;
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartAttributesUpdateArgs = {
   attributes: Array<AttributeInput>;
   cartId: Scalars['ID']['input'];
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartBillingAddressUpdateArgs = {
@@ -6318,21 +6265,25 @@ export type MutationCartBillingAddressUpdateArgs = {
   cartId: Scalars['ID']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartBuyerIdentityUpdateArgs = {
   buyerIdentity: CartBuyerIdentityInput;
   cartId: Scalars['ID']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartCloneArgs = {
   cartId: Scalars['ID']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartCreateArgs = {
   input?: InputMaybe<CartInput>;
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartDeliveryAddressesAddArgs = {
@@ -6340,11 +6291,13 @@ export type MutationCartDeliveryAddressesAddArgs = {
   cartId: Scalars['ID']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartDeliveryAddressesRemoveArgs = {
   addressIds: Array<Scalars['ID']['input']>;
   cartId: Scalars['ID']['input'];
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartDeliveryAddressesReplaceArgs = {
@@ -6352,11 +6305,13 @@ export type MutationCartDeliveryAddressesReplaceArgs = {
   cartId: Scalars['ID']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartDeliveryAddressesUpdateArgs = {
   addresses: Array<CartSelectableAddressUpdateInput>;
   cartId: Scalars['ID']['input'];
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartDiscountCodesUpdateArgs = {
@@ -6364,11 +6319,13 @@ export type MutationCartDiscountCodesUpdateArgs = {
   discountCodes: Array<Scalars['String']['input']>;
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartGiftCardCodesAddArgs = {
   cartId: Scalars['ID']['input'];
   giftCardCodes: Array<Scalars['String']['input']>;
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartGiftCardCodesRemoveArgs = {
@@ -6376,17 +6333,20 @@ export type MutationCartGiftCardCodesRemoveArgs = {
   cartId: Scalars['ID']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartGiftCardCodesUpdateArgs = {
   cartId: Scalars['ID']['input'];
   giftCardCodes: Array<Scalars['String']['input']>;
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartLinesAddArgs = {
   cartId: Scalars['ID']['input'];
   lines: Array<CartLineInput>;
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartLinesRemoveArgs = {
@@ -6395,21 +6355,25 @@ export type MutationCartLinesRemoveArgs = {
   viewKeys?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartLinesUpdateArgs = {
   cartId: Scalars['ID']['input'];
   lines: Array<CartLineUpdateInput>;
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartMetafieldDeleteArgs = {
   input: CartMetafieldDeleteInput;
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartMetafieldsSetArgs = {
   metafields: Array<CartMetafieldsSetInput>;
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartNoteUpdateArgs = {
@@ -6417,21 +6381,25 @@ export type MutationCartNoteUpdateArgs = {
   note: Scalars['String']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartPaymentUpdateArgs = {
   cartId: Scalars['ID']['input'];
   payment: CartPaymentInput;
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartPrepareForCompletionArgs = {
   cartId: Scalars['ID']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartRemovePersonalDataArgs = {
   cartId: Scalars['ID']['input'];
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartSelectedDeliveryOptionsUpdateArgs = {
@@ -6439,31 +6407,37 @@ export type MutationCartSelectedDeliveryOptionsUpdateArgs = {
   selectedDeliveryOptions: Array<CartSelectedDeliveryOptionInput>;
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCartSubmitForCompletionArgs = {
   attemptToken: Scalars['String']['input'];
   cartId: Scalars['ID']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerAccessTokenCreateArgs = {
   input: CustomerAccessTokenCreateInput;
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerAccessTokenCreateWithMultipassArgs = {
   multipassToken: Scalars['String']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerAccessTokenDeleteArgs = {
   customerAccessToken: Scalars['String']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerAccessTokenRenewArgs = {
   customerAccessToken: Scalars['String']['input'];
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerActivateArgs = {
@@ -6471,11 +6445,13 @@ export type MutationCustomerActivateArgs = {
   input: CustomerActivateInput;
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerActivateByUrlArgs = {
   activationUrl: Scalars['URL']['input'];
   password: Scalars['String']['input'];
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerAddressCreateArgs = {
@@ -6483,11 +6459,13 @@ export type MutationCustomerAddressCreateArgs = {
   customerAccessToken: Scalars['String']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerAddressDeleteArgs = {
   customerAccessToken: Scalars['String']['input'];
   id: Scalars['ID']['input'];
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerAddressUpdateArgs = {
@@ -6496,10 +6474,12 @@ export type MutationCustomerAddressUpdateArgs = {
   id: Scalars['ID']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerCreateArgs = {
   input: CustomerCreateInput;
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerDefaultAddressUpdateArgs = {
@@ -6507,10 +6487,12 @@ export type MutationCustomerDefaultAddressUpdateArgs = {
   customerAccessToken: Scalars['String']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerRecoverArgs = {
   email: Scalars['String']['input'];
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerResetArgs = {
@@ -6518,11 +6500,13 @@ export type MutationCustomerResetArgs = {
   input: CustomerResetInput;
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerResetByUrlArgs = {
   password: Scalars['String']['input'];
   resetUrl: Scalars['URL']['input'];
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationCustomerUpdateArgs = {
@@ -6530,11 +6514,13 @@ export type MutationCustomerUpdateArgs = {
   customerAccessToken: Scalars['String']['input'];
 };
 
+
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationShopPayPaymentRequestSessionCreateArgs = {
   paymentRequest: ShopPayPaymentRequestInput;
   sourceIdentifier: Scalars['String']['input'];
 };
+
 
 /** The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start. */
 export type MutationShopPayPaymentRequestSessionSubmitArgs = {
@@ -6560,119 +6546,119 @@ export type OnlineStorePublishable = {
 };
 
 /** An order is a customer’s completed request to purchase one or more products from a shop. An order is created when a customer completes the checkout process, during which time they provides an email address, billing address and payment information. */
-export type Order = HasMetafields &
-  Node & {
-    __typename?: 'Order';
-    /** The address associated with the payment method. */
-    billingAddress?: Maybe<MailingAddress>;
-    /** The reason for the order's cancellation. Returns `null` if the order wasn't canceled. */
-    cancelReason?: Maybe<OrderCancelReason>;
-    /** The date and time when the order was canceled. Returns null if the order wasn't canceled. */
-    canceledAt?: Maybe<Scalars['DateTime']['output']>;
-    /** The code of the currency used for the payment. */
-    currencyCode: CurrencyCode;
-    /** The subtotal of line items and their discounts, excluding line items that have been removed. Does not contain order-level discounts, duties, shipping costs, or shipping discounts. Taxes aren't included unless the order is a taxes-included order. */
-    currentSubtotalPrice: MoneyV2;
-    /** The total cost of duties for the order, including refunds. */
-    currentTotalDuties?: Maybe<MoneyV2>;
-    /** The total amount of the order, including duties, taxes and discounts, minus amounts for line items that have been removed. */
-    currentTotalPrice: MoneyV2;
-    /** The total cost of shipping, excluding shipping lines that have been refunded or removed. Taxes aren't included unless the order is a taxes-included order. */
-    currentTotalShippingPrice: MoneyV2;
-    /** The total of all taxes applied to the order, excluding taxes for returned line items. */
-    currentTotalTax: MoneyV2;
-    /** A list of the custom attributes added to the order. For example, whether an order is a customer's first. */
-    customAttributes: Array<Attribute>;
-    /** The locale code in which this specific order happened. */
-    customerLocale?: Maybe<Scalars['String']['output']>;
-    /** The unique URL that the customer can use to access the order. */
-    customerUrl?: Maybe<Scalars['URL']['output']>;
-    /** Discounts that have been applied on the order. */
-    discountApplications: DiscountApplicationConnection;
-    /** Whether the order has had any edits applied or not. */
-    edited: Scalars['Boolean']['output'];
-    /** The customer's email address. */
-    email?: Maybe<Scalars['String']['output']>;
-    /** The financial status of the order. */
-    financialStatus?: Maybe<OrderFinancialStatus>;
-    /** The fulfillment status for the order. */
-    fulfillmentStatus: OrderFulfillmentStatus;
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** List of the order’s line items. */
-    lineItems: OrderLineItemConnection;
-    /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
-    metafield?: Maybe<Metafield>;
-    /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
-    metafields: Array<Maybe<Metafield>>;
-    /**
-     * Unique identifier for the order that appears on the order.
-     * For example, _#1000_ or _Store1001.
-     *
-     */
-    name: Scalars['String']['output'];
-    /** A unique numeric identifier for the order for use by shop owner and customer. */
-    orderNumber: Scalars['Int']['output'];
-    /** The total cost of duties charged at checkout. */
-    originalTotalDuties?: Maybe<MoneyV2>;
-    /** The total price of the order before any applied edits. */
-    originalTotalPrice: MoneyV2;
-    /** The customer's phone number for receiving SMS notifications. */
-    phone?: Maybe<Scalars['String']['output']>;
-    /**
-     * The date and time when the order was imported.
-     * This value can be set to dates in the past when importing from other systems.
-     * If no value is provided, it will be auto-generated based on current date and time.
-     *
-     */
-    processedAt: Scalars['DateTime']['output'];
-    /** The address to where the order will be shipped. */
-    shippingAddress?: Maybe<MailingAddress>;
-    /**
-     * The discounts that have been allocated onto the shipping line by discount applications.
-     *
-     */
-    shippingDiscountAllocations: Array<DiscountAllocation>;
-    /** The unique URL for the order's status page. */
-    statusUrl: Scalars['URL']['output'];
-    /** Price of the order before shipping and taxes. */
-    subtotalPrice?: Maybe<MoneyV2>;
-    /**
-     * Price of the order before duties, shipping and taxes.
-     * @deprecated Use `subtotalPrice` instead.
-     */
-    subtotalPriceV2?: Maybe<MoneyV2>;
-    /** List of the order’s successful fulfillments. */
-    successfulFulfillments?: Maybe<Array<Fulfillment>>;
-    /** The sum of all the prices of all the items in the order, duties, taxes and discounts included (must be positive). */
-    totalPrice: MoneyV2;
-    /**
-     * The sum of all the prices of all the items in the order, duties, taxes and discounts included (must be positive).
-     * @deprecated Use `totalPrice` instead.
-     */
-    totalPriceV2: MoneyV2;
-    /** The total amount that has been refunded. */
-    totalRefunded: MoneyV2;
-    /**
-     * The total amount that has been refunded.
-     * @deprecated Use `totalRefunded` instead.
-     */
-    totalRefundedV2: MoneyV2;
-    /** The total cost of shipping. */
-    totalShippingPrice: MoneyV2;
-    /**
-     * The total cost of shipping.
-     * @deprecated Use `totalShippingPrice` instead.
-     */
-    totalShippingPriceV2: MoneyV2;
-    /** The total cost of taxes. */
-    totalTax?: Maybe<MoneyV2>;
-    /**
-     * The total cost of taxes.
-     * @deprecated Use `totalTax` instead.
-     */
-    totalTaxV2?: Maybe<MoneyV2>;
-  };
+export type Order = HasMetafields & Node & {
+  __typename?: 'Order';
+  /** The address associated with the payment method. */
+  billingAddress?: Maybe<MailingAddress>;
+  /** The reason for the order's cancellation. Returns `null` if the order wasn't canceled. */
+  cancelReason?: Maybe<OrderCancelReason>;
+  /** The date and time when the order was canceled. Returns null if the order wasn't canceled. */
+  canceledAt?: Maybe<Scalars['DateTime']['output']>;
+  /** The code of the currency used for the payment. */
+  currencyCode: CurrencyCode;
+  /** The subtotal of line items and their discounts, excluding line items that have been removed. Does not contain order-level discounts, duties, shipping costs, or shipping discounts. Taxes aren't included unless the order is a taxes-included order. */
+  currentSubtotalPrice: MoneyV2;
+  /** The total cost of duties for the order, including refunds. */
+  currentTotalDuties?: Maybe<MoneyV2>;
+  /** The total amount of the order, including duties, taxes and discounts, minus amounts for line items that have been removed. */
+  currentTotalPrice: MoneyV2;
+  /** The total cost of shipping, excluding shipping lines that have been refunded or removed. Taxes aren't included unless the order is a taxes-included order. */
+  currentTotalShippingPrice: MoneyV2;
+  /** The total of all taxes applied to the order, excluding taxes for returned line items. */
+  currentTotalTax: MoneyV2;
+  /** A list of the custom attributes added to the order. For example, whether an order is a customer's first. */
+  customAttributes: Array<Attribute>;
+  /** The locale code in which this specific order happened. */
+  customerLocale?: Maybe<Scalars['String']['output']>;
+  /** The unique URL that the customer can use to access the order. */
+  customerUrl?: Maybe<Scalars['URL']['output']>;
+  /** Discounts that have been applied on the order. */
+  discountApplications: DiscountApplicationConnection;
+  /** Whether the order has had any edits applied or not. */
+  edited: Scalars['Boolean']['output'];
+  /** The customer's email address. */
+  email?: Maybe<Scalars['String']['output']>;
+  /** The financial status of the order. */
+  financialStatus?: Maybe<OrderFinancialStatus>;
+  /** The fulfillment status for the order. */
+  fulfillmentStatus: OrderFulfillmentStatus;
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** List of the order’s line items. */
+  lineItems: OrderLineItemConnection;
+  /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
+  metafield?: Maybe<Metafield>;
+  /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
+  metafields: Array<Maybe<Metafield>>;
+  /**
+   * Unique identifier for the order that appears on the order.
+   * For example, _#1000_ or _Store1001.
+   *
+   */
+  name: Scalars['String']['output'];
+  /** A unique numeric identifier for the order for use by shop owner and customer. */
+  orderNumber: Scalars['Int']['output'];
+  /** The total cost of duties charged at checkout. */
+  originalTotalDuties?: Maybe<MoneyV2>;
+  /** The total price of the order before any applied edits. */
+  originalTotalPrice: MoneyV2;
+  /** The customer's phone number for receiving SMS notifications. */
+  phone?: Maybe<Scalars['String']['output']>;
+  /**
+   * The date and time when the order was imported.
+   * This value can be set to dates in the past when importing from other systems.
+   * If no value is provided, it will be auto-generated based on current date and time.
+   *
+   */
+  processedAt: Scalars['DateTime']['output'];
+  /** The address to where the order will be shipped. */
+  shippingAddress?: Maybe<MailingAddress>;
+  /**
+   * The discounts that have been allocated onto the shipping line by discount applications.
+   *
+   */
+  shippingDiscountAllocations: Array<DiscountAllocation>;
+  /** The unique URL for the order's status page. */
+  statusUrl: Scalars['URL']['output'];
+  /** Price of the order before shipping and taxes. */
+  subtotalPrice?: Maybe<MoneyV2>;
+  /**
+   * Price of the order before duties, shipping and taxes.
+   * @deprecated Use `subtotalPrice` instead.
+   */
+  subtotalPriceV2?: Maybe<MoneyV2>;
+  /** List of the order’s successful fulfillments. */
+  successfulFulfillments?: Maybe<Array<Fulfillment>>;
+  /** The sum of all the prices of all the items in the order, duties, taxes and discounts included (must be positive). */
+  totalPrice: MoneyV2;
+  /**
+   * The sum of all the prices of all the items in the order, duties, taxes and discounts included (must be positive).
+   * @deprecated Use `totalPrice` instead.
+   */
+  totalPriceV2: MoneyV2;
+  /** The total amount that has been refunded. */
+  totalRefunded: MoneyV2;
+  /**
+   * The total amount that has been refunded.
+   * @deprecated Use `totalRefunded` instead.
+   */
+  totalRefundedV2: MoneyV2;
+  /** The total cost of shipping. */
+  totalShippingPrice: MoneyV2;
+  /**
+   * The total cost of shipping.
+   * @deprecated Use `totalShippingPrice` instead.
+   */
+  totalShippingPriceV2: MoneyV2;
+  /** The total cost of taxes. */
+  totalTax?: Maybe<MoneyV2>;
+  /**
+   * The total cost of taxes.
+   * @deprecated Use `totalTax` instead.
+   */
+  totalTaxV2?: Maybe<MoneyV2>;
+};
+
 
 /** An order is a customer’s completed request to purchase one or more products from a shop. An order is created when a customer completes the checkout process, during which time they provides an email address, billing address and payment information. */
 export type OrderDiscountApplicationsArgs = {
@@ -6683,6 +6669,7 @@ export type OrderDiscountApplicationsArgs = {
   reverse?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+
 /** An order is a customer’s completed request to purchase one or more products from a shop. An order is created when a customer completes the checkout process, during which time they provides an email address, billing address and payment information. */
 export type OrderLineItemsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
@@ -6692,16 +6679,19 @@ export type OrderLineItemsArgs = {
   reverse?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+
 /** An order is a customer’s completed request to purchase one or more products from a shop. An order is created when a customer completes the checkout process, during which time they provides an email address, billing address and payment information. */
 export type OrderMetafieldArgs = {
   key: Scalars['String']['input'];
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
 
+
 /** An order is a customer’s completed request to purchase one or more products from a shop. An order is created when a customer completes the checkout process, during which time they provides an email address, billing address and payment information. */
 export type OrderMetafieldsArgs = {
   identifiers: Array<HasMetafieldsIdentifier>;
 };
+
 
 /** An order is a customer’s completed request to purchase one or more products from a shop. An order is created when a customer completes the checkout process, during which time they provides an email address, billing address and payment information. */
 export type OrderSuccessfulFulfillmentsArgs = {
@@ -6709,20 +6699,19 @@ export type OrderSuccessfulFulfillmentsArgs = {
 };
 
 /** Represents the reason for the order's cancellation. */
-export enum OrderCancelReason {
+export type OrderCancelReason =
   /** The customer wanted to cancel the order. */
-  Customer = 'CUSTOMER',
+  | 'CUSTOMER'
   /** Payment was declined. */
-  Declined = 'DECLINED',
+  | 'DECLINED'
   /** The order was fraudulent. */
-  Fraud = 'FRAUD',
+  | 'FRAUD'
   /** There was insufficient inventory. */
-  Inventory = 'INVENTORY',
+  | 'INVENTORY'
   /** The order was canceled for an unlisted reason. */
-  Other = 'OTHER',
+  | 'OTHER'
   /** Staff made an error. */
-  Staff = 'STAFF',
-}
+  | 'STAFF';
 
 /**
  * An auto-generated type for paginating through multiple Orders.
@@ -6753,22 +6742,21 @@ export type OrderEdge = {
 };
 
 /** Represents the order's current financial status. */
-export enum OrderFinancialStatus {
+export type OrderFinancialStatus =
   /** Displayed as **Authorized**. */
-  Authorized = 'AUTHORIZED',
+  | 'AUTHORIZED'
   /** Displayed as **Paid**. */
-  Paid = 'PAID',
+  | 'PAID'
   /** Displayed as **Partially paid**. */
-  PartiallyPaid = 'PARTIALLY_PAID',
+  | 'PARTIALLY_PAID'
   /** Displayed as **Partially refunded**. */
-  PartiallyRefunded = 'PARTIALLY_REFUNDED',
+  | 'PARTIALLY_REFUNDED'
   /** Displayed as **Pending**. */
-  Pending = 'PENDING',
+  | 'PENDING'
   /** Displayed as **Refunded**. */
-  Refunded = 'REFUNDED',
+  | 'REFUNDED'
   /** Displayed as **Voided**. */
-  Voided = 'VOIDED',
-}
+  | 'VOIDED';
 
 /**
  * The aggregated fulfillment status of an [`Order`](https://shopify.dev/docs/api/storefront/current/objects/Order), summarizing the state of all line items. Used for display purposes.
@@ -6778,26 +6766,25 @@ export enum OrderFinancialStatus {
  * Learn more about [order statuses](https://help.shopify.com/manual/fulfillment/managing-orders/order-status).
  *
  */
-export enum OrderFulfillmentStatus {
+export type OrderFulfillmentStatus =
   /** Displayed as **Fulfilled**. All of the items in the order have been fulfilled. */
-  Fulfilled = 'FULFILLED',
+  | 'FULFILLED'
   /** Displayed as **In progress**. Some of the items in the order have been fulfilled, or a request for fulfillment has been sent to the fulfillment service. */
-  InProgress = 'IN_PROGRESS',
+  | 'IN_PROGRESS'
   /** Displayed as **On hold**. All of the unfulfilled items in this order are on hold. */
-  OnHold = 'ON_HOLD',
+  | 'ON_HOLD'
   /** Displayed as **Open**. None of the items in the order have been fulfilled. Replaced by "UNFULFILLED" status. */
-  Open = 'OPEN',
+  | 'OPEN'
   /** Displayed as **Partially fulfilled**. Some of the items in the order have been fulfilled. */
-  PartiallyFulfilled = 'PARTIALLY_FULFILLED',
+  | 'PARTIALLY_FULFILLED'
   /** Displayed as **Pending fulfillment**. A request for fulfillment of some items awaits a response from the fulfillment service. Replaced by "IN_PROGRESS" status. */
-  PendingFulfillment = 'PENDING_FULFILLMENT',
+  | 'PENDING_FULFILLMENT'
   /** Displayed as **Restocked**. All of the items in the order have been restocked. Replaced by "UNFULFILLED" status. */
-  Restocked = 'RESTOCKED',
+  | 'RESTOCKED'
   /** Displayed as **Scheduled**. All of the unfulfilled items in this order are scheduled for fulfillment at later time. */
-  Scheduled = 'SCHEDULED',
+  | 'SCHEDULED'
   /** Displayed as **Unfulfilled**. None of the items in the order have been fulfilled. */
-  Unfulfilled = 'UNFULFILLED',
-}
+  | 'UNFULFILLED';
 
 /** Represents a single line in an order. There is one line item for each distinct product variant. */
 export type OrderLineItem = {
@@ -6847,20 +6834,19 @@ export type OrderLineItemEdge = {
 };
 
 /** The set of valid sort keys for the Order query. */
-export enum OrderSortKeys {
+export type OrderSortKeys =
   /** Sort by the `id` value. */
-  Id = 'ID',
+  | 'ID'
   /** Sort by the `processed_at` value. */
-  ProcessedAt = 'PROCESSED_AT',
+  | 'PROCESSED_AT'
   /**
    * Sort by relevance to the search terms when the `query` parameter is specified on the connection.
    * Don't use this sort key when no search query is specified.
    *
    */
-  Relevance = 'RELEVANCE',
+  | 'RELEVANCE'
   /** Sort by the `total_price` value. */
-  TotalPrice = 'TOTAL_PRICE',
-}
+  | 'TOTAL_PRICE';
 
 /**
  * A [custom content page](https://help.shopify.com/manual/online-store/add-edit-pages) on a merchant's store. Pages display HTML-formatted content, such as "About Us", contact details, or store policies.
@@ -6868,36 +6854,34 @@ export enum OrderSortKeys {
  * Each page has a unique [`handle`](https://shopify.dev/docs/api/storefront/current/objects/Page#field-Page.fields.handle) for URL routing and includes [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) information for search engine optimization. Pages support [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) attachments for storing additional custom data.
  *
  */
-export type Page = HasMetafields &
-  Node &
-  OnlineStorePublishable &
-  Trackable & {
-    __typename?: 'Page';
-    /** The description of the page, complete with HTML formatting. */
-    body: Scalars['HTML']['output'];
-    /** Summary of the page body. */
-    bodySummary: Scalars['String']['output'];
-    /** The timestamp of the page creation. */
-    createdAt: Scalars['DateTime']['output'];
-    /** A human-friendly unique string for the page automatically generated from its title. */
-    handle: Scalars['String']['output'];
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
-    metafield?: Maybe<Metafield>;
-    /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
-    metafields: Array<Maybe<Metafield>>;
-    /** The URL used for viewing the resource on the shop's Online Store. Returns `null` if the resource is currently not published to the Online Store sales channel. */
-    onlineStoreUrl?: Maybe<Scalars['URL']['output']>;
-    /** The page's SEO information. */
-    seo?: Maybe<Seo>;
-    /** The title of the page. */
-    title: Scalars['String']['output'];
-    /** URL parameters to be added to a page URL to track the origin of on-site search traffic for [analytics reporting](https://help.shopify.com/manual/reports-and-analytics/shopify-reports/report-types/default-reports/behaviour-reports). Returns a result when accessed through the [search](https://shopify.dev/docs/api/storefront/current/queries/search) or [predictiveSearch](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch) queries, otherwise returns null. */
-    trackingParameters?: Maybe<Scalars['String']['output']>;
-    /** The timestamp of the latest page update. */
-    updatedAt: Scalars['DateTime']['output'];
-  };
+export type Page = HasMetafields & Node & OnlineStorePublishable & Trackable & {
+  __typename?: 'Page';
+  /** The description of the page, complete with HTML formatting. */
+  body: Scalars['HTML']['output'];
+  /** Summary of the page body. */
+  bodySummary: Scalars['String']['output'];
+  /** The timestamp of the page creation. */
+  createdAt: Scalars['DateTime']['output'];
+  /** A human-friendly unique string for the page automatically generated from its title. */
+  handle: Scalars['String']['output'];
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
+  metafield?: Maybe<Metafield>;
+  /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
+  metafields: Array<Maybe<Metafield>>;
+  /** The URL used for viewing the resource on the shop's Online Store. Returns `null` if the resource is currently not published to the Online Store sales channel. */
+  onlineStoreUrl?: Maybe<Scalars['URL']['output']>;
+  /** The page's SEO information. */
+  seo?: Maybe<Seo>;
+  /** The title of the page. */
+  title: Scalars['String']['output'];
+  /** URL parameters to be added to a page URL to track the origin of on-site search traffic for [analytics reporting](https://help.shopify.com/manual/reports-and-analytics/shopify-reports/report-types/default-reports/behaviour-reports). Returns a result when accessed through the [search](https://shopify.dev/docs/api/storefront/current/queries/search) or [predictiveSearch](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch) queries, otherwise returns null. */
+  trackingParameters?: Maybe<Scalars['String']['output']>;
+  /** The timestamp of the latest page update. */
+  updatedAt: Scalars['DateTime']['output'];
+};
+
 
 /**
  * A [custom content page](https://help.shopify.com/manual/online-store/add-edit-pages) on a merchant's store. Pages display HTML-formatted content, such as "About Us", contact details, or store policies.
@@ -6909,6 +6893,7 @@ export type PageMetafieldArgs = {
   key: Scalars['String']['input'];
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /**
  * A [custom content page](https://help.shopify.com/manual/online-store/add-edit-pages) on a merchant's store. Pages display HTML-formatted content, such as "About Us", contact details, or store policies.
@@ -6965,20 +6950,19 @@ export type PageInfo = {
 };
 
 /** The set of valid sort keys for the Page query. */
-export enum PageSortKeys {
+export type PageSortKeys =
   /** Sort by the `id` value. */
-  Id = 'ID',
+  | 'ID'
   /**
    * Sort by relevance to the search terms when the `query` parameter is specified on the connection.
    * Don't use this sort key when no search query is specified.
    *
    */
-  Relevance = 'RELEVANCE',
+  | 'RELEVANCE'
   /** Sort by the `title` value. */
-  Title = 'TITLE',
+  | 'TITLE'
   /** Sort by the `updated_at` value. */
-  UpdatedAt = 'UPDATED_AT',
-}
+  | 'UPDATED_AT';
 
 /** Type for paginating through multiple sitemap's resources. */
 export type PaginatedSitemapResources = {
@@ -7017,12 +7001,11 @@ export type PaymentSettings = {
 };
 
 /** Decides the distribution of results. */
-export enum PredictiveSearchLimitScope {
+export type PredictiveSearchLimitScope =
   /** Return results up to limit across all types. */
-  All = 'ALL',
+  | 'ALL'
   /** Return results up to limit per type. */
-  Each = 'EACH',
-}
+  | 'EACH';
 
 /**
  * Returned by the [`predictiveSearch`](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch) query to power type-ahead search experiences. Includes matching [`Product`](https://shopify.dev/docs/api/storefront/current/objects/Product), [`Collection`](https://shopify.dev/docs/api/storefront/current/objects/Collection), [`Page`](https://shopify.dev/docs/api/storefront/current/objects/Page), and [`Article`](https://shopify.dev/docs/api/storefront/current/objects/Article) objects, along with query suggestions that help customers refine their search.
@@ -7043,28 +7026,26 @@ export type PredictiveSearchResult = {
 };
 
 /** The types of search items to perform predictive search on. */
-export enum PredictiveSearchType {
+export type PredictiveSearchType =
   /** Returns matching articles. */
-  Article = 'ARTICLE',
+  | 'ARTICLE'
   /** Returns matching collections. */
-  Collection = 'COLLECTION',
+  | 'COLLECTION'
   /** Returns matching pages. */
-  Page = 'PAGE',
+  | 'PAGE'
   /** Returns matching products. */
-  Product = 'PRODUCT',
+  | 'PRODUCT'
   /** Returns matching query strings. */
-  Query = 'QUERY',
-}
+  | 'QUERY';
 
 /** The preferred delivery methods such as shipping, local pickup or through pickup points. */
-export enum PreferenceDeliveryMethodType {
+export type PreferenceDeliveryMethodType =
   /** A delivery method used to let buyers collect purchases at designated locations like parcel lockers. */
-  PickupPoint = 'PICKUP_POINT',
+  | 'PICKUP_POINT'
   /** A delivery method used to let buyers receive items directly from a specific location within an area. */
-  PickUp = 'PICK_UP',
+  | 'PICK_UP'
   /** A delivery method used to send items directly to a buyer’s specified address. */
-  Shipping = 'SHIPPING',
-}
+  | 'SHIPPING';
 
 /**
  * A price range for filtering products in a collection. Used by the [`ProductFilter`](https://shopify.dev/docs/api/storefront/current/input-objects/ProductFilter) input's [`price`](https://shopify.dev/docs/api/storefront/current/input-objects/ProductFilter#fields-price) field.
@@ -7102,214 +7083,212 @@ export type PricingValue = MoneyV2 | PricingPercentageValue;
  * Learn more about working with [products and collections](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-collections).
  *
  */
-export type Product = HasMetafields &
-  Node &
-  OnlineStorePublishable &
-  Trackable & {
-    __typename?: 'Product';
-    /**
-     * A list of variants whose selected options differ with the provided selected options by one, ordered by variant id.
-     * If selected options are not provided, adjacent variants to the first available variant is returned.
-     *
-     * Note that this field returns an array of variants. In most cases, the number of variants in this array will be low.
-     * However, with a low number of options and a high number of values per option, the number of variants returned
-     * here can be high. In such cases, it recommended to avoid using this field.
-     *
-     * This list of variants can be used in combination with the `options` field to build a rich variant picker that
-     * includes variant availability or other variant information.
-     *
-     */
-    adjacentVariants: Array<ProductVariant>;
-    /** Indicates if at least one product variant is available for sale. */
-    availableForSale: Scalars['Boolean']['output'];
-    /** The category of a product from [Shopify's Standard Product Taxonomy](https://shopify.github.io/product-taxonomy/releases/unstable/?categoryId=sg-4-17-2-17). */
-    category?: Maybe<TaxonomyCategory>;
-    /** A list of [collections](/docs/api/storefront/latest/objects/Collection) that include the product. */
-    collections: CollectionConnection;
-    /** The [compare-at price range](https://help.shopify.com/manual/products/details/product-pricing/sale-pricing) of the product in the shop's default currency. */
-    compareAtPriceRange: ProductPriceRange;
-    /** The date and time when the product was created. */
-    createdAt: Scalars['DateTime']['output'];
-    /** A single-line description of the product, with [HTML tags](https://developer.mozilla.org/en-US/docs/Web/HTML) removed. */
-    description: Scalars['String']['output'];
-    /**
-     * The description of the product, with
-     * HTML tags. For example, the description might include
-     * bold `<strong></strong>` and italic `<i></i>` text.
-     *
-     */
-    descriptionHtml: Scalars['HTML']['output'];
-    /**
-     * An encoded string containing all option value combinations
-     * with a corresponding variant that is currently available for sale.
-     *
-     * Integers represent option and values:
-     * [0,1] represents option_value at array index 0 for the option at array index 0
-     *
-     * `:`, `,`, ` ` and `-` are control characters.
-     * `:` indicates a new option. ex: 0:1 indicates value 0 for the option in position 1, value 1 for the option in position 2.
-     * `,` indicates the end of a repeated prefix, mulitple consecutive commas indicate the end of multiple repeated prefixes.
-     * ` ` indicates a gap in the sequence of option values. ex: 0 4 indicates option values in position 0 and 4 are present.
-     * `-` indicates a continuous range of option values. ex: 0 1-3 4
-     *
-     * Decoding process:
-     *
-     * Example options: [Size, Color, Material]
-     * Example values: [[Small, Medium, Large], [Red, Blue], [Cotton, Wool]]
-     * Example encoded string: "0:0:0,1:0-1,,1:0:0-1,1:1,,2:0:1,1:0,,"
-     *
-     * Step 1: Expand ranges into the numbers they represent: "0:0:0,1:0 1,,1:0:0 1,1:1,,2:0:1,1:0,,"
-     * Step 2: Expand repeated prefixes: "0:0:0,0:1:0 1,1:0:0 1,1:1:1,2:0:1,2:1:0,"
-     * Step 3: Expand shared prefixes so data is encoded as a string: "0:0:0,0:1:0,0:1:1,1:0:0,1:0:1,1:1:1,2:0:1,2:1:0,"
-     * Step 4: Map to options + option values to determine existing variants:
-     *
-     * [Small, Red, Cotton] (0:0:0), [Small, Blue, Cotton] (0:1:0), [Small, Blue, Wool] (0:1:1),
-     * [Medium, Red, Cotton] (1:0:0), [Medium, Red, Wool] (1:0:1), [Medium, Blue, Wool] (1:1:1),
-     * [Large, Red, Wool] (2:0:1), [Large, Blue, Cotton] (2:1:0).
-     *
-     *
-     */
-    encodedVariantAvailability?: Maybe<Scalars['String']['output']>;
-    /**
-     * An encoded string containing all option value combinations with a corresponding variant.
-     *
-     * Integers represent option and values:
-     * [0,1] represents option_value at array index 0 for the option at array index 0
-     *
-     * `:`, `,`, ` ` and `-` are control characters.
-     * `:` indicates a new option. ex: 0:1 indicates value 0 for the option in position 1, value 1 for the option in position 2.
-     * `,` indicates the end of a repeated prefix, mulitple consecutive commas indicate the end of multiple repeated prefixes.
-     * ` ` indicates a gap in the sequence of option values. ex: 0 4 indicates option values in position 0 and 4 are present.
-     * `-` indicates a continuous range of option values. ex: 0 1-3 4
-     *
-     * Decoding process:
-     *
-     * Example options: [Size, Color, Material]
-     * Example values: [[Small, Medium, Large], [Red, Blue], [Cotton, Wool]]
-     * Example encoded string: "0:0:0,1:0-1,,1:0:0-1,1:1,,2:0:1,1:0,,"
-     *
-     * Step 1: Expand ranges into the numbers they represent: "0:0:0,1:0 1,,1:0:0 1,1:1,,2:0:1,1:0,,"
-     * Step 2: Expand repeated prefixes: "0:0:0,0:1:0 1,1:0:0 1,1:1:1,2:0:1,2:1:0,"
-     * Step 3: Expand shared prefixes so data is encoded as a string: "0:0:0,0:1:0,0:1:1,1:0:0,1:0:1,1:1:1,2:0:1,2:1:0,"
-     * Step 4: Map to options + option values to determine existing variants:
-     *
-     * [Small, Red, Cotton] (0:0:0), [Small, Blue, Cotton] (0:1:0), [Small, Blue, Wool] (0:1:1),
-     * [Medium, Red, Cotton] (1:0:0), [Medium, Red, Wool] (1:0:1), [Medium, Blue, Wool] (1:1:1),
-     * [Large, Red, Wool] (2:0:1), [Large, Blue, Cotton] (2:1:0).
-     *
-     *
-     */
-    encodedVariantExistence?: Maybe<Scalars['String']['output']>;
-    /**
-     * The featured image for the product.
-     *
-     * This field is functionally equivalent to `images(first: 1)`.
-     *
-     */
-    featuredImage?: Maybe<Image>;
-    /**
-     * A unique, human-readable string of the product's title.
-     * A handle can contain letters, hyphens (`-`), and numbers, but no spaces.
-     * The handle is used in the online store URL for the product.
-     *
-     */
-    handle: Scalars['String']['output'];
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** List of images associated with the product. */
-    images: ImageConnection;
-    /** Whether the product is a gift card. */
-    isGiftCard: Scalars['Boolean']['output'];
-    /** The [media](/docs/apps/build/online-store/product-media) that are associated with the product. Valid media are images, 3D models, videos. */
-    media: MediaConnection;
-    /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
-    metafield?: Maybe<Metafield>;
-    /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
-    metafields: Array<Maybe<Metafield>>;
-    /**
-     * The product's URL on the online store.
-     * If `null`, then the product isn't published to the online store sales channel.
-     *
-     */
-    onlineStoreUrl?: Maybe<Scalars['URL']['output']>;
-    /** A list of product options. The limit is defined by the [shop's resource limits for product options](/docs/api/admin-graphql/latest/objects/Shop#field-resourcelimits) (`Shop.resourceLimits.maxProductOptions`). */
-    options: Array<ProductOption>;
-    /**
-     * The minimum and maximum prices of a product, expressed in decimal numbers.
-     * For example, if the product is priced between $10.00 and $50.00,
-     * then the price range is $10.00 - $50.00.
-     *
-     */
-    priceRange: ProductPriceRange;
-    /**
-     * The [product type](https://help.shopify.com/manual/products/details/product-type)
-     * that merchants define.
-     *
-     */
-    productType: Scalars['String']['output'];
-    /** The date and time when the product was published to the channel. */
-    publishedAt: Scalars['DateTime']['output'];
-    /** Whether the product can only be purchased with a [selling plan](/docs/apps/build/purchase-options/subscriptions/selling-plans). Products that are sold on subscription (`requiresSellingPlan: true`) can be updated only for online stores. If you update a product to be subscription-only (`requiresSellingPlan: true`), then the product is unpublished from all channels, except the online store. */
-    requiresSellingPlan: Scalars['Boolean']['output'];
-    /**
-     * Find an active product variant based on selected options, availability or the first variant.
-     *
-     * All arguments are optional. If no selected options are provided, the first available variant is returned.
-     * If no variants are available, the first variant is returned.
-     *
-     */
-    selectedOrFirstAvailableVariant?: Maybe<ProductVariant>;
-    /** A list of all [selling plan groups](/docs/apps/build/purchase-options/subscriptions/selling-plans/build-a-selling-plan) that are associated with the product either directly, or through the product's variants. */
-    sellingPlanGroups: SellingPlanGroupConnection;
-    /**
-     * The [SEO title and description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
-     * that are associated with a product.
-     *
-     */
-    seo: Seo;
-    /**
-     * A comma-separated list of searchable keywords that are
-     * associated with the product. For example, a merchant might apply the `sports`
-     * and `summer` tags to products that are associated with sportwear for summer.
-     * Updating `tags` overwrites any existing tags that were previously added to the product.
-     * To add new tags without overwriting existing tags,
-     * use the GraphQL Admin API's [`tagsAdd`](/docs/api/admin-graphql/latest/mutations/tagsadd)
-     * mutation.
-     *
-     */
-    tags: Array<Scalars['String']['output']>;
-    /**
-     * The name for the product that displays to customers. The title is used to construct the product's handle.
-     * For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
-     *
-     */
-    title: Scalars['String']['output'];
-    /** The quantity of inventory that's in stock. */
-    totalInventory?: Maybe<Scalars['Int']['output']>;
-    /** URL parameters to be added to a page URL to track the origin of on-site search traffic for [analytics reporting](https://help.shopify.com/manual/reports-and-analytics/shopify-reports/report-types/default-reports/behaviour-reports). Returns a result when accessed through the [search](https://shopify.dev/docs/api/storefront/current/queries/search) or [predictiveSearch](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch) queries, otherwise returns null. */
-    trackingParameters?: Maybe<Scalars['String']['output']>;
-    /**
-     * The date and time when the product was last modified.
-     * A product's `updatedAt` value can change for different reasons. For example, if an order
-     * is placed for a product that has inventory tracking set up, then the inventory adjustment
-     * is counted as an update.
-     *
-     */
-    updatedAt: Scalars['DateTime']['output'];
-    /**
-     * Find a product’s variant based on its selected options.
-     * This is useful for converting a user’s selection of product options into a single matching variant.
-     * If there is not a variant for the selected options, `null` will be returned.
-     *
-     */
-    variantBySelectedOptions?: Maybe<ProductVariant>;
-    /** A list of [variants](/docs/api/storefront/latest/objects/ProductVariant) that are associated with the product. */
-    variants: ProductVariantConnection;
-    /** The number of [variants](/docs/api/storefront/latest/objects/ProductVariant) that are associated with the product. */
-    variantsCount?: Maybe<Count>;
-    /** The name of the product's vendor. */
-    vendor: Scalars['String']['output'];
-  };
+export type Product = HasMetafields & Node & OnlineStorePublishable & Trackable & {
+  __typename?: 'Product';
+  /**
+   * A list of variants whose selected options differ with the provided selected options by one, ordered by variant id.
+   * If selected options are not provided, adjacent variants to the first available variant is returned.
+   *
+   * Note that this field returns an array of variants. In most cases, the number of variants in this array will be low.
+   * However, with a low number of options and a high number of values per option, the number of variants returned
+   * here can be high. In such cases, it recommended to avoid using this field.
+   *
+   * This list of variants can be used in combination with the `options` field to build a rich variant picker that
+   * includes variant availability or other variant information.
+   *
+   */
+  adjacentVariants: Array<ProductVariant>;
+  /** Indicates if at least one product variant is available for sale. */
+  availableForSale: Scalars['Boolean']['output'];
+  /** The category of a product from [Shopify's Standard Product Taxonomy](https://shopify.github.io/product-taxonomy/releases/unstable/?categoryId=sg-4-17-2-17). */
+  category?: Maybe<TaxonomyCategory>;
+  /** A list of [collections](/docs/api/storefront/latest/objects/Collection) that include the product. */
+  collections: CollectionConnection;
+  /** The [compare-at price range](https://help.shopify.com/manual/products/details/product-pricing/sale-pricing) of the product in the shop's default currency. */
+  compareAtPriceRange: ProductPriceRange;
+  /** The date and time when the product was created. */
+  createdAt: Scalars['DateTime']['output'];
+  /** A single-line description of the product, with [HTML tags](https://developer.mozilla.org/en-US/docs/Web/HTML) removed. */
+  description: Scalars['String']['output'];
+  /**
+   * The description of the product, with
+   * HTML tags. For example, the description might include
+   * bold `<strong></strong>` and italic `<i></i>` text.
+   *
+   */
+  descriptionHtml: Scalars['HTML']['output'];
+  /**
+   * An encoded string containing all option value combinations
+   * with a corresponding variant that is currently available for sale.
+   *
+   * Integers represent option and values:
+   * [0,1] represents option_value at array index 0 for the option at array index 0
+   *
+   * `:`, `,`, ` ` and `-` are control characters.
+   * `:` indicates a new option. ex: 0:1 indicates value 0 for the option in position 1, value 1 for the option in position 2.
+   * `,` indicates the end of a repeated prefix, mulitple consecutive commas indicate the end of multiple repeated prefixes.
+   * ` ` indicates a gap in the sequence of option values. ex: 0 4 indicates option values in position 0 and 4 are present.
+   * `-` indicates a continuous range of option values. ex: 0 1-3 4
+   *
+   * Decoding process:
+   *
+   * Example options: [Size, Color, Material]
+   * Example values: [[Small, Medium, Large], [Red, Blue], [Cotton, Wool]]
+   * Example encoded string: "0:0:0,1:0-1,,1:0:0-1,1:1,,2:0:1,1:0,,"
+   *
+   * Step 1: Expand ranges into the numbers they represent: "0:0:0,1:0 1,,1:0:0 1,1:1,,2:0:1,1:0,,"
+   * Step 2: Expand repeated prefixes: "0:0:0,0:1:0 1,1:0:0 1,1:1:1,2:0:1,2:1:0,"
+   * Step 3: Expand shared prefixes so data is encoded as a string: "0:0:0,0:1:0,0:1:1,1:0:0,1:0:1,1:1:1,2:0:1,2:1:0,"
+   * Step 4: Map to options + option values to determine existing variants:
+   *
+   * [Small, Red, Cotton] (0:0:0), [Small, Blue, Cotton] (0:1:0), [Small, Blue, Wool] (0:1:1),
+   * [Medium, Red, Cotton] (1:0:0), [Medium, Red, Wool] (1:0:1), [Medium, Blue, Wool] (1:1:1),
+   * [Large, Red, Wool] (2:0:1), [Large, Blue, Cotton] (2:1:0).
+   *
+   *
+   */
+  encodedVariantAvailability?: Maybe<Scalars['String']['output']>;
+  /**
+   * An encoded string containing all option value combinations with a corresponding variant.
+   *
+   * Integers represent option and values:
+   * [0,1] represents option_value at array index 0 for the option at array index 0
+   *
+   * `:`, `,`, ` ` and `-` are control characters.
+   * `:` indicates a new option. ex: 0:1 indicates value 0 for the option in position 1, value 1 for the option in position 2.
+   * `,` indicates the end of a repeated prefix, mulitple consecutive commas indicate the end of multiple repeated prefixes.
+   * ` ` indicates a gap in the sequence of option values. ex: 0 4 indicates option values in position 0 and 4 are present.
+   * `-` indicates a continuous range of option values. ex: 0 1-3 4
+   *
+   * Decoding process:
+   *
+   * Example options: [Size, Color, Material]
+   * Example values: [[Small, Medium, Large], [Red, Blue], [Cotton, Wool]]
+   * Example encoded string: "0:0:0,1:0-1,,1:0:0-1,1:1,,2:0:1,1:0,,"
+   *
+   * Step 1: Expand ranges into the numbers they represent: "0:0:0,1:0 1,,1:0:0 1,1:1,,2:0:1,1:0,,"
+   * Step 2: Expand repeated prefixes: "0:0:0,0:1:0 1,1:0:0 1,1:1:1,2:0:1,2:1:0,"
+   * Step 3: Expand shared prefixes so data is encoded as a string: "0:0:0,0:1:0,0:1:1,1:0:0,1:0:1,1:1:1,2:0:1,2:1:0,"
+   * Step 4: Map to options + option values to determine existing variants:
+   *
+   * [Small, Red, Cotton] (0:0:0), [Small, Blue, Cotton] (0:1:0), [Small, Blue, Wool] (0:1:1),
+   * [Medium, Red, Cotton] (1:0:0), [Medium, Red, Wool] (1:0:1), [Medium, Blue, Wool] (1:1:1),
+   * [Large, Red, Wool] (2:0:1), [Large, Blue, Cotton] (2:1:0).
+   *
+   *
+   */
+  encodedVariantExistence?: Maybe<Scalars['String']['output']>;
+  /**
+   * The featured image for the product.
+   *
+   * This field is functionally equivalent to `images(first: 1)`.
+   *
+   */
+  featuredImage?: Maybe<Image>;
+  /**
+   * A unique, human-readable string of the product's title.
+   * A handle can contain letters, hyphens (`-`), and numbers, but no spaces.
+   * The handle is used in the online store URL for the product.
+   *
+   */
+  handle: Scalars['String']['output'];
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** List of images associated with the product. */
+  images: ImageConnection;
+  /** Whether the product is a gift card. */
+  isGiftCard: Scalars['Boolean']['output'];
+  /** The [media](/docs/apps/build/online-store/product-media) that are associated with the product. Valid media are images, 3D models, videos. */
+  media: MediaConnection;
+  /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
+  metafield?: Maybe<Metafield>;
+  /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
+  metafields: Array<Maybe<Metafield>>;
+  /**
+   * The product's URL on the online store.
+   * If `null`, then the product isn't published to the online store sales channel.
+   *
+   */
+  onlineStoreUrl?: Maybe<Scalars['URL']['output']>;
+  /** A list of product options. The limit is defined by the [shop's resource limits for product options](/docs/api/admin-graphql/latest/objects/Shop#field-resourcelimits) (`Shop.resourceLimits.maxProductOptions`). */
+  options: Array<ProductOption>;
+  /**
+   * The minimum and maximum prices of a product, expressed in decimal numbers.
+   * For example, if the product is priced between $10.00 and $50.00,
+   * then the price range is $10.00 - $50.00.
+   *
+   */
+  priceRange: ProductPriceRange;
+  /**
+   * The [product type](https://help.shopify.com/manual/products/details/product-type)
+   * that merchants define.
+   *
+   */
+  productType: Scalars['String']['output'];
+  /** The date and time when the product was published to the channel. */
+  publishedAt: Scalars['DateTime']['output'];
+  /** Whether the product can only be purchased with a [selling plan](/docs/apps/build/purchase-options/subscriptions/selling-plans). Products that are sold on subscription (`requiresSellingPlan: true`) can be updated only for online stores. If you update a product to be subscription-only (`requiresSellingPlan: true`), then the product is unpublished from all channels, except the online store. */
+  requiresSellingPlan: Scalars['Boolean']['output'];
+  /**
+   * Find an active product variant based on selected options, availability or the first variant.
+   *
+   * All arguments are optional. If no selected options are provided, the first available variant is returned.
+   * If no variants are available, the first variant is returned.
+   *
+   */
+  selectedOrFirstAvailableVariant?: Maybe<ProductVariant>;
+  /** A list of all [selling plan groups](/docs/apps/build/purchase-options/subscriptions/selling-plans/build-a-selling-plan) that are associated with the product either directly, or through the product's variants. */
+  sellingPlanGroups: SellingPlanGroupConnection;
+  /**
+   * The [SEO title and description](https://help.shopify.com/manual/promoting-marketing/seo/adding-keywords)
+   * that are associated with a product.
+   *
+   */
+  seo: Seo;
+  /**
+   * A comma-separated list of searchable keywords that are
+   * associated with the product. For example, a merchant might apply the `sports`
+   * and `summer` tags to products that are associated with sportwear for summer.
+   * Updating `tags` overwrites any existing tags that were previously added to the product.
+   * To add new tags without overwriting existing tags,
+   * use the GraphQL Admin API's [`tagsAdd`](/docs/api/admin-graphql/latest/mutations/tagsadd)
+   * mutation.
+   *
+   */
+  tags: Array<Scalars['String']['output']>;
+  /**
+   * The name for the product that displays to customers. The title is used to construct the product's handle.
+   * For example, if a product is titled "Black Sunglasses", then the handle is `black-sunglasses`.
+   *
+   */
+  title: Scalars['String']['output'];
+  /** The quantity of inventory that's in stock. */
+  totalInventory?: Maybe<Scalars['Int']['output']>;
+  /** URL parameters to be added to a page URL to track the origin of on-site search traffic for [analytics reporting](https://help.shopify.com/manual/reports-and-analytics/shopify-reports/report-types/default-reports/behaviour-reports). Returns a result when accessed through the [search](https://shopify.dev/docs/api/storefront/current/queries/search) or [predictiveSearch](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch) queries, otherwise returns null. */
+  trackingParameters?: Maybe<Scalars['String']['output']>;
+  /**
+   * The date and time when the product was last modified.
+   * A product's `updatedAt` value can change for different reasons. For example, if an order
+   * is placed for a product that has inventory tracking set up, then the inventory adjustment
+   * is counted as an update.
+   *
+   */
+  updatedAt: Scalars['DateTime']['output'];
+  /**
+   * Find a product’s variant based on its selected options.
+   * This is useful for converting a user’s selection of product options into a single matching variant.
+   * If there is not a variant for the selected options, `null` will be returned.
+   *
+   */
+  variantBySelectedOptions?: Maybe<ProductVariant>;
+  /** A list of [variants](/docs/api/storefront/latest/objects/ProductVariant) that are associated with the product. */
+  variants: ProductVariantConnection;
+  /** The number of [variants](/docs/api/storefront/latest/objects/ProductVariant) that are associated with the product. */
+  variantsCount?: Maybe<Count>;
+  /** The name of the product's vendor. */
+  vendor: Scalars['String']['output'];
+};
+
 
 /**
  * Represents an item listed in a shop's catalog.
@@ -7326,6 +7305,7 @@ export type ProductAdjacentVariantsArgs = {
   ignoreUnknownOptions?: InputMaybe<Scalars['Boolean']['input']>;
   selectedOptions?: InputMaybe<Array<SelectedOptionInput>>;
 };
+
 
 /**
  * Represents an item listed in a shop's catalog.
@@ -7345,6 +7325,7 @@ export type ProductCollectionsArgs = {
   reverse?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+
 /**
  * Represents an item listed in a shop's catalog.
  *
@@ -7358,6 +7339,7 @@ export type ProductCollectionsArgs = {
 export type ProductDescriptionArgs = {
   truncateAt?: InputMaybe<Scalars['Int']['input']>;
 };
+
 
 /**
  * Represents an item listed in a shop's catalog.
@@ -7378,6 +7360,7 @@ export type ProductImagesArgs = {
   sortKey?: InputMaybe<ProductImageSortKeys>;
 };
 
+
 /**
  * Represents an item listed in a shop's catalog.
  *
@@ -7397,6 +7380,7 @@ export type ProductMediaArgs = {
   sortKey?: InputMaybe<ProductMediaSortKeys>;
 };
 
+
 /**
  * Represents an item listed in a shop's catalog.
  *
@@ -7412,6 +7396,7 @@ export type ProductMetafieldArgs = {
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
 
+
 /**
  * Represents an item listed in a shop's catalog.
  *
@@ -7426,6 +7411,7 @@ export type ProductMetafieldsArgs = {
   identifiers: Array<HasMetafieldsIdentifier>;
 };
 
+
 /**
  * Represents an item listed in a shop's catalog.
  *
@@ -7439,6 +7425,7 @@ export type ProductMetafieldsArgs = {
 export type ProductOptionsArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
 };
+
 
 /**
  * Represents an item listed in a shop's catalog.
@@ -7455,6 +7442,7 @@ export type ProductSelectedOrFirstAvailableVariantArgs = {
   ignoreUnknownOptions?: InputMaybe<Scalars['Boolean']['input']>;
   selectedOptions?: InputMaybe<Array<SelectedOptionInput>>;
 };
+
 
 /**
  * Represents an item listed in a shop's catalog.
@@ -7474,6 +7462,7 @@ export type ProductSellingPlanGroupsArgs = {
   reverse?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+
 /**
  * Represents an item listed in a shop's catalog.
  *
@@ -7489,6 +7478,7 @@ export type ProductVariantBySelectedOptionsArgs = {
   ignoreUnknownOptions?: InputMaybe<Scalars['Boolean']['input']>;
   selectedOptions: Array<SelectedOptionInput>;
 };
+
 
 /**
  * Represents an item listed in a shop's catalog.
@@ -7515,28 +7505,27 @@ export type ProductVariantsArgs = {
  * > Note: The [`RELEVANCE`](https://shopify.dev/docs/api/storefront/current/enums/ProductCollectionSortKeys#enums-RELEVANCE) key applies only when you specify a search query.
  *
  */
-export enum ProductCollectionSortKeys {
+export type ProductCollectionSortKeys =
   /** Sort by the `best-selling` value. */
-  BestSelling = 'BEST_SELLING',
+  | 'BEST_SELLING'
   /** Sort by the `collection-default` value. */
-  CollectionDefault = 'COLLECTION_DEFAULT',
+  | 'COLLECTION_DEFAULT'
   /** Sort by the `created` value. */
-  Created = 'CREATED',
+  | 'CREATED'
   /** Sort by the `id` value. */
-  Id = 'ID',
+  | 'ID'
   /** Sort by the `manual` value. */
-  Manual = 'MANUAL',
+  | 'MANUAL'
   /** Sort by the `price` value. */
-  Price = 'PRICE',
+  | 'PRICE'
   /**
    * Sort by relevance to the search terms when the `query` parameter is specified on the connection.
    * Don't use this sort key when no search query is specified.
    *
    */
-  Relevance = 'RELEVANCE',
+  | 'RELEVANCE'
   /** Sort by the `title` value. */
-  Title = 'TITLE',
-}
+  | 'TITLE';
 
 /**
  * An auto-generated type for paginating through multiple Products.
@@ -7596,34 +7585,32 @@ export type ProductFilter = {
 };
 
 /** The set of valid sort keys for the ProductImage query. */
-export enum ProductImageSortKeys {
+export type ProductImageSortKeys =
   /** Sort by the `created_at` value. */
-  CreatedAt = 'CREATED_AT',
+  | 'CREATED_AT'
   /** Sort by the `id` value. */
-  Id = 'ID',
+  | 'ID'
   /** Sort by the `position` value. */
-  Position = 'POSITION',
+  | 'POSITION'
   /**
    * Sort by relevance to the search terms when the `query` parameter is specified on the connection.
    * Don't use this sort key when no search query is specified.
    *
    */
-  Relevance = 'RELEVANCE',
-}
+  | 'RELEVANCE';
 
 /** The set of valid sort keys for the ProductMedia query. */
-export enum ProductMediaSortKeys {
+export type ProductMediaSortKeys =
   /** Sort by the `id` value. */
-  Id = 'ID',
+  | 'ID'
   /** Sort by the `position` value. */
-  Position = 'POSITION',
+  | 'POSITION'
   /**
    * Sort by relevance to the search terms when the `query` parameter is specified on the connection.
    * Don't use this sort key when no search query is specified.
    *
    */
-  Relevance = 'RELEVANCE',
-}
+  | 'RELEVANCE';
 
 /**
  * A customizable product attribute that customers select when purchasing, such as "Size", "Color", or "Material". Each option has a name and a set of [`ProductOptionValue`](https://shopify.dev/docs/api/storefront/current/objects/ProductOptionValue) objects representing the available choices.
@@ -7703,12 +7690,11 @@ export type ProductPriceRange = {
  * You can use intent to generate product recommendations according to different strategies.
  *
  */
-export enum ProductRecommendationIntent {
+export type ProductRecommendationIntent =
   /** Offer customers products that are complementary to a product for which recommendations are to be fetched. An example is add-on products that display in a Pair it with section. */
-  Complementary = 'COMPLEMENTARY',
+  | 'COMPLEMENTARY'
   /** Offer customers a mix of products that are similar or complementary to a product for which recommendations are to be fetched. An example is substitutable products that display in a You may also like section. */
-  Related = 'RELATED',
-}
+  | 'RELATED';
 
 /**
  * Sorting options for the [`products`](https://shopify.dev/docs/api/storefront/current/queries/products) query. Supports sorting products by criteria such as best-selling and price, and by product attributes such as type, and vendor.
@@ -7716,30 +7702,29 @@ export enum ProductRecommendationIntent {
  * > Note: Use the [`RELEVANCE`](https://shopify.dev/docs/api/storefront/current/enums/ProductSortKeys#enums-RELEVANCE) key only when a search query is specified.
  *
  */
-export enum ProductSortKeys {
+export type ProductSortKeys =
   /** Sort by the `best_selling` value. */
-  BestSelling = 'BEST_SELLING',
+  | 'BEST_SELLING'
   /** Sort by the `created_at` value. */
-  CreatedAt = 'CREATED_AT',
+  | 'CREATED_AT'
   /** Sort by the `id` value. */
-  Id = 'ID',
+  | 'ID'
   /** Sort by the `price` value. */
-  Price = 'PRICE',
+  | 'PRICE'
   /** Sort by the `product_type` value. */
-  ProductType = 'PRODUCT_TYPE',
+  | 'PRODUCT_TYPE'
   /**
    * Sort by relevance to the search terms when the `query` parameter is specified on the connection.
    * Don't use this sort key when no search query is specified.
    *
    */
-  Relevance = 'RELEVANCE',
+  | 'RELEVANCE'
   /** Sort by the `title` value. */
-  Title = 'TITLE',
+  | 'TITLE'
   /** Sort by the `updated_at` value. */
-  UpdatedAt = 'UPDATED_AT',
+  | 'UPDATED_AT'
   /** Sort by the `vendor` value. */
-  Vendor = 'VENDOR',
-}
+  | 'VENDOR';
 
 /**
  * A specific version of a [product](https://shopify.dev/docs/api/storefront/current/objects/Product) available for sale, differentiated by options like size or color. For example, a small blue t-shirt and a large blue t-shirt are separate variants of the same product. For more information, see the docs on [Shopify's product model](https://shopify.dev/docs/apps/build/product-merchandising/products-and-collections).
@@ -7749,86 +7734,86 @@ export enum ProductSortKeys {
  * Variants also support subscriptions and pre-orders through [selling plan allocations](https://shopify.dev/docs/api/storefront/current/objects/SellingPlanAllocation) objects, bundle configurations through [product variant components](https://shopify.dev/docs/api/storefront/current/objects/ProductVariantComponent) objects, and [shop pay installments pricing](https://shopify.dev/docs/api/storefront/current/objects/ShopPayInstallmentsPricing) for flexible payment options.
  *
  */
-export type ProductVariant = HasMetafields &
-  Node & {
-    __typename?: 'ProductVariant';
-    /** Indicates if the product variant is available for sale. */
-    availableForSale: Scalars['Boolean']['output'];
-    /** The barcode (for example, ISBN, UPC, or GTIN) associated with the variant. */
-    barcode?: Maybe<Scalars['String']['output']>;
-    /** The compare at price of the variant. This can be used to mark a variant as on sale, when `compareAtPrice` is higher than `price`. */
-    compareAtPrice?: Maybe<MoneyV2>;
-    /**
-     * The compare at price of the variant. This can be used to mark a variant as on sale, when `compareAtPriceV2` is higher than `priceV2`.
-     * @deprecated Use `compareAtPrice` instead.
-     */
-    compareAtPriceV2?: Maybe<MoneyV2>;
-    /**
-     * List of bundles components included in the variant considering only fixed bundles.
-     *
-     */
-    components: ProductVariantComponentConnection;
-    /** Whether a product is out of stock but still available for purchase (used for backorders). */
-    currentlyNotInStock: Scalars['Boolean']['output'];
-    /**
-     * List of bundles that include this variant considering only fixed bundles.
-     *
-     */
-    groupedBy: ProductVariantConnection;
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** Image associated with the product variant. This field falls back to the product image if no image is available. */
-    image?: Maybe<Image>;
-    /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
-    metafield?: Maybe<Metafield>;
-    /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
-    metafields: Array<Maybe<Metafield>>;
-    /** The product variant’s price. */
-    price: MoneyV2;
-    /**
-     * The product variant’s price.
-     * @deprecated Use `price` instead.
-     */
-    priceV2: MoneyV2;
-    /** The product object that the product variant belongs to. */
-    product: Product;
-    /** The total sellable quantity of the variant for online sales channels. */
-    quantityAvailable?: Maybe<Scalars['Int']['output']>;
-    /** A list of quantity breaks for the product variant. */
-    quantityPriceBreaks: QuantityPriceBreakConnection;
-    /** The quantity rule for the product variant in a given context. */
-    quantityRule: QuantityRule;
-    /**
-     * Whether a product variant requires components. The default value is `false`.
-     * If `true`, then the product variant can only be purchased as a parent bundle with components.
-     *
-     */
-    requiresComponents: Scalars['Boolean']['output'];
-    /** Whether a customer needs to provide a shipping address when placing an order for the product variant. */
-    requiresShipping: Scalars['Boolean']['output'];
-    /** List of product options applied to the variant. */
-    selectedOptions: Array<SelectedOption>;
-    /** Represents an association between a variant and a selling plan. Selling plan allocations describe which selling plans are available for each variant, and what their impact is on pricing. */
-    sellingPlanAllocations: SellingPlanAllocationConnection;
-    /** The Shop Pay Installments pricing information for the product variant. */
-    shopPayInstallmentsPricing?: Maybe<ShopPayInstallmentsProductVariantPricing>;
-    /** The SKU (stock keeping unit) associated with the variant. */
-    sku?: Maybe<Scalars['String']['output']>;
-    /** The in-store pickup availability of this variant by location. */
-    storeAvailability: StoreAvailabilityConnection;
-    /** Whether tax is charged when the product variant is sold. */
-    taxable: Scalars['Boolean']['output'];
-    /** The product variant’s title. */
-    title: Scalars['String']['output'];
-    /** The unit price value for the variant based on the variant's measurement. */
-    unitPrice?: Maybe<MoneyV2>;
-    /** The unit price measurement for the variant. */
-    unitPriceMeasurement?: Maybe<UnitPriceMeasurement>;
-    /** The weight of the product variant in the unit system specified with `weight_unit`. */
-    weight?: Maybe<Scalars['Float']['output']>;
-    /** Unit of measurement for weight. */
-    weightUnit: WeightUnit;
-  };
+export type ProductVariant = HasMetafields & Node & {
+  __typename?: 'ProductVariant';
+  /** Indicates if the product variant is available for sale. */
+  availableForSale: Scalars['Boolean']['output'];
+  /** The barcode (for example, ISBN, UPC, or GTIN) associated with the variant. */
+  barcode?: Maybe<Scalars['String']['output']>;
+  /** The compare at price of the variant. This can be used to mark a variant as on sale, when `compareAtPrice` is higher than `price`. */
+  compareAtPrice?: Maybe<MoneyV2>;
+  /**
+   * The compare at price of the variant. This can be used to mark a variant as on sale, when `compareAtPriceV2` is higher than `priceV2`.
+   * @deprecated Use `compareAtPrice` instead.
+   */
+  compareAtPriceV2?: Maybe<MoneyV2>;
+  /**
+   * List of bundles components included in the variant considering only fixed bundles.
+   *
+   */
+  components: ProductVariantComponentConnection;
+  /** Whether a product is out of stock but still available for purchase (used for backorders). */
+  currentlyNotInStock: Scalars['Boolean']['output'];
+  /**
+   * List of bundles that include this variant considering only fixed bundles.
+   *
+   */
+  groupedBy: ProductVariantConnection;
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** Image associated with the product variant. This field falls back to the product image if no image is available. */
+  image?: Maybe<Image>;
+  /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
+  metafield?: Maybe<Metafield>;
+  /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
+  metafields: Array<Maybe<Metafield>>;
+  /** The product variant’s price. */
+  price: MoneyV2;
+  /**
+   * The product variant’s price.
+   * @deprecated Use `price` instead.
+   */
+  priceV2: MoneyV2;
+  /** The product object that the product variant belongs to. */
+  product: Product;
+  /** The total sellable quantity of the variant for online sales channels. */
+  quantityAvailable?: Maybe<Scalars['Int']['output']>;
+  /** A list of quantity breaks for the product variant. */
+  quantityPriceBreaks: QuantityPriceBreakConnection;
+  /** The quantity rule for the product variant in a given context. */
+  quantityRule: QuantityRule;
+  /**
+   * Whether a product variant requires components. The default value is `false`.
+   * If `true`, then the product variant can only be purchased as a parent bundle with components.
+   *
+   */
+  requiresComponents: Scalars['Boolean']['output'];
+  /** Whether a customer needs to provide a shipping address when placing an order for the product variant. */
+  requiresShipping: Scalars['Boolean']['output'];
+  /** List of product options applied to the variant. */
+  selectedOptions: Array<SelectedOption>;
+  /** Represents an association between a variant and a selling plan. Selling plan allocations describe which selling plans are available for each variant, and what their impact is on pricing. */
+  sellingPlanAllocations: SellingPlanAllocationConnection;
+  /** The Shop Pay Installments pricing information for the product variant. */
+  shopPayInstallmentsPricing?: Maybe<ShopPayInstallmentsProductVariantPricing>;
+  /** The SKU (stock keeping unit) associated with the variant. */
+  sku?: Maybe<Scalars['String']['output']>;
+  /** The in-store pickup availability of this variant by location. */
+  storeAvailability: StoreAvailabilityConnection;
+  /** Whether tax is charged when the product variant is sold. */
+  taxable: Scalars['Boolean']['output'];
+  /** The product variant’s title. */
+  title: Scalars['String']['output'];
+  /** The unit price value for the variant based on the variant's measurement. */
+  unitPrice?: Maybe<MoneyV2>;
+  /** The unit price measurement for the variant. */
+  unitPriceMeasurement?: Maybe<UnitPriceMeasurement>;
+  /** The weight of the product variant in the unit system specified with `weight_unit`. */
+  weight?: Maybe<Scalars['Float']['output']>;
+  /** Unit of measurement for weight. */
+  weightUnit: WeightUnit;
+};
+
 
 /**
  * A specific version of a [product](https://shopify.dev/docs/api/storefront/current/objects/Product) available for sale, differentiated by options like size or color. For example, a small blue t-shirt and a large blue t-shirt are separate variants of the same product. For more information, see the docs on [Shopify's product model](https://shopify.dev/docs/apps/build/product-merchandising/products-and-collections).
@@ -7845,6 +7830,7 @@ export type ProductVariantComponentsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
+
 /**
  * A specific version of a [product](https://shopify.dev/docs/api/storefront/current/objects/Product) available for sale, differentiated by options like size or color. For example, a small blue t-shirt and a large blue t-shirt are separate variants of the same product. For more information, see the docs on [Shopify's product model](https://shopify.dev/docs/apps/build/product-merchandising/products-and-collections).
  *
@@ -7860,6 +7846,7 @@ export type ProductVariantGroupedByArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
+
 /**
  * A specific version of a [product](https://shopify.dev/docs/api/storefront/current/objects/Product) available for sale, differentiated by options like size or color. For example, a small blue t-shirt and a large blue t-shirt are separate variants of the same product. For more information, see the docs on [Shopify's product model](https://shopify.dev/docs/apps/build/product-merchandising/products-and-collections).
  *
@@ -7873,6 +7860,7 @@ export type ProductVariantMetafieldArgs = {
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
 
+
 /**
  * A specific version of a [product](https://shopify.dev/docs/api/storefront/current/objects/Product) available for sale, differentiated by options like size or color. For example, a small blue t-shirt and a large blue t-shirt are separate variants of the same product. For more information, see the docs on [Shopify's product model](https://shopify.dev/docs/apps/build/product-merchandising/products-and-collections).
  *
@@ -7884,6 +7872,7 @@ export type ProductVariantMetafieldArgs = {
 export type ProductVariantMetafieldsArgs = {
   identifiers: Array<HasMetafieldsIdentifier>;
 };
+
 
 /**
  * A specific version of a [product](https://shopify.dev/docs/api/storefront/current/objects/Product) available for sale, differentiated by options like size or color. For example, a small blue t-shirt and a large blue t-shirt are separate variants of the same product. For more information, see the docs on [Shopify's product model](https://shopify.dev/docs/apps/build/product-merchandising/products-and-collections).
@@ -7900,6 +7889,7 @@ export type ProductVariantQuantityPriceBreaksArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
+
 /**
  * A specific version of a [product](https://shopify.dev/docs/api/storefront/current/objects/Product) available for sale, differentiated by options like size or color. For example, a small blue t-shirt and a large blue t-shirt are separate variants of the same product. For more information, see the docs on [Shopify's product model](https://shopify.dev/docs/apps/build/product-merchandising/products-and-collections).
  *
@@ -7915,6 +7905,7 @@ export type ProductVariantSellingPlanAllocationsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   reverse?: InputMaybe<Scalars['Boolean']['input']>;
 };
+
 
 /**
  * A specific version of a [product](https://shopify.dev/docs/api/storefront/current/objects/Product) available for sale, differentiated by options like size or color. For example, a small blue t-shirt and a large blue t-shirt are separate variants of the same product. For more information, see the docs on [Shopify's product model](https://shopify.dev/docs/apps/build/product-merchandising/products-and-collections).
@@ -8000,22 +7991,21 @@ export type ProductVariantEdge = {
 };
 
 /** The set of valid sort keys for the ProductVariant query. */
-export enum ProductVariantSortKeys {
+export type ProductVariantSortKeys =
   /** Sort by the `id` value. */
-  Id = 'ID',
+  | 'ID'
   /** Sort by the `position` value. */
-  Position = 'POSITION',
+  | 'POSITION'
   /**
    * Sort by relevance to the search terms when the `query` parameter is specified on the connection.
    * Don't use this sort key when no search query is specified.
    *
    */
-  Relevance = 'RELEVANCE',
+  | 'RELEVANCE'
   /** Sort by the `sku` value. */
-  Sku = 'SKU',
+  | 'SKU'
   /** Sort by the `title` value. */
-  Title = 'TITLE',
-}
+  | 'TITLE';
 
 /** Represents information about the buyer that is interacting with the cart. */
 export type PurchasingCompany = {
@@ -8322,6 +8312,7 @@ export type QueryRoot = {
   urlRedirects: UrlRedirectConnection;
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8333,6 +8324,7 @@ export type QueryRoot = {
 export type QueryRootArticleArgs = {
   id: Scalars['ID']['input'];
 };
+
 
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
@@ -8352,6 +8344,7 @@ export type QueryRootArticlesArgs = {
   sortKey?: InputMaybe<ArticleSortKeys>;
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8365,6 +8358,7 @@ export type QueryRootBlogArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8376,6 +8370,7 @@ export type QueryRootBlogArgs = {
 export type QueryRootBlogByHandleArgs = {
   handle: Scalars['String']['input'];
 };
+
 
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
@@ -8395,6 +8390,7 @@ export type QueryRootBlogsArgs = {
   sortKey?: InputMaybe<BlogSortKeys>;
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8407,6 +8403,7 @@ export type QueryRootCartArgs = {
   id: Scalars['ID']['input'];
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8418,6 +8415,7 @@ export type QueryRootCartArgs = {
 export type QueryRootCartCompletionAttemptArgs = {
   attemptId: Scalars['String']['input'];
 };
+
 
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
@@ -8432,6 +8430,7 @@ export type QueryRootCollectionArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8443,6 +8442,7 @@ export type QueryRootCollectionArgs = {
 export type QueryRootCollectionByHandleArgs = {
   handle: Scalars['String']['input'];
 };
+
 
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
@@ -8462,6 +8462,7 @@ export type QueryRootCollectionsArgs = {
   sortKey?: InputMaybe<CollectionSortKeys>;
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8473,6 +8474,7 @@ export type QueryRootCollectionsArgs = {
 export type QueryRootCustomerArgs = {
   customerAccessToken: Scalars['String']['input'];
 };
+
 
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
@@ -8492,6 +8494,7 @@ export type QueryRootLocationsArgs = {
   sortKey?: InputMaybe<LocationSortKeys>;
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8503,6 +8506,7 @@ export type QueryRootLocationsArgs = {
 export type QueryRootMenuArgs = {
   handle: Scalars['String']['input'];
 };
+
 
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
@@ -8516,6 +8520,7 @@ export type QueryRootMetaobjectArgs = {
   handle?: InputMaybe<MetaobjectHandleInput>;
   id?: InputMaybe<Scalars['ID']['input']>;
 };
+
 
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
@@ -8535,6 +8540,7 @@ export type QueryRootMetaobjectsArgs = {
   type: Scalars['String']['input'];
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8547,6 +8553,7 @@ export type QueryRootNodeArgs = {
   id: Scalars['ID']['input'];
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8558,6 +8565,7 @@ export type QueryRootNodeArgs = {
 export type QueryRootNodesArgs = {
   ids: Array<Scalars['ID']['input']>;
 };
+
 
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
@@ -8572,6 +8580,7 @@ export type QueryRootPageArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8583,6 +8592,7 @@ export type QueryRootPageArgs = {
 export type QueryRootPageByHandleArgs = {
   handle: Scalars['String']['input'];
 };
+
 
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
@@ -8602,6 +8612,7 @@ export type QueryRootPagesArgs = {
   sortKey?: InputMaybe<PageSortKeys>;
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8619,6 +8630,7 @@ export type QueryRootPredictiveSearchArgs = {
   unavailableProducts?: InputMaybe<SearchUnavailableProductsType>;
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8632,6 +8644,7 @@ export type QueryRootProductArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8643,6 +8656,7 @@ export type QueryRootProductArgs = {
 export type QueryRootProductByHandleArgs = {
   handle: Scalars['String']['input'];
 };
+
 
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
@@ -8658,6 +8672,7 @@ export type QueryRootProductRecommendationsArgs = {
   productId?: InputMaybe<Scalars['ID']['input']>;
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8670,6 +8685,7 @@ export type QueryRootProductTagsArgs = {
   first: Scalars['Int']['input'];
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8681,6 +8697,7 @@ export type QueryRootProductTagsArgs = {
 export type QueryRootProductTypesArgs = {
   first: Scalars['Int']['input'];
 };
+
 
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
@@ -8699,6 +8716,7 @@ export type QueryRootProductsArgs = {
   reverse?: InputMaybe<Scalars['Boolean']['input']>;
   sortKey?: InputMaybe<ProductSortKeys>;
 };
+
 
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
@@ -8722,6 +8740,7 @@ export type QueryRootSearchArgs = {
   unavailableProducts?: InputMaybe<SearchUnavailableProductsType>;
 };
 
+
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
  *
@@ -8733,6 +8752,7 @@ export type QueryRootSearchArgs = {
 export type QueryRootSitemapArgs = {
   type: SitemapType;
 };
+
 
 /**
  * The entry point for all Storefront API queries. Provides access to shop resources including products, collections, carts, and customer data, as well as content like articles and pages. This query acts as the public, top-level type from which all queries must start.
@@ -8782,12 +8802,11 @@ export type ScriptDiscountApplication = DiscountApplication & {
 };
 
 /** Specifies whether to perform a partial word match on the last search term. */
-export enum SearchPrefixQueryType {
+export type SearchPrefixQueryType =
   /** Perform a partial word match on the last search term. */
-  Last = 'LAST',
+  | 'LAST'
   /** Don't perform a partial word match on the last search term. */
-  None = 'NONE',
-}
+  | 'NONE';
 
 /**
  * A suggested search term returned by the [`predictiveSearch`](https://shopify.dev/docs/api/storefront/current/queries/predictiveSearch) query. Query suggestions help customers refine their searches by showing relevant terms as they type.
@@ -8842,54 +8861,50 @@ export type SearchResultItemEdge = {
 };
 
 /** The set of valid sort keys for the search query. */
-export enum SearchSortKeys {
+export type SearchSortKeys =
   /** Sort by the `price` value. */
-  Price = 'PRICE',
+  | 'PRICE'
   /** Sort by relevance to the search terms. */
-  Relevance = 'RELEVANCE',
-}
+  | 'RELEVANCE';
 
 /** The types of search items to perform search within. */
-export enum SearchType {
+export type SearchType =
   /** Returns matching articles. */
-  Article = 'ARTICLE',
+  | 'ARTICLE'
   /** Returns matching pages. */
-  Page = 'PAGE',
+  | 'PAGE'
   /** Returns matching products. */
-  Product = 'PRODUCT',
-}
+  | 'PRODUCT';
 
 /** Specifies whether to display results for unavailable products. */
-export enum SearchUnavailableProductsType {
+export type SearchUnavailableProductsType =
   /** Exclude unavailable products. */
-  Hide = 'HIDE',
+  | 'HIDE'
   /** Show unavailable products after all other matching results. This is the default. */
-  Last = 'LAST',
+  | 'LAST'
   /** Show unavailable products in the order that they're found. */
-  Show = 'SHOW',
-}
+  | 'SHOW';
 
 /** Specifies the list of resource fields to search. */
-export enum SearchableField {
+export type SearchableField =
   /** Author of the page or article. */
-  Author = 'AUTHOR',
+  | 'AUTHOR'
   /** Body of the page or article or product description or collection description. */
-  Body = 'BODY',
+  | 'BODY'
   /** Product type. */
-  ProductType = 'PRODUCT_TYPE',
+  | 'PRODUCT_TYPE'
   /** Tag associated with the product or article. */
-  Tag = 'TAG',
+  | 'TAG'
   /** Title of the page or article or product title or collection title. */
-  Title = 'TITLE',
+  | 'TITLE'
   /** Variant barcode. */
-  VariantsBarcode = 'VARIANTS_BARCODE',
+  | 'VARIANTS_BARCODE'
   /** Variant SKU. */
-  VariantsSku = 'VARIANTS_SKU',
+  | 'VARIANTS_SKU'
   /** Variant title. */
-  VariantsTitle = 'VARIANTS_TITLE',
+  | 'VARIANTS_TITLE'
   /** Product vendor. */
-  Vendor = 'VENDOR',
-}
+  | 'VENDOR';
 
 /**
  * A name/value pair representing a product option selection on a variant. The [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) object's [`selectedOptions`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant#field-ProductVariant.fields.selectedOptions) field returns this to indicate which options define that variant, such as "Size: Large" or "Color: Red".
@@ -8941,6 +8956,7 @@ export type SellingPlan = HasMetafields & {
   recurringDeliveries: Scalars['Boolean']['output'];
 };
 
+
 /**
  * Represents deferred or recurring purchase options for [products](https://shopify.dev/docs/api/storefront/current/objects/Product) and [product variants](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant), such as subscriptions, pre-orders, or try-before-you-buy. Each selling plan belongs to a [`SellingPlanGroup`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlanGroup) and defines billing, pricing, inventory, and delivery policies.
  *
@@ -8949,6 +8965,7 @@ export type SellingPlanMetafieldArgs = {
   key: Scalars['String']['input'];
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /**
  * Represents deferred or recurring purchase options for [products](https://shopify.dev/docs/api/storefront/current/objects/Product) and [product variants](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant), such as subscriptions, pre-orders, or try-before-you-buy. Each selling plan belongs to a [`SellingPlanGroup`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlanGroup) and defines billing, pricing, inventory, and delivery policies.
@@ -9035,12 +9052,11 @@ export type SellingPlanCheckoutChargePercentageValue = {
 };
 
 /** The checkout charge when the full amount isn't charged at checkout. */
-export enum SellingPlanCheckoutChargeType {
+export type SellingPlanCheckoutChargeType =
   /** The checkout charge is a percentage of the product or variant price. */
-  Percentage = 'PERCENTAGE',
+  | 'PERCENTAGE'
   /** The checkout charge is a fixed price amount. */
-  Price = 'PRICE',
-}
+  | 'PRICE';
 
 /** The portion of the price to be charged at checkout. */
 export type SellingPlanCheckoutChargeValue = MoneyV2 | SellingPlanCheckoutChargePercentageValue;
@@ -9106,6 +9122,7 @@ export type SellingPlanGroup = {
   sellingPlans: SellingPlanConnection;
 };
 
+
 /**
  * A selling method that defines how products can be sold through purchase options like subscriptions, pre-orders, or try-before-you-buy. Groups one or more [`SellingPlan`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlan) objects that share the same selling method and options.
  *
@@ -9160,16 +9177,15 @@ export type SellingPlanGroupOption = {
 };
 
 /** Represents a valid selling plan interval. */
-export enum SellingPlanInterval {
+export type SellingPlanInterval =
   /** Day interval. */
-  Day = 'DAY',
+  | 'DAY'
   /** Month interval. */
-  Month = 'MONTH',
+  | 'MONTH'
   /** Week interval. */
-  Week = 'WEEK',
+  | 'WEEK'
   /** Year interval. */
-  Year = 'YEAR',
-}
+  | 'YEAR';
 
 /** An option provided by a Selling Plan. */
 export type SellingPlanOption = {
@@ -9197,10 +9213,7 @@ export type SellingPlanPriceAdjustment = {
 };
 
 /** Represents by how much the price of a variant associated with a selling plan is adjusted. Each variant can have up to two price adjustments. */
-export type SellingPlanPriceAdjustmentValue =
-  | SellingPlanFixedAmountPriceAdjustment
-  | SellingPlanFixedPriceAdjustment
-  | SellingPlanPercentagePriceAdjustment;
+export type SellingPlanPriceAdjustmentValue = SellingPlanFixedAmountPriceAdjustment | SellingPlanFixedPriceAdjustment | SellingPlanPercentagePriceAdjustment;
 
 /** The recurring billing policy for the selling plan. */
 export type SellingPlanRecurringBillingPolicy = {
@@ -9226,54 +9239,54 @@ export type SellingPlanRecurringDeliveryPolicy = {
  * Access store policies such as privacy, refund, shipping, and terms of service via [`ShopPolicy`](https://shopify.dev/docs/api/storefront/current/objects/ShopPolicy), and the subscription policy via [`ShopPolicyWithDefault`](https://shopify.dev/docs/api/storefront/current/objects/ShopPolicyWithDefault). [`PaymentSettings`](https://shopify.dev/docs/api/storefront/current/objects/PaymentSettings) expose accepted card brands, supported digital wallets, and enabled presentment currencies. The object also includes the primary [`Domain`](https://shopify.dev/docs/api/storefront/current/objects/Domain), countries the shop ships to, [`ShopPayInstallmentsPricing`](https://shopify.dev/docs/api/storefront/current/objects/ShopPayInstallmentsPricing), and [`SocialLoginProvider`](https://shopify.dev/docs/api/storefront/current/objects/SocialLoginProvider) options for customer accounts.
  *
  */
-export type Shop = HasMetafields &
-  Node & {
-    __typename?: 'Shop';
-    /** The shop's branding configuration. */
-    brand?: Maybe<Brand>;
-    /** The shop's contact information. */
-    contactInformation?: Maybe<ShopPolicy>;
-    /** Translations for customer accounts. */
-    customerAccountTranslations?: Maybe<Array<Translation>>;
-    /** The URL for the customer account (only present if shop has a customer account vanity domain). */
-    customerAccountUrl?: Maybe<Scalars['String']['output']>;
-    /** A description of the shop. */
-    description?: Maybe<Scalars['String']['output']>;
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** The shop's legal notice. */
-    legalNotice?: Maybe<ShopPolicy>;
-    /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
-    metafield?: Maybe<Metafield>;
-    /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
-    metafields: Array<Maybe<Metafield>>;
-    /** A string representing the way currency is formatted when the currency isn’t specified. */
-    moneyFormat: Scalars['String']['output'];
-    /** The shop’s name. */
-    name: Scalars['String']['output'];
-    /** Settings related to payments. */
-    paymentSettings: PaymentSettings;
-    /** The primary domain of the shop’s Online Store. */
-    primaryDomain: Domain;
-    /** The shop’s privacy policy. */
-    privacyPolicy?: Maybe<ShopPolicy>;
-    /** The shop’s refund policy. */
-    refundPolicy?: Maybe<ShopPolicy>;
-    /** The shop’s shipping policy. */
-    shippingPolicy?: Maybe<ShopPolicy>;
-    /** Countries that the shop ships to. */
-    shipsToCountries: Array<CountryCode>;
-    /** The Shop Pay Installments pricing information for the shop. */
-    shopPayInstallmentsPricing?: Maybe<ShopPayInstallmentsPricing>;
-    /** The social login providers for customer accounts. */
-    socialLoginProviders: Array<SocialLoginProvider>;
-    /** The shop’s subscription policy. */
-    subscriptionPolicy?: Maybe<ShopPolicyWithDefault>;
-    /** The shop's terms of sale. */
-    termsOfSale?: Maybe<ShopPolicy>;
-    /** The shop’s terms of service. */
-    termsOfService?: Maybe<ShopPolicy>;
-  };
+export type Shop = HasMetafields & Node & {
+  __typename?: 'Shop';
+  /** The shop's branding configuration. */
+  brand?: Maybe<Brand>;
+  /** The shop's contact information. */
+  contactInformation?: Maybe<ShopPolicy>;
+  /** Translations for customer accounts. */
+  customerAccountTranslations?: Maybe<Array<Translation>>;
+  /** The URL for the customer account (only present if shop has a customer account vanity domain). */
+  customerAccountUrl?: Maybe<Scalars['String']['output']>;
+  /** A description of the shop. */
+  description?: Maybe<Scalars['String']['output']>;
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** The shop's legal notice. */
+  legalNotice?: Maybe<ShopPolicy>;
+  /** A [custom field](https://shopify.dev/docs/apps/build/custom-data), including its `namespace` and `key`, that's associated with a Shopify resource for the purposes of adding and storing additional information. */
+  metafield?: Maybe<Metafield>;
+  /** A list of [custom fields](/docs/apps/build/custom-data) that a merchant associates with a Shopify resource. */
+  metafields: Array<Maybe<Metafield>>;
+  /** A string representing the way currency is formatted when the currency isn’t specified. */
+  moneyFormat: Scalars['String']['output'];
+  /** The shop’s name. */
+  name: Scalars['String']['output'];
+  /** Settings related to payments. */
+  paymentSettings: PaymentSettings;
+  /** The primary domain of the shop’s Online Store. */
+  primaryDomain: Domain;
+  /** The shop’s privacy policy. */
+  privacyPolicy?: Maybe<ShopPolicy>;
+  /** The shop’s refund policy. */
+  refundPolicy?: Maybe<ShopPolicy>;
+  /** The shop’s shipping policy. */
+  shippingPolicy?: Maybe<ShopPolicy>;
+  /** Countries that the shop ships to. */
+  shipsToCountries: Array<CountryCode>;
+  /** The Shop Pay Installments pricing information for the shop. */
+  shopPayInstallmentsPricing?: Maybe<ShopPayInstallmentsPricing>;
+  /** The social login providers for customer accounts. */
+  socialLoginProviders: Array<SocialLoginProvider>;
+  /** The shop’s subscription policy. */
+  subscriptionPolicy?: Maybe<ShopPolicyWithDefault>;
+  /** The shop's terms of sale. */
+  termsOfSale?: Maybe<ShopPolicy>;
+  /** The shop’s terms of service. */
+  termsOfService?: Maybe<ShopPolicy>;
+};
+
 
 /**
  * The central hub for store-wide settings and information accessible through the Storefront API. Provides the shop's name, description, and branding configuration including logos and colors through the [`Brand`](https://shopify.dev/docs/api/storefront/current/objects/Brand) object.
@@ -9285,6 +9298,7 @@ export type ShopMetafieldArgs = {
   key: Scalars['String']['input'];
   namespace?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /**
  * The central hub for store-wide settings and information accessible through the Storefront API. Provides the shop's name, description, and branding configuration including logos and colors through the [`Brand`](https://shopify.dev/docs/api/storefront/current/objects/Brand) object.
@@ -9310,12 +9324,11 @@ export type ShopPayInstallmentsFinancingPlan = Node & {
 };
 
 /** The payment frequency for a Shop Pay Installments Financing Plan. */
-export enum ShopPayInstallmentsFinancingPlanFrequency {
+export type ShopPayInstallmentsFinancingPlanFrequency =
   /** Monthly payment frequency. */
-  Monthly = 'MONTHLY',
+  | 'MONTHLY'
   /** Weekly payment frequency. */
-  Weekly = 'WEEKLY',
-}
+  | 'WEEKLY';
 
 /** The terms of the financing plan in Shop Pay Installments. */
 export type ShopPayInstallmentsFinancingPlanTerm = Node & {
@@ -9333,14 +9346,13 @@ export type ShopPayInstallmentsFinancingPlanTerm = Node & {
 };
 
 /** The loan type for a Shop Pay Installments Financing Plan Term. */
-export enum ShopPayInstallmentsLoan {
+export type ShopPayInstallmentsLoan =
   /** An interest-bearing loan type. */
-  Interest = 'INTEREST',
+  | 'INTEREST'
   /** A split-pay loan type. */
-  SplitPay = 'SPLIT_PAY',
+  | 'SPLIT_PAY'
   /** A zero-percent loan type. */
-  ZeroPercent = 'ZERO_PERCENT',
-}
+  | 'ZERO_PERCENT';
 
 /** The result for a Shop Pay Installments pricing request. */
 export type ShopPayInstallmentsPricing = {
@@ -9469,12 +9481,11 @@ export type ShopPayPaymentRequestDeliveryMethodInput = {
 };
 
 /** Represents the delivery method type for a Shop Pay payment request. */
-export enum ShopPayPaymentRequestDeliveryMethodType {
+export type ShopPayPaymentRequestDeliveryMethodType =
   /** The delivery method type is pickup. */
-  Pickup = 'PICKUP',
+  | 'PICKUP'
   /** The delivery method type is shipping. */
-  Shipping = 'SHIPPING',
-}
+  | 'SHIPPING';
 
 /** Represents a discount for a Shop Pay payment request. */
 export type ShopPayPaymentRequestDiscount = {
@@ -9766,6 +9777,7 @@ export type Sitemap = {
   resources?: Maybe<PaginatedSitemapResources>;
 };
 
+
 /** Contains all fields required to generate sitemaps. */
 export type SitemapResourcesArgs = {
   page: Scalars['Int']['input'];
@@ -9821,25 +9833,24 @@ export type SitemapResourceMetaobject = SitemapResourceInterface & {
 };
 
 /** The types of resources potentially present in a sitemap. */
-export enum SitemapType {
+export type SitemapType =
   /** Articles present in the sitemap. */
-  Article = 'ARTICLE',
+  | 'ARTICLE'
   /** Blogs present in the sitemap. */
-  Blog = 'BLOG',
+  | 'BLOG'
   /** Collections present in the sitemap. */
-  Collection = 'COLLECTION',
+  | 'COLLECTION'
   /**
    * Metaobjects present in the sitemap. Only metaobject types with the
    * [`renderable` capability](https://shopify.dev/docs/apps/build/custom-data/metaobjects/use-metaobject-capabilities#render-metaobjects-as-web-pages)
    * are included in sitemap.
    *
    */
-  Metaobject = 'METAOBJECT',
+  | 'METAOBJECT'
   /** Pages present in the sitemap. */
-  Page = 'PAGE',
+  | 'PAGE'
   /** Products present in the sitemap. */
-  Product = 'PRODUCT',
-}
+  | 'PRODUCT';
 
 /** A social login provider for customer accounts. */
 export type SocialLoginProvider = {
@@ -9930,105 +9941,104 @@ export type SubmissionError = {
 };
 
 /** The code of the error that occurred during cart submit for completion. */
-export enum SubmissionErrorCode {
-  BuyerIdentityEmailIsInvalid = 'BUYER_IDENTITY_EMAIL_IS_INVALID',
-  BuyerIdentityEmailRequired = 'BUYER_IDENTITY_EMAIL_REQUIRED',
-  BuyerIdentityPhoneIsInvalid = 'BUYER_IDENTITY_PHONE_IS_INVALID',
-  DeliveryAddress1Invalid = 'DELIVERY_ADDRESS1_INVALID',
-  DeliveryAddress1Required = 'DELIVERY_ADDRESS1_REQUIRED',
-  DeliveryAddress1TooLong = 'DELIVERY_ADDRESS1_TOO_LONG',
-  DeliveryAddress2Invalid = 'DELIVERY_ADDRESS2_INVALID',
-  DeliveryAddress2Required = 'DELIVERY_ADDRESS2_REQUIRED',
-  DeliveryAddress2TooLong = 'DELIVERY_ADDRESS2_TOO_LONG',
-  DeliveryAddressRequired = 'DELIVERY_ADDRESS_REQUIRED',
-  DeliveryCityInvalid = 'DELIVERY_CITY_INVALID',
-  DeliveryCityRequired = 'DELIVERY_CITY_REQUIRED',
-  DeliveryCityTooLong = 'DELIVERY_CITY_TOO_LONG',
-  DeliveryCompanyInvalid = 'DELIVERY_COMPANY_INVALID',
-  DeliveryCompanyRequired = 'DELIVERY_COMPANY_REQUIRED',
-  DeliveryCompanyTooLong = 'DELIVERY_COMPANY_TOO_LONG',
-  DeliveryCountryRequired = 'DELIVERY_COUNTRY_REQUIRED',
-  DeliveryFirstNameInvalid = 'DELIVERY_FIRST_NAME_INVALID',
-  DeliveryFirstNameRequired = 'DELIVERY_FIRST_NAME_REQUIRED',
-  DeliveryFirstNameTooLong = 'DELIVERY_FIRST_NAME_TOO_LONG',
-  DeliveryInvalidPostalCodeForCountry = 'DELIVERY_INVALID_POSTAL_CODE_FOR_COUNTRY',
-  DeliveryInvalidPostalCodeForZone = 'DELIVERY_INVALID_POSTAL_CODE_FOR_ZONE',
-  DeliveryLastNameInvalid = 'DELIVERY_LAST_NAME_INVALID',
-  DeliveryLastNameRequired = 'DELIVERY_LAST_NAME_REQUIRED',
-  DeliveryLastNameTooLong = 'DELIVERY_LAST_NAME_TOO_LONG',
-  DeliveryNoDeliveryAvailable = 'DELIVERY_NO_DELIVERY_AVAILABLE',
-  DeliveryNoDeliveryAvailableForMerchandiseLine = 'DELIVERY_NO_DELIVERY_AVAILABLE_FOR_MERCHANDISE_LINE',
-  DeliveryOptionsPhoneNumberInvalid = 'DELIVERY_OPTIONS_PHONE_NUMBER_INVALID',
-  DeliveryOptionsPhoneNumberRequired = 'DELIVERY_OPTIONS_PHONE_NUMBER_REQUIRED',
-  DeliveryPhoneNumberInvalid = 'DELIVERY_PHONE_NUMBER_INVALID',
-  DeliveryPhoneNumberRequired = 'DELIVERY_PHONE_NUMBER_REQUIRED',
-  DeliveryPostalCodeInvalid = 'DELIVERY_POSTAL_CODE_INVALID',
-  DeliveryPostalCodeRequired = 'DELIVERY_POSTAL_CODE_REQUIRED',
-  DeliveryZoneNotFound = 'DELIVERY_ZONE_NOT_FOUND',
-  DeliveryZoneRequiredForCountry = 'DELIVERY_ZONE_REQUIRED_FOR_COUNTRY',
-  Error = 'ERROR',
-  MerchandiseLineLimitReached = 'MERCHANDISE_LINE_LIMIT_REACHED',
-  MerchandiseNotApplicable = 'MERCHANDISE_NOT_APPLICABLE',
-  MerchandiseNotEnoughStockAvailable = 'MERCHANDISE_NOT_ENOUGH_STOCK_AVAILABLE',
-  MerchandiseOutOfStock = 'MERCHANDISE_OUT_OF_STOCK',
-  MerchandiseProductNotPublished = 'MERCHANDISE_PRODUCT_NOT_PUBLISHED',
-  NoDeliveryGroupSelected = 'NO_DELIVERY_GROUP_SELECTED',
-  PaymentsAddress1Invalid = 'PAYMENTS_ADDRESS1_INVALID',
-  PaymentsAddress1Required = 'PAYMENTS_ADDRESS1_REQUIRED',
-  PaymentsAddress1TooLong = 'PAYMENTS_ADDRESS1_TOO_LONG',
-  PaymentsAddress2Invalid = 'PAYMENTS_ADDRESS2_INVALID',
-  PaymentsAddress2Required = 'PAYMENTS_ADDRESS2_REQUIRED',
-  PaymentsAddress2TooLong = 'PAYMENTS_ADDRESS2_TOO_LONG',
-  PaymentsBillingAddressZoneNotFound = 'PAYMENTS_BILLING_ADDRESS_ZONE_NOT_FOUND',
-  PaymentsBillingAddressZoneRequiredForCountry = 'PAYMENTS_BILLING_ADDRESS_ZONE_REQUIRED_FOR_COUNTRY',
-  PaymentsCityInvalid = 'PAYMENTS_CITY_INVALID',
-  PaymentsCityRequired = 'PAYMENTS_CITY_REQUIRED',
-  PaymentsCityTooLong = 'PAYMENTS_CITY_TOO_LONG',
-  PaymentsCompanyInvalid = 'PAYMENTS_COMPANY_INVALID',
-  PaymentsCompanyRequired = 'PAYMENTS_COMPANY_REQUIRED',
-  PaymentsCompanyTooLong = 'PAYMENTS_COMPANY_TOO_LONG',
-  PaymentsCountryRequired = 'PAYMENTS_COUNTRY_REQUIRED',
-  PaymentsCreditCardBaseExpired = 'PAYMENTS_CREDIT_CARD_BASE_EXPIRED',
-  PaymentsCreditCardBaseGatewayNotSupported = 'PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED',
-  PaymentsCreditCardBaseInvalidStartDateOrIssueNumberForDebit = 'PAYMENTS_CREDIT_CARD_BASE_INVALID_START_DATE_OR_ISSUE_NUMBER_FOR_DEBIT',
-  PaymentsCreditCardBrandNotSupported = 'PAYMENTS_CREDIT_CARD_BRAND_NOT_SUPPORTED',
-  PaymentsCreditCardFirstNameBlank = 'PAYMENTS_CREDIT_CARD_FIRST_NAME_BLANK',
-  PaymentsCreditCardGeneric = 'PAYMENTS_CREDIT_CARD_GENERIC',
-  PaymentsCreditCardLastNameBlank = 'PAYMENTS_CREDIT_CARD_LAST_NAME_BLANK',
-  PaymentsCreditCardMonthInclusion = 'PAYMENTS_CREDIT_CARD_MONTH_INCLUSION',
-  PaymentsCreditCardNameInvalid = 'PAYMENTS_CREDIT_CARD_NAME_INVALID',
-  PaymentsCreditCardNumberInvalid = 'PAYMENTS_CREDIT_CARD_NUMBER_INVALID',
-  PaymentsCreditCardNumberInvalidFormat = 'PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT',
-  PaymentsCreditCardSessionId = 'PAYMENTS_CREDIT_CARD_SESSION_ID',
-  PaymentsCreditCardVerificationValueBlank = 'PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK',
-  PaymentsCreditCardVerificationValueInvalidForCardType = 'PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE',
-  PaymentsCreditCardYearExpired = 'PAYMENTS_CREDIT_CARD_YEAR_EXPIRED',
-  PaymentsCreditCardYearInvalidExpiryYear = 'PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR',
-  PaymentsFirstNameInvalid = 'PAYMENTS_FIRST_NAME_INVALID',
-  PaymentsFirstNameRequired = 'PAYMENTS_FIRST_NAME_REQUIRED',
-  PaymentsFirstNameTooLong = 'PAYMENTS_FIRST_NAME_TOO_LONG',
-  PaymentsInvalidPostalCodeForCountry = 'PAYMENTS_INVALID_POSTAL_CODE_FOR_COUNTRY',
-  PaymentsInvalidPostalCodeForZone = 'PAYMENTS_INVALID_POSTAL_CODE_FOR_ZONE',
-  PaymentsLastNameInvalid = 'PAYMENTS_LAST_NAME_INVALID',
-  PaymentsLastNameRequired = 'PAYMENTS_LAST_NAME_REQUIRED',
-  PaymentsLastNameTooLong = 'PAYMENTS_LAST_NAME_TOO_LONG',
-  PaymentsMethodRequired = 'PAYMENTS_METHOD_REQUIRED',
-  PaymentsMethodUnavailable = 'PAYMENTS_METHOD_UNAVAILABLE',
-  PaymentsPhoneNumberInvalid = 'PAYMENTS_PHONE_NUMBER_INVALID',
-  PaymentsPhoneNumberRequired = 'PAYMENTS_PHONE_NUMBER_REQUIRED',
-  PaymentsPostalCodeInvalid = 'PAYMENTS_POSTAL_CODE_INVALID',
-  PaymentsPostalCodeRequired = 'PAYMENTS_POSTAL_CODE_REQUIRED',
-  PaymentsShopifyPaymentsRequired = 'PAYMENTS_SHOPIFY_PAYMENTS_REQUIRED',
-  PaymentsUnacceptablePaymentAmount = 'PAYMENTS_UNACCEPTABLE_PAYMENT_AMOUNT',
-  PaymentsWalletContentMissing = 'PAYMENTS_WALLET_CONTENT_MISSING',
+export type SubmissionErrorCode =
+  | 'BUYER_IDENTITY_EMAIL_IS_INVALID'
+  | 'BUYER_IDENTITY_EMAIL_REQUIRED'
+  | 'BUYER_IDENTITY_PHONE_IS_INVALID'
+  | 'DELIVERY_ADDRESS1_INVALID'
+  | 'DELIVERY_ADDRESS1_REQUIRED'
+  | 'DELIVERY_ADDRESS1_TOO_LONG'
+  | 'DELIVERY_ADDRESS2_INVALID'
+  | 'DELIVERY_ADDRESS2_REQUIRED'
+  | 'DELIVERY_ADDRESS2_TOO_LONG'
+  | 'DELIVERY_ADDRESS_REQUIRED'
+  | 'DELIVERY_CITY_INVALID'
+  | 'DELIVERY_CITY_REQUIRED'
+  | 'DELIVERY_CITY_TOO_LONG'
+  | 'DELIVERY_COMPANY_INVALID'
+  | 'DELIVERY_COMPANY_REQUIRED'
+  | 'DELIVERY_COMPANY_TOO_LONG'
+  | 'DELIVERY_COUNTRY_REQUIRED'
+  | 'DELIVERY_FIRST_NAME_INVALID'
+  | 'DELIVERY_FIRST_NAME_REQUIRED'
+  | 'DELIVERY_FIRST_NAME_TOO_LONG'
+  | 'DELIVERY_INVALID_POSTAL_CODE_FOR_COUNTRY'
+  | 'DELIVERY_INVALID_POSTAL_CODE_FOR_ZONE'
+  | 'DELIVERY_LAST_NAME_INVALID'
+  | 'DELIVERY_LAST_NAME_REQUIRED'
+  | 'DELIVERY_LAST_NAME_TOO_LONG'
+  | 'DELIVERY_NO_DELIVERY_AVAILABLE'
+  | 'DELIVERY_NO_DELIVERY_AVAILABLE_FOR_MERCHANDISE_LINE'
+  | 'DELIVERY_OPTIONS_PHONE_NUMBER_INVALID'
+  | 'DELIVERY_OPTIONS_PHONE_NUMBER_REQUIRED'
+  | 'DELIVERY_PHONE_NUMBER_INVALID'
+  | 'DELIVERY_PHONE_NUMBER_REQUIRED'
+  | 'DELIVERY_POSTAL_CODE_INVALID'
+  | 'DELIVERY_POSTAL_CODE_REQUIRED'
+  | 'DELIVERY_ZONE_NOT_FOUND'
+  | 'DELIVERY_ZONE_REQUIRED_FOR_COUNTRY'
+  | 'ERROR'
+  | 'MERCHANDISE_LINE_LIMIT_REACHED'
+  | 'MERCHANDISE_NOT_APPLICABLE'
+  | 'MERCHANDISE_NOT_ENOUGH_STOCK_AVAILABLE'
+  | 'MERCHANDISE_OUT_OF_STOCK'
+  | 'MERCHANDISE_PRODUCT_NOT_PUBLISHED'
+  | 'NO_DELIVERY_GROUP_SELECTED'
+  | 'PAYMENTS_ADDRESS1_INVALID'
+  | 'PAYMENTS_ADDRESS1_REQUIRED'
+  | 'PAYMENTS_ADDRESS1_TOO_LONG'
+  | 'PAYMENTS_ADDRESS2_INVALID'
+  | 'PAYMENTS_ADDRESS2_REQUIRED'
+  | 'PAYMENTS_ADDRESS2_TOO_LONG'
+  | 'PAYMENTS_BILLING_ADDRESS_ZONE_NOT_FOUND'
+  | 'PAYMENTS_BILLING_ADDRESS_ZONE_REQUIRED_FOR_COUNTRY'
+  | 'PAYMENTS_CITY_INVALID'
+  | 'PAYMENTS_CITY_REQUIRED'
+  | 'PAYMENTS_CITY_TOO_LONG'
+  | 'PAYMENTS_COMPANY_INVALID'
+  | 'PAYMENTS_COMPANY_REQUIRED'
+  | 'PAYMENTS_COMPANY_TOO_LONG'
+  | 'PAYMENTS_COUNTRY_REQUIRED'
+  | 'PAYMENTS_CREDIT_CARD_BASE_EXPIRED'
+  | 'PAYMENTS_CREDIT_CARD_BASE_GATEWAY_NOT_SUPPORTED'
+  | 'PAYMENTS_CREDIT_CARD_BASE_INVALID_START_DATE_OR_ISSUE_NUMBER_FOR_DEBIT'
+  | 'PAYMENTS_CREDIT_CARD_BRAND_NOT_SUPPORTED'
+  | 'PAYMENTS_CREDIT_CARD_FIRST_NAME_BLANK'
+  | 'PAYMENTS_CREDIT_CARD_GENERIC'
+  | 'PAYMENTS_CREDIT_CARD_LAST_NAME_BLANK'
+  | 'PAYMENTS_CREDIT_CARD_MONTH_INCLUSION'
+  | 'PAYMENTS_CREDIT_CARD_NAME_INVALID'
+  | 'PAYMENTS_CREDIT_CARD_NUMBER_INVALID'
+  | 'PAYMENTS_CREDIT_CARD_NUMBER_INVALID_FORMAT'
+  | 'PAYMENTS_CREDIT_CARD_SESSION_ID'
+  | 'PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_BLANK'
+  | 'PAYMENTS_CREDIT_CARD_VERIFICATION_VALUE_INVALID_FOR_CARD_TYPE'
+  | 'PAYMENTS_CREDIT_CARD_YEAR_EXPIRED'
+  | 'PAYMENTS_CREDIT_CARD_YEAR_INVALID_EXPIRY_YEAR'
+  | 'PAYMENTS_FIRST_NAME_INVALID'
+  | 'PAYMENTS_FIRST_NAME_REQUIRED'
+  | 'PAYMENTS_FIRST_NAME_TOO_LONG'
+  | 'PAYMENTS_INVALID_POSTAL_CODE_FOR_COUNTRY'
+  | 'PAYMENTS_INVALID_POSTAL_CODE_FOR_ZONE'
+  | 'PAYMENTS_LAST_NAME_INVALID'
+  | 'PAYMENTS_LAST_NAME_REQUIRED'
+  | 'PAYMENTS_LAST_NAME_TOO_LONG'
+  | 'PAYMENTS_METHOD_REQUIRED'
+  | 'PAYMENTS_METHOD_UNAVAILABLE'
+  | 'PAYMENTS_PHONE_NUMBER_INVALID'
+  | 'PAYMENTS_PHONE_NUMBER_REQUIRED'
+  | 'PAYMENTS_POSTAL_CODE_INVALID'
+  | 'PAYMENTS_POSTAL_CODE_REQUIRED'
+  | 'PAYMENTS_SHOPIFY_PAYMENTS_REQUIRED'
+  | 'PAYMENTS_UNACCEPTABLE_PAYMENT_AMOUNT'
+  | 'PAYMENTS_WALLET_CONTENT_MISSING'
   /** Redirect to checkout required to complete this action. */
-  RedirectToCheckoutRequired = 'REDIRECT_TO_CHECKOUT_REQUIRED',
-  TaxesDeliveryGroupIdNotFound = 'TAXES_DELIVERY_GROUP_ID_NOT_FOUND',
-  TaxesLineIdNotFound = 'TAXES_LINE_ID_NOT_FOUND',
-  TaxesMustBeDefined = 'TAXES_MUST_BE_DEFINED',
+  | 'REDIRECT_TO_CHECKOUT_REQUIRED'
+  | 'TAXES_DELIVERY_GROUP_ID_NOT_FOUND'
+  | 'TAXES_LINE_ID_NOT_FOUND'
+  | 'TAXES_MUST_BE_DEFINED'
   /** Validation failed. */
-  ValidationCustom = 'VALIDATION_CUSTOM',
-}
+  | 'VALIDATION_CUSTOM';
 
 /** Cart submit for checkout completion is successful. */
 export type SubmitAlreadyAccepted = {
@@ -10146,78 +10156,75 @@ export type UnitPriceMeasurement = {
 };
 
 /** The accepted types of unit of measurement. */
-export enum UnitPriceMeasurementMeasuredType {
+export type UnitPriceMeasurementMeasuredType =
   /** Unit of measurements representing areas. */
-  Area = 'AREA',
+  | 'AREA'
   /** Unit of measurements representing counts. */
-  Count = 'COUNT',
+  | 'COUNT'
   /** Unit of measurements representing lengths. */
-  Length = 'LENGTH',
+  | 'LENGTH'
   /** The type of measurement is unknown. Upgrade to the latest version of the API to resolve this type. */
-  Unknown = 'UNKNOWN',
+  | 'UNKNOWN'
   /** Unit of measurements representing volumes. */
-  Volume = 'VOLUME',
+  | 'VOLUME'
   /** Unit of measurements representing weights. */
-  Weight = 'WEIGHT',
-}
+  | 'WEIGHT';
 
 /** The valid units of measurement for a unit price measurement. */
-export enum UnitPriceMeasurementMeasuredUnit {
+export type UnitPriceMeasurementMeasuredUnit =
   /** 100 centiliters equals 1 liter. */
-  Cl = 'CL',
+  | 'CL'
   /** 100 centimeters equals 1 meter. */
-  Cm = 'CM',
+  | 'CM'
   /** Imperial system unit of volume (U.S. customary unit). */
-  Floz = 'FLOZ',
+  | 'FLOZ'
   /** 1 foot equals 12 inches. */
-  Ft = 'FT',
+  | 'FT'
   /** Imperial system unit of area. */
-  Ft2 = 'FT2',
+  | 'FT2'
   /** Metric system unit of weight. */
-  G = 'G',
+  | 'G'
   /** 1 gallon equals 128 fluid ounces (U.S. customary unit). */
-  Gal = 'GAL',
+  | 'GAL'
   /** Imperial system unit of length. */
-  In = 'IN',
+  | 'IN'
   /** 1 item, a unit of count. */
-  Item = 'ITEM',
+  | 'ITEM'
   /** 1 kilogram equals 1000 grams. */
-  Kg = 'KG',
+  | 'KG'
   /** Metric system unit of volume. */
-  L = 'L',
+  | 'L'
   /** Imperial system unit of weight. */
-  Lb = 'LB',
+  | 'LB'
   /** Metric system unit of length. */
-  M = 'M',
+  | 'M'
   /** Metric system unit of area. */
-  M2 = 'M2',
+  | 'M2'
   /** 1 cubic meter equals 1000 liters. */
-  M3 = 'M3',
+  | 'M3'
   /** 1000 milligrams equals 1 gram. */
-  Mg = 'MG',
+  | 'MG'
   /** 1000 milliliters equals 1 liter. */
-  Ml = 'ML',
+  | 'ML'
   /** 1000 millimeters equals 1 meter. */
-  Mm = 'MM',
+  | 'MM'
   /** 16 ounces equals 1 pound. */
-  Oz = 'OZ',
+  | 'OZ'
   /** 1 pint equals 16 fluid ounces (U.S. customary unit). */
-  Pt = 'PT',
+  | 'PT'
   /** 1 quart equals 32 fluid ounces (U.S. customary unit). */
-  Qt = 'QT',
+  | 'QT'
   /** The unit of measurement is unknown. Upgrade to the latest version of the API to resolve this unit. */
-  Unknown = 'UNKNOWN',
+  | 'UNKNOWN'
   /** 1 yard equals 36 inches. */
-  Yd = 'YD',
-}
+  | 'YD';
 
 /** Systems of weights and measures. */
-export enum UnitSystem {
+export type UnitSystem =
   /** Imperial system of weights and measures. */
-  ImperialSystem = 'IMPERIAL_SYSTEM',
+  | 'IMPERIAL_SYSTEM'
   /** Metric system of weights and measures. */
-  MetricSystem = 'METRIC_SYSTEM',
-}
+  | 'METRIC_SYSTEM';
 
 /** A redirect on the online store. */
 export type UrlRedirect = Node & {
@@ -10277,14 +10284,13 @@ export type UserErrorsShopPayPaymentRequestSessionUserErrors = DisplayableError 
 };
 
 /** Possible error codes that can be returned by `ShopPayPaymentRequestSessionUserErrors`. */
-export enum UserErrorsShopPayPaymentRequestSessionUserErrorsCode {
+export type UserErrorsShopPayPaymentRequestSessionUserErrorsCode =
   /** Idempotency key has already been used. */
-  IdempotencyKeyAlreadyUsed = 'IDEMPOTENCY_KEY_ALREADY_USED',
+  | 'IDEMPOTENCY_KEY_ALREADY_USED'
   /** Payment request input is invalid. */
-  PaymentRequestInvalidInput = 'PAYMENT_REQUEST_INVALID_INPUT',
+  | 'PAYMENT_REQUEST_INVALID_INPUT'
   /** Payment request not found. */
-  PaymentRequestNotFound = 'PAYMENT_REQUEST_NOT_FOUND',
-}
+  | 'PAYMENT_REQUEST_NOT_FOUND';
 
 /** The input fields for a filter used to view a subset of products in a collection matching a specific variant option. */
 export type VariantOptionFilter = {
@@ -10300,22 +10306,21 @@ export type VariantOptionFilter = {
  * For videos hosted on external platforms like YouTube or Vimeo, use [`ExternalVideo`](https://shopify.dev/docs/api/storefront/current/objects/ExternalVideo) instead.
  *
  */
-export type Video = Media &
-  Node & {
-    __typename?: 'Video';
-    /** A word or phrase to share the nature or contents of a media. */
-    alt?: Maybe<Scalars['String']['output']>;
-    /** A globally-unique ID. */
-    id: Scalars['ID']['output'];
-    /** The media content type. */
-    mediaContentType: MediaContentType;
-    /** The presentation for a media. */
-    presentation?: Maybe<MediaPresentation>;
-    /** The preview image for the media. */
-    previewImage?: Maybe<Image>;
-    /** The sources for a video. */
-    sources: Array<VideoSource>;
-  };
+export type Video = Media & Node & {
+  __typename?: 'Video';
+  /** A word or phrase to share the nature or contents of a media. */
+  alt?: Maybe<Scalars['String']['output']>;
+  /** A globally-unique ID. */
+  id: Scalars['ID']['output'];
+  /** The media content type. */
+  mediaContentType: MediaContentType;
+  /** The presentation for a media. */
+  presentation?: Maybe<MediaPresentation>;
+  /** The preview image for the media. */
+  previewImage?: Maybe<Image>;
+  /** The sources for a video. */
+  sources: Array<VideoSource>;
+};
 
 /** Represents a source for a Shopify hosted video. */
 export type VideoSource = {
@@ -10348,16 +10353,15 @@ export type VisitorConsent = {
  * Units of measurement for weight, supporting both metric and imperial systems. Used by [`ProductVariant`](https://shopify.dev/docs/api/storefront/current/objects/ProductVariant) to specify the unit for the variant's weight value.
  *
  */
-export enum WeightUnit {
+export type WeightUnit =
   /** Metric system unit of mass. */
-  Grams = 'GRAMS',
+  | 'GRAMS'
   /** 1 kilogram equals 1000 grams. */
-  Kilograms = 'KILOGRAMS',
+  | 'KILOGRAMS'
   /** Imperial system unit of mass. */
-  Ounces = 'OUNCES',
+  | 'OUNCES'
   /** 1 pound equals 16 ounces. */
-  Pounds = 'POUNDS',
-}
+  | 'POUNDS';
 
 export type CartAttributesUpdateMutationVariables = Exact<{
   attributes: Array<AttributeInput> | AttributeInput;
@@ -10369,323 +10373,19 @@ export type CartAttributesUpdateMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CartAttributesUpdateMutation = {
-  __typename?: 'Mutation';
-  cartAttributesUpdate?: {
-    __typename?: 'CartAttributesUpdatePayload';
-    cart?: {
-      __typename?: 'Cart';
-      id: string;
-      createdAt: string;
-      updatedAt: string;
-      checkoutUrl: string;
-      totalQuantity: number;
-      note?: string | null;
-      appliedGiftCards: Array<{
-        __typename?: 'AppliedGiftCard';
-        id: string;
-        lastCharacters: string;
-        amountUsed: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        balance: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        presentmentAmountUsed: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        };
-      }>;
-      lines: {
-        __typename?: 'BaseCartLineConnection';
-        edges: Array<{
-          __typename?: 'BaseCartLineEdge';
-          cursor: string;
-          node:
-            | {
-                __typename?: 'CartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              }
-            | {
-                __typename?: 'ComponentizableCartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              };
-        }>;
-        pageInfo: {
-          __typename?: 'PageInfo';
-          hasNextPage: boolean;
-          hasPreviousPage: boolean;
-          startCursor?: string | null;
-          endCursor?: string | null;
-        };
-      };
-      attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-      cost: {
-        __typename?: 'CartCost';
-        totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        totalTaxAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-        totalDutyAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-      };
-      discountCodes: Array<{ __typename?: 'CartDiscountCode'; applicable: boolean; code: string }>;
-      buyerIdentity: {
-        __typename?: 'CartBuyerIdentity';
-        email?: string | null;
-        phone?: string | null;
-        countryCode?: CountryCode | null;
-        customer?: {
-          __typename?: 'Customer';
-          id: string;
-          firstName?: string | null;
-          lastName?: string | null;
-          email?: string | null;
-          phone?: string | null;
-          acceptsMarketing: boolean;
-          createdAt: string;
-          updatedAt: string;
-          defaultAddress?: {
-            __typename?: 'MailingAddress';
-            id: string;
-            name?: string | null;
-            address1?: string | null;
-            address2?: string | null;
-            city?: string | null;
-            country?: string | null;
-            company?: string | null;
-            countryCode?: string | null;
-            countryCodeV2?: CountryCode | null;
-            firstName?: string | null;
-            formattedArea?: string | null;
-            lastName?: string | null;
-            latitude?: number | null;
-            longitude?: number | null;
-            phone?: string | null;
-            province?: string | null;
-            provinceCode?: string | null;
-            zip?: string | null;
-          } | null;
-        } | null;
-        deliveryAddressPreferences: Array<{
-          __typename?: 'MailingAddress';
-          id: string;
-          name?: string | null;
-          address1?: string | null;
-          address2?: string | null;
-          city?: string | null;
-          country?: string | null;
-          company?: string | null;
-          countryCode?: string | null;
-          countryCodeV2?: CountryCode | null;
-          firstName?: string | null;
-          formattedArea?: string | null;
-          lastName?: string | null;
-          latitude?: number | null;
-          longitude?: number | null;
-          phone?: string | null;
-          province?: string | null;
-          provinceCode?: string | null;
-          zip?: string | null;
-        }>;
-      };
-    } | null;
-    userErrors: Array<{
-      __typename?: 'CartUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CartErrorCode | null;
-    }>;
-    warnings: Array<{ __typename?: 'CartWarning'; message: string }>;
-  } | null;
-};
+
+export type CartAttributesUpdateMutation = { __typename?: 'Mutation', cartAttributesUpdate?: { __typename?: 'CartAttributesUpdatePayload', cart?: { __typename?: 'Cart', id: string, createdAt: string, updatedAt: string, checkoutUrl: string, totalQuantity: number, note?: string | null, appliedGiftCards: Array<{ __typename?: 'AppliedGiftCard', id: string, lastCharacters: string, amountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, balance: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, presentmentAmountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }>, lines: { __typename?: 'BaseCartLineConnection', edges: Array<{ __typename?: 'BaseCartLineEdge', cursor: string, node:
+            | { __typename?: 'CartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+            | { __typename?: 'ComponentizableCartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+           }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, cost: { __typename?: 'CartCost', totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalTaxAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, totalDutyAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null }, discountCodes: Array<{ __typename?: 'CartDiscountCode', applicable: boolean, code: string }>, buyerIdentity: { __typename?: 'CartBuyerIdentity', email?: string | null, phone?: string | null, countryCode?: CountryCode | null, customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, deliveryAddressPreferences: Array<{ __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null }> } } | null, userErrors: Array<{ __typename?: 'CartUserError', field?: Array<string> | null, message: string, code?: CartErrorCode | null }>, warnings: Array<{ __typename?: 'CartWarning', message: string }> } | null };
 
 export type CartBuyerIdentityUpdateMutationVariables = Exact<{
   buyerIdentity: CartBuyerIdentityInput;
@@ -10697,323 +10397,19 @@ export type CartBuyerIdentityUpdateMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CartBuyerIdentityUpdateMutation = {
-  __typename?: 'Mutation';
-  cartBuyerIdentityUpdate?: {
-    __typename?: 'CartBuyerIdentityUpdatePayload';
-    cart?: {
-      __typename?: 'Cart';
-      id: string;
-      createdAt: string;
-      updatedAt: string;
-      checkoutUrl: string;
-      totalQuantity: number;
-      note?: string | null;
-      appliedGiftCards: Array<{
-        __typename?: 'AppliedGiftCard';
-        id: string;
-        lastCharacters: string;
-        amountUsed: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        balance: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        presentmentAmountUsed: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        };
-      }>;
-      lines: {
-        __typename?: 'BaseCartLineConnection';
-        edges: Array<{
-          __typename?: 'BaseCartLineEdge';
-          cursor: string;
-          node:
-            | {
-                __typename?: 'CartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              }
-            | {
-                __typename?: 'ComponentizableCartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              };
-        }>;
-        pageInfo: {
-          __typename?: 'PageInfo';
-          hasNextPage: boolean;
-          hasPreviousPage: boolean;
-          startCursor?: string | null;
-          endCursor?: string | null;
-        };
-      };
-      attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-      cost: {
-        __typename?: 'CartCost';
-        totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        totalTaxAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-        totalDutyAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-      };
-      discountCodes: Array<{ __typename?: 'CartDiscountCode'; applicable: boolean; code: string }>;
-      buyerIdentity: {
-        __typename?: 'CartBuyerIdentity';
-        email?: string | null;
-        phone?: string | null;
-        countryCode?: CountryCode | null;
-        customer?: {
-          __typename?: 'Customer';
-          id: string;
-          firstName?: string | null;
-          lastName?: string | null;
-          email?: string | null;
-          phone?: string | null;
-          acceptsMarketing: boolean;
-          createdAt: string;
-          updatedAt: string;
-          defaultAddress?: {
-            __typename?: 'MailingAddress';
-            id: string;
-            name?: string | null;
-            address1?: string | null;
-            address2?: string | null;
-            city?: string | null;
-            country?: string | null;
-            company?: string | null;
-            countryCode?: string | null;
-            countryCodeV2?: CountryCode | null;
-            firstName?: string | null;
-            formattedArea?: string | null;
-            lastName?: string | null;
-            latitude?: number | null;
-            longitude?: number | null;
-            phone?: string | null;
-            province?: string | null;
-            provinceCode?: string | null;
-            zip?: string | null;
-          } | null;
-        } | null;
-        deliveryAddressPreferences: Array<{
-          __typename?: 'MailingAddress';
-          id: string;
-          name?: string | null;
-          address1?: string | null;
-          address2?: string | null;
-          city?: string | null;
-          country?: string | null;
-          company?: string | null;
-          countryCode?: string | null;
-          countryCodeV2?: CountryCode | null;
-          firstName?: string | null;
-          formattedArea?: string | null;
-          lastName?: string | null;
-          latitude?: number | null;
-          longitude?: number | null;
-          phone?: string | null;
-          province?: string | null;
-          provinceCode?: string | null;
-          zip?: string | null;
-        }>;
-      };
-    } | null;
-    userErrors: Array<{
-      __typename?: 'CartUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CartErrorCode | null;
-    }>;
-    warnings: Array<{ __typename?: 'CartWarning'; message: string }>;
-  } | null;
-};
+
+export type CartBuyerIdentityUpdateMutation = { __typename?: 'Mutation', cartBuyerIdentityUpdate?: { __typename?: 'CartBuyerIdentityUpdatePayload', cart?: { __typename?: 'Cart', id: string, createdAt: string, updatedAt: string, checkoutUrl: string, totalQuantity: number, note?: string | null, appliedGiftCards: Array<{ __typename?: 'AppliedGiftCard', id: string, lastCharacters: string, amountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, balance: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, presentmentAmountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }>, lines: { __typename?: 'BaseCartLineConnection', edges: Array<{ __typename?: 'BaseCartLineEdge', cursor: string, node:
+            | { __typename?: 'CartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+            | { __typename?: 'ComponentizableCartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+           }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, cost: { __typename?: 'CartCost', totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalTaxAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, totalDutyAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null }, discountCodes: Array<{ __typename?: 'CartDiscountCode', applicable: boolean, code: string }>, buyerIdentity: { __typename?: 'CartBuyerIdentity', email?: string | null, phone?: string | null, countryCode?: CountryCode | null, customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, deliveryAddressPreferences: Array<{ __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null }> } } | null, userErrors: Array<{ __typename?: 'CartUserError', field?: Array<string> | null, message: string, code?: CartErrorCode | null }>, warnings: Array<{ __typename?: 'CartWarning', message: string }> } | null };
 
 export type CartCreateMutationVariables = Exact<{
   cartInput?: InputMaybe<CartInput>;
@@ -11024,323 +10420,19 @@ export type CartCreateMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CartCreateMutation = {
-  __typename?: 'Mutation';
-  cartCreate?: {
-    __typename?: 'CartCreatePayload';
-    cart?: {
-      __typename?: 'Cart';
-      id: string;
-      createdAt: string;
-      updatedAt: string;
-      checkoutUrl: string;
-      totalQuantity: number;
-      note?: string | null;
-      appliedGiftCards: Array<{
-        __typename?: 'AppliedGiftCard';
-        id: string;
-        lastCharacters: string;
-        amountUsed: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        balance: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        presentmentAmountUsed: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        };
-      }>;
-      lines: {
-        __typename?: 'BaseCartLineConnection';
-        edges: Array<{
-          __typename?: 'BaseCartLineEdge';
-          cursor: string;
-          node:
-            | {
-                __typename?: 'CartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              }
-            | {
-                __typename?: 'ComponentizableCartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              };
-        }>;
-        pageInfo: {
-          __typename?: 'PageInfo';
-          hasNextPage: boolean;
-          hasPreviousPage: boolean;
-          startCursor?: string | null;
-          endCursor?: string | null;
-        };
-      };
-      attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-      cost: {
-        __typename?: 'CartCost';
-        totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        totalTaxAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-        totalDutyAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-      };
-      discountCodes: Array<{ __typename?: 'CartDiscountCode'; applicable: boolean; code: string }>;
-      buyerIdentity: {
-        __typename?: 'CartBuyerIdentity';
-        email?: string | null;
-        phone?: string | null;
-        countryCode?: CountryCode | null;
-        customer?: {
-          __typename?: 'Customer';
-          id: string;
-          firstName?: string | null;
-          lastName?: string | null;
-          email?: string | null;
-          phone?: string | null;
-          acceptsMarketing: boolean;
-          createdAt: string;
-          updatedAt: string;
-          defaultAddress?: {
-            __typename?: 'MailingAddress';
-            id: string;
-            name?: string | null;
-            address1?: string | null;
-            address2?: string | null;
-            city?: string | null;
-            country?: string | null;
-            company?: string | null;
-            countryCode?: string | null;
-            countryCodeV2?: CountryCode | null;
-            firstName?: string | null;
-            formattedArea?: string | null;
-            lastName?: string | null;
-            latitude?: number | null;
-            longitude?: number | null;
-            phone?: string | null;
-            province?: string | null;
-            provinceCode?: string | null;
-            zip?: string | null;
-          } | null;
-        } | null;
-        deliveryAddressPreferences: Array<{
-          __typename?: 'MailingAddress';
-          id: string;
-          name?: string | null;
-          address1?: string | null;
-          address2?: string | null;
-          city?: string | null;
-          country?: string | null;
-          company?: string | null;
-          countryCode?: string | null;
-          countryCodeV2?: CountryCode | null;
-          firstName?: string | null;
-          formattedArea?: string | null;
-          lastName?: string | null;
-          latitude?: number | null;
-          longitude?: number | null;
-          phone?: string | null;
-          province?: string | null;
-          provinceCode?: string | null;
-          zip?: string | null;
-        }>;
-      };
-    } | null;
-    userErrors: Array<{
-      __typename?: 'CartUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CartErrorCode | null;
-    }>;
-    warnings: Array<{ __typename?: 'CartWarning'; message: string }>;
-  } | null;
-};
+
+export type CartCreateMutation = { __typename?: 'Mutation', cartCreate?: { __typename?: 'CartCreatePayload', cart?: { __typename?: 'Cart', id: string, createdAt: string, updatedAt: string, checkoutUrl: string, totalQuantity: number, note?: string | null, appliedGiftCards: Array<{ __typename?: 'AppliedGiftCard', id: string, lastCharacters: string, amountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, balance: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, presentmentAmountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }>, lines: { __typename?: 'BaseCartLineConnection', edges: Array<{ __typename?: 'BaseCartLineEdge', cursor: string, node:
+            | { __typename?: 'CartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+            | { __typename?: 'ComponentizableCartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+           }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, cost: { __typename?: 'CartCost', totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalTaxAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, totalDutyAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null }, discountCodes: Array<{ __typename?: 'CartDiscountCode', applicable: boolean, code: string }>, buyerIdentity: { __typename?: 'CartBuyerIdentity', email?: string | null, phone?: string | null, countryCode?: CountryCode | null, customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, deliveryAddressPreferences: Array<{ __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null }> } } | null, userErrors: Array<{ __typename?: 'CartUserError', field?: Array<string> | null, message: string, code?: CartErrorCode | null }>, warnings: Array<{ __typename?: 'CartWarning', message: string }> } | null };
 
 export type CartDiscountCodesUpdateMutationVariables = Exact<{
   cartId: Scalars['ID']['input'];
@@ -11352,323 +10444,19 @@ export type CartDiscountCodesUpdateMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CartDiscountCodesUpdateMutation = {
-  __typename?: 'Mutation';
-  cartDiscountCodesUpdate?: {
-    __typename?: 'CartDiscountCodesUpdatePayload';
-    cart?: {
-      __typename?: 'Cart';
-      id: string;
-      createdAt: string;
-      updatedAt: string;
-      checkoutUrl: string;
-      totalQuantity: number;
-      note?: string | null;
-      appliedGiftCards: Array<{
-        __typename?: 'AppliedGiftCard';
-        id: string;
-        lastCharacters: string;
-        amountUsed: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        balance: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        presentmentAmountUsed: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        };
-      }>;
-      lines: {
-        __typename?: 'BaseCartLineConnection';
-        edges: Array<{
-          __typename?: 'BaseCartLineEdge';
-          cursor: string;
-          node:
-            | {
-                __typename?: 'CartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              }
-            | {
-                __typename?: 'ComponentizableCartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              };
-        }>;
-        pageInfo: {
-          __typename?: 'PageInfo';
-          hasNextPage: boolean;
-          hasPreviousPage: boolean;
-          startCursor?: string | null;
-          endCursor?: string | null;
-        };
-      };
-      attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-      cost: {
-        __typename?: 'CartCost';
-        totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        totalTaxAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-        totalDutyAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-      };
-      discountCodes: Array<{ __typename?: 'CartDiscountCode'; applicable: boolean; code: string }>;
-      buyerIdentity: {
-        __typename?: 'CartBuyerIdentity';
-        email?: string | null;
-        phone?: string | null;
-        countryCode?: CountryCode | null;
-        customer?: {
-          __typename?: 'Customer';
-          id: string;
-          firstName?: string | null;
-          lastName?: string | null;
-          email?: string | null;
-          phone?: string | null;
-          acceptsMarketing: boolean;
-          createdAt: string;
-          updatedAt: string;
-          defaultAddress?: {
-            __typename?: 'MailingAddress';
-            id: string;
-            name?: string | null;
-            address1?: string | null;
-            address2?: string | null;
-            city?: string | null;
-            country?: string | null;
-            company?: string | null;
-            countryCode?: string | null;
-            countryCodeV2?: CountryCode | null;
-            firstName?: string | null;
-            formattedArea?: string | null;
-            lastName?: string | null;
-            latitude?: number | null;
-            longitude?: number | null;
-            phone?: string | null;
-            province?: string | null;
-            provinceCode?: string | null;
-            zip?: string | null;
-          } | null;
-        } | null;
-        deliveryAddressPreferences: Array<{
-          __typename?: 'MailingAddress';
-          id: string;
-          name?: string | null;
-          address1?: string | null;
-          address2?: string | null;
-          city?: string | null;
-          country?: string | null;
-          company?: string | null;
-          countryCode?: string | null;
-          countryCodeV2?: CountryCode | null;
-          firstName?: string | null;
-          formattedArea?: string | null;
-          lastName?: string | null;
-          latitude?: number | null;
-          longitude?: number | null;
-          phone?: string | null;
-          province?: string | null;
-          provinceCode?: string | null;
-          zip?: string | null;
-        }>;
-      };
-    } | null;
-    userErrors: Array<{
-      __typename?: 'CartUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CartErrorCode | null;
-    }>;
-    warnings: Array<{ __typename?: 'CartWarning'; message: string }>;
-  } | null;
-};
+
+export type CartDiscountCodesUpdateMutation = { __typename?: 'Mutation', cartDiscountCodesUpdate?: { __typename?: 'CartDiscountCodesUpdatePayload', cart?: { __typename?: 'Cart', id: string, createdAt: string, updatedAt: string, checkoutUrl: string, totalQuantity: number, note?: string | null, appliedGiftCards: Array<{ __typename?: 'AppliedGiftCard', id: string, lastCharacters: string, amountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, balance: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, presentmentAmountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }>, lines: { __typename?: 'BaseCartLineConnection', edges: Array<{ __typename?: 'BaseCartLineEdge', cursor: string, node:
+            | { __typename?: 'CartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+            | { __typename?: 'ComponentizableCartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+           }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, cost: { __typename?: 'CartCost', totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalTaxAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, totalDutyAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null }, discountCodes: Array<{ __typename?: 'CartDiscountCode', applicable: boolean, code: string }>, buyerIdentity: { __typename?: 'CartBuyerIdentity', email?: string | null, phone?: string | null, countryCode?: CountryCode | null, customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, deliveryAddressPreferences: Array<{ __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null }> } } | null, userErrors: Array<{ __typename?: 'CartUserError', field?: Array<string> | null, message: string, code?: CartErrorCode | null }>, warnings: Array<{ __typename?: 'CartWarning', message: string }> } | null };
 
 export type CartLinesAddMutationVariables = Exact<{
   cartId: Scalars['ID']['input'];
@@ -11680,323 +10468,19 @@ export type CartLinesAddMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CartLinesAddMutation = {
-  __typename?: 'Mutation';
-  cartLinesAdd?: {
-    __typename?: 'CartLinesAddPayload';
-    cart?: {
-      __typename?: 'Cart';
-      id: string;
-      createdAt: string;
-      updatedAt: string;
-      checkoutUrl: string;
-      totalQuantity: number;
-      note?: string | null;
-      appliedGiftCards: Array<{
-        __typename?: 'AppliedGiftCard';
-        id: string;
-        lastCharacters: string;
-        amountUsed: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        balance: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        presentmentAmountUsed: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        };
-      }>;
-      lines: {
-        __typename?: 'BaseCartLineConnection';
-        edges: Array<{
-          __typename?: 'BaseCartLineEdge';
-          cursor: string;
-          node:
-            | {
-                __typename?: 'CartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              }
-            | {
-                __typename?: 'ComponentizableCartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              };
-        }>;
-        pageInfo: {
-          __typename?: 'PageInfo';
-          hasNextPage: boolean;
-          hasPreviousPage: boolean;
-          startCursor?: string | null;
-          endCursor?: string | null;
-        };
-      };
-      attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-      cost: {
-        __typename?: 'CartCost';
-        totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        totalTaxAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-        totalDutyAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-      };
-      discountCodes: Array<{ __typename?: 'CartDiscountCode'; applicable: boolean; code: string }>;
-      buyerIdentity: {
-        __typename?: 'CartBuyerIdentity';
-        email?: string | null;
-        phone?: string | null;
-        countryCode?: CountryCode | null;
-        customer?: {
-          __typename?: 'Customer';
-          id: string;
-          firstName?: string | null;
-          lastName?: string | null;
-          email?: string | null;
-          phone?: string | null;
-          acceptsMarketing: boolean;
-          createdAt: string;
-          updatedAt: string;
-          defaultAddress?: {
-            __typename?: 'MailingAddress';
-            id: string;
-            name?: string | null;
-            address1?: string | null;
-            address2?: string | null;
-            city?: string | null;
-            country?: string | null;
-            company?: string | null;
-            countryCode?: string | null;
-            countryCodeV2?: CountryCode | null;
-            firstName?: string | null;
-            formattedArea?: string | null;
-            lastName?: string | null;
-            latitude?: number | null;
-            longitude?: number | null;
-            phone?: string | null;
-            province?: string | null;
-            provinceCode?: string | null;
-            zip?: string | null;
-          } | null;
-        } | null;
-        deliveryAddressPreferences: Array<{
-          __typename?: 'MailingAddress';
-          id: string;
-          name?: string | null;
-          address1?: string | null;
-          address2?: string | null;
-          city?: string | null;
-          country?: string | null;
-          company?: string | null;
-          countryCode?: string | null;
-          countryCodeV2?: CountryCode | null;
-          firstName?: string | null;
-          formattedArea?: string | null;
-          lastName?: string | null;
-          latitude?: number | null;
-          longitude?: number | null;
-          phone?: string | null;
-          province?: string | null;
-          provinceCode?: string | null;
-          zip?: string | null;
-        }>;
-      };
-    } | null;
-    userErrors: Array<{
-      __typename?: 'CartUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CartErrorCode | null;
-    }>;
-    warnings: Array<{ __typename?: 'CartWarning'; message: string }>;
-  } | null;
-};
+
+export type CartLinesAddMutation = { __typename?: 'Mutation', cartLinesAdd?: { __typename?: 'CartLinesAddPayload', cart?: { __typename?: 'Cart', id: string, createdAt: string, updatedAt: string, checkoutUrl: string, totalQuantity: number, note?: string | null, appliedGiftCards: Array<{ __typename?: 'AppliedGiftCard', id: string, lastCharacters: string, amountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, balance: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, presentmentAmountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }>, lines: { __typename?: 'BaseCartLineConnection', edges: Array<{ __typename?: 'BaseCartLineEdge', cursor: string, node:
+            | { __typename?: 'CartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+            | { __typename?: 'ComponentizableCartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+           }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, cost: { __typename?: 'CartCost', totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalTaxAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, totalDutyAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null }, discountCodes: Array<{ __typename?: 'CartDiscountCode', applicable: boolean, code: string }>, buyerIdentity: { __typename?: 'CartBuyerIdentity', email?: string | null, phone?: string | null, countryCode?: CountryCode | null, customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, deliveryAddressPreferences: Array<{ __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null }> } } | null, userErrors: Array<{ __typename?: 'CartUserError', field?: Array<string> | null, message: string, code?: CartErrorCode | null }>, warnings: Array<{ __typename?: 'CartWarning', message: string }> } | null };
 
 export type CartLinesRemoveMutationVariables = Exact<{
   cartId: Scalars['ID']['input'];
@@ -12008,323 +10492,19 @@ export type CartLinesRemoveMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CartLinesRemoveMutation = {
-  __typename?: 'Mutation';
-  cartLinesRemove?: {
-    __typename?: 'CartLinesRemovePayload';
-    cart?: {
-      __typename?: 'Cart';
-      id: string;
-      createdAt: string;
-      updatedAt: string;
-      checkoutUrl: string;
-      totalQuantity: number;
-      note?: string | null;
-      appliedGiftCards: Array<{
-        __typename?: 'AppliedGiftCard';
-        id: string;
-        lastCharacters: string;
-        amountUsed: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        balance: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        presentmentAmountUsed: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        };
-      }>;
-      lines: {
-        __typename?: 'BaseCartLineConnection';
-        edges: Array<{
-          __typename?: 'BaseCartLineEdge';
-          cursor: string;
-          node:
-            | {
-                __typename?: 'CartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              }
-            | {
-                __typename?: 'ComponentizableCartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              };
-        }>;
-        pageInfo: {
-          __typename?: 'PageInfo';
-          hasNextPage: boolean;
-          hasPreviousPage: boolean;
-          startCursor?: string | null;
-          endCursor?: string | null;
-        };
-      };
-      attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-      cost: {
-        __typename?: 'CartCost';
-        totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        totalTaxAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-        totalDutyAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-      };
-      discountCodes: Array<{ __typename?: 'CartDiscountCode'; applicable: boolean; code: string }>;
-      buyerIdentity: {
-        __typename?: 'CartBuyerIdentity';
-        email?: string | null;
-        phone?: string | null;
-        countryCode?: CountryCode | null;
-        customer?: {
-          __typename?: 'Customer';
-          id: string;
-          firstName?: string | null;
-          lastName?: string | null;
-          email?: string | null;
-          phone?: string | null;
-          acceptsMarketing: boolean;
-          createdAt: string;
-          updatedAt: string;
-          defaultAddress?: {
-            __typename?: 'MailingAddress';
-            id: string;
-            name?: string | null;
-            address1?: string | null;
-            address2?: string | null;
-            city?: string | null;
-            country?: string | null;
-            company?: string | null;
-            countryCode?: string | null;
-            countryCodeV2?: CountryCode | null;
-            firstName?: string | null;
-            formattedArea?: string | null;
-            lastName?: string | null;
-            latitude?: number | null;
-            longitude?: number | null;
-            phone?: string | null;
-            province?: string | null;
-            provinceCode?: string | null;
-            zip?: string | null;
-          } | null;
-        } | null;
-        deliveryAddressPreferences: Array<{
-          __typename?: 'MailingAddress';
-          id: string;
-          name?: string | null;
-          address1?: string | null;
-          address2?: string | null;
-          city?: string | null;
-          country?: string | null;
-          company?: string | null;
-          countryCode?: string | null;
-          countryCodeV2?: CountryCode | null;
-          firstName?: string | null;
-          formattedArea?: string | null;
-          lastName?: string | null;
-          latitude?: number | null;
-          longitude?: number | null;
-          phone?: string | null;
-          province?: string | null;
-          provinceCode?: string | null;
-          zip?: string | null;
-        }>;
-      };
-    } | null;
-    userErrors: Array<{
-      __typename?: 'CartUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CartErrorCode | null;
-    }>;
-    warnings: Array<{ __typename?: 'CartWarning'; message: string }>;
-  } | null;
-};
+
+export type CartLinesRemoveMutation = { __typename?: 'Mutation', cartLinesRemove?: { __typename?: 'CartLinesRemovePayload', cart?: { __typename?: 'Cart', id: string, createdAt: string, updatedAt: string, checkoutUrl: string, totalQuantity: number, note?: string | null, appliedGiftCards: Array<{ __typename?: 'AppliedGiftCard', id: string, lastCharacters: string, amountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, balance: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, presentmentAmountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }>, lines: { __typename?: 'BaseCartLineConnection', edges: Array<{ __typename?: 'BaseCartLineEdge', cursor: string, node:
+            | { __typename?: 'CartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+            | { __typename?: 'ComponentizableCartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+           }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, cost: { __typename?: 'CartCost', totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalTaxAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, totalDutyAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null }, discountCodes: Array<{ __typename?: 'CartDiscountCode', applicable: boolean, code: string }>, buyerIdentity: { __typename?: 'CartBuyerIdentity', email?: string | null, phone?: string | null, countryCode?: CountryCode | null, customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, deliveryAddressPreferences: Array<{ __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null }> } } | null, userErrors: Array<{ __typename?: 'CartUserError', field?: Array<string> | null, message: string, code?: CartErrorCode | null }>, warnings: Array<{ __typename?: 'CartWarning', message: string }> } | null };
 
 export type CartLinesUpdateMutationVariables = Exact<{
   cartId: Scalars['ID']['input'];
@@ -12336,323 +10516,19 @@ export type CartLinesUpdateMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CartLinesUpdateMutation = {
-  __typename?: 'Mutation';
-  cartLinesUpdate?: {
-    __typename?: 'CartLinesUpdatePayload';
-    cart?: {
-      __typename?: 'Cart';
-      id: string;
-      createdAt: string;
-      updatedAt: string;
-      checkoutUrl: string;
-      totalQuantity: number;
-      note?: string | null;
-      appliedGiftCards: Array<{
-        __typename?: 'AppliedGiftCard';
-        id: string;
-        lastCharacters: string;
-        amountUsed: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        balance: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        presentmentAmountUsed: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        };
-      }>;
-      lines: {
-        __typename?: 'BaseCartLineConnection';
-        edges: Array<{
-          __typename?: 'BaseCartLineEdge';
-          cursor: string;
-          node:
-            | {
-                __typename?: 'CartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              }
-            | {
-                __typename?: 'ComponentizableCartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              };
-        }>;
-        pageInfo: {
-          __typename?: 'PageInfo';
-          hasNextPage: boolean;
-          hasPreviousPage: boolean;
-          startCursor?: string | null;
-          endCursor?: string | null;
-        };
-      };
-      attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-      cost: {
-        __typename?: 'CartCost';
-        totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        totalTaxAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-        totalDutyAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-      };
-      discountCodes: Array<{ __typename?: 'CartDiscountCode'; applicable: boolean; code: string }>;
-      buyerIdentity: {
-        __typename?: 'CartBuyerIdentity';
-        email?: string | null;
-        phone?: string | null;
-        countryCode?: CountryCode | null;
-        customer?: {
-          __typename?: 'Customer';
-          id: string;
-          firstName?: string | null;
-          lastName?: string | null;
-          email?: string | null;
-          phone?: string | null;
-          acceptsMarketing: boolean;
-          createdAt: string;
-          updatedAt: string;
-          defaultAddress?: {
-            __typename?: 'MailingAddress';
-            id: string;
-            name?: string | null;
-            address1?: string | null;
-            address2?: string | null;
-            city?: string | null;
-            country?: string | null;
-            company?: string | null;
-            countryCode?: string | null;
-            countryCodeV2?: CountryCode | null;
-            firstName?: string | null;
-            formattedArea?: string | null;
-            lastName?: string | null;
-            latitude?: number | null;
-            longitude?: number | null;
-            phone?: string | null;
-            province?: string | null;
-            provinceCode?: string | null;
-            zip?: string | null;
-          } | null;
-        } | null;
-        deliveryAddressPreferences: Array<{
-          __typename?: 'MailingAddress';
-          id: string;
-          name?: string | null;
-          address1?: string | null;
-          address2?: string | null;
-          city?: string | null;
-          country?: string | null;
-          company?: string | null;
-          countryCode?: string | null;
-          countryCodeV2?: CountryCode | null;
-          firstName?: string | null;
-          formattedArea?: string | null;
-          lastName?: string | null;
-          latitude?: number | null;
-          longitude?: number | null;
-          phone?: string | null;
-          province?: string | null;
-          provinceCode?: string | null;
-          zip?: string | null;
-        }>;
-      };
-    } | null;
-    userErrors: Array<{
-      __typename?: 'CartUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CartErrorCode | null;
-    }>;
-    warnings: Array<{ __typename?: 'CartWarning'; message: string }>;
-  } | null;
-};
+
+export type CartLinesUpdateMutation = { __typename?: 'Mutation', cartLinesUpdate?: { __typename?: 'CartLinesUpdatePayload', cart?: { __typename?: 'Cart', id: string, createdAt: string, updatedAt: string, checkoutUrl: string, totalQuantity: number, note?: string | null, appliedGiftCards: Array<{ __typename?: 'AppliedGiftCard', id: string, lastCharacters: string, amountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, balance: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, presentmentAmountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }>, lines: { __typename?: 'BaseCartLineConnection', edges: Array<{ __typename?: 'BaseCartLineEdge', cursor: string, node:
+            | { __typename?: 'CartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+            | { __typename?: 'ComponentizableCartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+           }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, cost: { __typename?: 'CartCost', totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalTaxAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, totalDutyAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null }, discountCodes: Array<{ __typename?: 'CartDiscountCode', applicable: boolean, code: string }>, buyerIdentity: { __typename?: 'CartBuyerIdentity', email?: string | null, phone?: string | null, countryCode?: CountryCode | null, customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, deliveryAddressPreferences: Array<{ __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null }> } } | null, userErrors: Array<{ __typename?: 'CartUserError', field?: Array<string> | null, message: string, code?: CartErrorCode | null }>, warnings: Array<{ __typename?: 'CartWarning', message: string }> } | null };
 
 export type CartNoteUpdateMutationVariables = Exact<{
   cartId: Scalars['ID']['input'];
@@ -12664,323 +10540,19 @@ export type CartNoteUpdateMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CartNoteUpdateMutation = {
-  __typename?: 'Mutation';
-  cartNoteUpdate?: {
-    __typename?: 'CartNoteUpdatePayload';
-    cart?: {
-      __typename?: 'Cart';
-      id: string;
-      createdAt: string;
-      updatedAt: string;
-      checkoutUrl: string;
-      totalQuantity: number;
-      note?: string | null;
-      appliedGiftCards: Array<{
-        __typename?: 'AppliedGiftCard';
-        id: string;
-        lastCharacters: string;
-        amountUsed: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        balance: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        presentmentAmountUsed: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        };
-      }>;
-      lines: {
-        __typename?: 'BaseCartLineConnection';
-        edges: Array<{
-          __typename?: 'BaseCartLineEdge';
-          cursor: string;
-          node:
-            | {
-                __typename?: 'CartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              }
-            | {
-                __typename?: 'ComponentizableCartLine';
-                id: string;
-                quantity: number;
-                cost: {
-                  __typename?: 'CartLineCost';
-                  amountPerQuantity: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  subtotalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                  totalAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                };
-                merchandise: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    productType: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-                attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-                discountAllocations: Array<
-                  | {
-                      __typename?: 'CartAutomaticDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCodeDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                  | {
-                      __typename?: 'CartCustomDiscountAllocation';
-                      targetType: DiscountApplicationTargetType;
-                      discountedAmount: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      };
-                    }
-                >;
-              };
-        }>;
-        pageInfo: {
-          __typename?: 'PageInfo';
-          hasNextPage: boolean;
-          hasPreviousPage: boolean;
-          startCursor?: string | null;
-          endCursor?: string | null;
-        };
-      };
-      attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-      cost: {
-        __typename?: 'CartCost';
-        totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        totalTaxAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-        totalDutyAmount?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-      };
-      discountCodes: Array<{ __typename?: 'CartDiscountCode'; applicable: boolean; code: string }>;
-      buyerIdentity: {
-        __typename?: 'CartBuyerIdentity';
-        email?: string | null;
-        phone?: string | null;
-        countryCode?: CountryCode | null;
-        customer?: {
-          __typename?: 'Customer';
-          id: string;
-          firstName?: string | null;
-          lastName?: string | null;
-          email?: string | null;
-          phone?: string | null;
-          acceptsMarketing: boolean;
-          createdAt: string;
-          updatedAt: string;
-          defaultAddress?: {
-            __typename?: 'MailingAddress';
-            id: string;
-            name?: string | null;
-            address1?: string | null;
-            address2?: string | null;
-            city?: string | null;
-            country?: string | null;
-            company?: string | null;
-            countryCode?: string | null;
-            countryCodeV2?: CountryCode | null;
-            firstName?: string | null;
-            formattedArea?: string | null;
-            lastName?: string | null;
-            latitude?: number | null;
-            longitude?: number | null;
-            phone?: string | null;
-            province?: string | null;
-            provinceCode?: string | null;
-            zip?: string | null;
-          } | null;
-        } | null;
-        deliveryAddressPreferences: Array<{
-          __typename?: 'MailingAddress';
-          id: string;
-          name?: string | null;
-          address1?: string | null;
-          address2?: string | null;
-          city?: string | null;
-          country?: string | null;
-          company?: string | null;
-          countryCode?: string | null;
-          countryCodeV2?: CountryCode | null;
-          firstName?: string | null;
-          formattedArea?: string | null;
-          lastName?: string | null;
-          latitude?: number | null;
-          longitude?: number | null;
-          phone?: string | null;
-          province?: string | null;
-          provinceCode?: string | null;
-          zip?: string | null;
-        }>;
-      };
-    } | null;
-    userErrors: Array<{
-      __typename?: 'CartUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CartErrorCode | null;
-    }>;
-    warnings: Array<{ __typename?: 'CartWarning'; message: string }>;
-  } | null;
-};
+
+export type CartNoteUpdateMutation = { __typename?: 'Mutation', cartNoteUpdate?: { __typename?: 'CartNoteUpdatePayload', cart?: { __typename?: 'Cart', id: string, createdAt: string, updatedAt: string, checkoutUrl: string, totalQuantity: number, note?: string | null, appliedGiftCards: Array<{ __typename?: 'AppliedGiftCard', id: string, lastCharacters: string, amountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, balance: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, presentmentAmountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }>, lines: { __typename?: 'BaseCartLineConnection', edges: Array<{ __typename?: 'BaseCartLineEdge', cursor: string, node:
+            | { __typename?: 'CartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+            | { __typename?: 'ComponentizableCartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+                | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+                | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              > }
+           }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, cost: { __typename?: 'CartCost', totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalTaxAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, totalDutyAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null }, discountCodes: Array<{ __typename?: 'CartDiscountCode', applicable: boolean, code: string }>, buyerIdentity: { __typename?: 'CartBuyerIdentity', email?: string | null, phone?: string | null, countryCode?: CountryCode | null, customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, deliveryAddressPreferences: Array<{ __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null }> } } | null, userErrors: Array<{ __typename?: 'CartUserError', field?: Array<string> | null, message: string, code?: CartErrorCode | null }>, warnings: Array<{ __typename?: 'CartWarning', message: string }> } | null };
 
 export type GetCartQueryVariables = Exact<{
   cartId: Scalars['ID']['input'];
@@ -12991,311 +10563,27 @@ export type GetCartQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetCartQuery = {
-  __typename?: 'QueryRoot';
-  cart?: {
-    __typename?: 'Cart';
-    id: string;
-    createdAt: string;
-    updatedAt: string;
-    checkoutUrl: string;
-    totalQuantity: number;
-    note?: string | null;
-    appliedGiftCards: Array<{
-      __typename?: 'AppliedGiftCard';
-      id: string;
-      lastCharacters: string;
-      amountUsed: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-      balance: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-      presentmentAmountUsed: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-    }>;
-    lines: {
-      __typename?: 'BaseCartLineConnection';
-      edges: Array<{
-        __typename?: 'BaseCartLineEdge';
-        cursor: string;
-        node:
-          | {
-              __typename?: 'CartLine';
-              id: string;
-              quantity: number;
-              cost: {
-                __typename?: 'CartLineCost';
-                amountPerQuantity: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                };
-                subtotalAmount: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                };
-                totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-              };
-              merchandise: {
-                __typename?: 'ProductVariant';
-                id: string;
-                availableForSale: boolean;
-                quantityAvailable?: number | null;
-                title: string;
-                sku?: string | null;
-                weight?: number | null;
-                weightUnit: WeightUnit;
-                compareAtPrice?: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                } | null;
-                selectedOptions: Array<{
-                  __typename?: 'SelectedOption';
-                  name: string;
-                  value: string;
-                }>;
-                image?: {
-                  __typename?: 'Image';
-                  url: string;
-                  src: string;
-                  altText?: string | null;
-                  width?: number | null;
-                  height?: number | null;
-                  small: string;
-                  medium: string;
-                  large: string;
-                  blurDataURL: string;
-                } | null;
-                price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                product: {
-                  __typename?: 'Product';
-                  handle: string;
-                  title: string;
-                  productType: string;
-                  collections: {
-                    __typename?: 'CollectionConnection';
-                    nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                  };
-                };
-              };
-              attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-              discountAllocations: Array<
-                | {
-                    __typename?: 'CartAutomaticDiscountAllocation';
-                    targetType: DiscountApplicationTargetType;
-                    discountedAmount: {
-                      __typename?: 'MoneyV2';
-                      amount: string;
-                      currencyCode: CurrencyCode;
-                    };
-                  }
-                | {
-                    __typename?: 'CartCodeDiscountAllocation';
-                    targetType: DiscountApplicationTargetType;
-                    discountedAmount: {
-                      __typename?: 'MoneyV2';
-                      amount: string;
-                      currencyCode: CurrencyCode;
-                    };
-                  }
-                | {
-                    __typename?: 'CartCustomDiscountAllocation';
-                    targetType: DiscountApplicationTargetType;
-                    discountedAmount: {
-                      __typename?: 'MoneyV2';
-                      amount: string;
-                      currencyCode: CurrencyCode;
-                    };
-                  }
-              >;
-            }
-          | {
-              __typename?: 'ComponentizableCartLine';
-              id: string;
-              quantity: number;
-              cost: {
-                __typename?: 'CartLineCost';
-                amountPerQuantity: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                };
-                subtotalAmount: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                };
-                totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-              };
-              merchandise: {
-                __typename?: 'ProductVariant';
-                id: string;
-                availableForSale: boolean;
-                quantityAvailable?: number | null;
-                title: string;
-                sku?: string | null;
-                weight?: number | null;
-                weightUnit: WeightUnit;
-                compareAtPrice?: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                } | null;
-                selectedOptions: Array<{
-                  __typename?: 'SelectedOption';
-                  name: string;
-                  value: string;
-                }>;
-                image?: {
-                  __typename?: 'Image';
-                  url: string;
-                  src: string;
-                  altText?: string | null;
-                  width?: number | null;
-                  height?: number | null;
-                  small: string;
-                  medium: string;
-                  large: string;
-                  blurDataURL: string;
-                } | null;
-                price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                product: {
-                  __typename?: 'Product';
-                  handle: string;
-                  title: string;
-                  productType: string;
-                  collections: {
-                    __typename?: 'CollectionConnection';
-                    nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                  };
-                };
-              };
-              attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-              discountAllocations: Array<
-                | {
-                    __typename?: 'CartAutomaticDiscountAllocation';
-                    targetType: DiscountApplicationTargetType;
-                    discountedAmount: {
-                      __typename?: 'MoneyV2';
-                      amount: string;
-                      currencyCode: CurrencyCode;
-                    };
-                  }
-                | {
-                    __typename?: 'CartCodeDiscountAllocation';
-                    targetType: DiscountApplicationTargetType;
-                    discountedAmount: {
-                      __typename?: 'MoneyV2';
-                      amount: string;
-                      currencyCode: CurrencyCode;
-                    };
-                  }
-                | {
-                    __typename?: 'CartCustomDiscountAllocation';
-                    targetType: DiscountApplicationTargetType;
-                    discountedAmount: {
-                      __typename?: 'MoneyV2';
-                      amount: string;
-                      currencyCode: CurrencyCode;
-                    };
-                  }
-              >;
-            };
-      }>;
-      pageInfo: {
-        __typename?: 'PageInfo';
-        hasNextPage: boolean;
-        hasPreviousPage: boolean;
-        startCursor?: string | null;
-        endCursor?: string | null;
-      };
-    };
-    attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-    cost: {
-      __typename?: 'CartCost';
-      totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-      subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-      totalTaxAmount?: {
-        __typename?: 'MoneyV2';
-        amount: string;
-        currencyCode: CurrencyCode;
-      } | null;
-      totalDutyAmount?: {
-        __typename?: 'MoneyV2';
-        amount: string;
-        currencyCode: CurrencyCode;
-      } | null;
-    };
-    discountCodes: Array<{ __typename?: 'CartDiscountCode'; applicable: boolean; code: string }>;
-    buyerIdentity: {
-      __typename?: 'CartBuyerIdentity';
-      email?: string | null;
-      phone?: string | null;
-      countryCode?: CountryCode | null;
-      customer?: {
-        __typename?: 'Customer';
-        id: string;
-        firstName?: string | null;
-        lastName?: string | null;
-        email?: string | null;
-        phone?: string | null;
-        acceptsMarketing: boolean;
-        createdAt: string;
-        updatedAt: string;
-        defaultAddress?: {
-          __typename?: 'MailingAddress';
-          id: string;
-          name?: string | null;
-          address1?: string | null;
-          address2?: string | null;
-          city?: string | null;
-          country?: string | null;
-          company?: string | null;
-          countryCode?: string | null;
-          countryCodeV2?: CountryCode | null;
-          firstName?: string | null;
-          formattedArea?: string | null;
-          lastName?: string | null;
-          latitude?: number | null;
-          longitude?: number | null;
-          phone?: string | null;
-          province?: string | null;
-          provinceCode?: string | null;
-          zip?: string | null;
-        } | null;
-      } | null;
-      deliveryAddressPreferences: Array<{
-        __typename?: 'MailingAddress';
-        id: string;
-        name?: string | null;
-        address1?: string | null;
-        address2?: string | null;
-        city?: string | null;
-        country?: string | null;
-        company?: string | null;
-        countryCode?: string | null;
-        countryCodeV2?: CountryCode | null;
-        firstName?: string | null;
-        formattedArea?: string | null;
-        lastName?: string | null;
-        latitude?: number | null;
-        longitude?: number | null;
-        phone?: string | null;
-        province?: string | null;
-        provinceCode?: string | null;
-        zip?: string | null;
-      }>;
-    };
-  } | null;
-};
+
+export type GetCartQuery = { __typename?: 'QueryRoot', cart?: { __typename?: 'Cart', id: string, createdAt: string, updatedAt: string, checkoutUrl: string, totalQuantity: number, note?: string | null, appliedGiftCards: Array<{ __typename?: 'AppliedGiftCard', id: string, lastCharacters: string, amountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, balance: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, presentmentAmountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }>, lines: { __typename?: 'BaseCartLineConnection', edges: Array<{ __typename?: 'BaseCartLineEdge', cursor: string, node:
+          | { __typename?: 'CartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+              | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+            > }
+          | { __typename?: 'ComponentizableCartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+              | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+              | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+            > }
+         }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, cost: { __typename?: 'CartCost', totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalTaxAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, totalDutyAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null }, discountCodes: Array<{ __typename?: 'CartDiscountCode', applicable: boolean, code: string }>, buyerIdentity: { __typename?: 'CartBuyerIdentity', email?: string | null, phone?: string | null, countryCode?: CountryCode | null, customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, deliveryAddressPreferences: Array<{ __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null }> } } | null };
 
 export type CheckoutUrlQueryVariables = Exact<{
   cartId: Scalars['ID']['input'];
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CheckoutUrlQuery = {
-  __typename?: 'QueryRoot';
-  cart?: { __typename?: 'Cart'; checkoutUrl: string } | null;
-};
+
+export type CheckoutUrlQuery = { __typename?: 'QueryRoot', cart?: { __typename?: 'Cart', checkoutUrl: string } | null };
 
 export type CollectionQueryVariables = Exact<{
   handle: Scalars['String']['input'];
@@ -13309,271 +10597,47 @@ export type CollectionQueryVariables = Exact<{
   identifiers: Array<HasMetafieldsIdentifier> | HasMetafieldsIdentifier;
 }>;
 
-export type CollectionQuery = {
-  __typename?: 'QueryRoot';
-  collection?: {
-    __typename?: 'Collection';
-    handle: string;
-    description: string;
-    title: string;
-    id: string;
-    updatedAt: string;
-    products: {
-      __typename?: 'ProductConnection';
-      edges: Array<{
-        __typename?: 'ProductEdge';
-        cursor: string;
-        node: {
-          __typename?: 'Product';
-          handle: string;
-          id: string;
-          title: string;
-          availableForSale: boolean;
-          description: string;
-          descriptionHtml: string;
-          productType: string;
-          tags: Array<string>;
-          totalInventory?: number | null;
-          vendor: string;
-          updatedAt: string;
-          featuredImage?: {
-            __typename?: 'Image';
-            url: string;
-            src: string;
-            altText?: string | null;
-            width?: number | null;
-            height?: number | null;
-            small: string;
-            medium: string;
-            large: string;
-            blurDataURL: string;
-          } | null;
-          images: {
-            __typename?: 'ImageConnection';
-            edges: Array<{
-              __typename?: 'ImageEdge';
-              node: {
-                __typename?: 'Image';
-                url: string;
-                src: string;
-                altText?: string | null;
-                width?: number | null;
-                height?: number | null;
-                small: string;
-                medium: string;
-                large: string;
-                blurDataURL: string;
-              };
-            }>;
-          };
-          priceRange: {
-            __typename?: 'ProductPriceRange';
-            maxVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-            minVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-          };
-          options: Array<{
-            __typename?: 'ProductOption';
-            id: string;
-            name: string;
-            optionValues: Array<{
-              __typename?: 'ProductOptionValue';
-              id: string;
-              name: string;
-              firstSelectableVariant?: { __typename?: 'ProductVariant'; id: string } | null;
-              swatch?: { __typename?: 'ProductOptionValueSwatch'; color?: string | null } | null;
-            }>;
-          }>;
-          collections: {
-            __typename?: 'CollectionConnection';
-            edges: Array<{
-              __typename?: 'CollectionEdge';
-              node: { __typename?: 'Collection'; handle: string };
-            }>;
-          };
-          variants: {
-            __typename?: 'ProductVariantConnection';
-            edges: Array<{
-              __typename?: 'ProductVariantEdge';
-              node: {
-                __typename?: 'ProductVariant';
-                id: string;
-                availableForSale: boolean;
-                quantityAvailable?: number | null;
-                title: string;
-                sku?: string | null;
-                weight?: number | null;
-                weightUnit: WeightUnit;
-                compareAtPrice?: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                } | null;
-                selectedOptions: Array<{
-                  __typename?: 'SelectedOption';
-                  name: string;
-                  value: string;
-                }>;
-                image?: {
-                  __typename?: 'Image';
-                  url: string;
-                  src: string;
-                  altText?: string | null;
-                  width?: number | null;
-                  height?: number | null;
-                  small: string;
-                  medium: string;
-                  large: string;
-                  blurDataURL: string;
-                } | null;
-                price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                product: {
-                  __typename?: 'Product';
-                  handle: string;
-                  title: string;
-                  collections: {
-                    __typename?: 'CollectionConnection';
-                    nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                  };
-                };
-              };
-            }>;
-          };
-          metafields: Array<{
-            __typename?: 'Metafield';
-            id: string;
-            key: string;
-            namespace: string;
-            value: string;
-            type: string;
-            createdAt: string;
-            updatedAt: string;
-            parentResource:
-              | {
-                  __typename?: 'Article';
-                  id: string;
-                  metafields: Array<{
-                    __typename?: 'Metafield';
-                    id: string;
-                    key: string;
-                    value: string;
-                    type: string;
-                    createdAt: string;
-                    updatedAt: string;
-                  } | null>;
-                }
-              | { __typename?: 'Blog'; id: string }
-              | { __typename?: 'Cart'; id: string }
-              | { __typename?: 'Collection'; id: string }
-              | { __typename?: 'Company'; id: string }
-              | { __typename?: 'CompanyLocation'; id: string }
-              | { __typename?: 'Customer'; id: string }
-              | { __typename?: 'Location'; id: string }
-              | { __typename?: 'Market'; id: string }
-              | { __typename?: 'Order'; id: string }
-              | { __typename?: 'Page'; id: string }
-              | { __typename?: 'Product'; id: string }
-              | { __typename?: 'ProductVariant'; id: string }
-              | { __typename?: 'SellingPlan'; id: string }
-              | { __typename?: 'Shop'; id: string };
-          } | null>;
-          seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-        };
-      }>;
-      filters: Array<{
-        __typename?: 'Filter';
-        id: string;
-        label: string;
-        type: FilterType;
-        values: Array<{
-          __typename?: 'FilterValue';
-          id: string;
-          label: string;
-          count: number;
-          input: any;
-        }>;
-      }>;
-      pageInfo: {
-        __typename?: 'PageInfo';
-        hasNextPage: boolean;
-        hasPreviousPage: boolean;
-        startCursor?: string | null;
-        endCursor?: string | null;
-      };
-    };
-    image?: {
-      __typename?: 'Image';
-      url: string;
-      src: string;
-      altText?: string | null;
-      width?: number | null;
-      height?: number | null;
-      small: string;
-      medium: string;
-      large: string;
-      blurDataURL: string;
-    } | null;
-    seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-    metafields: Array<{
-      __typename?: 'Metafield';
-      id: string;
-      key: string;
-      namespace: string;
-      value: string;
-      type: string;
-      createdAt: string;
-      updatedAt: string;
-      parentResource:
-        | {
-            __typename?: 'Article';
-            id: string;
-            metafields: Array<{
-              __typename?: 'Metafield';
-              id: string;
-              key: string;
-              value: string;
-              type: string;
-              createdAt: string;
-              updatedAt: string;
-            } | null>;
-          }
-        | { __typename?: 'Blog'; id: string }
-        | { __typename?: 'Cart'; id: string }
-        | { __typename?: 'Collection'; id: string }
-        | { __typename?: 'Company'; id: string }
-        | { __typename?: 'CompanyLocation'; id: string }
-        | { __typename?: 'Customer'; id: string }
-        | { __typename?: 'Location'; id: string }
-        | { __typename?: 'Market'; id: string }
-        | { __typename?: 'Order'; id: string }
-        | { __typename?: 'Page'; id: string }
-        | { __typename?: 'Product'; id: string }
-        | { __typename?: 'ProductVariant'; id: string }
-        | { __typename?: 'SellingPlan'; id: string }
-        | { __typename?: 'Shop'; id: string };
-    } | null>;
-  } | null;
-};
+
+export type CollectionQuery = { __typename?: 'QueryRoot', collection?: { __typename?: 'Collection', handle: string, description: string, title: string, id: string, updatedAt: string, products: { __typename?: 'ProductConnection', edges: Array<{ __typename?: 'ProductEdge', cursor: string, node: { __typename?: 'Product', handle: string, id: string, title: string, availableForSale: boolean, description: string, descriptionHtml: string, productType: string, tags: Array<string>, totalInventory?: number | null, vendor: string, updatedAt: string, featuredImage?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, images: { __typename?: 'ImageConnection', edges: Array<{ __typename?: 'ImageEdge', node: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } }> }, priceRange: { __typename?: 'ProductPriceRange', maxVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, minVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, options: Array<{ __typename?: 'ProductOption', id: string, name: string, optionValues: Array<{ __typename?: 'ProductOptionValue', id: string, name: string, firstSelectableVariant?: { __typename?: 'ProductVariant', id: string } | null, swatch?: { __typename?: 'ProductOptionValueSwatch', color?: string | null } | null }> }>, collections: { __typename?: 'CollectionConnection', edges: Array<{ __typename?: 'CollectionEdge', node: { __typename?: 'Collection', handle: string } }> }, variants: { __typename?: 'ProductVariantConnection', edges: Array<{ __typename?: 'ProductVariantEdge', node: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } }> }, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+              | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+              | { __typename?: 'Blog', id: string }
+              | { __typename?: 'Cart', id: string }
+              | { __typename?: 'Collection', id: string }
+              | { __typename?: 'Company', id: string }
+              | { __typename?: 'CompanyLocation', id: string }
+              | { __typename?: 'Customer', id: string }
+              | { __typename?: 'Location', id: string }
+              | { __typename?: 'Market', id: string }
+              | { __typename?: 'Order', id: string }
+              | { __typename?: 'Page', id: string }
+              | { __typename?: 'Product', id: string }
+              | { __typename?: 'ProductVariant', id: string }
+              | { __typename?: 'SellingPlan', id: string }
+              | { __typename?: 'Shop', id: string }
+             } | null>, seo: { __typename?: 'SEO', description?: string | null, title?: string | null } } }>, filters: Array<{ __typename?: 'Filter', id: string, label: string, type: FilterType, values: Array<{ __typename?: 'FilterValue', id: string, label: string, count: number, input: any }> }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } }, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, seo: { __typename?: 'SEO', description?: string | null, title?: string | null }, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+        | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+        | { __typename?: 'Blog', id: string }
+        | { __typename?: 'Cart', id: string }
+        | { __typename?: 'Collection', id: string }
+        | { __typename?: 'Company', id: string }
+        | { __typename?: 'CompanyLocation', id: string }
+        | { __typename?: 'Customer', id: string }
+        | { __typename?: 'Location', id: string }
+        | { __typename?: 'Market', id: string }
+        | { __typename?: 'Order', id: string }
+        | { __typename?: 'Page', id: string }
+        | { __typename?: 'Product', id: string }
+        | { __typename?: 'ProductVariant', id: string }
+        | { __typename?: 'SellingPlan', id: string }
+        | { __typename?: 'Shop', id: string }
+       } | null> } | null };
 
 export type GetCollectionSeoByHandleQueryVariables = Exact<{
   handle: Scalars['String']['input'];
 }>;
 
-export type GetCollectionSeoByHandleQuery = {
-  __typename?: 'QueryRoot';
-  collection?: {
-    __typename?: 'Collection';
-    id: string;
-    title: string;
-    description: string;
-    image?: {
-      __typename?: 'Image';
-      id?: string | null;
-      originalSrc: string;
-      altText?: string | null;
-    } | null;
-    seo: { __typename?: 'SEO'; title?: string | null; description?: string | null };
-  } | null;
-};
+
+export type GetCollectionSeoByHandleQuery = { __typename?: 'QueryRoot', collection?: { __typename?: 'Collection', id: string, title: string, description: string, image?: { __typename?: 'Image', id?: string | null, originalSrc: string, altText?: string | null } | null, seo: { __typename?: 'SEO', title?: string | null, description?: string | null } } | null };
 
 export type CollectionsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -13588,353 +10652,72 @@ export type CollectionsQueryVariables = Exact<{
   identifiers: Array<HasMetafieldsIdentifier> | HasMetafieldsIdentifier;
 }>;
 
-export type CollectionsQuery = {
-  __typename?: 'QueryRoot';
-  collections: {
-    __typename?: 'CollectionConnection';
-    pageInfo: {
-      __typename?: 'PageInfo';
-      hasNextPage: boolean;
-      hasPreviousPage: boolean;
-      startCursor?: string | null;
-      endCursor?: string | null;
-    };
-    edges: Array<{
-      __typename?: 'CollectionEdge';
-      node: {
-        __typename?: 'Collection';
-        handle: string;
-        description: string;
-        title: string;
-        id: string;
-        updatedAt: string;
-        products: {
-          __typename?: 'ProductConnection';
-          edges: Array<{
-            __typename?: 'ProductEdge';
-            cursor: string;
-            node: {
-              __typename?: 'Product';
-              handle: string;
-              id: string;
-              title: string;
-              availableForSale: boolean;
-              description: string;
-              descriptionHtml: string;
-              productType: string;
-              tags: Array<string>;
-              totalInventory?: number | null;
-              vendor: string;
-              updatedAt: string;
-              featuredImage?: {
-                __typename?: 'Image';
-                url: string;
-                src: string;
-                altText?: string | null;
-                width?: number | null;
-                height?: number | null;
-                small: string;
-                medium: string;
-                large: string;
-                blurDataURL: string;
-              } | null;
-              images: {
-                __typename?: 'ImageConnection';
-                edges: Array<{
-                  __typename?: 'ImageEdge';
-                  node: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  };
-                }>;
-              };
-              priceRange: {
-                __typename?: 'ProductPriceRange';
-                maxVariantPrice: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                };
-                minVariantPrice: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                };
-              };
-              options: Array<{
-                __typename?: 'ProductOption';
-                id: string;
-                name: string;
-                optionValues: Array<{
-                  __typename?: 'ProductOptionValue';
-                  id: string;
-                  name: string;
-                  firstSelectableVariant?: { __typename?: 'ProductVariant'; id: string } | null;
-                  swatch?: {
-                    __typename?: 'ProductOptionValueSwatch';
-                    color?: string | null;
-                  } | null;
-                }>;
-              }>;
-              collections: {
-                __typename?: 'CollectionConnection';
-                edges: Array<{
-                  __typename?: 'CollectionEdge';
-                  node: { __typename?: 'Collection'; handle: string };
-                }>;
-              };
-              variants: {
-                __typename?: 'ProductVariantConnection';
-                edges: Array<{
-                  __typename?: 'ProductVariantEdge';
-                  node: {
-                    __typename?: 'ProductVariant';
-                    id: string;
-                    availableForSale: boolean;
-                    quantityAvailable?: number | null;
-                    title: string;
-                    sku?: string | null;
-                    weight?: number | null;
-                    weightUnit: WeightUnit;
-                    compareAtPrice?: {
-                      __typename?: 'MoneyV2';
-                      amount: string;
-                      currencyCode: CurrencyCode;
-                    } | null;
-                    selectedOptions: Array<{
-                      __typename?: 'SelectedOption';
-                      name: string;
-                      value: string;
-                    }>;
-                    image?: {
-                      __typename?: 'Image';
-                      url: string;
-                      src: string;
-                      altText?: string | null;
-                      width?: number | null;
-                      height?: number | null;
-                      small: string;
-                      medium: string;
-                      large: string;
-                      blurDataURL: string;
-                    } | null;
-                    price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                    product: {
-                      __typename?: 'Product';
-                      handle: string;
-                      title: string;
-                      collections: {
-                        __typename?: 'CollectionConnection';
-                        nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                      };
-                    };
-                  };
-                }>;
-              };
-              metafields: Array<{
-                __typename?: 'Metafield';
-                id: string;
-                key: string;
-                namespace: string;
-                value: string;
-                type: string;
-                createdAt: string;
-                updatedAt: string;
-                parentResource:
-                  | {
-                      __typename?: 'Article';
-                      id: string;
-                      metafields: Array<{
-                        __typename?: 'Metafield';
-                        id: string;
-                        key: string;
-                        value: string;
-                        type: string;
-                        createdAt: string;
-                        updatedAt: string;
-                      } | null>;
-                    }
-                  | { __typename?: 'Blog'; id: string }
-                  | { __typename?: 'Cart'; id: string }
-                  | { __typename?: 'Collection'; id: string }
-                  | { __typename?: 'Company'; id: string }
-                  | { __typename?: 'CompanyLocation'; id: string }
-                  | { __typename?: 'Customer'; id: string }
-                  | { __typename?: 'Location'; id: string }
-                  | { __typename?: 'Market'; id: string }
-                  | { __typename?: 'Order'; id: string }
-                  | { __typename?: 'Page'; id: string }
-                  | { __typename?: 'Product'; id: string }
-                  | { __typename?: 'ProductVariant'; id: string }
-                  | { __typename?: 'SellingPlan'; id: string }
-                  | { __typename?: 'Shop'; id: string };
-              } | null>;
-              seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-            };
-          }>;
-          filters: Array<{
-            __typename?: 'Filter';
-            id: string;
-            label: string;
-            type: FilterType;
-            values: Array<{
-              __typename?: 'FilterValue';
-              id: string;
-              label: string;
-              count: number;
-              input: any;
-            }>;
-          }>;
-          pageInfo: {
-            __typename?: 'PageInfo';
-            hasNextPage: boolean;
-            hasPreviousPage: boolean;
-            startCursor?: string | null;
-            endCursor?: string | null;
-          };
-        };
-        image?: {
-          __typename?: 'Image';
-          url: string;
-          src: string;
-          altText?: string | null;
-          width?: number | null;
-          height?: number | null;
-          small: string;
-          medium: string;
-          large: string;
-          blurDataURL: string;
-        } | null;
-        seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-        metafields: Array<{
-          __typename?: 'Metafield';
-          id: string;
-          key: string;
-          namespace: string;
-          value: string;
-          type: string;
-          createdAt: string;
-          updatedAt: string;
-          parentResource:
-            | {
-                __typename?: 'Article';
-                id: string;
-                metafields: Array<{
-                  __typename?: 'Metafield';
-                  id: string;
-                  key: string;
-                  value: string;
-                  type: string;
-                  createdAt: string;
-                  updatedAt: string;
-                } | null>;
-              }
-            | { __typename?: 'Blog'; id: string }
-            | { __typename?: 'Cart'; id: string }
-            | { __typename?: 'Collection'; id: string }
-            | { __typename?: 'Company'; id: string }
-            | { __typename?: 'CompanyLocation'; id: string }
-            | { __typename?: 'Customer'; id: string }
-            | { __typename?: 'Location'; id: string }
-            | { __typename?: 'Market'; id: string }
-            | { __typename?: 'Order'; id: string }
-            | { __typename?: 'Page'; id: string }
-            | { __typename?: 'Product'; id: string }
-            | { __typename?: 'ProductVariant'; id: string }
-            | { __typename?: 'SellingPlan'; id: string }
-            | { __typename?: 'Shop'; id: string };
-        } | null>;
-      };
-    }>;
-  };
-};
+
+export type CollectionsQuery = { __typename?: 'QueryRoot', collections: { __typename?: 'CollectionConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, edges: Array<{ __typename?: 'CollectionEdge', node: { __typename?: 'Collection', handle: string, description: string, title: string, id: string, updatedAt: string, products: { __typename?: 'ProductConnection', edges: Array<{ __typename?: 'ProductEdge', cursor: string, node: { __typename?: 'Product', handle: string, id: string, title: string, availableForSale: boolean, description: string, descriptionHtml: string, productType: string, tags: Array<string>, totalInventory?: number | null, vendor: string, updatedAt: string, featuredImage?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, images: { __typename?: 'ImageConnection', edges: Array<{ __typename?: 'ImageEdge', node: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } }> }, priceRange: { __typename?: 'ProductPriceRange', maxVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, minVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, options: Array<{ __typename?: 'ProductOption', id: string, name: string, optionValues: Array<{ __typename?: 'ProductOptionValue', id: string, name: string, firstSelectableVariant?: { __typename?: 'ProductVariant', id: string } | null, swatch?: { __typename?: 'ProductOptionValueSwatch', color?: string | null } | null }> }>, collections: { __typename?: 'CollectionConnection', edges: Array<{ __typename?: 'CollectionEdge', node: { __typename?: 'Collection', handle: string } }> }, variants: { __typename?: 'ProductVariantConnection', edges: Array<{ __typename?: 'ProductVariantEdge', node: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } }> }, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+                  | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+                  | { __typename?: 'Blog', id: string }
+                  | { __typename?: 'Cart', id: string }
+                  | { __typename?: 'Collection', id: string }
+                  | { __typename?: 'Company', id: string }
+                  | { __typename?: 'CompanyLocation', id: string }
+                  | { __typename?: 'Customer', id: string }
+                  | { __typename?: 'Location', id: string }
+                  | { __typename?: 'Market', id: string }
+                  | { __typename?: 'Order', id: string }
+                  | { __typename?: 'Page', id: string }
+                  | { __typename?: 'Product', id: string }
+                  | { __typename?: 'ProductVariant', id: string }
+                  | { __typename?: 'SellingPlan', id: string }
+                  | { __typename?: 'Shop', id: string }
+                 } | null>, seo: { __typename?: 'SEO', description?: string | null, title?: string | null } } }>, filters: Array<{ __typename?: 'Filter', id: string, label: string, type: FilterType, values: Array<{ __typename?: 'FilterValue', id: string, label: string, count: number, input: any }> }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } }, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, seo: { __typename?: 'SEO', description?: string | null, title?: string | null }, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+            | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+            | { __typename?: 'Blog', id: string }
+            | { __typename?: 'Cart', id: string }
+            | { __typename?: 'Collection', id: string }
+            | { __typename?: 'Company', id: string }
+            | { __typename?: 'CompanyLocation', id: string }
+            | { __typename?: 'Customer', id: string }
+            | { __typename?: 'Location', id: string }
+            | { __typename?: 'Market', id: string }
+            | { __typename?: 'Order', id: string }
+            | { __typename?: 'Page', id: string }
+            | { __typename?: 'Product', id: string }
+            | { __typename?: 'ProductVariant', id: string }
+            | { __typename?: 'SellingPlan', id: string }
+            | { __typename?: 'Shop', id: string }
+           } | null> } }> } };
 
 export type CustomerAccessTokenCreateMutationVariables = Exact<{
   input: CustomerAccessTokenCreateInput;
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CustomerAccessTokenCreateMutation = {
-  __typename?: 'Mutation';
-  customerAccessTokenCreate?: {
-    __typename?: 'CustomerAccessTokenCreatePayload';
-    customerAccessToken?: {
-      __typename?: 'CustomerAccessToken';
-      accessToken: string;
-      expiresAt: string;
-    } | null;
-    customerUserErrors: Array<{
-      __typename?: 'CustomerUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CustomerErrorCode | null;
-    }>;
-  } | null;
-};
+
+export type CustomerAccessTokenCreateMutation = { __typename?: 'Mutation', customerAccessTokenCreate?: { __typename?: 'CustomerAccessTokenCreatePayload', customerAccessToken?: { __typename?: 'CustomerAccessToken', accessToken: string, expiresAt: string } | null, customerUserErrors: Array<{ __typename?: 'CustomerUserError', field?: Array<string> | null, message: string, code?: CustomerErrorCode | null }> } | null };
 
 export type CustomerAccessTokenCreateWithMultipassMutationVariables = Exact<{
   multipassToken: Scalars['String']['input'];
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CustomerAccessTokenCreateWithMultipassMutation = {
-  __typename?: 'Mutation';
-  customerAccessTokenCreateWithMultipass?: {
-    __typename?: 'CustomerAccessTokenCreateWithMultipassPayload';
-    customerAccessToken?: {
-      __typename?: 'CustomerAccessToken';
-      accessToken: string;
-      expiresAt: string;
-    } | null;
-    customerUserErrors: Array<{
-      __typename?: 'CustomerUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CustomerErrorCode | null;
-    }>;
-  } | null;
-};
+
+export type CustomerAccessTokenCreateWithMultipassMutation = { __typename?: 'Mutation', customerAccessTokenCreateWithMultipass?: { __typename?: 'CustomerAccessTokenCreateWithMultipassPayload', customerAccessToken?: { __typename?: 'CustomerAccessToken', accessToken: string, expiresAt: string } | null, customerUserErrors: Array<{ __typename?: 'CustomerUserError', field?: Array<string> | null, message: string, code?: CustomerErrorCode | null }> } | null };
 
 export type CustomerAccessTokenDeleteMutationVariables = Exact<{
   customerAccessToken: Scalars['String']['input'];
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CustomerAccessTokenDeleteMutation = {
-  __typename?: 'Mutation';
-  customerAccessTokenDelete?: {
-    __typename?: 'CustomerAccessTokenDeletePayload';
-    deletedAccessToken?: string | null;
-    deletedCustomerAccessTokenId?: string | null;
-    userErrors: Array<{ __typename?: 'UserError'; field?: Array<string> | null; message: string }>;
-  } | null;
-};
+
+export type CustomerAccessTokenDeleteMutation = { __typename?: 'Mutation', customerAccessTokenDelete?: { __typename?: 'CustomerAccessTokenDeletePayload', deletedAccessToken?: string | null, deletedCustomerAccessTokenId?: string | null, userErrors: Array<{ __typename?: 'UserError', field?: Array<string> | null, message: string }> } | null };
 
 export type CustomerAccessTokenRenewMutationVariables = Exact<{
   customerAccessToken: Scalars['String']['input'];
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CustomerAccessTokenRenewMutation = {
-  __typename?: 'Mutation';
-  customerAccessTokenRenew?: {
-    __typename?: 'CustomerAccessTokenRenewPayload';
-    customerAccessToken?: {
-      __typename?: 'CustomerAccessToken';
-      accessToken: string;
-      expiresAt: string;
-    } | null;
-    userErrors: Array<{ __typename?: 'UserError'; field?: Array<string> | null; message: string }>;
-  } | null;
-};
+
+export type CustomerAccessTokenRenewMutation = { __typename?: 'Mutation', customerAccessTokenRenew?: { __typename?: 'CustomerAccessTokenRenewPayload', customerAccessToken?: { __typename?: 'CustomerAccessToken', accessToken: string, expiresAt: string } | null, userErrors: Array<{ __typename?: 'UserError', field?: Array<string> | null, message: string }> } | null };
 
 export type CustomerActivateMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -13942,56 +10725,8 @@ export type CustomerActivateMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CustomerActivateMutation = {
-  __typename?: 'Mutation';
-  customerActivate?: {
-    __typename?: 'CustomerActivatePayload';
-    customer?: {
-      __typename?: 'Customer';
-      id: string;
-      firstName?: string | null;
-      lastName?: string | null;
-      email?: string | null;
-      phone?: string | null;
-      acceptsMarketing: boolean;
-      createdAt: string;
-      updatedAt: string;
-      defaultAddress?: {
-        __typename?: 'MailingAddress';
-        id: string;
-        name?: string | null;
-        address1?: string | null;
-        address2?: string | null;
-        city?: string | null;
-        country?: string | null;
-        company?: string | null;
-        countryCode?: string | null;
-        countryCodeV2?: CountryCode | null;
-        firstName?: string | null;
-        formattedArea?: string | null;
-        formatted: Array<string>;
-        lastName?: string | null;
-        latitude?: number | null;
-        longitude?: number | null;
-        phone?: string | null;
-        province?: string | null;
-        provinceCode?: string | null;
-        zip?: string | null;
-      } | null;
-    } | null;
-    customerAccessToken?: {
-      __typename?: 'CustomerAccessToken';
-      accessToken: string;
-      expiresAt: string;
-    } | null;
-    customerUserErrors: Array<{
-      __typename?: 'CustomerUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CustomerErrorCode | null;
-    }>;
-  } | null;
-};
+
+export type CustomerActivateMutation = { __typename?: 'Mutation', customerActivate?: { __typename?: 'CustomerActivatePayload', customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, customerAccessToken?: { __typename?: 'CustomerAccessToken', accessToken: string, expiresAt: string } | null, customerUserErrors: Array<{ __typename?: 'CustomerUserError', field?: Array<string> | null, message: string, code?: CustomerErrorCode | null }> } | null };
 
 export type CustomerActivateByUrlMutationVariables = Exact<{
   activationUrl: Scalars['URL']['input'];
@@ -13999,56 +10734,8 @@ export type CustomerActivateByUrlMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CustomerActivateByUrlMutation = {
-  __typename?: 'Mutation';
-  customerActivateByUrl?: {
-    __typename?: 'CustomerActivateByUrlPayload';
-    customer?: {
-      __typename?: 'Customer';
-      id: string;
-      firstName?: string | null;
-      lastName?: string | null;
-      email?: string | null;
-      phone?: string | null;
-      acceptsMarketing: boolean;
-      createdAt: string;
-      updatedAt: string;
-      defaultAddress?: {
-        __typename?: 'MailingAddress';
-        id: string;
-        name?: string | null;
-        address1?: string | null;
-        address2?: string | null;
-        city?: string | null;
-        country?: string | null;
-        company?: string | null;
-        countryCode?: string | null;
-        countryCodeV2?: CountryCode | null;
-        firstName?: string | null;
-        formattedArea?: string | null;
-        formatted: Array<string>;
-        lastName?: string | null;
-        latitude?: number | null;
-        longitude?: number | null;
-        phone?: string | null;
-        province?: string | null;
-        provinceCode?: string | null;
-        zip?: string | null;
-      } | null;
-    } | null;
-    customerAccessToken?: {
-      __typename?: 'CustomerAccessToken';
-      accessToken: string;
-      expiresAt: string;
-    } | null;
-    customerUserErrors: Array<{
-      __typename?: 'CustomerUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CustomerErrorCode | null;
-    }>;
-  } | null;
-};
+
+export type CustomerActivateByUrlMutation = { __typename?: 'Mutation', customerActivateByUrl?: { __typename?: 'CustomerActivateByUrlPayload', customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, customerAccessToken?: { __typename?: 'CustomerAccessToken', accessToken: string, expiresAt: string } | null, customerUserErrors: Array<{ __typename?: 'CustomerUserError', field?: Array<string> | null, message: string, code?: CustomerErrorCode | null }> } | null };
 
 export type CustomerAddressCreateMutationVariables = Exact<{
   address: MailingAddressInput;
@@ -14056,40 +10743,8 @@ export type CustomerAddressCreateMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CustomerAddressCreateMutation = {
-  __typename?: 'Mutation';
-  customerAddressCreate?: {
-    __typename?: 'CustomerAddressCreatePayload';
-    customerAddress?: {
-      __typename?: 'MailingAddress';
-      id: string;
-      name?: string | null;
-      address1?: string | null;
-      address2?: string | null;
-      city?: string | null;
-      country?: string | null;
-      company?: string | null;
-      countryCode?: string | null;
-      countryCodeV2?: CountryCode | null;
-      firstName?: string | null;
-      formattedArea?: string | null;
-      formatted: Array<string>;
-      lastName?: string | null;
-      latitude?: number | null;
-      longitude?: number | null;
-      phone?: string | null;
-      province?: string | null;
-      provinceCode?: string | null;
-      zip?: string | null;
-    } | null;
-    customerUserErrors: Array<{
-      __typename?: 'CustomerUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CustomerErrorCode | null;
-    }>;
-  } | null;
-};
+
+export type CustomerAddressCreateMutation = { __typename?: 'Mutation', customerAddressCreate?: { __typename?: 'CustomerAddressCreatePayload', customerAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null, customerUserErrors: Array<{ __typename?: 'CustomerUserError', field?: Array<string> | null, message: string, code?: CustomerErrorCode | null }> } | null };
 
 export type CustomerAddressDeleteMutationVariables = Exact<{
   customerAccessToken: Scalars['String']['input'];
@@ -14097,19 +10752,8 @@ export type CustomerAddressDeleteMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CustomerAddressDeleteMutation = {
-  __typename?: 'Mutation';
-  customerAddressDelete?: {
-    __typename?: 'CustomerAddressDeletePayload';
-    deletedCustomerAddressId?: string | null;
-    customerUserErrors: Array<{
-      __typename?: 'CustomerUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CustomerErrorCode | null;
-    }>;
-  } | null;
-};
+
+export type CustomerAddressDeleteMutation = { __typename?: 'Mutation', customerAddressDelete?: { __typename?: 'CustomerAddressDeletePayload', deletedCustomerAddressId?: string | null, customerUserErrors: Array<{ __typename?: 'CustomerUserError', field?: Array<string> | null, message: string, code?: CustomerErrorCode | null }> } | null };
 
 export type CustomerAddressUpdateMutationVariables = Exact<{
   address: MailingAddressInput;
@@ -14118,92 +10762,15 @@ export type CustomerAddressUpdateMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CustomerAddressUpdateMutation = {
-  __typename?: 'Mutation';
-  customerAddressUpdate?: {
-    __typename?: 'CustomerAddressUpdatePayload';
-    customerAddress?: {
-      __typename?: 'MailingAddress';
-      id: string;
-      name?: string | null;
-      address1?: string | null;
-      address2?: string | null;
-      city?: string | null;
-      country?: string | null;
-      company?: string | null;
-      countryCode?: string | null;
-      countryCodeV2?: CountryCode | null;
-      firstName?: string | null;
-      formattedArea?: string | null;
-      formatted: Array<string>;
-      lastName?: string | null;
-      latitude?: number | null;
-      longitude?: number | null;
-      phone?: string | null;
-      province?: string | null;
-      provinceCode?: string | null;
-      zip?: string | null;
-    } | null;
-    customerUserErrors: Array<{
-      __typename?: 'CustomerUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CustomerErrorCode | null;
-    }>;
-    userErrors: Array<{ __typename?: 'UserError'; field?: Array<string> | null; message: string }>;
-  } | null;
-};
+
+export type CustomerAddressUpdateMutation = { __typename?: 'Mutation', customerAddressUpdate?: { __typename?: 'CustomerAddressUpdatePayload', customerAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null, customerUserErrors: Array<{ __typename?: 'CustomerUserError', field?: Array<string> | null, message: string, code?: CustomerErrorCode | null }>, userErrors: Array<{ __typename?: 'UserError', field?: Array<string> | null, message: string }> } | null };
 
 export type CustomerCreateMutationVariables = Exact<{
   input: CustomerCreateInput;
 }>;
 
-export type CustomerCreateMutation = {
-  __typename?: 'Mutation';
-  customerCreate?: {
-    __typename?: 'CustomerCreatePayload';
-    customer?: {
-      __typename?: 'Customer';
-      id: string;
-      firstName?: string | null;
-      lastName?: string | null;
-      email?: string | null;
-      phone?: string | null;
-      acceptsMarketing: boolean;
-      createdAt: string;
-      updatedAt: string;
-      defaultAddress?: {
-        __typename?: 'MailingAddress';
-        id: string;
-        name?: string | null;
-        address1?: string | null;
-        address2?: string | null;
-        city?: string | null;
-        country?: string | null;
-        company?: string | null;
-        countryCode?: string | null;
-        countryCodeV2?: CountryCode | null;
-        firstName?: string | null;
-        formattedArea?: string | null;
-        formatted: Array<string>;
-        lastName?: string | null;
-        latitude?: number | null;
-        longitude?: number | null;
-        phone?: string | null;
-        province?: string | null;
-        provinceCode?: string | null;
-        zip?: string | null;
-      } | null;
-    } | null;
-    customerUserErrors: Array<{
-      __typename?: 'CustomerUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CustomerErrorCode | null;
-    }>;
-    userErrors: Array<{ __typename?: 'UserError'; field?: Array<string> | null; message: string }>;
-  } | null;
-};
+
+export type CustomerCreateMutation = { __typename?: 'Mutation', customerCreate?: { __typename?: 'CustomerCreatePayload', customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, customerUserErrors: Array<{ __typename?: 'CustomerUserError', field?: Array<string> | null, message: string, code?: CustomerErrorCode | null }>, userErrors: Array<{ __typename?: 'UserError', field?: Array<string> | null, message: string }> } | null };
 
 export type CustomerDefaultAddressUpdateMutationVariables = Exact<{
   addressId: Scalars['ID']['input'];
@@ -14211,69 +10778,16 @@ export type CustomerDefaultAddressUpdateMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CustomerDefaultAddressUpdateMutation = {
-  __typename?: 'Mutation';
-  customerDefaultAddressUpdate?: {
-    __typename?: 'CustomerDefaultAddressUpdatePayload';
-    customer?: {
-      __typename?: 'Customer';
-      id: string;
-      firstName?: string | null;
-      lastName?: string | null;
-      email?: string | null;
-      phone?: string | null;
-      acceptsMarketing: boolean;
-      createdAt: string;
-      updatedAt: string;
-      defaultAddress?: {
-        __typename?: 'MailingAddress';
-        id: string;
-        name?: string | null;
-        address1?: string | null;
-        address2?: string | null;
-        city?: string | null;
-        country?: string | null;
-        company?: string | null;
-        countryCode?: string | null;
-        countryCodeV2?: CountryCode | null;
-        firstName?: string | null;
-        formattedArea?: string | null;
-        formatted: Array<string>;
-        lastName?: string | null;
-        latitude?: number | null;
-        longitude?: number | null;
-        phone?: string | null;
-        province?: string | null;
-        provinceCode?: string | null;
-        zip?: string | null;
-      } | null;
-    } | null;
-    customerUserErrors: Array<{
-      __typename?: 'CustomerUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CustomerErrorCode | null;
-    }>;
-  } | null;
-};
+
+export type CustomerDefaultAddressUpdateMutation = { __typename?: 'Mutation', customerDefaultAddressUpdate?: { __typename?: 'CustomerDefaultAddressUpdatePayload', customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, customerUserErrors: Array<{ __typename?: 'CustomerUserError', field?: Array<string> | null, message: string, code?: CustomerErrorCode | null }> } | null };
 
 export type CustomerRecoverMutationVariables = Exact<{
   email: Scalars['String']['input'];
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CustomerRecoverMutation = {
-  __typename?: 'Mutation';
-  customerRecover?: {
-    __typename?: 'CustomerRecoverPayload';
-    customerUserErrors: Array<{
-      __typename?: 'CustomerUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CustomerErrorCode | null;
-    }>;
-  } | null;
-};
+
+export type CustomerRecoverMutation = { __typename?: 'Mutation', customerRecover?: { __typename?: 'CustomerRecoverPayload', customerUserErrors: Array<{ __typename?: 'CustomerUserError', field?: Array<string> | null, message: string, code?: CustomerErrorCode | null }> } | null };
 
 export type CustomerResetMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -14281,56 +10795,8 @@ export type CustomerResetMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CustomerResetMutation = {
-  __typename?: 'Mutation';
-  customerReset?: {
-    __typename?: 'CustomerResetPayload';
-    customer?: {
-      __typename?: 'Customer';
-      id: string;
-      firstName?: string | null;
-      lastName?: string | null;
-      email?: string | null;
-      phone?: string | null;
-      acceptsMarketing: boolean;
-      createdAt: string;
-      updatedAt: string;
-      defaultAddress?: {
-        __typename?: 'MailingAddress';
-        id: string;
-        name?: string | null;
-        address1?: string | null;
-        address2?: string | null;
-        city?: string | null;
-        country?: string | null;
-        company?: string | null;
-        countryCode?: string | null;
-        countryCodeV2?: CountryCode | null;
-        firstName?: string | null;
-        formattedArea?: string | null;
-        formatted: Array<string>;
-        lastName?: string | null;
-        latitude?: number | null;
-        longitude?: number | null;
-        phone?: string | null;
-        province?: string | null;
-        provinceCode?: string | null;
-        zip?: string | null;
-      } | null;
-    } | null;
-    customerAccessToken?: {
-      __typename?: 'CustomerAccessToken';
-      accessToken: string;
-      expiresAt: string;
-    } | null;
-    customerUserErrors: Array<{
-      __typename?: 'CustomerUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CustomerErrorCode | null;
-    }>;
-  } | null;
-};
+
+export type CustomerResetMutation = { __typename?: 'Mutation', customerReset?: { __typename?: 'CustomerResetPayload', customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, customerAccessToken?: { __typename?: 'CustomerAccessToken', accessToken: string, expiresAt: string } | null, customerUserErrors: Array<{ __typename?: 'CustomerUserError', field?: Array<string> | null, message: string, code?: CustomerErrorCode | null }> } | null };
 
 export type CustomerResetByUrlMutationVariables = Exact<{
   password: Scalars['String']['input'];
@@ -14338,56 +10804,8 @@ export type CustomerResetByUrlMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CustomerResetByUrlMutation = {
-  __typename?: 'Mutation';
-  customerResetByUrl?: {
-    __typename?: 'CustomerResetByUrlPayload';
-    customer?: {
-      __typename?: 'Customer';
-      id: string;
-      firstName?: string | null;
-      lastName?: string | null;
-      email?: string | null;
-      phone?: string | null;
-      acceptsMarketing: boolean;
-      createdAt: string;
-      updatedAt: string;
-      defaultAddress?: {
-        __typename?: 'MailingAddress';
-        id: string;
-        name?: string | null;
-        address1?: string | null;
-        address2?: string | null;
-        city?: string | null;
-        country?: string | null;
-        company?: string | null;
-        countryCode?: string | null;
-        countryCodeV2?: CountryCode | null;
-        firstName?: string | null;
-        formattedArea?: string | null;
-        formatted: Array<string>;
-        lastName?: string | null;
-        latitude?: number | null;
-        longitude?: number | null;
-        phone?: string | null;
-        province?: string | null;
-        provinceCode?: string | null;
-        zip?: string | null;
-      } | null;
-    } | null;
-    customerAccessToken?: {
-      __typename?: 'CustomerAccessToken';
-      accessToken: string;
-      expiresAt: string;
-    } | null;
-    customerUserErrors: Array<{
-      __typename?: 'CustomerUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CustomerErrorCode | null;
-    }>;
-  } | null;
-};
+
+export type CustomerResetByUrlMutation = { __typename?: 'Mutation', customerResetByUrl?: { __typename?: 'CustomerResetByUrlPayload', customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, customerAccessToken?: { __typename?: 'CustomerAccessToken', accessToken: string, expiresAt: string } | null, customerUserErrors: Array<{ __typename?: 'CustomerUserError', field?: Array<string> | null, message: string, code?: CustomerErrorCode | null }> } | null };
 
 export type CustomerUpdateMutationVariables = Exact<{
   customer: CustomerUpdateInput;
@@ -14395,56 +10813,8 @@ export type CustomerUpdateMutationVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type CustomerUpdateMutation = {
-  __typename?: 'Mutation';
-  customerUpdate?: {
-    __typename?: 'CustomerUpdatePayload';
-    customer?: {
-      __typename?: 'Customer';
-      id: string;
-      firstName?: string | null;
-      lastName?: string | null;
-      email?: string | null;
-      phone?: string | null;
-      acceptsMarketing: boolean;
-      createdAt: string;
-      updatedAt: string;
-      defaultAddress?: {
-        __typename?: 'MailingAddress';
-        id: string;
-        name?: string | null;
-        address1?: string | null;
-        address2?: string | null;
-        city?: string | null;
-        country?: string | null;
-        company?: string | null;
-        countryCode?: string | null;
-        countryCodeV2?: CountryCode | null;
-        firstName?: string | null;
-        formattedArea?: string | null;
-        formatted: Array<string>;
-        lastName?: string | null;
-        latitude?: number | null;
-        longitude?: number | null;
-        phone?: string | null;
-        province?: string | null;
-        provinceCode?: string | null;
-        zip?: string | null;
-      } | null;
-    } | null;
-    customerAccessToken?: {
-      __typename?: 'CustomerAccessToken';
-      accessToken: string;
-      expiresAt: string;
-    } | null;
-    customerUserErrors: Array<{
-      __typename?: 'CustomerUserError';
-      field?: Array<string> | null;
-      message: string;
-      code?: CustomerErrorCode | null;
-    }>;
-  } | null;
-};
+
+export type CustomerUpdateMutation = { __typename?: 'Mutation', customerUpdate?: { __typename?: 'CustomerUpdatePayload', customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, customerAccessToken?: { __typename?: 'CustomerAccessToken', accessToken: string, expiresAt: string } | null, customerUserErrors: Array<{ __typename?: 'CustomerUserError', field?: Array<string> | null, message: string, code?: CustomerErrorCode | null }> } | null };
 
 export type GetCustomerQueryVariables = Exact<{
   customerAccessToken: Scalars['String']['input'];
@@ -14452,49 +10822,8 @@ export type GetCustomerQueryVariables = Exact<{
   metafields: Array<HasMetafieldsIdentifier> | HasMetafieldsIdentifier;
 }>;
 
-export type GetCustomerQuery = {
-  __typename?: 'QueryRoot';
-  customer?: {
-    __typename?: 'Customer';
-    id: string;
-    firstName?: string | null;
-    lastName?: string | null;
-    email?: string | null;
-    phone?: string | null;
-    acceptsMarketing: boolean;
-    createdAt: string;
-    updatedAt: string;
-    metafields: Array<{
-      __typename?: 'Metafield';
-      id: string;
-      key: string;
-      value: string;
-      updatedAt: string;
-    } | null>;
-    defaultAddress?: {
-      __typename?: 'MailingAddress';
-      id: string;
-      name?: string | null;
-      address1?: string | null;
-      address2?: string | null;
-      city?: string | null;
-      country?: string | null;
-      company?: string | null;
-      countryCode?: string | null;
-      countryCodeV2?: CountryCode | null;
-      firstName?: string | null;
-      formattedArea?: string | null;
-      formatted: Array<string>;
-      lastName?: string | null;
-      latitude?: number | null;
-      longitude?: number | null;
-      phone?: string | null;
-      province?: string | null;
-      provinceCode?: string | null;
-      zip?: string | null;
-    } | null;
-  } | null;
-};
+
+export type GetCustomerQuery = { __typename?: 'QueryRoot', customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, updatedAt: string } | null>, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null };
 
 export type GetCustomerMetafieldsQueryVariables = Exact<{
   customerAccessToken: Scalars['String']['input'];
@@ -14502,18 +10831,8 @@ export type GetCustomerMetafieldsQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetCustomerMetafieldsQuery = {
-  __typename?: 'QueryRoot';
-  customer?: {
-    __typename?: 'Customer';
-    metafields: Array<{
-      __typename?: 'Metafield';
-      key: string;
-      value: string;
-      updatedAt: string;
-    } | null>;
-  } | null;
-};
+
+export type GetCustomerMetafieldsQuery = { __typename?: 'QueryRoot', customer?: { __typename?: 'Customer', metafields: Array<{ __typename?: 'Metafield', key: string, value: string, updatedAt: string } | null> } | null };
 
 export type GetCustomerAddressesQueryVariables = Exact<{
   customerAccessToken: Scalars['String']['input'];
@@ -14524,47 +10843,8 @@ export type GetCustomerAddressesQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetCustomerAddressesQuery = {
-  __typename?: 'QueryRoot';
-  customer?: {
-    __typename?: 'Customer';
-    addresses: {
-      __typename?: 'MailingAddressConnection';
-      edges: Array<{
-        __typename?: 'MailingAddressEdge';
-        node: {
-          __typename?: 'MailingAddress';
-          id: string;
-          name?: string | null;
-          address1?: string | null;
-          address2?: string | null;
-          city?: string | null;
-          country?: string | null;
-          company?: string | null;
-          countryCode?: string | null;
-          countryCodeV2?: CountryCode | null;
-          firstName?: string | null;
-          formattedArea?: string | null;
-          formatted: Array<string>;
-          lastName?: string | null;
-          latitude?: number | null;
-          longitude?: number | null;
-          phone?: string | null;
-          province?: string | null;
-          provinceCode?: string | null;
-          zip?: string | null;
-        };
-      }>;
-      pageInfo: {
-        __typename?: 'PageInfo';
-        hasNextPage: boolean;
-        hasPreviousPage: boolean;
-        startCursor?: string | null;
-        endCursor?: string | null;
-      };
-    };
-  } | null;
-};
+
+export type GetCustomerAddressesQuery = { __typename?: 'QueryRoot', customer?: { __typename?: 'Customer', addresses: { __typename?: 'MailingAddressConnection', edges: Array<{ __typename?: 'MailingAddressEdge', node: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } } | null };
 
 export type GetCustomerOrdersQueryVariables = Exact<{
   customerAccessToken: Scalars['String']['input'];
@@ -14578,1487 +10858,166 @@ export type GetCustomerOrdersQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetCustomerOrdersQuery = {
-  __typename?: 'QueryRoot';
-  customer?: {
-    __typename?: 'Customer';
-    orders: {
-      __typename?: 'OrderConnection';
-      totalCount: string;
-      edges: Array<{
-        __typename?: 'OrderEdge';
-        cursor: string;
-        node: {
-          __typename?: 'Order';
-          id: string;
-          name: string;
-          fulfillmentStatus: OrderFulfillmentStatus;
-          canceledAt?: string | null;
-          cancelReason?: OrderCancelReason | null;
-          currencyCode: CurrencyCode;
-          customerUrl?: string | null;
-          email?: string | null;
-          financialStatus?: OrderFinancialStatus | null;
-          orderNumber: number;
-          phone?: string | null;
-          processedAt: string;
-          successfulFulfillments?: Array<{
-            __typename?: 'Fulfillment';
-            trackingCompany?: string | null;
-            trackingInfo: Array<{
-              __typename?: 'FulfillmentTrackingInfo';
-              number?: string | null;
-              url?: string | null;
-            }>;
-            fulfillmentLineItems: {
-              __typename?: 'FulfillmentLineItemConnection';
-              edges: Array<{
-                __typename?: 'FulfillmentLineItemEdge';
-                node: {
-                  __typename?: 'FulfillmentLineItem';
-                  lineItem: {
-                    __typename?: 'OrderLineItem';
-                    quantity: number;
-                    title: string;
-                    discountedTotalPrice: {
-                      __typename?: 'MoneyV2';
-                      amount: string;
-                      currencyCode: CurrencyCode;
-                    };
-                    variant?: {
-                      __typename?: 'ProductVariant';
-                      id: string;
-                      availableForSale: boolean;
-                      quantityAvailable?: number | null;
-                      title: string;
-                      sku?: string | null;
-                      weight?: number | null;
-                      weightUnit: WeightUnit;
-                      compareAtPrice?: {
-                        __typename?: 'MoneyV2';
-                        amount: string;
-                        currencyCode: CurrencyCode;
-                      } | null;
-                      selectedOptions: Array<{
-                        __typename?: 'SelectedOption';
-                        name: string;
-                        value: string;
-                      }>;
-                      image?: {
-                        __typename?: 'Image';
-                        url: string;
-                        src: string;
-                        altText?: string | null;
-                        width?: number | null;
-                        height?: number | null;
-                        small: string;
-                        medium: string;
-                        large: string;
-                        blurDataURL: string;
-                      } | null;
-                      price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                      product: {
-                        __typename?: 'Product';
-                        handle: string;
-                        title: string;
-                        collections: {
-                          __typename?: 'CollectionConnection';
-                          nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                        };
-                      };
-                    } | null;
-                  };
-                };
-              }>;
-            };
-          }> | null;
-          subtotalPrice?: {
-            __typename?: 'MoneyV2';
-            amount: string;
-            currencyCode: CurrencyCode;
-          } | null;
-          totalPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-          totalRefunded: { __typename?: 'MoneyV2'; currencyCode: CurrencyCode; amount: string };
-          totalShippingPrice: {
-            __typename?: 'MoneyV2';
-            amount: string;
-            currencyCode: CurrencyCode;
-          };
-          totalTaxV2?: {
-            __typename?: 'MoneyV2';
-            amount: string;
-            currencyCode: CurrencyCode;
-          } | null;
-          customAttributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-          shippingAddress?: {
-            __typename?: 'MailingAddress';
-            id: string;
-            name?: string | null;
-            address1?: string | null;
-            address2?: string | null;
-            city?: string | null;
-            country?: string | null;
-            company?: string | null;
-            countryCode?: string | null;
-            countryCodeV2?: CountryCode | null;
-            firstName?: string | null;
-            formattedArea?: string | null;
-            formatted: Array<string>;
-            lastName?: string | null;
-            latitude?: number | null;
-            longitude?: number | null;
-            phone?: string | null;
-            province?: string | null;
-            provinceCode?: string | null;
-            zip?: string | null;
-          } | null;
-          metafields: Array<{
-            __typename?: 'Metafield';
-            id: string;
-            key: string;
-            namespace: string;
-            value: string;
-            type: string;
-            createdAt: string;
-            updatedAt: string;
-            parentResource:
-              | {
-                  __typename?: 'Article';
-                  id: string;
-                  metafields: Array<{
-                    __typename?: 'Metafield';
-                    id: string;
-                    key: string;
-                    value: string;
-                    type: string;
-                    createdAt: string;
-                    updatedAt: string;
-                  } | null>;
-                }
-              | { __typename?: 'Blog'; id: string }
-              | { __typename?: 'Cart'; id: string }
-              | { __typename?: 'Collection'; id: string }
-              | { __typename?: 'Company'; id: string }
-              | { __typename?: 'CompanyLocation'; id: string }
-              | { __typename?: 'Customer'; id: string }
-              | { __typename?: 'Location'; id: string }
-              | { __typename?: 'Market'; id: string }
-              | { __typename?: 'Order'; id: string }
-              | { __typename?: 'Page'; id: string }
-              | { __typename?: 'Product'; id: string }
-              | { __typename?: 'ProductVariant'; id: string }
-              | { __typename?: 'SellingPlan'; id: string }
-              | { __typename?: 'Shop'; id: string };
-          } | null>;
-        };
-      }>;
-      pageInfo: {
-        __typename?: 'PageInfo';
-        hasNextPage: boolean;
-        hasPreviousPage: boolean;
-        startCursor?: string | null;
-        endCursor?: string | null;
-      };
-    };
-  } | null;
-};
 
-export type UserErrorsFieldsFragment = {
-  __typename?: 'UserError';
-  field?: Array<string> | null;
-  message: string;
-};
+export type GetCustomerOrdersQuery = { __typename?: 'QueryRoot', customer?: { __typename?: 'Customer', orders: { __typename?: 'OrderConnection', totalCount: string, edges: Array<{ __typename?: 'OrderEdge', cursor: string, node: { __typename?: 'Order', id: string, name: string, fulfillmentStatus: OrderFulfillmentStatus, canceledAt?: string | null, cancelReason?: OrderCancelReason | null, currencyCode: CurrencyCode, customerUrl?: string | null, email?: string | null, financialStatus?: OrderFinancialStatus | null, orderNumber: number, phone?: string | null, processedAt: string, successfulFulfillments?: Array<{ __typename?: 'Fulfillment', trackingCompany?: string | null, trackingInfo: Array<{ __typename?: 'FulfillmentTrackingInfo', number?: string | null, url?: string | null }>, fulfillmentLineItems: { __typename?: 'FulfillmentLineItemConnection', edges: Array<{ __typename?: 'FulfillmentLineItemEdge', node: { __typename?: 'FulfillmentLineItem', lineItem: { __typename?: 'OrderLineItem', quantity: number, title: string, discountedTotalPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, variant?: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } | null } } }> } }> | null, subtotalPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, totalPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalRefunded: { __typename?: 'MoneyV2', currencyCode: CurrencyCode, amount: string }, totalShippingPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalTaxV2?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, customAttributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, shippingAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+              | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+              | { __typename?: 'Blog', id: string }
+              | { __typename?: 'Cart', id: string }
+              | { __typename?: 'Collection', id: string }
+              | { __typename?: 'Company', id: string }
+              | { __typename?: 'CompanyLocation', id: string }
+              | { __typename?: 'Customer', id: string }
+              | { __typename?: 'Location', id: string }
+              | { __typename?: 'Market', id: string }
+              | { __typename?: 'Order', id: string }
+              | { __typename?: 'Page', id: string }
+              | { __typename?: 'Product', id: string }
+              | { __typename?: 'ProductVariant', id: string }
+              | { __typename?: 'SellingPlan', id: string }
+              | { __typename?: 'Shop', id: string }
+             } | null> } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } } } | null };
 
-export type CartUserErrorsFragment = {
-  __typename?: 'CartUserError';
-  field?: Array<string> | null;
-  message: string;
-  code?: CartErrorCode | null;
-};
+export type UserErrorsFieldsFragment = { __typename?: 'UserError', field?: Array<string> | null, message: string };
 
-export type PageInfoFieldsFragment = {
-  __typename?: 'PageInfo';
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-  startCursor?: string | null;
-  endCursor?: string | null;
-};
+export type CartUserErrorsFragment = { __typename?: 'CartUserError', field?: Array<string> | null, message: string, code?: CartErrorCode | null };
 
-export type CartLineFieldsFragment = {
-  __typename?: 'BaseCartLineConnection';
-  edges: Array<{
-    __typename?: 'BaseCartLineEdge';
-    cursor: string;
-    node:
-      | {
-          __typename?: 'CartLine';
-          id: string;
-          quantity: number;
-          cost: {
-            __typename?: 'CartLineCost';
-            amountPerQuantity: {
-              __typename?: 'MoneyV2';
-              amount: string;
-              currencyCode: CurrencyCode;
-            };
-            subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-            totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-          };
-          merchandise: {
-            __typename?: 'ProductVariant';
-            id: string;
-            availableForSale: boolean;
-            quantityAvailable?: number | null;
-            title: string;
-            sku?: string | null;
-            weight?: number | null;
-            weightUnit: WeightUnit;
-            compareAtPrice?: {
-              __typename?: 'MoneyV2';
-              amount: string;
-              currencyCode: CurrencyCode;
-            } | null;
-            selectedOptions: Array<{ __typename?: 'SelectedOption'; name: string; value: string }>;
-            image?: {
-              __typename?: 'Image';
-              url: string;
-              src: string;
-              altText?: string | null;
-              width?: number | null;
-              height?: number | null;
-              small: string;
-              medium: string;
-              large: string;
-              blurDataURL: string;
-            } | null;
-            price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-            product: {
-              __typename?: 'Product';
-              handle: string;
-              title: string;
-              productType: string;
-              collections: {
-                __typename?: 'CollectionConnection';
-                nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-              };
-            };
-          };
-          attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-          discountAllocations: Array<
-            | {
-                __typename?: 'CartAutomaticDiscountAllocation';
-                targetType: DiscountApplicationTargetType;
-                discountedAmount: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                };
-              }
-            | {
-                __typename?: 'CartCodeDiscountAllocation';
-                targetType: DiscountApplicationTargetType;
-                discountedAmount: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                };
-              }
-            | {
-                __typename?: 'CartCustomDiscountAllocation';
-                targetType: DiscountApplicationTargetType;
-                discountedAmount: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                };
-              }
-          >;
-        }
-      | {
-          __typename?: 'ComponentizableCartLine';
-          id: string;
-          quantity: number;
-          cost: {
-            __typename?: 'CartLineCost';
-            amountPerQuantity: {
-              __typename?: 'MoneyV2';
-              amount: string;
-              currencyCode: CurrencyCode;
-            };
-            subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-            totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-          };
-          merchandise: {
-            __typename?: 'ProductVariant';
-            id: string;
-            availableForSale: boolean;
-            quantityAvailable?: number | null;
-            title: string;
-            sku?: string | null;
-            weight?: number | null;
-            weightUnit: WeightUnit;
-            compareAtPrice?: {
-              __typename?: 'MoneyV2';
-              amount: string;
-              currencyCode: CurrencyCode;
-            } | null;
-            selectedOptions: Array<{ __typename?: 'SelectedOption'; name: string; value: string }>;
-            image?: {
-              __typename?: 'Image';
-              url: string;
-              src: string;
-              altText?: string | null;
-              width?: number | null;
-              height?: number | null;
-              small: string;
-              medium: string;
-              large: string;
-              blurDataURL: string;
-            } | null;
-            price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-            product: {
-              __typename?: 'Product';
-              handle: string;
-              title: string;
-              productType: string;
-              collections: {
-                __typename?: 'CollectionConnection';
-                nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-              };
-            };
-          };
-          attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-          discountAllocations: Array<
-            | {
-                __typename?: 'CartAutomaticDiscountAllocation';
-                targetType: DiscountApplicationTargetType;
-                discountedAmount: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                };
-              }
-            | {
-                __typename?: 'CartCodeDiscountAllocation';
-                targetType: DiscountApplicationTargetType;
-                discountedAmount: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                };
-              }
-            | {
-                __typename?: 'CartCustomDiscountAllocation';
-                targetType: DiscountApplicationTargetType;
-                discountedAmount: {
-                  __typename?: 'MoneyV2';
-                  amount: string;
-                  currencyCode: CurrencyCode;
-                };
-              }
-          >;
-        };
-  }>;
-  pageInfo: {
-    __typename?: 'PageInfo';
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-    startCursor?: string | null;
-    endCursor?: string | null;
-  };
-};
+export type PageInfoFieldsFragment = { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null };
 
-export type ProductVariantFieldsFragment = {
-  __typename?: 'ProductVariant';
-  id: string;
-  availableForSale: boolean;
-  quantityAvailable?: number | null;
-  title: string;
-  sku?: string | null;
-  weight?: number | null;
-  weightUnit: WeightUnit;
-  compareAtPrice?: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode } | null;
-  selectedOptions: Array<{ __typename?: 'SelectedOption'; name: string; value: string }>;
-  image?: {
-    __typename?: 'Image';
-    url: string;
-    src: string;
-    altText?: string | null;
-    width?: number | null;
-    height?: number | null;
-    small: string;
-    medium: string;
-    large: string;
-    blurDataURL: string;
-  } | null;
-  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-  product: {
-    __typename?: 'Product';
-    handle: string;
-    title: string;
-    collections: {
-      __typename?: 'CollectionConnection';
-      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-    };
-  };
-};
+export type CartLineFieldsFragment = { __typename?: 'BaseCartLineConnection', edges: Array<{ __typename?: 'BaseCartLineEdge', cursor: string, node:
+      | { __typename?: 'CartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+          | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+          | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+          | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+        > }
+      | { __typename?: 'ComponentizableCartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+          | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+          | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+          | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+        > }
+     }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } };
 
-export type ProductDetailsFragment = {
-  __typename?: 'Product';
-  handle: string;
-  title: string;
-  collections: {
-    __typename?: 'CollectionConnection';
-    nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-  };
-};
+export type ProductVariantFieldsFragment = { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } };
 
-export type MoneyFieldsFragment = {
-  __typename?: 'MoneyV2';
-  amount: string;
-  currencyCode: CurrencyCode;
-};
+export type ProductDetailsFragment = { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } };
 
-export type AddressFieldsFragment = {
-  __typename?: 'MailingAddress';
-  id: string;
-  name?: string | null;
-  address1?: string | null;
-  address2?: string | null;
-  city?: string | null;
-  country?: string | null;
-  company?: string | null;
-  countryCode?: string | null;
-  countryCodeV2?: CountryCode | null;
-  firstName?: string | null;
-  formattedArea?: string | null;
-  lastName?: string | null;
-  latitude?: number | null;
-  longitude?: number | null;
-  phone?: string | null;
-  province?: string | null;
-  provinceCode?: string | null;
-  zip?: string | null;
-};
+export type MoneyFieldsFragment = { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode };
 
-export type CustomerDetailsFragment = {
-  __typename?: 'Customer';
-  id: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  email?: string | null;
-  phone?: string | null;
-  acceptsMarketing: boolean;
-  createdAt: string;
-  updatedAt: string;
-  defaultAddress?: {
-    __typename?: 'MailingAddress';
-    id: string;
-    name?: string | null;
-    address1?: string | null;
-    address2?: string | null;
-    city?: string | null;
-    country?: string | null;
-    company?: string | null;
-    countryCode?: string | null;
-    countryCodeV2?: CountryCode | null;
-    firstName?: string | null;
-    formattedArea?: string | null;
-    lastName?: string | null;
-    latitude?: number | null;
-    longitude?: number | null;
-    phone?: string | null;
-    province?: string | null;
-    provinceCode?: string | null;
-    zip?: string | null;
-  } | null;
-};
+export type AddressFieldsFragment = { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null };
 
-export type BuyerIdentityFieldsFragment = {
-  __typename?: 'CartBuyerIdentity';
-  email?: string | null;
-  phone?: string | null;
-  countryCode?: CountryCode | null;
-  customer?: {
-    __typename?: 'Customer';
-    id: string;
-    firstName?: string | null;
-    lastName?: string | null;
-    email?: string | null;
-    phone?: string | null;
-    acceptsMarketing: boolean;
-    createdAt: string;
-    updatedAt: string;
-    defaultAddress?: {
-      __typename?: 'MailingAddress';
-      id: string;
-      name?: string | null;
-      address1?: string | null;
-      address2?: string | null;
-      city?: string | null;
-      country?: string | null;
-      company?: string | null;
-      countryCode?: string | null;
-      countryCodeV2?: CountryCode | null;
-      firstName?: string | null;
-      formattedArea?: string | null;
-      lastName?: string | null;
-      latitude?: number | null;
-      longitude?: number | null;
-      phone?: string | null;
-      province?: string | null;
-      provinceCode?: string | null;
-      zip?: string | null;
-    } | null;
-  } | null;
-  deliveryAddressPreferences: Array<{
-    __typename?: 'MailingAddress';
-    id: string;
-    name?: string | null;
-    address1?: string | null;
-    address2?: string | null;
-    city?: string | null;
-    country?: string | null;
-    company?: string | null;
-    countryCode?: string | null;
-    countryCodeV2?: CountryCode | null;
-    firstName?: string | null;
-    formattedArea?: string | null;
-    lastName?: string | null;
-    latitude?: number | null;
-    longitude?: number | null;
-    phone?: string | null;
-    province?: string | null;
-    provinceCode?: string | null;
-    zip?: string | null;
-  }>;
-};
+export type CustomerDetailsFragment = { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null };
 
-export type CartCostFieldsFragment = {
-  __typename?: 'CartCost';
-  totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-  subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-  totalTaxAmount?: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode } | null;
-  totalDutyAmount?: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode } | null;
-};
+export type BuyerIdentityFieldsFragment = { __typename?: 'CartBuyerIdentity', email?: string | null, phone?: string | null, countryCode?: CountryCode | null, customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, deliveryAddressPreferences: Array<{ __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null }> };
 
-export type GiftCardFieldsFragment = {
-  __typename?: 'AppliedGiftCard';
-  id: string;
-  lastCharacters: string;
-  amountUsed: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-  balance: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-  presentmentAmountUsed: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-};
+export type CartCostFieldsFragment = { __typename?: 'CartCost', totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalTaxAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, totalDutyAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null };
 
-export type CartFieldsFragment = {
-  __typename?: 'Cart';
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  checkoutUrl: string;
-  totalQuantity: number;
-  note?: string | null;
-  appliedGiftCards: Array<{
-    __typename?: 'AppliedGiftCard';
-    id: string;
-    lastCharacters: string;
-    amountUsed: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-    balance: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-    presentmentAmountUsed: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-  }>;
-  lines: {
-    __typename?: 'BaseCartLineConnection';
-    edges: Array<{
-      __typename?: 'BaseCartLineEdge';
-      cursor: string;
-      node:
-        | {
-            __typename?: 'CartLine';
-            id: string;
-            quantity: number;
-            cost: {
-              __typename?: 'CartLineCost';
-              amountPerQuantity: {
-                __typename?: 'MoneyV2';
-                amount: string;
-                currencyCode: CurrencyCode;
-              };
-              subtotalAmount: {
-                __typename?: 'MoneyV2';
-                amount: string;
-                currencyCode: CurrencyCode;
-              };
-              totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-            };
-            merchandise: {
-              __typename?: 'ProductVariant';
-              id: string;
-              availableForSale: boolean;
-              quantityAvailable?: number | null;
-              title: string;
-              sku?: string | null;
-              weight?: number | null;
-              weightUnit: WeightUnit;
-              compareAtPrice?: {
-                __typename?: 'MoneyV2';
-                amount: string;
-                currencyCode: CurrencyCode;
-              } | null;
-              selectedOptions: Array<{
-                __typename?: 'SelectedOption';
-                name: string;
-                value: string;
-              }>;
-              image?: {
-                __typename?: 'Image';
-                url: string;
-                src: string;
-                altText?: string | null;
-                width?: number | null;
-                height?: number | null;
-                small: string;
-                medium: string;
-                large: string;
-                blurDataURL: string;
-              } | null;
-              price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-              product: {
-                __typename?: 'Product';
-                handle: string;
-                title: string;
-                productType: string;
-                collections: {
-                  __typename?: 'CollectionConnection';
-                  nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                };
-              };
-            };
-            attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-            discountAllocations: Array<
-              | {
-                  __typename?: 'CartAutomaticDiscountAllocation';
-                  targetType: DiscountApplicationTargetType;
-                  discountedAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                }
-              | {
-                  __typename?: 'CartCodeDiscountAllocation';
-                  targetType: DiscountApplicationTargetType;
-                  discountedAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                }
-              | {
-                  __typename?: 'CartCustomDiscountAllocation';
-                  targetType: DiscountApplicationTargetType;
-                  discountedAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                }
-            >;
-          }
-        | {
-            __typename?: 'ComponentizableCartLine';
-            id: string;
-            quantity: number;
-            cost: {
-              __typename?: 'CartLineCost';
-              amountPerQuantity: {
-                __typename?: 'MoneyV2';
-                amount: string;
-                currencyCode: CurrencyCode;
-              };
-              subtotalAmount: {
-                __typename?: 'MoneyV2';
-                amount: string;
-                currencyCode: CurrencyCode;
-              };
-              totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-            };
-            merchandise: {
-              __typename?: 'ProductVariant';
-              id: string;
-              availableForSale: boolean;
-              quantityAvailable?: number | null;
-              title: string;
-              sku?: string | null;
-              weight?: number | null;
-              weightUnit: WeightUnit;
-              compareAtPrice?: {
-                __typename?: 'MoneyV2';
-                amount: string;
-                currencyCode: CurrencyCode;
-              } | null;
-              selectedOptions: Array<{
-                __typename?: 'SelectedOption';
-                name: string;
-                value: string;
-              }>;
-              image?: {
-                __typename?: 'Image';
-                url: string;
-                src: string;
-                altText?: string | null;
-                width?: number | null;
-                height?: number | null;
-                small: string;
-                medium: string;
-                large: string;
-                blurDataURL: string;
-              } | null;
-              price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-              product: {
-                __typename?: 'Product';
-                handle: string;
-                title: string;
-                productType: string;
-                collections: {
-                  __typename?: 'CollectionConnection';
-                  nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                };
-              };
-            };
-            attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-            discountAllocations: Array<
-              | {
-                  __typename?: 'CartAutomaticDiscountAllocation';
-                  targetType: DiscountApplicationTargetType;
-                  discountedAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                }
-              | {
-                  __typename?: 'CartCodeDiscountAllocation';
-                  targetType: DiscountApplicationTargetType;
-                  discountedAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                }
-              | {
-                  __typename?: 'CartCustomDiscountAllocation';
-                  targetType: DiscountApplicationTargetType;
-                  discountedAmount: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  };
-                }
-            >;
-          };
-    }>;
-    pageInfo: {
-      __typename?: 'PageInfo';
-      hasNextPage: boolean;
-      hasPreviousPage: boolean;
-      startCursor?: string | null;
-      endCursor?: string | null;
-    };
-  };
-  attributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-  cost: {
-    __typename?: 'CartCost';
-    totalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-    subtotalAmount: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-    totalTaxAmount?: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode } | null;
-    totalDutyAmount?: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode } | null;
-  };
-  discountCodes: Array<{ __typename?: 'CartDiscountCode'; applicable: boolean; code: string }>;
-  buyerIdentity: {
-    __typename?: 'CartBuyerIdentity';
-    email?: string | null;
-    phone?: string | null;
-    countryCode?: CountryCode | null;
-    customer?: {
-      __typename?: 'Customer';
-      id: string;
-      firstName?: string | null;
-      lastName?: string | null;
-      email?: string | null;
-      phone?: string | null;
-      acceptsMarketing: boolean;
-      createdAt: string;
-      updatedAt: string;
-      defaultAddress?: {
-        __typename?: 'MailingAddress';
-        id: string;
-        name?: string | null;
-        address1?: string | null;
-        address2?: string | null;
-        city?: string | null;
-        country?: string | null;
-        company?: string | null;
-        countryCode?: string | null;
-        countryCodeV2?: CountryCode | null;
-        firstName?: string | null;
-        formattedArea?: string | null;
-        lastName?: string | null;
-        latitude?: number | null;
-        longitude?: number | null;
-        phone?: string | null;
-        province?: string | null;
-        provinceCode?: string | null;
-        zip?: string | null;
-      } | null;
-    } | null;
-    deliveryAddressPreferences: Array<{
-      __typename?: 'MailingAddress';
-      id: string;
-      name?: string | null;
-      address1?: string | null;
-      address2?: string | null;
-      city?: string | null;
-      country?: string | null;
-      company?: string | null;
-      countryCode?: string | null;
-      countryCodeV2?: CountryCode | null;
-      firstName?: string | null;
-      formattedArea?: string | null;
-      lastName?: string | null;
-      latitude?: number | null;
-      longitude?: number | null;
-      phone?: string | null;
-      province?: string | null;
-      provinceCode?: string | null;
-      zip?: string | null;
-    }>;
-  };
-};
+export type GiftCardFieldsFragment = { __typename?: 'AppliedGiftCard', id: string, lastCharacters: string, amountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, balance: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, presentmentAmountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } };
 
-export type ProductOptionFieldsFragment = {
-  __typename?: 'ProductOption';
-  id: string;
-  name: string;
-  optionValues: Array<{
-    __typename?: 'ProductOptionValue';
-    id: string;
-    name: string;
-    firstSelectableVariant?: { __typename?: 'ProductVariant'; id: string } | null;
-    swatch?: { __typename?: 'ProductOptionValueSwatch'; color?: string | null } | null;
-  }>;
-};
+export type CartFieldsFragment = { __typename?: 'Cart', id: string, createdAt: string, updatedAt: string, checkoutUrl: string, totalQuantity: number, note?: string | null, appliedGiftCards: Array<{ __typename?: 'AppliedGiftCard', id: string, lastCharacters: string, amountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, balance: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, presentmentAmountUsed: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }>, lines: { __typename?: 'BaseCartLineConnection', edges: Array<{ __typename?: 'BaseCartLineEdge', cursor: string, node:
+        | { __typename?: 'CartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+            | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+            | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+            | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+          > }
+        | { __typename?: 'ComponentizableCartLine', id: string, quantity: number, cost: { __typename?: 'CartLineCost', amountPerQuantity: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, merchandise: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, productType: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, discountAllocations: Array<
+            | { __typename?: 'CartAutomaticDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+            | { __typename?: 'CartCodeDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+            | { __typename?: 'CartCustomDiscountAllocation', targetType: DiscountApplicationTargetType, discountedAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }
+          > }
+       }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null } }, attributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, cost: { __typename?: 'CartCost', totalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, subtotalAmount: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalTaxAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, totalDutyAmount?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null }, discountCodes: Array<{ __typename?: 'CartDiscountCode', applicable: boolean, code: string }>, buyerIdentity: { __typename?: 'CartBuyerIdentity', email?: string | null, phone?: string | null, countryCode?: CountryCode | null, customer?: { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null } | null, deliveryAddressPreferences: Array<{ __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null }> } };
 
-export type ProductImageConnectionFragment = {
-  __typename?: 'ImageConnection';
-  edges: Array<{
-    __typename?: 'ImageEdge';
-    node: {
-      __typename?: 'Image';
-      url: string;
-      src: string;
-      altText?: string | null;
-      width?: number | null;
-      height?: number | null;
-      small: string;
-      medium: string;
-      large: string;
-      blurDataURL: string;
-    };
-  }>;
-};
+export type ProductOptionFieldsFragment = { __typename?: 'ProductOption', id: string, name: string, optionValues: Array<{ __typename?: 'ProductOptionValue', id: string, name: string, firstSelectableVariant?: { __typename?: 'ProductVariant', id: string } | null, swatch?: { __typename?: 'ProductOptionValueSwatch', color?: string | null } | null }> };
 
-export type ProductPriceRangeFragment = {
-  __typename?: 'ProductPriceRange';
-  maxVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-  minVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-};
+export type ProductImageConnectionFragment = { __typename?: 'ImageConnection', edges: Array<{ __typename?: 'ImageEdge', node: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } }> };
 
-export type ProductVariantConnectionFragment = {
-  __typename?: 'ProductVariantConnection';
-  edges: Array<{
-    __typename?: 'ProductVariantEdge';
-    node: {
-      __typename?: 'ProductVariant';
-      id: string;
-      availableForSale: boolean;
-      quantityAvailable?: number | null;
-      title: string;
-      sku?: string | null;
-      weight?: number | null;
-      weightUnit: WeightUnit;
-      compareAtPrice?: {
-        __typename?: 'MoneyV2';
-        amount: string;
-        currencyCode: CurrencyCode;
-      } | null;
-      selectedOptions: Array<{ __typename?: 'SelectedOption'; name: string; value: string }>;
-      image?: {
-        __typename?: 'Image';
-        url: string;
-        src: string;
-        altText?: string | null;
-        width?: number | null;
-        height?: number | null;
-        small: string;
-        medium: string;
-        large: string;
-        blurDataURL: string;
-      } | null;
-      price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-      product: {
-        __typename?: 'Product';
-        handle: string;
-        title: string;
-        collections: {
-          __typename?: 'CollectionConnection';
-          nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-        };
-      };
-    };
-  }>;
-};
+export type ProductPriceRangeFragment = { __typename?: 'ProductPriceRange', maxVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, minVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } };
 
-export type ProductFieldsFragment = {
-  __typename?: 'Product';
-  handle: string;
-  id: string;
-  title: string;
-  availableForSale: boolean;
-  description: string;
-  descriptionHtml: string;
-  productType: string;
-  tags: Array<string>;
-  totalInventory?: number | null;
-  vendor: string;
-  updatedAt: string;
-  featuredImage?: {
-    __typename?: 'Image';
-    url: string;
-    src: string;
-    altText?: string | null;
-    width?: number | null;
-    height?: number | null;
-    small: string;
-    medium: string;
-    large: string;
-    blurDataURL: string;
-  } | null;
-  images: {
-    __typename?: 'ImageConnection';
-    edges: Array<{
-      __typename?: 'ImageEdge';
-      node: {
-        __typename?: 'Image';
-        url: string;
-        src: string;
-        altText?: string | null;
-        width?: number | null;
-        height?: number | null;
-        small: string;
-        medium: string;
-        large: string;
-        blurDataURL: string;
-      };
-    }>;
-  };
-  priceRange: {
-    __typename?: 'ProductPriceRange';
-    maxVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-    minVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-  };
-  options: Array<{
-    __typename?: 'ProductOption';
-    id: string;
-    name: string;
-    optionValues: Array<{
-      __typename?: 'ProductOptionValue';
-      id: string;
-      name: string;
-      firstSelectableVariant?: { __typename?: 'ProductVariant'; id: string } | null;
-      swatch?: { __typename?: 'ProductOptionValueSwatch'; color?: string | null } | null;
-    }>;
-  }>;
-  collections: {
-    __typename?: 'CollectionConnection';
-    edges: Array<{
-      __typename?: 'CollectionEdge';
-      node: { __typename?: 'Collection'; handle: string };
-    }>;
-  };
-  variants: {
-    __typename?: 'ProductVariantConnection';
-    edges: Array<{
-      __typename?: 'ProductVariantEdge';
-      node: {
-        __typename?: 'ProductVariant';
-        id: string;
-        availableForSale: boolean;
-        quantityAvailable?: number | null;
-        title: string;
-        sku?: string | null;
-        weight?: number | null;
-        weightUnit: WeightUnit;
-        compareAtPrice?: {
-          __typename?: 'MoneyV2';
-          amount: string;
-          currencyCode: CurrencyCode;
-        } | null;
-        selectedOptions: Array<{ __typename?: 'SelectedOption'; name: string; value: string }>;
-        image?: {
-          __typename?: 'Image';
-          url: string;
-          src: string;
-          altText?: string | null;
-          width?: number | null;
-          height?: number | null;
-          small: string;
-          medium: string;
-          large: string;
-          blurDataURL: string;
-        } | null;
-        price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        product: {
-          __typename?: 'Product';
-          handle: string;
-          title: string;
-          collections: {
-            __typename?: 'CollectionConnection';
-            nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-          };
-        };
-      };
-    }>;
-  };
-  metafields: Array<{
-    __typename?: 'Metafield';
-    id: string;
-    key: string;
-    namespace: string;
-    value: string;
-    type: string;
-    createdAt: string;
-    updatedAt: string;
-    parentResource:
-      | {
-          __typename?: 'Article';
-          id: string;
-          metafields: Array<{
-            __typename?: 'Metafield';
-            id: string;
-            key: string;
-            value: string;
-            type: string;
-            createdAt: string;
-            updatedAt: string;
-          } | null>;
-        }
-      | { __typename?: 'Blog'; id: string }
-      | { __typename?: 'Cart'; id: string }
-      | { __typename?: 'Collection'; id: string }
-      | { __typename?: 'Company'; id: string }
-      | { __typename?: 'CompanyLocation'; id: string }
-      | { __typename?: 'Customer'; id: string }
-      | { __typename?: 'Location'; id: string }
-      | { __typename?: 'Market'; id: string }
-      | { __typename?: 'Order'; id: string }
-      | { __typename?: 'Page'; id: string }
-      | { __typename?: 'Product'; id: string }
-      | { __typename?: 'ProductVariant'; id: string }
-      | { __typename?: 'SellingPlan'; id: string }
-      | { __typename?: 'Shop'; id: string };
-  } | null>;
-  seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-};
+export type ProductVariantConnectionFragment = { __typename?: 'ProductVariantConnection', edges: Array<{ __typename?: 'ProductVariantEdge', node: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } }> };
 
-export type CollectionFieldsFragment = {
-  __typename?: 'Collection';
-  handle: string;
-  description: string;
-  title: string;
-  id: string;
-  updatedAt: string;
-  image?: {
-    __typename?: 'Image';
-    url: string;
-    src: string;
-    altText?: string | null;
-    width?: number | null;
-    height?: number | null;
-    small: string;
-    medium: string;
-    large: string;
-    blurDataURL: string;
-  } | null;
-  seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-  metafields: Array<{
-    __typename?: 'Metafield';
-    id: string;
-    key: string;
-    namespace: string;
-    value: string;
-    type: string;
-    createdAt: string;
-    updatedAt: string;
-    parentResource:
-      | {
-          __typename?: 'Article';
-          id: string;
-          metafields: Array<{
-            __typename?: 'Metafield';
-            id: string;
-            key: string;
-            value: string;
-            type: string;
-            createdAt: string;
-            updatedAt: string;
-          } | null>;
-        }
-      | { __typename?: 'Blog'; id: string }
-      | { __typename?: 'Cart'; id: string }
-      | { __typename?: 'Collection'; id: string }
-      | { __typename?: 'Company'; id: string }
-      | { __typename?: 'CompanyLocation'; id: string }
-      | { __typename?: 'Customer'; id: string }
-      | { __typename?: 'Location'; id: string }
-      | { __typename?: 'Market'; id: string }
-      | { __typename?: 'Order'; id: string }
-      | { __typename?: 'Page'; id: string }
-      | { __typename?: 'Product'; id: string }
-      | { __typename?: 'ProductVariant'; id: string }
-      | { __typename?: 'SellingPlan'; id: string }
-      | { __typename?: 'Shop'; id: string };
-  } | null>;
-};
+export type ProductFieldsFragment = { __typename?: 'Product', handle: string, id: string, title: string, availableForSale: boolean, description: string, descriptionHtml: string, productType: string, tags: Array<string>, totalInventory?: number | null, vendor: string, updatedAt: string, featuredImage?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, images: { __typename?: 'ImageConnection', edges: Array<{ __typename?: 'ImageEdge', node: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } }> }, priceRange: { __typename?: 'ProductPriceRange', maxVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, minVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, options: Array<{ __typename?: 'ProductOption', id: string, name: string, optionValues: Array<{ __typename?: 'ProductOptionValue', id: string, name: string, firstSelectableVariant?: { __typename?: 'ProductVariant', id: string } | null, swatch?: { __typename?: 'ProductOptionValueSwatch', color?: string | null } | null }> }>, collections: { __typename?: 'CollectionConnection', edges: Array<{ __typename?: 'CollectionEdge', node: { __typename?: 'Collection', handle: string } }> }, variants: { __typename?: 'ProductVariantConnection', edges: Array<{ __typename?: 'ProductVariantEdge', node: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } }> }, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+      | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+      | { __typename?: 'Blog', id: string }
+      | { __typename?: 'Cart', id: string }
+      | { __typename?: 'Collection', id: string }
+      | { __typename?: 'Company', id: string }
+      | { __typename?: 'CompanyLocation', id: string }
+      | { __typename?: 'Customer', id: string }
+      | { __typename?: 'Location', id: string }
+      | { __typename?: 'Market', id: string }
+      | { __typename?: 'Order', id: string }
+      | { __typename?: 'Page', id: string }
+      | { __typename?: 'Product', id: string }
+      | { __typename?: 'ProductVariant', id: string }
+      | { __typename?: 'SellingPlan', id: string }
+      | { __typename?: 'Shop', id: string }
+     } | null>, seo: { __typename?: 'SEO', description?: string | null, title?: string | null } };
 
-export type ProductFilterFieldsFragment = {
-  __typename?: 'Filter';
-  id: string;
-  label: string;
-  type: FilterType;
-  values: Array<{
-    __typename?: 'FilterValue';
-    id: string;
-    label: string;
-    count: number;
-    input: any;
-  }>;
-};
+export type CollectionFieldsFragment = { __typename?: 'Collection', handle: string, description: string, title: string, id: string, updatedAt: string, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, seo: { __typename?: 'SEO', description?: string | null, title?: string | null }, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+      | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+      | { __typename?: 'Blog', id: string }
+      | { __typename?: 'Cart', id: string }
+      | { __typename?: 'Collection', id: string }
+      | { __typename?: 'Company', id: string }
+      | { __typename?: 'CompanyLocation', id: string }
+      | { __typename?: 'Customer', id: string }
+      | { __typename?: 'Location', id: string }
+      | { __typename?: 'Market', id: string }
+      | { __typename?: 'Order', id: string }
+      | { __typename?: 'Page', id: string }
+      | { __typename?: 'Product', id: string }
+      | { __typename?: 'ProductVariant', id: string }
+      | { __typename?: 'SellingPlan', id: string }
+      | { __typename?: 'Shop', id: string }
+     } | null> };
 
-export type CustomerAccessTokenFieldsFragment = {
-  __typename?: 'CustomerAccessToken';
-  accessToken: string;
-  expiresAt: string;
-};
+export type ProductFilterFieldsFragment = { __typename?: 'Filter', id: string, label: string, type: FilterType, values: Array<{ __typename?: 'FilterValue', id: string, label: string, count: number, input: any }> };
 
-export type CustomerAddressFieldsFragment = {
-  __typename?: 'MailingAddress';
-  id: string;
-  name?: string | null;
-  address1?: string | null;
-  address2?: string | null;
-  city?: string | null;
-  country?: string | null;
-  company?: string | null;
-  countryCode?: string | null;
-  countryCodeV2?: CountryCode | null;
-  firstName?: string | null;
-  formattedArea?: string | null;
-  formatted: Array<string>;
-  lastName?: string | null;
-  latitude?: number | null;
-  longitude?: number | null;
-  phone?: string | null;
-  province?: string | null;
-  provinceCode?: string | null;
-  zip?: string | null;
-};
+export type CustomerAccessTokenFieldsFragment = { __typename?: 'CustomerAccessToken', accessToken: string, expiresAt: string };
 
-export type CustomerFieldsFragment = {
-  __typename?: 'Customer';
-  id: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  email?: string | null;
-  phone?: string | null;
-  acceptsMarketing: boolean;
-  createdAt: string;
-  updatedAt: string;
-  defaultAddress?: {
-    __typename?: 'MailingAddress';
-    id: string;
-    name?: string | null;
-    address1?: string | null;
-    address2?: string | null;
-    city?: string | null;
-    country?: string | null;
-    company?: string | null;
-    countryCode?: string | null;
-    countryCodeV2?: CountryCode | null;
-    firstName?: string | null;
-    formattedArea?: string | null;
-    formatted: Array<string>;
-    lastName?: string | null;
-    latitude?: number | null;
-    longitude?: number | null;
-    phone?: string | null;
-    province?: string | null;
-    provinceCode?: string | null;
-    zip?: string | null;
-  } | null;
-};
+export type CustomerAddressFieldsFragment = { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null };
 
-export type CustomerUserErrorFieldsFragment = {
-  __typename?: 'CustomerUserError';
-  field?: Array<string> | null;
-  message: string;
-  code?: CustomerErrorCode | null;
-};
+export type CustomerFieldsFragment = { __typename?: 'Customer', id: string, firstName?: string | null, lastName?: string | null, email?: string | null, phone?: string | null, acceptsMarketing: boolean, createdAt: string, updatedAt: string, defaultAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null };
 
-export type ImageFieldsFragment = {
-  __typename?: 'Image';
-  url: string;
-  src: string;
-  altText?: string | null;
-  width?: number | null;
-  height?: number | null;
-  small: string;
-  medium: string;
-  large: string;
-  blurDataURL: string;
-};
+export type CustomerUserErrorFieldsFragment = { __typename?: 'CustomerUserError', field?: Array<string> | null, message: string, code?: CustomerErrorCode | null };
 
-export type OrderLineItemFieldsFragment = {
-  __typename?: 'OrderLineItem';
-  quantity: number;
-  title: string;
-  discountedTotalPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-  variant?: {
-    __typename?: 'ProductVariant';
-    id: string;
-    availableForSale: boolean;
-    quantityAvailable?: number | null;
-    title: string;
-    sku?: string | null;
-    weight?: number | null;
-    weightUnit: WeightUnit;
-    compareAtPrice?: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode } | null;
-    selectedOptions: Array<{ __typename?: 'SelectedOption'; name: string; value: string }>;
-    image?: {
-      __typename?: 'Image';
-      url: string;
-      src: string;
-      altText?: string | null;
-      width?: number | null;
-      height?: number | null;
-      small: string;
-      medium: string;
-      large: string;
-      blurDataURL: string;
-    } | null;
-    price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-    product: {
-      __typename?: 'Product';
-      handle: string;
-      title: string;
-      collections: {
-        __typename?: 'CollectionConnection';
-        nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-      };
-    };
-  } | null;
-};
+export type ImageFieldsFragment = { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string };
 
-export type OrderFieldsFragment = {
-  __typename?: 'Order';
-  id: string;
-  name: string;
-  fulfillmentStatus: OrderFulfillmentStatus;
-  canceledAt?: string | null;
-  cancelReason?: OrderCancelReason | null;
-  currencyCode: CurrencyCode;
-  customerUrl?: string | null;
-  email?: string | null;
-  financialStatus?: OrderFinancialStatus | null;
-  orderNumber: number;
-  phone?: string | null;
-  processedAt: string;
-  successfulFulfillments?: Array<{
-    __typename?: 'Fulfillment';
-    trackingCompany?: string | null;
-    trackingInfo: Array<{
-      __typename?: 'FulfillmentTrackingInfo';
-      number?: string | null;
-      url?: string | null;
-    }>;
-    fulfillmentLineItems: {
-      __typename?: 'FulfillmentLineItemConnection';
-      edges: Array<{
-        __typename?: 'FulfillmentLineItemEdge';
-        node: {
-          __typename?: 'FulfillmentLineItem';
-          lineItem: {
-            __typename?: 'OrderLineItem';
-            quantity: number;
-            title: string;
-            discountedTotalPrice: {
-              __typename?: 'MoneyV2';
-              amount: string;
-              currencyCode: CurrencyCode;
-            };
-            variant?: {
-              __typename?: 'ProductVariant';
-              id: string;
-              availableForSale: boolean;
-              quantityAvailable?: number | null;
-              title: string;
-              sku?: string | null;
-              weight?: number | null;
-              weightUnit: WeightUnit;
-              compareAtPrice?: {
-                __typename?: 'MoneyV2';
-                amount: string;
-                currencyCode: CurrencyCode;
-              } | null;
-              selectedOptions: Array<{
-                __typename?: 'SelectedOption';
-                name: string;
-                value: string;
-              }>;
-              image?: {
-                __typename?: 'Image';
-                url: string;
-                src: string;
-                altText?: string | null;
-                width?: number | null;
-                height?: number | null;
-                small: string;
-                medium: string;
-                large: string;
-                blurDataURL: string;
-              } | null;
-              price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-              product: {
-                __typename?: 'Product';
-                handle: string;
-                title: string;
-                collections: {
-                  __typename?: 'CollectionConnection';
-                  nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                };
-              };
-            } | null;
-          };
-        };
-      }>;
-    };
-  }> | null;
-  subtotalPrice?: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode } | null;
-  totalPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-  totalRefunded: { __typename?: 'MoneyV2'; currencyCode: CurrencyCode; amount: string };
-  totalShippingPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-  totalTaxV2?: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode } | null;
-  customAttributes: Array<{ __typename?: 'Attribute'; key: string; value?: string | null }>;
-  shippingAddress?: {
-    __typename?: 'MailingAddress';
-    id: string;
-    name?: string | null;
-    address1?: string | null;
-    address2?: string | null;
-    city?: string | null;
-    country?: string | null;
-    company?: string | null;
-    countryCode?: string | null;
-    countryCodeV2?: CountryCode | null;
-    firstName?: string | null;
-    formattedArea?: string | null;
-    formatted: Array<string>;
-    lastName?: string | null;
-    latitude?: number | null;
-    longitude?: number | null;
-    phone?: string | null;
-    province?: string | null;
-    provinceCode?: string | null;
-    zip?: string | null;
-  } | null;
-  metafields: Array<{
-    __typename?: 'Metafield';
-    id: string;
-    key: string;
-    namespace: string;
-    value: string;
-    type: string;
-    createdAt: string;
-    updatedAt: string;
-    parentResource:
-      | {
-          __typename?: 'Article';
-          id: string;
-          metafields: Array<{
-            __typename?: 'Metafield';
-            id: string;
-            key: string;
-            value: string;
-            type: string;
-            createdAt: string;
-            updatedAt: string;
-          } | null>;
-        }
-      | { __typename?: 'Blog'; id: string }
-      | { __typename?: 'Cart'; id: string }
-      | { __typename?: 'Collection'; id: string }
-      | { __typename?: 'Company'; id: string }
-      | { __typename?: 'CompanyLocation'; id: string }
-      | { __typename?: 'Customer'; id: string }
-      | { __typename?: 'Location'; id: string }
-      | { __typename?: 'Market'; id: string }
-      | { __typename?: 'Order'; id: string }
-      | { __typename?: 'Page'; id: string }
-      | { __typename?: 'Product'; id: string }
-      | { __typename?: 'ProductVariant'; id: string }
-      | { __typename?: 'SellingPlan'; id: string }
-      | { __typename?: 'Shop'; id: string };
-  } | null>;
-};
+export type OrderLineItemFieldsFragment = { __typename?: 'OrderLineItem', quantity: number, title: string, discountedTotalPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, variant?: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } | null };
 
-export type MetafieldFieldsFragment = {
-  __typename?: 'Metafield';
-  id: string;
-  key: string;
-  namespace: string;
-  value: string;
-  type: string;
-  createdAt: string;
-  updatedAt: string;
-  parentResource:
-    | {
-        __typename?: 'Article';
-        id: string;
-        metafields: Array<{
-          __typename?: 'Metafield';
-          id: string;
-          key: string;
-          value: string;
-          type: string;
-          createdAt: string;
-          updatedAt: string;
-        } | null>;
-      }
-    | { __typename?: 'Blog'; id: string }
-    | { __typename?: 'Cart'; id: string }
-    | { __typename?: 'Collection'; id: string }
-    | { __typename?: 'Company'; id: string }
-    | { __typename?: 'CompanyLocation'; id: string }
-    | { __typename?: 'Customer'; id: string }
-    | { __typename?: 'Location'; id: string }
-    | { __typename?: 'Market'; id: string }
-    | { __typename?: 'Order'; id: string }
-    | { __typename?: 'Page'; id: string }
-    | { __typename?: 'Product'; id: string }
-    | { __typename?: 'ProductVariant'; id: string }
-    | { __typename?: 'SellingPlan'; id: string }
-    | { __typename?: 'Shop'; id: string };
-};
+export type OrderFieldsFragment = { __typename?: 'Order', id: string, name: string, fulfillmentStatus: OrderFulfillmentStatus, canceledAt?: string | null, cancelReason?: OrderCancelReason | null, currencyCode: CurrencyCode, customerUrl?: string | null, email?: string | null, financialStatus?: OrderFinancialStatus | null, orderNumber: number, phone?: string | null, processedAt: string, successfulFulfillments?: Array<{ __typename?: 'Fulfillment', trackingCompany?: string | null, trackingInfo: Array<{ __typename?: 'FulfillmentTrackingInfo', number?: string | null, url?: string | null }>, fulfillmentLineItems: { __typename?: 'FulfillmentLineItemConnection', edges: Array<{ __typename?: 'FulfillmentLineItemEdge', node: { __typename?: 'FulfillmentLineItem', lineItem: { __typename?: 'OrderLineItem', quantity: number, title: string, discountedTotalPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, variant?: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } | null } } }> } }> | null, subtotalPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, totalPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalRefunded: { __typename?: 'MoneyV2', currencyCode: CurrencyCode, amount: string }, totalShippingPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, totalTaxV2?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, customAttributes: Array<{ __typename?: 'Attribute', key: string, value?: string | null }>, shippingAddress?: { __typename?: 'MailingAddress', id: string, name?: string | null, address1?: string | null, address2?: string | null, city?: string | null, country?: string | null, company?: string | null, countryCode?: string | null, countryCodeV2?: CountryCode | null, firstName?: string | null, formattedArea?: string | null, formatted: Array<string>, lastName?: string | null, latitude?: number | null, longitude?: number | null, phone?: string | null, province?: string | null, provinceCode?: string | null, zip?: string | null } | null, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+      | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+      | { __typename?: 'Blog', id: string }
+      | { __typename?: 'Cart', id: string }
+      | { __typename?: 'Collection', id: string }
+      | { __typename?: 'Company', id: string }
+      | { __typename?: 'CompanyLocation', id: string }
+      | { __typename?: 'Customer', id: string }
+      | { __typename?: 'Location', id: string }
+      | { __typename?: 'Market', id: string }
+      | { __typename?: 'Order', id: string }
+      | { __typename?: 'Page', id: string }
+      | { __typename?: 'Product', id: string }
+      | { __typename?: 'ProductVariant', id: string }
+      | { __typename?: 'SellingPlan', id: string }
+      | { __typename?: 'Shop', id: string }
+     } | null> };
+
+export type MetafieldFieldsFragment = { __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+    | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+    | { __typename?: 'Blog', id: string }
+    | { __typename?: 'Cart', id: string }
+    | { __typename?: 'Collection', id: string }
+    | { __typename?: 'Company', id: string }
+    | { __typename?: 'CompanyLocation', id: string }
+    | { __typename?: 'Customer', id: string }
+    | { __typename?: 'Location', id: string }
+    | { __typename?: 'Market', id: string }
+    | { __typename?: 'Order', id: string }
+    | { __typename?: 'Page', id: string }
+    | { __typename?: 'Product', id: string }
+    | { __typename?: 'ProductVariant', id: string }
+    | { __typename?: 'SellingPlan', id: string }
+    | { __typename?: 'Shop', id: string }
+   };
 
 export type GetProductByHandleQueryVariables = Exact<{
   handle?: InputMaybe<Scalars['String']['input']>;
@@ -16066,176 +11025,32 @@ export type GetProductByHandleQueryVariables = Exact<{
   identifiers: Array<HasMetafieldsIdentifier> | HasMetafieldsIdentifier;
 }>;
 
-export type GetProductByHandleQuery = {
-  __typename?: 'QueryRoot';
-  product?: {
-    __typename?: 'Product';
-    handle: string;
-    id: string;
-    title: string;
-    availableForSale: boolean;
-    description: string;
-    descriptionHtml: string;
-    productType: string;
-    tags: Array<string>;
-    totalInventory?: number | null;
-    vendor: string;
-    updatedAt: string;
-    featuredImage?: {
-      __typename?: 'Image';
-      url: string;
-      src: string;
-      altText?: string | null;
-      width?: number | null;
-      height?: number | null;
-      small: string;
-      medium: string;
-      large: string;
-      blurDataURL: string;
-    } | null;
-    images: {
-      __typename?: 'ImageConnection';
-      edges: Array<{
-        __typename?: 'ImageEdge';
-        node: {
-          __typename?: 'Image';
-          url: string;
-          src: string;
-          altText?: string | null;
-          width?: number | null;
-          height?: number | null;
-          small: string;
-          medium: string;
-          large: string;
-          blurDataURL: string;
-        };
-      }>;
-    };
-    priceRange: {
-      __typename?: 'ProductPriceRange';
-      maxVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-      minVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-    };
-    options: Array<{
-      __typename?: 'ProductOption';
-      id: string;
-      name: string;
-      optionValues: Array<{
-        __typename?: 'ProductOptionValue';
-        id: string;
-        name: string;
-        firstSelectableVariant?: { __typename?: 'ProductVariant'; id: string } | null;
-        swatch?: { __typename?: 'ProductOptionValueSwatch'; color?: string | null } | null;
-      }>;
-    }>;
-    collections: {
-      __typename?: 'CollectionConnection';
-      edges: Array<{
-        __typename?: 'CollectionEdge';
-        node: { __typename?: 'Collection'; handle: string };
-      }>;
-    };
-    variants: {
-      __typename?: 'ProductVariantConnection';
-      edges: Array<{
-        __typename?: 'ProductVariantEdge';
-        node: {
-          __typename?: 'ProductVariant';
-          id: string;
-          availableForSale: boolean;
-          quantityAvailable?: number | null;
-          title: string;
-          sku?: string | null;
-          weight?: number | null;
-          weightUnit: WeightUnit;
-          compareAtPrice?: {
-            __typename?: 'MoneyV2';
-            amount: string;
-            currencyCode: CurrencyCode;
-          } | null;
-          selectedOptions: Array<{ __typename?: 'SelectedOption'; name: string; value: string }>;
-          image?: {
-            __typename?: 'Image';
-            url: string;
-            src: string;
-            altText?: string | null;
-            width?: number | null;
-            height?: number | null;
-            small: string;
-            medium: string;
-            large: string;
-            blurDataURL: string;
-          } | null;
-          price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-          product: {
-            __typename?: 'Product';
-            handle: string;
-            title: string;
-            collections: {
-              __typename?: 'CollectionConnection';
-              nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-            };
-          };
-        };
-      }>;
-    };
-    metafields: Array<{
-      __typename?: 'Metafield';
-      id: string;
-      key: string;
-      namespace: string;
-      value: string;
-      type: string;
-      createdAt: string;
-      updatedAt: string;
-      parentResource:
-        | {
-            __typename?: 'Article';
-            id: string;
-            metafields: Array<{
-              __typename?: 'Metafield';
-              id: string;
-              key: string;
-              value: string;
-              type: string;
-              createdAt: string;
-              updatedAt: string;
-            } | null>;
-          }
-        | { __typename?: 'Blog'; id: string }
-        | { __typename?: 'Cart'; id: string }
-        | { __typename?: 'Collection'; id: string }
-        | { __typename?: 'Company'; id: string }
-        | { __typename?: 'CompanyLocation'; id: string }
-        | { __typename?: 'Customer'; id: string }
-        | { __typename?: 'Location'; id: string }
-        | { __typename?: 'Market'; id: string }
-        | { __typename?: 'Order'; id: string }
-        | { __typename?: 'Page'; id: string }
-        | { __typename?: 'Product'; id: string }
-        | { __typename?: 'ProductVariant'; id: string }
-        | { __typename?: 'SellingPlan'; id: string }
-        | { __typename?: 'Shop'; id: string };
-    } | null>;
-    seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-  } | null;
-};
+
+export type GetProductByHandleQuery = { __typename?: 'QueryRoot', product?: { __typename?: 'Product', handle: string, id: string, title: string, availableForSale: boolean, description: string, descriptionHtml: string, productType: string, tags: Array<string>, totalInventory?: number | null, vendor: string, updatedAt: string, featuredImage?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, images: { __typename?: 'ImageConnection', edges: Array<{ __typename?: 'ImageEdge', node: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } }> }, priceRange: { __typename?: 'ProductPriceRange', maxVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, minVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, options: Array<{ __typename?: 'ProductOption', id: string, name: string, optionValues: Array<{ __typename?: 'ProductOptionValue', id: string, name: string, firstSelectableVariant?: { __typename?: 'ProductVariant', id: string } | null, swatch?: { __typename?: 'ProductOptionValueSwatch', color?: string | null } | null }> }>, collections: { __typename?: 'CollectionConnection', edges: Array<{ __typename?: 'CollectionEdge', node: { __typename?: 'Collection', handle: string } }> }, variants: { __typename?: 'ProductVariantConnection', edges: Array<{ __typename?: 'ProductVariantEdge', node: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } }> }, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+        | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+        | { __typename?: 'Blog', id: string }
+        | { __typename?: 'Cart', id: string }
+        | { __typename?: 'Collection', id: string }
+        | { __typename?: 'Company', id: string }
+        | { __typename?: 'CompanyLocation', id: string }
+        | { __typename?: 'Customer', id: string }
+        | { __typename?: 'Location', id: string }
+        | { __typename?: 'Market', id: string }
+        | { __typename?: 'Order', id: string }
+        | { __typename?: 'Page', id: string }
+        | { __typename?: 'Product', id: string }
+        | { __typename?: 'ProductVariant', id: string }
+        | { __typename?: 'SellingPlan', id: string }
+        | { __typename?: 'Shop', id: string }
+       } | null>, seo: { __typename?: 'SEO', description?: string | null, title?: string | null } } | null };
 
 export type GetProductSeoByHandleQueryVariables = Exact<{
   handle?: InputMaybe<Scalars['String']['input']>;
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetProductSeoByHandleQuery = {
-  __typename?: 'QueryRoot';
-  product?: {
-    __typename?: 'Product';
-    id: string;
-    title: string;
-    description: string;
-    seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-  } | null;
-};
+
+export type GetProductSeoByHandleQuery = { __typename?: 'QueryRoot', product?: { __typename?: 'Product', id: string, title: string, description: string, seo: { __typename?: 'SEO', description?: string | null, title?: string | null } } | null };
 
 export type ProductRecommendationsQueryVariables = Exact<{
   productId: Scalars['ID']['input'];
@@ -16243,160 +11058,24 @@ export type ProductRecommendationsQueryVariables = Exact<{
   identifiers: Array<HasMetafieldsIdentifier> | HasMetafieldsIdentifier;
 }>;
 
-export type ProductRecommendationsQuery = {
-  __typename?: 'QueryRoot';
-  productRecommendations?: Array<{
-    __typename?: 'Product';
-    handle: string;
-    id: string;
-    title: string;
-    availableForSale: boolean;
-    description: string;
-    descriptionHtml: string;
-    productType: string;
-    tags: Array<string>;
-    totalInventory?: number | null;
-    vendor: string;
-    updatedAt: string;
-    featuredImage?: {
-      __typename?: 'Image';
-      url: string;
-      src: string;
-      altText?: string | null;
-      width?: number | null;
-      height?: number | null;
-      small: string;
-      medium: string;
-      large: string;
-      blurDataURL: string;
-    } | null;
-    images: {
-      __typename?: 'ImageConnection';
-      edges: Array<{
-        __typename?: 'ImageEdge';
-        node: {
-          __typename?: 'Image';
-          url: string;
-          src: string;
-          altText?: string | null;
-          width?: number | null;
-          height?: number | null;
-          small: string;
-          medium: string;
-          large: string;
-          blurDataURL: string;
-        };
-      }>;
-    };
-    priceRange: {
-      __typename?: 'ProductPriceRange';
-      maxVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-      minVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-    };
-    options: Array<{
-      __typename?: 'ProductOption';
-      id: string;
-      name: string;
-      optionValues: Array<{
-        __typename?: 'ProductOptionValue';
-        id: string;
-        name: string;
-        firstSelectableVariant?: { __typename?: 'ProductVariant'; id: string } | null;
-        swatch?: { __typename?: 'ProductOptionValueSwatch'; color?: string | null } | null;
-      }>;
-    }>;
-    collections: {
-      __typename?: 'CollectionConnection';
-      edges: Array<{
-        __typename?: 'CollectionEdge';
-        node: { __typename?: 'Collection'; handle: string };
-      }>;
-    };
-    variants: {
-      __typename?: 'ProductVariantConnection';
-      edges: Array<{
-        __typename?: 'ProductVariantEdge';
-        node: {
-          __typename?: 'ProductVariant';
-          id: string;
-          availableForSale: boolean;
-          quantityAvailable?: number | null;
-          title: string;
-          sku?: string | null;
-          weight?: number | null;
-          weightUnit: WeightUnit;
-          compareAtPrice?: {
-            __typename?: 'MoneyV2';
-            amount: string;
-            currencyCode: CurrencyCode;
-          } | null;
-          selectedOptions: Array<{ __typename?: 'SelectedOption'; name: string; value: string }>;
-          image?: {
-            __typename?: 'Image';
-            url: string;
-            src: string;
-            altText?: string | null;
-            width?: number | null;
-            height?: number | null;
-            small: string;
-            medium: string;
-            large: string;
-            blurDataURL: string;
-          } | null;
-          price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-          product: {
-            __typename?: 'Product';
-            handle: string;
-            title: string;
-            collections: {
-              __typename?: 'CollectionConnection';
-              nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-            };
-          };
-        };
-      }>;
-    };
-    metafields: Array<{
-      __typename?: 'Metafield';
-      id: string;
-      key: string;
-      namespace: string;
-      value: string;
-      type: string;
-      createdAt: string;
-      updatedAt: string;
-      parentResource:
-        | {
-            __typename?: 'Article';
-            id: string;
-            metafields: Array<{
-              __typename?: 'Metafield';
-              id: string;
-              key: string;
-              value: string;
-              type: string;
-              createdAt: string;
-              updatedAt: string;
-            } | null>;
-          }
-        | { __typename?: 'Blog'; id: string }
-        | { __typename?: 'Cart'; id: string }
-        | { __typename?: 'Collection'; id: string }
-        | { __typename?: 'Company'; id: string }
-        | { __typename?: 'CompanyLocation'; id: string }
-        | { __typename?: 'Customer'; id: string }
-        | { __typename?: 'Location'; id: string }
-        | { __typename?: 'Market'; id: string }
-        | { __typename?: 'Order'; id: string }
-        | { __typename?: 'Page'; id: string }
-        | { __typename?: 'Product'; id: string }
-        | { __typename?: 'ProductVariant'; id: string }
-        | { __typename?: 'SellingPlan'; id: string }
-        | { __typename?: 'Shop'; id: string };
-    } | null>;
-    seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-  }> | null;
-};
+
+export type ProductRecommendationsQuery = { __typename?: 'QueryRoot', productRecommendations?: Array<{ __typename?: 'Product', handle: string, id: string, title: string, availableForSale: boolean, description: string, descriptionHtml: string, productType: string, tags: Array<string>, totalInventory?: number | null, vendor: string, updatedAt: string, featuredImage?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, images: { __typename?: 'ImageConnection', edges: Array<{ __typename?: 'ImageEdge', node: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } }> }, priceRange: { __typename?: 'ProductPriceRange', maxVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, minVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, options: Array<{ __typename?: 'ProductOption', id: string, name: string, optionValues: Array<{ __typename?: 'ProductOptionValue', id: string, name: string, firstSelectableVariant?: { __typename?: 'ProductVariant', id: string } | null, swatch?: { __typename?: 'ProductOptionValueSwatch', color?: string | null } | null }> }>, collections: { __typename?: 'CollectionConnection', edges: Array<{ __typename?: 'CollectionEdge', node: { __typename?: 'Collection', handle: string } }> }, variants: { __typename?: 'ProductVariantConnection', edges: Array<{ __typename?: 'ProductVariantEdge', node: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } }> }, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+        | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+        | { __typename?: 'Blog', id: string }
+        | { __typename?: 'Cart', id: string }
+        | { __typename?: 'Collection', id: string }
+        | { __typename?: 'Company', id: string }
+        | { __typename?: 'CompanyLocation', id: string }
+        | { __typename?: 'Customer', id: string }
+        | { __typename?: 'Location', id: string }
+        | { __typename?: 'Market', id: string }
+        | { __typename?: 'Order', id: string }
+        | { __typename?: 'Page', id: string }
+        | { __typename?: 'Product', id: string }
+        | { __typename?: 'ProductVariant', id: string }
+        | { __typename?: 'SellingPlan', id: string }
+        | { __typename?: 'Shop', id: string }
+       } | null>, seo: { __typename?: 'SEO', description?: string | null, title?: string | null } }> | null };
 
 export type GetProductsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -16409,178 +11088,24 @@ export type GetProductsQueryVariables = Exact<{
   identifiers: Array<HasMetafieldsIdentifier> | HasMetafieldsIdentifier;
 }>;
 
-export type GetProductsQuery = {
-  __typename?: 'QueryRoot';
-  products: {
-    __typename?: 'ProductConnection';
-    pageInfo: {
-      __typename?: 'PageInfo';
-      hasNextPage: boolean;
-      hasPreviousPage: boolean;
-      startCursor?: string | null;
-      endCursor?: string | null;
-    };
-    edges: Array<{
-      __typename?: 'ProductEdge';
-      cursor: string;
-      node: {
-        __typename?: 'Product';
-        handle: string;
-        id: string;
-        title: string;
-        availableForSale: boolean;
-        description: string;
-        descriptionHtml: string;
-        productType: string;
-        tags: Array<string>;
-        totalInventory?: number | null;
-        vendor: string;
-        updatedAt: string;
-        featuredImage?: {
-          __typename?: 'Image';
-          url: string;
-          src: string;
-          altText?: string | null;
-          width?: number | null;
-          height?: number | null;
-          small: string;
-          medium: string;
-          large: string;
-          blurDataURL: string;
-        } | null;
-        images: {
-          __typename?: 'ImageConnection';
-          edges: Array<{
-            __typename?: 'ImageEdge';
-            node: {
-              __typename?: 'Image';
-              url: string;
-              src: string;
-              altText?: string | null;
-              width?: number | null;
-              height?: number | null;
-              small: string;
-              medium: string;
-              large: string;
-              blurDataURL: string;
-            };
-          }>;
-        };
-        priceRange: {
-          __typename?: 'ProductPriceRange';
-          maxVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-          minVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        };
-        options: Array<{
-          __typename?: 'ProductOption';
-          id: string;
-          name: string;
-          optionValues: Array<{
-            __typename?: 'ProductOptionValue';
-            id: string;
-            name: string;
-            firstSelectableVariant?: { __typename?: 'ProductVariant'; id: string } | null;
-            swatch?: { __typename?: 'ProductOptionValueSwatch'; color?: string | null } | null;
-          }>;
-        }>;
-        collections: {
-          __typename?: 'CollectionConnection';
-          edges: Array<{
-            __typename?: 'CollectionEdge';
-            node: { __typename?: 'Collection'; handle: string };
-          }>;
-        };
-        variants: {
-          __typename?: 'ProductVariantConnection';
-          edges: Array<{
-            __typename?: 'ProductVariantEdge';
-            node: {
-              __typename?: 'ProductVariant';
-              id: string;
-              availableForSale: boolean;
-              quantityAvailable?: number | null;
-              title: string;
-              sku?: string | null;
-              weight?: number | null;
-              weightUnit: WeightUnit;
-              compareAtPrice?: {
-                __typename?: 'MoneyV2';
-                amount: string;
-                currencyCode: CurrencyCode;
-              } | null;
-              selectedOptions: Array<{
-                __typename?: 'SelectedOption';
-                name: string;
-                value: string;
-              }>;
-              image?: {
-                __typename?: 'Image';
-                url: string;
-                src: string;
-                altText?: string | null;
-                width?: number | null;
-                height?: number | null;
-                small: string;
-                medium: string;
-                large: string;
-                blurDataURL: string;
-              } | null;
-              price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-              product: {
-                __typename?: 'Product';
-                handle: string;
-                title: string;
-                collections: {
-                  __typename?: 'CollectionConnection';
-                  nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                };
-              };
-            };
-          }>;
-        };
-        metafields: Array<{
-          __typename?: 'Metafield';
-          id: string;
-          key: string;
-          namespace: string;
-          value: string;
-          type: string;
-          createdAt: string;
-          updatedAt: string;
-          parentResource:
-            | {
-                __typename?: 'Article';
-                id: string;
-                metafields: Array<{
-                  __typename?: 'Metafield';
-                  id: string;
-                  key: string;
-                  value: string;
-                  type: string;
-                  createdAt: string;
-                  updatedAt: string;
-                } | null>;
-              }
-            | { __typename?: 'Blog'; id: string }
-            | { __typename?: 'Cart'; id: string }
-            | { __typename?: 'Collection'; id: string }
-            | { __typename?: 'Company'; id: string }
-            | { __typename?: 'CompanyLocation'; id: string }
-            | { __typename?: 'Customer'; id: string }
-            | { __typename?: 'Location'; id: string }
-            | { __typename?: 'Market'; id: string }
-            | { __typename?: 'Order'; id: string }
-            | { __typename?: 'Page'; id: string }
-            | { __typename?: 'Product'; id: string }
-            | { __typename?: 'ProductVariant'; id: string }
-            | { __typename?: 'SellingPlan'; id: string }
-            | { __typename?: 'Shop'; id: string };
-        } | null>;
-        seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-      };
-    }>;
-  };
-};
+
+export type GetProductsQuery = { __typename?: 'QueryRoot', products: { __typename?: 'ProductConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, edges: Array<{ __typename?: 'ProductEdge', cursor: string, node: { __typename?: 'Product', handle: string, id: string, title: string, availableForSale: boolean, description: string, descriptionHtml: string, productType: string, tags: Array<string>, totalInventory?: number | null, vendor: string, updatedAt: string, featuredImage?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, images: { __typename?: 'ImageConnection', edges: Array<{ __typename?: 'ImageEdge', node: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } }> }, priceRange: { __typename?: 'ProductPriceRange', maxVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, minVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, options: Array<{ __typename?: 'ProductOption', id: string, name: string, optionValues: Array<{ __typename?: 'ProductOptionValue', id: string, name: string, firstSelectableVariant?: { __typename?: 'ProductVariant', id: string } | null, swatch?: { __typename?: 'ProductOptionValueSwatch', color?: string | null } | null }> }>, collections: { __typename?: 'CollectionConnection', edges: Array<{ __typename?: 'CollectionEdge', node: { __typename?: 'Collection', handle: string } }> }, variants: { __typename?: 'ProductVariantConnection', edges: Array<{ __typename?: 'ProductVariantEdge', node: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } }> }, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+            | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+            | { __typename?: 'Blog', id: string }
+            | { __typename?: 'Cart', id: string }
+            | { __typename?: 'Collection', id: string }
+            | { __typename?: 'Company', id: string }
+            | { __typename?: 'CompanyLocation', id: string }
+            | { __typename?: 'Customer', id: string }
+            | { __typename?: 'Location', id: string }
+            | { __typename?: 'Market', id: string }
+            | { __typename?: 'Order', id: string }
+            | { __typename?: 'Page', id: string }
+            | { __typename?: 'Product', id: string }
+            | { __typename?: 'ProductVariant', id: string }
+            | { __typename?: 'SellingPlan', id: string }
+            | { __typename?: 'Shop', id: string }
+           } | null>, seo: { __typename?: 'SEO', description?: string | null, title?: string | null } } }> } };
 
 export type GetProductWithVariantQueryVariables = Exact<{
   handle: Scalars['String']['input'];
@@ -16591,198 +11116,24 @@ export type GetProductWithVariantQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetProductWithVariantQuery = {
-  __typename?: 'QueryRoot';
-  product?: {
-    __typename?: 'Product';
-    handle: string;
-    id: string;
-    title: string;
-    availableForSale: boolean;
-    description: string;
-    descriptionHtml: string;
-    productType: string;
-    tags: Array<string>;
-    totalInventory?: number | null;
-    vendor: string;
-    updatedAt: string;
-    selectedOrFirstAvailableVariant?: {
-      __typename?: 'ProductVariant';
-      id: string;
-      availableForSale: boolean;
-      quantityAvailable?: number | null;
-      title: string;
-      sku?: string | null;
-      weight?: number | null;
-      weightUnit: WeightUnit;
-      compareAtPrice?: {
-        __typename?: 'MoneyV2';
-        amount: string;
-        currencyCode: CurrencyCode;
-      } | null;
-      selectedOptions: Array<{ __typename?: 'SelectedOption'; name: string; value: string }>;
-      image?: {
-        __typename?: 'Image';
-        url: string;
-        src: string;
-        altText?: string | null;
-        width?: number | null;
-        height?: number | null;
-        small: string;
-        medium: string;
-        large: string;
-        blurDataURL: string;
-      } | null;
-      price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-      product: {
-        __typename?: 'Product';
-        handle: string;
-        title: string;
-        collections: {
-          __typename?: 'CollectionConnection';
-          nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-        };
-      };
-    } | null;
-    featuredImage?: {
-      __typename?: 'Image';
-      url: string;
-      src: string;
-      altText?: string | null;
-      width?: number | null;
-      height?: number | null;
-      small: string;
-      medium: string;
-      large: string;
-      blurDataURL: string;
-    } | null;
-    images: {
-      __typename?: 'ImageConnection';
-      edges: Array<{
-        __typename?: 'ImageEdge';
-        node: {
-          __typename?: 'Image';
-          url: string;
-          src: string;
-          altText?: string | null;
-          width?: number | null;
-          height?: number | null;
-          small: string;
-          medium: string;
-          large: string;
-          blurDataURL: string;
-        };
-      }>;
-    };
-    priceRange: {
-      __typename?: 'ProductPriceRange';
-      maxVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-      minVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-    };
-    options: Array<{
-      __typename?: 'ProductOption';
-      id: string;
-      name: string;
-      optionValues: Array<{
-        __typename?: 'ProductOptionValue';
-        id: string;
-        name: string;
-        firstSelectableVariant?: { __typename?: 'ProductVariant'; id: string } | null;
-        swatch?: { __typename?: 'ProductOptionValueSwatch'; color?: string | null } | null;
-      }>;
-    }>;
-    collections: {
-      __typename?: 'CollectionConnection';
-      edges: Array<{
-        __typename?: 'CollectionEdge';
-        node: { __typename?: 'Collection'; handle: string };
-      }>;
-    };
-    variants: {
-      __typename?: 'ProductVariantConnection';
-      edges: Array<{
-        __typename?: 'ProductVariantEdge';
-        node: {
-          __typename?: 'ProductVariant';
-          id: string;
-          availableForSale: boolean;
-          quantityAvailable?: number | null;
-          title: string;
-          sku?: string | null;
-          weight?: number | null;
-          weightUnit: WeightUnit;
-          compareAtPrice?: {
-            __typename?: 'MoneyV2';
-            amount: string;
-            currencyCode: CurrencyCode;
-          } | null;
-          selectedOptions: Array<{ __typename?: 'SelectedOption'; name: string; value: string }>;
-          image?: {
-            __typename?: 'Image';
-            url: string;
-            src: string;
-            altText?: string | null;
-            width?: number | null;
-            height?: number | null;
-            small: string;
-            medium: string;
-            large: string;
-            blurDataURL: string;
-          } | null;
-          price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-          product: {
-            __typename?: 'Product';
-            handle: string;
-            title: string;
-            collections: {
-              __typename?: 'CollectionConnection';
-              nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-            };
-          };
-        };
-      }>;
-    };
-    metafields: Array<{
-      __typename?: 'Metafield';
-      id: string;
-      key: string;
-      namespace: string;
-      value: string;
-      type: string;
-      createdAt: string;
-      updatedAt: string;
-      parentResource:
-        | {
-            __typename?: 'Article';
-            id: string;
-            metafields: Array<{
-              __typename?: 'Metafield';
-              id: string;
-              key: string;
-              value: string;
-              type: string;
-              createdAt: string;
-              updatedAt: string;
-            } | null>;
-          }
-        | { __typename?: 'Blog'; id: string }
-        | { __typename?: 'Cart'; id: string }
-        | { __typename?: 'Collection'; id: string }
-        | { __typename?: 'Company'; id: string }
-        | { __typename?: 'CompanyLocation'; id: string }
-        | { __typename?: 'Customer'; id: string }
-        | { __typename?: 'Location'; id: string }
-        | { __typename?: 'Market'; id: string }
-        | { __typename?: 'Order'; id: string }
-        | { __typename?: 'Page'; id: string }
-        | { __typename?: 'Product'; id: string }
-        | { __typename?: 'ProductVariant'; id: string }
-        | { __typename?: 'SellingPlan'; id: string }
-        | { __typename?: 'Shop'; id: string };
-    } | null>;
-    seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-  } | null;
-};
+
+export type GetProductWithVariantQuery = { __typename?: 'QueryRoot', product?: { __typename?: 'Product', handle: string, id: string, title: string, availableForSale: boolean, description: string, descriptionHtml: string, productType: string, tags: Array<string>, totalInventory?: number | null, vendor: string, updatedAt: string, selectedOrFirstAvailableVariant?: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } | null, featuredImage?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, images: { __typename?: 'ImageConnection', edges: Array<{ __typename?: 'ImageEdge', node: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } }> }, priceRange: { __typename?: 'ProductPriceRange', maxVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, minVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, options: Array<{ __typename?: 'ProductOption', id: string, name: string, optionValues: Array<{ __typename?: 'ProductOptionValue', id: string, name: string, firstSelectableVariant?: { __typename?: 'ProductVariant', id: string } | null, swatch?: { __typename?: 'ProductOptionValueSwatch', color?: string | null } | null }> }>, collections: { __typename?: 'CollectionConnection', edges: Array<{ __typename?: 'CollectionEdge', node: { __typename?: 'Collection', handle: string } }> }, variants: { __typename?: 'ProductVariantConnection', edges: Array<{ __typename?: 'ProductVariantEdge', node: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } }> }, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+        | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+        | { __typename?: 'Blog', id: string }
+        | { __typename?: 'Cart', id: string }
+        | { __typename?: 'Collection', id: string }
+        | { __typename?: 'Company', id: string }
+        | { __typename?: 'CompanyLocation', id: string }
+        | { __typename?: 'Customer', id: string }
+        | { __typename?: 'Location', id: string }
+        | { __typename?: 'Market', id: string }
+        | { __typename?: 'Order', id: string }
+        | { __typename?: 'Page', id: string }
+        | { __typename?: 'Product', id: string }
+        | { __typename?: 'ProductVariant', id: string }
+        | { __typename?: 'SellingPlan', id: string }
+        | { __typename?: 'Shop', id: string }
+       } | null>, seo: { __typename?: 'SEO', description?: string | null, title?: string | null } } | null };
 
 export type GetProductsByIdsQueryVariables = Exact<{
   ids: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
@@ -16790,9 +11141,8 @@ export type GetProductsByIdsQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetProductsByIdsQuery = {
-  __typename?: 'QueryRoot';
-  nodes: Array<
+
+export type GetProductsByIdsQuery = { __typename?: 'QueryRoot', nodes: Array<
     | { __typename?: 'AppliedGiftCard' }
     | { __typename?: 'Article' }
     | { __typename?: 'Blog' }
@@ -16818,161 +11168,23 @@ export type GetProductsByIdsQuery = {
     | { __typename?: 'Model3d' }
     | { __typename?: 'Order' }
     | { __typename?: 'Page' }
-    | {
-        __typename?: 'Product';
-        handle: string;
-        id: string;
-        title: string;
-        availableForSale: boolean;
-        description: string;
-        descriptionHtml: string;
-        productType: string;
-        tags: Array<string>;
-        totalInventory?: number | null;
-        vendor: string;
-        updatedAt: string;
-        featuredImage?: {
-          __typename?: 'Image';
-          url: string;
-          src: string;
-          altText?: string | null;
-          width?: number | null;
-          height?: number | null;
-          small: string;
-          medium: string;
-          large: string;
-          blurDataURL: string;
-        } | null;
-        images: {
-          __typename?: 'ImageConnection';
-          edges: Array<{
-            __typename?: 'ImageEdge';
-            node: {
-              __typename?: 'Image';
-              url: string;
-              src: string;
-              altText?: string | null;
-              width?: number | null;
-              height?: number | null;
-              small: string;
-              medium: string;
-              large: string;
-              blurDataURL: string;
-            };
-          }>;
-        };
-        priceRange: {
-          __typename?: 'ProductPriceRange';
-          maxVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-          minVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        };
-        options: Array<{
-          __typename?: 'ProductOption';
-          id: string;
-          name: string;
-          optionValues: Array<{
-            __typename?: 'ProductOptionValue';
-            id: string;
-            name: string;
-            firstSelectableVariant?: { __typename?: 'ProductVariant'; id: string } | null;
-            swatch?: { __typename?: 'ProductOptionValueSwatch'; color?: string | null } | null;
-          }>;
-        }>;
-        collections: {
-          __typename?: 'CollectionConnection';
-          edges: Array<{
-            __typename?: 'CollectionEdge';
-            node: { __typename?: 'Collection'; handle: string };
-          }>;
-        };
-        variants: {
-          __typename?: 'ProductVariantConnection';
-          edges: Array<{
-            __typename?: 'ProductVariantEdge';
-            node: {
-              __typename?: 'ProductVariant';
-              id: string;
-              availableForSale: boolean;
-              quantityAvailable?: number | null;
-              title: string;
-              sku?: string | null;
-              weight?: number | null;
-              weightUnit: WeightUnit;
-              compareAtPrice?: {
-                __typename?: 'MoneyV2';
-                amount: string;
-                currencyCode: CurrencyCode;
-              } | null;
-              selectedOptions: Array<{
-                __typename?: 'SelectedOption';
-                name: string;
-                value: string;
-              }>;
-              image?: {
-                __typename?: 'Image';
-                url: string;
-                src: string;
-                altText?: string | null;
-                width?: number | null;
-                height?: number | null;
-                small: string;
-                medium: string;
-                large: string;
-                blurDataURL: string;
-              } | null;
-              price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-              product: {
-                __typename?: 'Product';
-                handle: string;
-                title: string;
-                collections: {
-                  __typename?: 'CollectionConnection';
-                  nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                };
-              };
-            };
-          }>;
-        };
-        metafields: Array<{
-          __typename?: 'Metafield';
-          id: string;
-          key: string;
-          namespace: string;
-          value: string;
-          type: string;
-          createdAt: string;
-          updatedAt: string;
-          parentResource:
-            | {
-                __typename?: 'Article';
-                id: string;
-                metafields: Array<{
-                  __typename?: 'Metafield';
-                  id: string;
-                  key: string;
-                  value: string;
-                  type: string;
-                  createdAt: string;
-                  updatedAt: string;
-                } | null>;
-              }
-            | { __typename?: 'Blog'; id: string }
-            | { __typename?: 'Cart'; id: string }
-            | { __typename?: 'Collection'; id: string }
-            | { __typename?: 'Company'; id: string }
-            | { __typename?: 'CompanyLocation'; id: string }
-            | { __typename?: 'Customer'; id: string }
-            | { __typename?: 'Location'; id: string }
-            | { __typename?: 'Market'; id: string }
-            | { __typename?: 'Order'; id: string }
-            | { __typename?: 'Page'; id: string }
-            | { __typename?: 'Product'; id: string }
-            | { __typename?: 'ProductVariant'; id: string }
-            | { __typename?: 'SellingPlan'; id: string }
-            | { __typename?: 'Shop'; id: string };
-        } | null>;
-        seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-      }
+    | { __typename?: 'Product', handle: string, id: string, title: string, availableForSale: boolean, description: string, descriptionHtml: string, productType: string, tags: Array<string>, totalInventory?: number | null, vendor: string, updatedAt: string, featuredImage?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, images: { __typename?: 'ImageConnection', edges: Array<{ __typename?: 'ImageEdge', node: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } }> }, priceRange: { __typename?: 'ProductPriceRange', maxVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, minVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, options: Array<{ __typename?: 'ProductOption', id: string, name: string, optionValues: Array<{ __typename?: 'ProductOptionValue', id: string, name: string, firstSelectableVariant?: { __typename?: 'ProductVariant', id: string } | null, swatch?: { __typename?: 'ProductOptionValueSwatch', color?: string | null } | null }> }>, collections: { __typename?: 'CollectionConnection', edges: Array<{ __typename?: 'CollectionEdge', node: { __typename?: 'Collection', handle: string } }> }, variants: { __typename?: 'ProductVariantConnection', edges: Array<{ __typename?: 'ProductVariantEdge', node: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } }> }, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+          | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+          | { __typename?: 'Blog', id: string }
+          | { __typename?: 'Cart', id: string }
+          | { __typename?: 'Collection', id: string }
+          | { __typename?: 'Company', id: string }
+          | { __typename?: 'CompanyLocation', id: string }
+          | { __typename?: 'Customer', id: string }
+          | { __typename?: 'Location', id: string }
+          | { __typename?: 'Market', id: string }
+          | { __typename?: 'Order', id: string }
+          | { __typename?: 'Page', id: string }
+          | { __typename?: 'Product', id: string }
+          | { __typename?: 'ProductVariant', id: string }
+          | { __typename?: 'SellingPlan', id: string }
+          | { __typename?: 'Shop', id: string }
+         } | null>, seo: { __typename?: 'SEO', description?: string | null, title?: string | null } }
     | { __typename?: 'ProductOption' }
     | { __typename?: 'ProductOptionValue' }
     | { __typename?: 'ProductVariant' }
@@ -16984,9 +11196,7 @@ export type GetProductsByIdsQuery = {
     | { __typename?: 'TaxonomyCategory' }
     | { __typename?: 'UrlRedirect' }
     | { __typename?: 'Video' }
-    | null
-  >;
-};
+   | null> };
 
 export type PredictiveSearchQueryVariables = Exact<{
   query: Scalars['String']['input'];
@@ -16994,223 +11204,40 @@ export type PredictiveSearchQueryVariables = Exact<{
   identifiers?: InputMaybe<Array<HasMetafieldsIdentifier> | HasMetafieldsIdentifier>;
 }>;
 
-export type PredictiveSearchQuery = {
-  __typename?: 'QueryRoot';
-  predictiveSearch?: {
-    __typename?: 'PredictiveSearchResult';
-    queries: Array<{ __typename?: 'SearchQuerySuggestion'; text: string }>;
-    collections: Array<{
-      __typename?: 'Collection';
-      handle: string;
-      description: string;
-      title: string;
-      id: string;
-      updatedAt: string;
-      image?: {
-        __typename?: 'Image';
-        url: string;
-        src: string;
-        altText?: string | null;
-        width?: number | null;
-        height?: number | null;
-        small: string;
-        medium: string;
-        large: string;
-        blurDataURL: string;
-      } | null;
-      seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-      metafields: Array<{
-        __typename?: 'Metafield';
-        id: string;
-        key: string;
-        namespace: string;
-        value: string;
-        type: string;
-        createdAt: string;
-        updatedAt: string;
-        parentResource:
-          | {
-              __typename?: 'Article';
-              id: string;
-              metafields: Array<{
-                __typename?: 'Metafield';
-                id: string;
-                key: string;
-                value: string;
-                type: string;
-                createdAt: string;
-                updatedAt: string;
-              } | null>;
-            }
-          | { __typename?: 'Blog'; id: string }
-          | { __typename?: 'Cart'; id: string }
-          | { __typename?: 'Collection'; id: string }
-          | { __typename?: 'Company'; id: string }
-          | { __typename?: 'CompanyLocation'; id: string }
-          | { __typename?: 'Customer'; id: string }
-          | { __typename?: 'Location'; id: string }
-          | { __typename?: 'Market'; id: string }
-          | { __typename?: 'Order'; id: string }
-          | { __typename?: 'Page'; id: string }
-          | { __typename?: 'Product'; id: string }
-          | { __typename?: 'ProductVariant'; id: string }
-          | { __typename?: 'SellingPlan'; id: string }
-          | { __typename?: 'Shop'; id: string };
-      } | null>;
-    }>;
-    products: Array<{
-      __typename?: 'Product';
-      handle: string;
-      id: string;
-      title: string;
-      availableForSale: boolean;
-      description: string;
-      descriptionHtml: string;
-      productType: string;
-      tags: Array<string>;
-      totalInventory?: number | null;
-      vendor: string;
-      updatedAt: string;
-      featuredImage?: {
-        __typename?: 'Image';
-        url: string;
-        src: string;
-        altText?: string | null;
-        width?: number | null;
-        height?: number | null;
-        small: string;
-        medium: string;
-        large: string;
-        blurDataURL: string;
-      } | null;
-      images: {
-        __typename?: 'ImageConnection';
-        edges: Array<{
-          __typename?: 'ImageEdge';
-          node: {
-            __typename?: 'Image';
-            url: string;
-            src: string;
-            altText?: string | null;
-            width?: number | null;
-            height?: number | null;
-            small: string;
-            medium: string;
-            large: string;
-            blurDataURL: string;
-          };
-        }>;
-      };
-      priceRange: {
-        __typename?: 'ProductPriceRange';
-        maxVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-        minVariantPrice: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-      };
-      options: Array<{
-        __typename?: 'ProductOption';
-        id: string;
-        name: string;
-        optionValues: Array<{
-          __typename?: 'ProductOptionValue';
-          id: string;
-          name: string;
-          firstSelectableVariant?: { __typename?: 'ProductVariant'; id: string } | null;
-          swatch?: { __typename?: 'ProductOptionValueSwatch'; color?: string | null } | null;
-        }>;
-      }>;
-      collections: {
-        __typename?: 'CollectionConnection';
-        edges: Array<{
-          __typename?: 'CollectionEdge';
-          node: { __typename?: 'Collection'; handle: string };
-        }>;
-      };
-      variants: {
-        __typename?: 'ProductVariantConnection';
-        edges: Array<{
-          __typename?: 'ProductVariantEdge';
-          node: {
-            __typename?: 'ProductVariant';
-            id: string;
-            availableForSale: boolean;
-            quantityAvailable?: number | null;
-            title: string;
-            sku?: string | null;
-            weight?: number | null;
-            weightUnit: WeightUnit;
-            compareAtPrice?: {
-              __typename?: 'MoneyV2';
-              amount: string;
-              currencyCode: CurrencyCode;
-            } | null;
-            selectedOptions: Array<{ __typename?: 'SelectedOption'; name: string; value: string }>;
-            image?: {
-              __typename?: 'Image';
-              url: string;
-              src: string;
-              altText?: string | null;
-              width?: number | null;
-              height?: number | null;
-              small: string;
-              medium: string;
-              large: string;
-              blurDataURL: string;
-            } | null;
-            price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-            product: {
-              __typename?: 'Product';
-              handle: string;
-              title: string;
-              collections: {
-                __typename?: 'CollectionConnection';
-                nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-              };
-            };
-          };
-        }>;
-      };
-      metafields: Array<{
-        __typename?: 'Metafield';
-        id: string;
-        key: string;
-        namespace: string;
-        value: string;
-        type: string;
-        createdAt: string;
-        updatedAt: string;
-        parentResource:
-          | {
-              __typename?: 'Article';
-              id: string;
-              metafields: Array<{
-                __typename?: 'Metafield';
-                id: string;
-                key: string;
-                value: string;
-                type: string;
-                createdAt: string;
-                updatedAt: string;
-              } | null>;
-            }
-          | { __typename?: 'Blog'; id: string }
-          | { __typename?: 'Cart'; id: string }
-          | { __typename?: 'Collection'; id: string }
-          | { __typename?: 'Company'; id: string }
-          | { __typename?: 'CompanyLocation'; id: string }
-          | { __typename?: 'Customer'; id: string }
-          | { __typename?: 'Location'; id: string }
-          | { __typename?: 'Market'; id: string }
-          | { __typename?: 'Order'; id: string }
-          | { __typename?: 'Page'; id: string }
-          | { __typename?: 'Product'; id: string }
-          | { __typename?: 'ProductVariant'; id: string }
-          | { __typename?: 'SellingPlan'; id: string }
-          | { __typename?: 'Shop'; id: string };
-      } | null>;
-      seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-    }>;
-  } | null;
-};
+
+export type PredictiveSearchQuery = { __typename?: 'QueryRoot', predictiveSearch?: { __typename?: 'PredictiveSearchResult', queries: Array<{ __typename?: 'SearchQuerySuggestion', text: string }>, collections: Array<{ __typename?: 'Collection', handle: string, description: string, title: string, id: string, updatedAt: string, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, seo: { __typename?: 'SEO', description?: string | null, title?: string | null }, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+          | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+          | { __typename?: 'Blog', id: string }
+          | { __typename?: 'Cart', id: string }
+          | { __typename?: 'Collection', id: string }
+          | { __typename?: 'Company', id: string }
+          | { __typename?: 'CompanyLocation', id: string }
+          | { __typename?: 'Customer', id: string }
+          | { __typename?: 'Location', id: string }
+          | { __typename?: 'Market', id: string }
+          | { __typename?: 'Order', id: string }
+          | { __typename?: 'Page', id: string }
+          | { __typename?: 'Product', id: string }
+          | { __typename?: 'ProductVariant', id: string }
+          | { __typename?: 'SellingPlan', id: string }
+          | { __typename?: 'Shop', id: string }
+         } | null> }>, products: Array<{ __typename?: 'Product', handle: string, id: string, title: string, availableForSale: boolean, description: string, descriptionHtml: string, productType: string, tags: Array<string>, totalInventory?: number | null, vendor: string, updatedAt: string, featuredImage?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, images: { __typename?: 'ImageConnection', edges: Array<{ __typename?: 'ImageEdge', node: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } }> }, priceRange: { __typename?: 'ProductPriceRange', maxVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, minVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, options: Array<{ __typename?: 'ProductOption', id: string, name: string, optionValues: Array<{ __typename?: 'ProductOptionValue', id: string, name: string, firstSelectableVariant?: { __typename?: 'ProductVariant', id: string } | null, swatch?: { __typename?: 'ProductOptionValueSwatch', color?: string | null } | null }> }>, collections: { __typename?: 'CollectionConnection', edges: Array<{ __typename?: 'CollectionEdge', node: { __typename?: 'Collection', handle: string } }> }, variants: { __typename?: 'ProductVariantConnection', edges: Array<{ __typename?: 'ProductVariantEdge', node: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } }> }, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+          | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+          | { __typename?: 'Blog', id: string }
+          | { __typename?: 'Cart', id: string }
+          | { __typename?: 'Collection', id: string }
+          | { __typename?: 'Company', id: string }
+          | { __typename?: 'CompanyLocation', id: string }
+          | { __typename?: 'Customer', id: string }
+          | { __typename?: 'Location', id: string }
+          | { __typename?: 'Market', id: string }
+          | { __typename?: 'Order', id: string }
+          | { __typename?: 'Page', id: string }
+          | { __typename?: 'Product', id: string }
+          | { __typename?: 'ProductVariant', id: string }
+          | { __typename?: 'SellingPlan', id: string }
+          | { __typename?: 'Shop', id: string }
+         } | null>, seo: { __typename?: 'SEO', description?: string | null, title?: string | null } }> } | null };
 
 export type SearchProductsQueryVariables = Exact<{
   query: Scalars['String']['input'];
@@ -17224,366 +11251,94 @@ export type SearchProductsQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type SearchProductsQuery = {
-  __typename?: 'QueryRoot';
-  search: {
-    __typename?: 'SearchResultItemConnection';
-    edges: Array<{
-      __typename?: 'SearchResultItemEdge';
-      node:
+
+export type SearchProductsQuery = { __typename?: 'QueryRoot', search: { __typename?: 'SearchResultItemConnection', edges: Array<{ __typename?: 'SearchResultItemEdge', node:
         | { __typename?: 'Article' }
         | { __typename?: 'Page' }
-        | {
-            __typename?: 'Product';
-            handle: string;
-            id: string;
-            title: string;
-            availableForSale: boolean;
-            description: string;
-            descriptionHtml: string;
-            productType: string;
-            tags: Array<string>;
-            totalInventory?: number | null;
-            vendor: string;
-            updatedAt: string;
-            featuredImage?: {
-              __typename?: 'Image';
-              url: string;
-              src: string;
-              altText?: string | null;
-              width?: number | null;
-              height?: number | null;
-              small: string;
-              medium: string;
-              large: string;
-              blurDataURL: string;
-            } | null;
-            images: {
-              __typename?: 'ImageConnection';
-              edges: Array<{
-                __typename?: 'ImageEdge';
-                node: {
-                  __typename?: 'Image';
-                  url: string;
-                  src: string;
-                  altText?: string | null;
-                  width?: number | null;
-                  height?: number | null;
-                  small: string;
-                  medium: string;
-                  large: string;
-                  blurDataURL: string;
-                };
-              }>;
-            };
-            priceRange: {
-              __typename?: 'ProductPriceRange';
-              maxVariantPrice: {
-                __typename?: 'MoneyV2';
-                amount: string;
-                currencyCode: CurrencyCode;
-              };
-              minVariantPrice: {
-                __typename?: 'MoneyV2';
-                amount: string;
-                currencyCode: CurrencyCode;
-              };
-            };
-            options: Array<{
-              __typename?: 'ProductOption';
-              id: string;
-              name: string;
-              optionValues: Array<{
-                __typename?: 'ProductOptionValue';
-                id: string;
-                name: string;
-                firstSelectableVariant?: { __typename?: 'ProductVariant'; id: string } | null;
-                swatch?: { __typename?: 'ProductOptionValueSwatch'; color?: string | null } | null;
-              }>;
-            }>;
-            collections: {
-              __typename?: 'CollectionConnection';
-              edges: Array<{
-                __typename?: 'CollectionEdge';
-                node: { __typename?: 'Collection'; handle: string };
-              }>;
-            };
-            variants: {
-              __typename?: 'ProductVariantConnection';
-              edges: Array<{
-                __typename?: 'ProductVariantEdge';
-                node: {
-                  __typename?: 'ProductVariant';
-                  id: string;
-                  availableForSale: boolean;
-                  quantityAvailable?: number | null;
-                  title: string;
-                  sku?: string | null;
-                  weight?: number | null;
-                  weightUnit: WeightUnit;
-                  compareAtPrice?: {
-                    __typename?: 'MoneyV2';
-                    amount: string;
-                    currencyCode: CurrencyCode;
-                  } | null;
-                  selectedOptions: Array<{
-                    __typename?: 'SelectedOption';
-                    name: string;
-                    value: string;
-                  }>;
-                  image?: {
-                    __typename?: 'Image';
-                    url: string;
-                    src: string;
-                    altText?: string | null;
-                    width?: number | null;
-                    height?: number | null;
-                    small: string;
-                    medium: string;
-                    large: string;
-                    blurDataURL: string;
-                  } | null;
-                  price: { __typename?: 'MoneyV2'; amount: string; currencyCode: CurrencyCode };
-                  product: {
-                    __typename?: 'Product';
-                    handle: string;
-                    title: string;
-                    collections: {
-                      __typename?: 'CollectionConnection';
-                      nodes: Array<{ __typename?: 'Collection'; handle: string }>;
-                    };
-                  };
-                };
-              }>;
-            };
-            metafields: Array<{
-              __typename?: 'Metafield';
-              id: string;
-              key: string;
-              namespace: string;
-              value: string;
-              type: string;
-              createdAt: string;
-              updatedAt: string;
-              parentResource:
-                | {
-                    __typename?: 'Article';
-                    id: string;
-                    metafields: Array<{
-                      __typename?: 'Metafield';
-                      id: string;
-                      key: string;
-                      value: string;
-                      type: string;
-                      createdAt: string;
-                      updatedAt: string;
-                    } | null>;
-                  }
-                | { __typename?: 'Blog'; id: string }
-                | { __typename?: 'Cart'; id: string }
-                | { __typename?: 'Collection'; id: string }
-                | { __typename?: 'Company'; id: string }
-                | { __typename?: 'CompanyLocation'; id: string }
-                | { __typename?: 'Customer'; id: string }
-                | { __typename?: 'Location'; id: string }
-                | { __typename?: 'Market'; id: string }
-                | { __typename?: 'Order'; id: string }
-                | { __typename?: 'Page'; id: string }
-                | { __typename?: 'Product'; id: string }
-                | { __typename?: 'ProductVariant'; id: string }
-                | { __typename?: 'SellingPlan'; id: string }
-                | { __typename?: 'Shop'; id: string };
-            } | null>;
-            seo: { __typename?: 'SEO'; description?: string | null; title?: string | null };
-          };
-    }>;
-    pageInfo: {
-      __typename?: 'PageInfo';
-      hasNextPage: boolean;
-      hasPreviousPage: boolean;
-      startCursor?: string | null;
-      endCursor?: string | null;
-    };
-    productFilters: Array<{
-      __typename?: 'Filter';
-      id: string;
-      label: string;
-      type: FilterType;
-      values: Array<{
-        __typename?: 'FilterValue';
-        id: string;
-        label: string;
-        count: number;
-        input: any;
-      }>;
-    }>;
-  };
-};
+        | { __typename?: 'Product', handle: string, id: string, title: string, availableForSale: boolean, description: string, descriptionHtml: string, productType: string, tags: Array<string>, totalInventory?: number | null, vendor: string, updatedAt: string, featuredImage?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, images: { __typename?: 'ImageConnection', edges: Array<{ __typename?: 'ImageEdge', node: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } }> }, priceRange: { __typename?: 'ProductPriceRange', maxVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, minVariantPrice: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } }, options: Array<{ __typename?: 'ProductOption', id: string, name: string, optionValues: Array<{ __typename?: 'ProductOptionValue', id: string, name: string, firstSelectableVariant?: { __typename?: 'ProductVariant', id: string } | null, swatch?: { __typename?: 'ProductOptionValueSwatch', color?: string | null } | null }> }>, collections: { __typename?: 'CollectionConnection', edges: Array<{ __typename?: 'CollectionEdge', node: { __typename?: 'Collection', handle: string } }> }, variants: { __typename?: 'ProductVariantConnection', edges: Array<{ __typename?: 'ProductVariantEdge', node: { __typename?: 'ProductVariant', id: string, availableForSale: boolean, quantityAvailable?: number | null, title: string, sku?: string | null, weight?: number | null, weightUnit: WeightUnit, compareAtPrice?: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode } | null, selectedOptions: Array<{ __typename?: 'SelectedOption', name: string, value: string }>, image?: { __typename?: 'Image', url: string, src: string, altText?: string | null, width?: number | null, height?: number | null, small: string, medium: string, large: string, blurDataURL: string } | null, price: { __typename?: 'MoneyV2', amount: string, currencyCode: CurrencyCode }, product: { __typename?: 'Product', handle: string, title: string, collections: { __typename?: 'CollectionConnection', nodes: Array<{ __typename?: 'Collection', handle: string }> } } } }> }, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, namespace: string, value: string, type: string, createdAt: string, updatedAt: string, parentResource:
+              | { __typename?: 'Article', id: string, metafields: Array<{ __typename?: 'Metafield', id: string, key: string, value: string, type: string, createdAt: string, updatedAt: string } | null> }
+              | { __typename?: 'Blog', id: string }
+              | { __typename?: 'Cart', id: string }
+              | { __typename?: 'Collection', id: string }
+              | { __typename?: 'Company', id: string }
+              | { __typename?: 'CompanyLocation', id: string }
+              | { __typename?: 'Customer', id: string }
+              | { __typename?: 'Location', id: string }
+              | { __typename?: 'Market', id: string }
+              | { __typename?: 'Order', id: string }
+              | { __typename?: 'Page', id: string }
+              | { __typename?: 'Product', id: string }
+              | { __typename?: 'ProductVariant', id: string }
+              | { __typename?: 'SellingPlan', id: string }
+              | { __typename?: 'Shop', id: string }
+             } | null>, seo: { __typename?: 'SEO', description?: string | null, title?: string | null } }
+       }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, productFilters: Array<{ __typename?: 'Filter', id: string, label: string, type: FilterType, values: Array<{ __typename?: 'FilterValue', id: string, label: string, count: number, input: any }> }> } };
 
 export type GetShopQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetShopQuery = {
-  __typename?: 'QueryRoot';
-  shop: {
-    __typename?: 'Shop';
-    description?: string | null;
-    name: string;
-    moneyFormat: string;
-    shipsToCountries: Array<CountryCode>;
-    primaryDomain: { __typename?: 'Domain'; host: string; url: string };
-    brand?: {
-      __typename?: 'Brand';
-      shortDescription?: string | null;
-      slogan?: string | null;
-      logo?: {
-        __typename?: 'MediaImage';
-        image?: {
-          __typename?: 'Image';
-          height?: number | null;
-          src: string;
-          width?: number | null;
-          altText?: string | null;
-        } | null;
-      } | null;
-    } | null;
-  };
-};
+
+export type GetShopQuery = { __typename?: 'QueryRoot', shop: { __typename?: 'Shop', description?: string | null, name: string, moneyFormat: string, shipsToCountries: Array<CountryCode>, primaryDomain: { __typename?: 'Domain', host: string, url: string }, brand?: { __typename?: 'Brand', shortDescription?: string | null, slogan?: string | null, logo?: { __typename?: 'MediaImage', image?: { __typename?: 'Image', height?: number | null, src: string, width?: number | null, altText?: string | null } | null } | null } | null } };
 
 export type GetPrivacyPolicyQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetPrivacyPolicyQuery = {
-  __typename?: 'QueryRoot';
-  shop: {
-    __typename?: 'Shop';
-    privacyPolicy?: { __typename?: 'ShopPolicy'; id: string; body: string; title: string } | null;
-  };
-};
+
+export type GetPrivacyPolicyQuery = { __typename?: 'QueryRoot', shop: { __typename?: 'Shop', privacyPolicy?: { __typename?: 'ShopPolicy', id: string, body: string, title: string } | null } };
 
 export type GetRefundPolicyQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetRefundPolicyQuery = {
-  __typename?: 'QueryRoot';
-  shop: {
-    __typename?: 'Shop';
-    refundPolicy?: { __typename?: 'ShopPolicy'; id: string; body: string; title: string } | null;
-  };
-};
+
+export type GetRefundPolicyQuery = { __typename?: 'QueryRoot', shop: { __typename?: 'Shop', refundPolicy?: { __typename?: 'ShopPolicy', id: string, body: string, title: string } | null } };
 
 export type GetShippingPolicyQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetShippingPolicyQuery = {
-  __typename?: 'QueryRoot';
-  shop: {
-    __typename?: 'Shop';
-    shippingPolicy?: { __typename?: 'ShopPolicy'; id: string; body: string; title: string } | null;
-  };
-};
+
+export type GetShippingPolicyQuery = { __typename?: 'QueryRoot', shop: { __typename?: 'Shop', shippingPolicy?: { __typename?: 'ShopPolicy', id: string, body: string, title: string } | null } };
 
 export type GetTermsOfServiceQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetTermsOfServiceQuery = {
-  __typename?: 'QueryRoot';
-  shop: {
-    __typename?: 'Shop';
-    termsOfService?: { __typename?: 'ShopPolicy'; id: string; body: string; title: string } | null;
-  };
-};
+
+export type GetTermsOfServiceQuery = { __typename?: 'QueryRoot', shop: { __typename?: 'Shop', termsOfService?: { __typename?: 'ShopPolicy', id: string, body: string, title: string } | null } };
 
 export type GetSubscriptionPolicyQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetSubscriptionPolicyQuery = {
-  __typename?: 'QueryRoot';
-  shop: {
-    __typename?: 'Shop';
-    subscriptionPolicy?: {
-      __typename?: 'ShopPolicyWithDefault';
-      id?: string | null;
-      body: string;
-      title: string;
-    } | null;
-  };
-};
+
+export type GetSubscriptionPolicyQuery = { __typename?: 'QueryRoot', shop: { __typename?: 'Shop', subscriptionPolicy?: { __typename?: 'ShopPolicyWithDefault', id?: string | null, body: string, title: string } | null } };
 
 export type GetMenuByHandleQueryVariables = Exact<{
   handle: Scalars['String']['input'];
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetMenuByHandleQuery = {
-  __typename?: 'QueryRoot';
-  menu?: {
-    __typename?: 'Menu';
-    id: string;
-    items: Array<{
-      __typename?: 'MenuItem';
-      id: string;
-      resourceId?: string | null;
-      tags: Array<string>;
-      title: string;
-      type: MenuItemType;
-      url?: string | null;
-      items: Array<{
-        __typename?: 'MenuItem';
-        id: string;
-        resourceId?: string | null;
-        tags: Array<string>;
-        title: string;
-        type: MenuItemType;
-        url?: string | null;
-        items: Array<{
-          __typename?: 'MenuItem';
-          id: string;
-          resourceId?: string | null;
-          tags: Array<string>;
-          title: string;
-          type: MenuItemType;
-          url?: string | null;
-        }>;
-      }>;
-    }>;
-  } | null;
-};
+
+export type GetMenuByHandleQuery = { __typename?: 'QueryRoot', menu?: { __typename?: 'Menu', id: string, items: Array<{ __typename?: 'MenuItem', id: string, resourceId?: string | null, tags: Array<string>, title: string, type: MenuItemType, url?: string | null, items: Array<{ __typename?: 'MenuItem', id: string, resourceId?: string | null, tags: Array<string>, title: string, type: MenuItemType, url?: string | null, items: Array<{ __typename?: 'MenuItem', id: string, resourceId?: string | null, tags: Array<string>, title: string, type: MenuItemType, url?: string | null }> }> }> } | null };
 
 export type GetPageByHandleQueryVariables = Exact<{
   handle: Scalars['String']['input'];
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetPageByHandleQuery = {
-  __typename?: 'QueryRoot';
-  page?: {
-    __typename?: 'Page';
-    bodySummary: string;
-    handle: string;
-    id: string;
-    data?: { __typename?: 'Metafield'; value: string; type: string } | null;
-  } | null;
-};
+
+export type GetPageByHandleQuery = { __typename?: 'QueryRoot', page?: { __typename?: 'Page', bodySummary: string, handle: string, id: string, data?: { __typename?: 'Metafield', value: string, type: string } | null } | null };
 
 export type GetShopMetaobjectByHandleQueryVariables = Exact<{
   handle?: InputMaybe<MetaobjectHandleInput>;
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetShopMetaobjectByHandleQuery = {
-  __typename?: 'QueryRoot';
-  metaobject?: {
-    __typename?: 'Metaobject';
-    fields: Array<{ __typename?: 'MetaobjectField'; key: string; value?: string | null }>;
-  } | null;
-};
+
+export type GetShopMetaobjectByHandleQuery = { __typename?: 'QueryRoot', metaobject?: { __typename?: 'Metaobject', fields: Array<{ __typename?: 'MetaobjectField', key: string, value?: string | null }> } | null };
 
 export type GetShopMetaObjectsQueryVariables = Exact<{
   type: Scalars['String']['input'];
@@ -17592,81 +11347,30 @@ export type GetShopMetaObjectsQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetShopMetaObjectsQuery = {
-  __typename?: 'QueryRoot';
-  metaobjects: {
-    __typename?: 'MetaobjectConnection';
-    edges: Array<{
-      __typename?: 'MetaobjectEdge';
-      node: {
-        __typename?: 'Metaobject';
-        id: string;
-        handle: string;
-        updatedAt: string;
-        type: string;
-        fields: Array<{ __typename?: 'MetaobjectField'; key: string; value?: string | null }>;
-      };
-    }>;
-  };
-};
+
+export type GetShopMetaObjectsQuery = { __typename?: 'QueryRoot', metaobjects: { __typename?: 'MetaobjectConnection', edges: Array<{ __typename?: 'MetaobjectEdge', node: { __typename?: 'Metaobject', id: string, handle: string, updatedAt: string, type: string, fields: Array<{ __typename?: 'MetaobjectField', key: string, value?: string | null }> } }> } };
 
 export type GetBlogByHandleQueryVariables = Exact<{
   handle: Scalars['String']['input'];
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetBlogByHandleQuery = {
-  __typename?: 'QueryRoot';
-  blog?: {
-    __typename?: 'Blog';
-    id: string;
-    title: string;
-    articles: {
-      __typename?: 'ArticleConnection';
-      edges: Array<{
-        __typename?: 'ArticleEdge';
-        node: { __typename?: 'Article'; id: string; title: string };
-      }>;
-    };
-  } | null;
-};
+
+export type GetBlogByHandleQuery = { __typename?: 'QueryRoot', blog?: { __typename?: 'Blog', id: string, title: string, articles: { __typename?: 'ArticleConnection', edges: Array<{ __typename?: 'ArticleEdge', node: { __typename?: 'Article', id: string, title: string } }> } } | null };
 
 export type GetLocalizationQueryVariables = Exact<{
   countryCode?: InputMaybe<CountryCode>;
 }>;
 
-export type GetLocalizationQuery = {
-  __typename?: 'QueryRoot';
-  localization: {
-    __typename?: 'Localization';
-    availableCountries: Array<{
-      __typename?: 'Country';
-      isoCode: CountryCode;
-      name: string;
-      unitSystem: UnitSystem;
-      currency: { __typename?: 'Currency'; isoCode: CurrencyCode; name: string; symbol: string };
-    }>;
-    country: {
-      __typename?: 'Country';
-      isoCode: CountryCode;
-      name: string;
-      unitSystem: UnitSystem;
-      currency: { __typename?: 'Currency'; isoCode: CurrencyCode; name: string; symbol: string };
-    };
-  };
-};
+
+export type GetLocalizationQuery = { __typename?: 'QueryRoot', localization: { __typename?: 'Localization', availableCountries: Array<{ __typename?: 'Country', isoCode: CountryCode, name: string, unitSystem: UnitSystem, currency: { __typename?: 'Currency', isoCode: CurrencyCode, name: string, symbol: string } }>, country: { __typename?: 'Country', isoCode: CountryCode, name: string, unitSystem: UnitSystem, currency: { __typename?: 'Currency', isoCode: CurrencyCode, name: string, symbol: string } } } };
 
 export type GetShopProductTagsQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetShopProductTagsQuery = {
-  __typename?: 'QueryRoot';
-  productTags: {
-    __typename?: 'StringConnection';
-    edges: Array<{ __typename?: 'StringEdge'; node: string }>;
-  };
-};
+
+export type GetShopProductTagsQuery = { __typename?: 'QueryRoot', productTags: { __typename?: 'StringConnection', edges: Array<{ __typename?: 'StringEdge', node: string }> } };
 
 export type GetProductsForSitemapQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -17678,24 +11382,8 @@ export type GetProductsForSitemapQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetProductsForSitemapQuery = {
-  __typename?: 'QueryRoot';
-  products: {
-    __typename?: 'ProductConnection';
-    pageInfo: {
-      __typename?: 'PageInfo';
-      hasNextPage: boolean;
-      hasPreviousPage: boolean;
-      startCursor?: string | null;
-      endCursor?: string | null;
-    };
-    edges: Array<{
-      __typename?: 'ProductEdge';
-      cursor: string;
-      node: { __typename?: 'Product'; handle: string; updatedAt: string };
-    }>;
-  };
-};
+
+export type GetProductsForSitemapQuery = { __typename?: 'QueryRoot', products: { __typename?: 'ProductConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, edges: Array<{ __typename?: 'ProductEdge', cursor: string, node: { __typename?: 'Product', handle: string, updatedAt: string } }> } };
 
 export type GetCollectionsForSitemapQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -17707,317 +11395,539 @@ export type GetCollectionsForSitemapQueryVariables = Exact<{
   language?: InputMaybe<LanguageCode>;
 }>;
 
-export type GetCollectionsForSitemapQuery = {
-  __typename?: 'QueryRoot';
-  collections: {
-    __typename?: 'CollectionConnection';
-    pageInfo: {
-      __typename?: 'PageInfo';
-      hasNextPage: boolean;
-      hasPreviousPage: boolean;
-      startCursor?: string | null;
-      endCursor?: string | null;
-    };
-    edges: Array<{
-      __typename?: 'CollectionEdge';
-      cursor: string;
-      node: { __typename?: 'Collection'; handle: string; updatedAt: string };
-    }>;
-  };
-};
+
+export type GetCollectionsForSitemapQuery = { __typename?: 'QueryRoot', collections: { __typename?: 'CollectionConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null, endCursor?: string | null }, edges: Array<{ __typename?: 'CollectionEdge', cursor: string, node: { __typename?: 'Collection', handle: string, updatedAt: string } }> } };
 
 export const UserErrorsFieldsFragmentDoc = gql`
-  fragment UserErrorsFields on UserError {
-    field
-    message
-  }
-`;
+    fragment UserErrorsFields on UserError {
+  field
+  message
+}
+    `;
 export const CartUserErrorsFragmentDoc = gql`
-  fragment CartUserErrors on CartUserError {
-    field
-    message
-    code
-  }
-`;
+    fragment CartUserErrors on CartUserError {
+  field
+  message
+  code
+}
+    `;
 export const MoneyFieldsFragmentDoc = gql`
-  fragment MoneyFields on MoneyV2 {
-    amount
-    currencyCode
-  }
-`;
+    fragment MoneyFields on MoneyV2 {
+  amount
+  currencyCode
+}
+    `;
 export const GiftCardFieldsFragmentDoc = gql`
-  fragment GiftCardFields on AppliedGiftCard {
-    id
-    amountUsed {
-      ...MoneyFields
-    }
-    balance {
-      ...MoneyFields
-    }
-    lastCharacters
-    presentmentAmountUsed {
-      ...MoneyFields
-    }
+    fragment GiftCardFields on AppliedGiftCard {
+  id
+  amountUsed {
+    ...MoneyFields
   }
-  ${MoneyFieldsFragmentDoc}
-`;
+  balance {
+    ...MoneyFields
+  }
+  lastCharacters
+  presentmentAmountUsed {
+    ...MoneyFields
+  }
+}
+    ${MoneyFieldsFragmentDoc}`;
 export const ImageFieldsFragmentDoc = gql`
-  fragment ImageFields on Image {
-    url
-    src
-    altText
-    small: url(
-      transform: { maxHeight: 240, maxWidth: 240, crop: CENTER, preferredContentType: WEBP }
-    )
-    medium: url(
-      transform: { maxHeight: 600, maxWidth: 600, crop: CENTER, preferredContentType: WEBP }
-    )
-    large: url(transform: { maxHeight: 1400, maxWidth: 1400, preferredContentType: WEBP })
-    blurDataURL: url(
-      transform: { maxHeight: 4, maxWidth: 4, crop: CENTER, preferredContentType: WEBP }
-    )
-    width
-    height
-  }
-`;
+    fragment ImageFields on Image {
+  url
+  src
+  altText
+  small: url(
+    transform: {maxHeight: 240, maxWidth: 240, crop: CENTER, preferredContentType: WEBP}
+  )
+  medium: url(
+    transform: {maxHeight: 600, maxWidth: 600, crop: CENTER, preferredContentType: WEBP}
+  )
+  large: url(
+    transform: {maxHeight: 1400, maxWidth: 1400, preferredContentType: WEBP}
+  )
+  blurDataURL: url(
+    transform: {maxHeight: 4, maxWidth: 4, crop: CENTER, preferredContentType: WEBP}
+  )
+  width
+  height
+}
+    `;
 export const PageInfoFieldsFragmentDoc = gql`
-  fragment PageInfoFields on PageInfo {
-    hasNextPage
-    hasPreviousPage
-    startCursor
-    endCursor
-  }
-`;
+    fragment PageInfoFields on PageInfo {
+  hasNextPage
+  hasPreviousPage
+  startCursor
+  endCursor
+}
+    `;
 export const CartLineFieldsFragmentDoc = gql`
-  fragment CartLineFields on BaseCartLineConnection {
-    edges {
-      cursor
-      node {
-        id
-        quantity
-        cost {
-          amountPerQuantity {
-            ...MoneyFields
-          }
-          subtotalAmount {
-            ...MoneyFields
-          }
-          totalAmount {
-            ...MoneyFields
-          }
+    fragment CartLineFields on BaseCartLineConnection {
+  edges {
+    cursor
+    node {
+      id
+      quantity
+      cost {
+        amountPerQuantity {
+          ...MoneyFields
         }
-        merchandise {
-          ... on ProductVariant {
-            id
-            availableForSale
-            quantityAvailable
+        subtotalAmount {
+          ...MoneyFields
+        }
+        totalAmount {
+          ...MoneyFields
+        }
+      }
+      merchandise {
+        ... on ProductVariant {
+          id
+          availableForSale
+          quantityAvailable
+          title
+          sku
+          weight
+          weightUnit
+          compareAtPrice {
+            amount
+            currencyCode
+          }
+          selectedOptions {
+            name
+            value
+          }
+          image {
+            ...ImageFields
+          }
+          price {
+            amount
+            currencyCode
+          }
+          product {
+            handle
             title
-            sku
-            weight
-            weightUnit
-            compareAtPrice {
-              amount
-              currencyCode
-            }
-            selectedOptions {
-              name
-              value
-            }
-            image {
-              ...ImageFields
-            }
-            price {
-              amount
-              currencyCode
-            }
-            product {
-              handle
-              title
-              productType
-              collections(first: 1) {
-                nodes {
-                  handle
-                }
+            productType
+            collections(first: 1) {
+              nodes {
+                handle
               }
             }
           }
         }
-        attributes {
-          key
-          value
+      }
+      attributes {
+        key
+        value
+      }
+      discountAllocations {
+        discountedAmount {
+          ...MoneyFields
         }
-        discountAllocations {
-          discountedAmount {
-            ...MoneyFields
-          }
-          targetType
-        }
+        targetType
       }
     }
-    pageInfo {
-      ...PageInfoFields
-    }
   }
-  ${MoneyFieldsFragmentDoc}
-  ${ImageFieldsFragmentDoc}
-  ${PageInfoFieldsFragmentDoc}
-`;
+  pageInfo {
+    ...PageInfoFields
+  }
+}
+    ${MoneyFieldsFragmentDoc}
+${ImageFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
 export const CartCostFieldsFragmentDoc = gql`
-  fragment CartCostFields on CartCost {
-    totalAmount {
-      ...MoneyFields
-    }
-    subtotalAmount {
-      ...MoneyFields
-    }
-    totalTaxAmount {
-      ...MoneyFields
-    }
-    totalDutyAmount {
-      ...MoneyFields
-    }
+    fragment CartCostFields on CartCost {
+  totalAmount {
+    ...MoneyFields
   }
-  ${MoneyFieldsFragmentDoc}
-`;
+  subtotalAmount {
+    ...MoneyFields
+  }
+  totalTaxAmount {
+    ...MoneyFields
+  }
+  totalDutyAmount {
+    ...MoneyFields
+  }
+}
+    ${MoneyFieldsFragmentDoc}`;
 export const AddressFieldsFragmentDoc = gql`
-  fragment AddressFields on MailingAddress {
-    id
-    name
-    address1
-    address2
-    city
-    country
-    company
-    countryCode
-    countryCodeV2
-    firstName
-    formattedArea
-    lastName
-    latitude
-    longitude
-    phone
-    province
-    provinceCode
-    zip
-  }
-`;
+    fragment AddressFields on MailingAddress {
+  id
+  name
+  address1
+  address2
+  city
+  country
+  company
+  countryCode
+  countryCodeV2
+  firstName
+  formattedArea
+  lastName
+  latitude
+  longitude
+  phone
+  province
+  provinceCode
+  zip
+}
+    `;
 export const CustomerDetailsFragmentDoc = gql`
-  fragment CustomerDetails on Customer {
-    id
-    firstName
-    lastName
-    email
-    phone
-    acceptsMarketing
-    createdAt
-    updatedAt
-    defaultAddress {
+    fragment CustomerDetails on Customer {
+  id
+  firstName
+  lastName
+  email
+  phone
+  acceptsMarketing
+  createdAt
+  updatedAt
+  defaultAddress {
+    ...AddressFields
+  }
+}
+    ${AddressFieldsFragmentDoc}`;
+export const BuyerIdentityFieldsFragmentDoc = gql`
+    fragment BuyerIdentityFields on CartBuyerIdentity {
+  email
+  phone
+  countryCode
+  customer {
+    ...CustomerDetails
+  }
+  deliveryAddressPreferences {
+    ... on MailingAddress {
       ...AddressFields
     }
   }
-  ${AddressFieldsFragmentDoc}
-`;
-export const BuyerIdentityFieldsFragmentDoc = gql`
-  fragment BuyerIdentityFields on CartBuyerIdentity {
-    email
-    phone
-    countryCode
-    customer {
-      ...CustomerDetails
-    }
-    deliveryAddressPreferences {
-      ... on MailingAddress {
-        ...AddressFields
-      }
-    }
-  }
-  ${CustomerDetailsFragmentDoc}
-  ${AddressFieldsFragmentDoc}
-`;
+}
+    ${CustomerDetailsFragmentDoc}
+${AddressFieldsFragmentDoc}`;
 export const CartFieldsFragmentDoc = gql`
-  fragment CartFields on Cart {
-    id
-    createdAt
-    updatedAt
-    checkoutUrl
-    totalQuantity
-    note
-    appliedGiftCards {
-      ...GiftCardFields
-    }
-    lines(first: $first, last: $last, after: $after, before: $before) {
-      ...CartLineFields
-    }
-    attributes {
-      key
-      value
-    }
-    cost {
-      ...CartCostFields
-    }
-    discountCodes {
-      applicable
-      code
-    }
-    buyerIdentity {
-      ...BuyerIdentityFields
-    }
+    fragment CartFields on Cart {
+  id
+  createdAt
+  updatedAt
+  checkoutUrl
+  totalQuantity
+  note
+  appliedGiftCards {
+    ...GiftCardFields
   }
-  ${GiftCardFieldsFragmentDoc}
-  ${CartLineFieldsFragmentDoc}
-  ${CartCostFieldsFragmentDoc}
-  ${BuyerIdentityFieldsFragmentDoc}
-`;
+  lines(first: $first, last: $last, after: $after, before: $before) {
+    ...CartLineFields
+  }
+  attributes {
+    key
+    value
+  }
+  cost {
+    ...CartCostFields
+  }
+  discountCodes {
+    applicable
+    code
+  }
+  buyerIdentity {
+    ...BuyerIdentityFields
+  }
+}
+    ${GiftCardFieldsFragmentDoc}
+${CartLineFieldsFragmentDoc}
+${CartCostFieldsFragmentDoc}
+${BuyerIdentityFieldsFragmentDoc}`;
 export const ProductImageConnectionFragmentDoc = gql`
-  fragment ProductImageConnection on ImageConnection {
-    edges {
-      node {
-        ...ImageFields
-      }
+    fragment ProductImageConnection on ImageConnection {
+  edges {
+    node {
+      ...ImageFields
     }
   }
-  ${ImageFieldsFragmentDoc}
-`;
+}
+    ${ImageFieldsFragmentDoc}`;
 export const ProductPriceRangeFragmentDoc = gql`
-  fragment ProductPriceRange on ProductPriceRange {
-    maxVariantPrice {
-      ...MoneyFields
-    }
-    minVariantPrice {
-      ...MoneyFields
-    }
+    fragment ProductPriceRange on ProductPriceRange {
+  maxVariantPrice {
+    ...MoneyFields
   }
-  ${MoneyFieldsFragmentDoc}
-`;
+  minVariantPrice {
+    ...MoneyFields
+  }
+}
+    ${MoneyFieldsFragmentDoc}`;
 export const ProductOptionFieldsFragmentDoc = gql`
-  fragment ProductOptionFields on ProductOption {
+    fragment ProductOptionFields on ProductOption {
+  id
+  name
+  optionValues {
+    firstSelectableVariant {
+      id
+    }
     id
     name
-    optionValues {
-      firstSelectableVariant {
-        id
-      }
-      id
-      name
-      swatch {
-        color
-      }
+    swatch {
+      color
     }
   }
-`;
+}
+    `;
 export const ProductDetailsFragmentDoc = gql`
-  fragment ProductDetails on Product {
-    handle
-    title
-    collections(first: 1) {
-      nodes {
+    fragment ProductDetails on Product {
+  handle
+  title
+  collections(first: 1) {
+    nodes {
+      handle
+    }
+  }
+}
+    `;
+export const ProductVariantFieldsFragmentDoc = gql`
+    fragment ProductVariantFields on ProductVariant {
+  id
+  availableForSale
+  quantityAvailable
+  title
+  sku
+  weight
+  weightUnit
+  compareAtPrice {
+    ...MoneyFields
+  }
+  selectedOptions {
+    name
+    value
+  }
+  image {
+    ...ImageFields
+  }
+  price {
+    ...MoneyFields
+  }
+  product {
+    ...ProductDetails
+  }
+}
+    ${MoneyFieldsFragmentDoc}
+${ImageFieldsFragmentDoc}
+${ProductDetailsFragmentDoc}`;
+export const ProductVariantConnectionFragmentDoc = gql`
+    fragment ProductVariantConnection on ProductVariantConnection {
+  edges {
+    node {
+      ...ProductVariantFields
+    }
+  }
+}
+    ${ProductVariantFieldsFragmentDoc}`;
+export const MetafieldFieldsFragmentDoc = gql`
+    fragment MetafieldFields on Metafield {
+  id
+  key
+  namespace
+  value
+  type
+  createdAt
+  updatedAt
+  parentResource {
+    ... on Article {
+      id
+      metafields(identifiers: $identifiers) {
+        id
+        key
+        value
+        type
+        createdAt
+        updatedAt
+      }
+    }
+    ... on Blog {
+      id
+    }
+    ... on Cart {
+      id
+    }
+    ... on Collection {
+      id
+    }
+    ... on Company {
+      id
+    }
+    ... on CompanyLocation {
+      id
+    }
+    ... on Customer {
+      id
+    }
+    ... on Location {
+      id
+    }
+    ... on Market {
+      id
+    }
+    ... on Order {
+      id
+    }
+    ... on Page {
+      id
+    }
+    ... on Product {
+      id
+    }
+    ... on ProductVariant {
+      id
+    }
+    ... on SellingPlan {
+      id
+    }
+    ... on Shop {
+      id
+    }
+  }
+}
+    `;
+export const ProductFieldsFragmentDoc = gql`
+    fragment ProductFields on Product {
+  handle
+  id
+  title
+  availableForSale
+  description
+  descriptionHtml
+  featuredImage {
+    ...ImageFields
+  }
+  images(first: 20) {
+    ...ProductImageConnection
+  }
+  priceRange {
+    ...ProductPriceRange
+  }
+  productType
+  tags
+  options {
+    ...ProductOptionFields
+  }
+  totalInventory
+  vendor
+  updatedAt
+  collections(first: 1) {
+    edges {
+      node {
         handle
       }
     }
   }
-`;
-export const ProductVariantFieldsFragmentDoc = gql`
-  fragment ProductVariantFields on ProductVariant {
+  variants(first: 100) {
+    ...ProductVariantConnection
+  }
+  metafields(identifiers: $identifiers) {
+    ...MetafieldFields
+  }
+  seo {
+    description
+    title
+  }
+}
+    ${ImageFieldsFragmentDoc}
+${ProductImageConnectionFragmentDoc}
+${ProductPriceRangeFragmentDoc}
+${ProductOptionFieldsFragmentDoc}
+${ProductVariantConnectionFragmentDoc}
+${MetafieldFieldsFragmentDoc}`;
+export const CollectionFieldsFragmentDoc = gql`
+    fragment CollectionFields on Collection {
+  handle
+  description
+  title
+  id
+  updatedAt
+  image {
+    ...ImageFields
+  }
+  seo {
+    description
+    title
+  }
+  metafields(identifiers: $identifiers) {
+    ...MetafieldFields
+  }
+}
+    ${ImageFieldsFragmentDoc}
+${MetafieldFieldsFragmentDoc}`;
+export const ProductFilterFieldsFragmentDoc = gql`
+    fragment ProductFilterFields on Filter {
+  id
+  label
+  type
+  values {
+    id
+    label
+    count
+    input
+  }
+}
+    `;
+export const CustomerAccessTokenFieldsFragmentDoc = gql`
+    fragment CustomerAccessTokenFields on CustomerAccessToken {
+  accessToken
+  expiresAt
+}
+    `;
+export const CustomerAddressFieldsFragmentDoc = gql`
+    fragment CustomerAddressFields on MailingAddress {
+  id
+  name
+  address1
+  address2
+  city
+  country
+  company
+  countryCode
+  countryCodeV2
+  firstName
+  formattedArea
+  formatted
+  lastName
+  latitude
+  longitude
+  phone
+  province
+  provinceCode
+  zip
+}
+    `;
+export const CustomerFieldsFragmentDoc = gql`
+    fragment CustomerFields on Customer {
+  id
+  firstName
+  lastName
+  email
+  phone
+  acceptsMarketing
+  createdAt
+  updatedAt
+  defaultAddress {
+    ...CustomerAddressFields
+  }
+}
+    ${CustomerAddressFieldsFragmentDoc}`;
+export const CustomerUserErrorFieldsFragmentDoc = gql`
+    fragment CustomerUserErrorFields on CustomerUserError {
+  field
+  message
+  code
+}
+    `;
+export const OrderLineItemFieldsFragmentDoc = gql`
+    fragment OrderLineItemFields on OrderLineItem {
+  discountedTotalPrice {
+    amount
+    currencyCode
+  }
+  quantity
+  title
+  variant {
     id
     availableForSale
     quantityAvailable
@@ -18026,7 +11936,8 @@ export const ProductVariantFieldsFragmentDoc = gql`
     weight
     weightUnit
     compareAtPrice {
-      ...MoneyFields
+      amount
+      currencyCode
     }
     selectedOptions {
       name
@@ -18036,1281 +11947,815 @@ export const ProductVariantFieldsFragmentDoc = gql`
       ...ImageFields
     }
     price {
-      ...MoneyFields
+      amount
+      currencyCode
     }
     product {
-      ...ProductDetails
-    }
-  }
-  ${MoneyFieldsFragmentDoc}
-  ${ImageFieldsFragmentDoc}
-  ${ProductDetailsFragmentDoc}
-`;
-export const ProductVariantConnectionFragmentDoc = gql`
-  fragment ProductVariantConnection on ProductVariantConnection {
-    edges {
-      node {
-        ...ProductVariantFields
-      }
-    }
-  }
-  ${ProductVariantFieldsFragmentDoc}
-`;
-export const MetafieldFieldsFragmentDoc = gql`
-  fragment MetafieldFields on Metafield {
-    id
-    key
-    namespace
-    value
-    type
-    createdAt
-    updatedAt
-    parentResource {
-      ... on Article {
-        id
-        metafields(identifiers: $identifiers) {
-          id
-          key
-          value
-          type
-          createdAt
-          updatedAt
-        }
-      }
-      ... on Blog {
-        id
-      }
-      ... on Cart {
-        id
-      }
-      ... on Collection {
-        id
-      }
-      ... on Company {
-        id
-      }
-      ... on CompanyLocation {
-        id
-      }
-      ... on Customer {
-        id
-      }
-      ... on Location {
-        id
-      }
-      ... on Market {
-        id
-      }
-      ... on Order {
-        id
-      }
-      ... on Page {
-        id
-      }
-      ... on Product {
-        id
-      }
-      ... on ProductVariant {
-        id
-      }
-      ... on SellingPlan {
-        id
-      }
-      ... on Shop {
-        id
-      }
-    }
-  }
-`;
-export const ProductFieldsFragmentDoc = gql`
-  fragment ProductFields on Product {
-    handle
-    id
-    title
-    availableForSale
-    description
-    descriptionHtml
-    featuredImage {
-      ...ImageFields
-    }
-    images(first: 20) {
-      ...ProductImageConnection
-    }
-    priceRange {
-      ...ProductPriceRange
-    }
-    productType
-    tags
-    options {
-      ...ProductOptionFields
-    }
-    totalInventory
-    vendor
-    updatedAt
-    collections(first: 1) {
-      edges {
-        node {
+      handle
+      title
+      collections(first: 1) {
+        nodes {
           handle
         }
       }
     }
-    variants(first: 100) {
-      ...ProductVariantConnection
-    }
-    metafields(identifiers: $identifiers) {
-      ...MetafieldFields
-    }
-    seo {
-      description
-      title
-    }
   }
-  ${ImageFieldsFragmentDoc}
-  ${ProductImageConnectionFragmentDoc}
-  ${ProductPriceRangeFragmentDoc}
-  ${ProductOptionFieldsFragmentDoc}
-  ${ProductVariantConnectionFragmentDoc}
-  ${MetafieldFieldsFragmentDoc}
-`;
-export const CollectionFieldsFragmentDoc = gql`
-  fragment CollectionFields on Collection {
-    handle
-    description
-    title
-    id
-    updatedAt
-    image {
-      ...ImageFields
-    }
-    seo {
-      description
-      title
-    }
-    metafields(identifiers: $identifiers) {
-      ...MetafieldFields
-    }
-  }
-  ${ImageFieldsFragmentDoc}
-  ${MetafieldFieldsFragmentDoc}
-`;
-export const ProductFilterFieldsFragmentDoc = gql`
-  fragment ProductFilterFields on Filter {
-    id
-    label
-    type
-    values {
-      id
-      label
-      count
-      input
-    }
-  }
-`;
-export const CustomerAccessTokenFieldsFragmentDoc = gql`
-  fragment CustomerAccessTokenFields on CustomerAccessToken {
-    accessToken
-    expiresAt
-  }
-`;
-export const CustomerAddressFieldsFragmentDoc = gql`
-  fragment CustomerAddressFields on MailingAddress {
-    id
-    name
-    address1
-    address2
-    city
-    country
-    company
-    countryCode
-    countryCodeV2
-    firstName
-    formattedArea
-    formatted
-    lastName
-    latitude
-    longitude
-    phone
-    province
-    provinceCode
-    zip
-  }
-`;
-export const CustomerFieldsFragmentDoc = gql`
-  fragment CustomerFields on Customer {
-    id
-    firstName
-    lastName
-    email
-    phone
-    acceptsMarketing
-    createdAt
-    updatedAt
-    defaultAddress {
-      ...CustomerAddressFields
-    }
-  }
-  ${CustomerAddressFieldsFragmentDoc}
-`;
-export const CustomerUserErrorFieldsFragmentDoc = gql`
-  fragment CustomerUserErrorFields on CustomerUserError {
-    field
-    message
-    code
-  }
-`;
-export const OrderLineItemFieldsFragmentDoc = gql`
-  fragment OrderLineItemFields on OrderLineItem {
-    discountedTotalPrice {
-      amount
-      currencyCode
-    }
-    quantity
-    title
-    variant {
-      id
-      availableForSale
-      quantityAvailable
-      title
-      sku
-      weight
-      weightUnit
-      compareAtPrice {
-        amount
-        currencyCode
-      }
-      selectedOptions {
-        name
-        value
-      }
-      image {
-        ...ImageFields
-      }
-      price {
-        amount
-        currencyCode
-      }
-      product {
-        handle
-        title
-        collections(first: 1) {
-          nodes {
-            handle
-          }
-        }
-      }
-    }
-  }
-  ${ImageFieldsFragmentDoc}
-`;
+}
+    ${ImageFieldsFragmentDoc}`;
 export const OrderFieldsFragmentDoc = gql`
-  fragment OrderFields on Order {
-    id
-    name
-    fulfillmentStatus
-    canceledAt
-    cancelReason
-    successfulFulfillments(first: 100) {
-      trackingCompany
-      trackingInfo(first: 100) {
-        number
-        url
-      }
-      fulfillmentLineItems(first: 100) {
-        edges {
-          node {
-            lineItem {
-              ...OrderLineItemFields
-            }
-          }
-        }
-      }
+    fragment OrderFields on Order {
+  id
+  name
+  fulfillmentStatus
+  canceledAt
+  cancelReason
+  successfulFulfillments(first: 100) {
+    trackingCompany
+    trackingInfo(first: 100) {
+      number
+      url
     }
-    currencyCode
-    customerUrl
-    email
-    financialStatus
-    orderNumber
-    phone
-    processedAt
-    subtotalPrice {
-      amount
-      currencyCode
-    }
-    totalPrice {
-      amount
-      currencyCode
-    }
-    totalRefunded {
-      currencyCode
-      amount
-    }
-    totalShippingPrice {
-      amount
-      currencyCode
-    }
-    totalTaxV2 {
-      amount
-      currencyCode
-    }
-    customAttributes {
-      key
-      value
-    }
-    shippingAddress {
-      ...CustomerAddressFields
-    }
-    metafields(identifiers: $identifiers) {
-      ...MetafieldFields
-    }
-  }
-  ${OrderLineItemFieldsFragmentDoc}
-  ${CustomerAddressFieldsFragmentDoc}
-  ${MetafieldFieldsFragmentDoc}
-`;
-export const CartAttributesUpdateDocument = gql`
-  mutation cartAttributesUpdate(
-    $attributes: [AttributeInput!]!
-    $cartId: ID!
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    cartAttributesUpdate(attributes: $attributes, cartId: $cartId) {
-      cart {
-        ...CartFields
-      }
-      userErrors {
-        ...CartUserErrors
-      }
-      warnings {
-        message
-      }
-    }
-  }
-  ${CartFieldsFragmentDoc}
-  ${CartUserErrorsFragmentDoc}
-`;
-export const CartBuyerIdentityUpdateDocument = gql`
-  mutation cartBuyerIdentityUpdate(
-    $buyerIdentity: CartBuyerIdentityInput!
-    $cartId: ID!
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    cartBuyerIdentityUpdate(buyerIdentity: $buyerIdentity, cartId: $cartId) {
-      cart {
-        ...CartFields
-      }
-      userErrors {
-        ...CartUserErrors
-      }
-      warnings {
-        message
-      }
-    }
-  }
-  ${CartFieldsFragmentDoc}
-  ${CartUserErrorsFragmentDoc}
-`;
-export const CartCreateDocument = gql`
-  mutation cartCreate(
-    $cartInput: CartInput
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    cartCreate(input: $cartInput) {
-      cart {
-        ...CartFields
-      }
-      userErrors {
-        ...CartUserErrors
-      }
-      warnings {
-        message
-      }
-    }
-  }
-  ${CartFieldsFragmentDoc}
-  ${CartUserErrorsFragmentDoc}
-`;
-export const CartDiscountCodesUpdateDocument = gql`
-  mutation cartDiscountCodesUpdate(
-    $cartId: ID!
-    $discountCodes: [String!]!
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
-      cart {
-        ...CartFields
-      }
-      userErrors {
-        ...CartUserErrors
-      }
-      warnings {
-        message
-      }
-    }
-  }
-  ${CartFieldsFragmentDoc}
-  ${CartUserErrorsFragmentDoc}
-`;
-export const CartLinesAddDocument = gql`
-  mutation cartLinesAdd(
-    $cartId: ID!
-    $lines: [CartLineInput!]!
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    cartLinesAdd(cartId: $cartId, lines: $lines) {
-      cart {
-        ...CartFields
-      }
-      userErrors {
-        ...CartUserErrors
-      }
-      warnings {
-        message
-      }
-    }
-  }
-  ${CartFieldsFragmentDoc}
-  ${CartUserErrorsFragmentDoc}
-`;
-export const CartLinesRemoveDocument = gql`
-  mutation cartLinesRemove(
-    $cartId: ID!
-    $lineIds: [ID!]!
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
-      cart {
-        ...CartFields
-      }
-      userErrors {
-        ...CartUserErrors
-      }
-      warnings {
-        message
-      }
-    }
-  }
-  ${CartFieldsFragmentDoc}
-  ${CartUserErrorsFragmentDoc}
-`;
-export const CartLinesUpdateDocument = gql`
-  mutation cartLinesUpdate(
-    $cartId: ID!
-    $lines: [CartLineUpdateInput!]!
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    cartLinesUpdate(cartId: $cartId, lines: $lines) {
-      cart {
-        ...CartFields
-      }
-      userErrors {
-        ...CartUserErrors
-      }
-      warnings {
-        message
-      }
-    }
-  }
-  ${CartFieldsFragmentDoc}
-  ${CartUserErrorsFragmentDoc}
-`;
-export const CartNoteUpdateDocument = gql`
-  mutation cartNoteUpdate(
-    $cartId: ID!
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $note: String!
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    cartNoteUpdate(cartId: $cartId, note: $note) {
-      cart {
-        ...CartFields
-      }
-      userErrors {
-        ...CartUserErrors
-      }
-      warnings {
-        message
-      }
-    }
-  }
-  ${CartFieldsFragmentDoc}
-  ${CartUserErrorsFragmentDoc}
-`;
-export const GetCartDocument = gql`
-  query getCart(
-    $cartId: ID!
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    cart(id: $cartId) {
-      ...CartFields
-    }
-  }
-  ${CartFieldsFragmentDoc}
-`;
-export const CheckoutUrlDocument = gql`
-  query checkoutURL($cartId: ID!, $language: LanguageCode) @inContext(language: $language) {
-    cart(id: $cartId) {
-      checkoutUrl
-    }
-  }
-`;
-export const CollectionDocument = gql`
-  query collection(
-    $handle: String!
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $filters: [ProductFilter!]
-    $sortKey: ProductCollectionSortKeys
-    $language: LanguageCode
-    $identifiers: [HasMetafieldsIdentifier!]!
-  ) @inContext(language: $language) {
-    collection(handle: $handle) {
-      ...CollectionFields
-      products(
-        first: $first
-        last: $last
-        after: $after
-        before: $before
-        filters: $filters
-        sortKey: $sortKey
-      ) {
-        edges {
-          cursor
-          node {
-            ...ProductFields
-          }
-        }
-        filters {
-          ...ProductFilterFields
-        }
-        pageInfo {
-          ...PageInfoFields
-        }
-      }
-    }
-  }
-  ${CollectionFieldsFragmentDoc}
-  ${ProductFieldsFragmentDoc}
-  ${ProductFilterFieldsFragmentDoc}
-  ${PageInfoFieldsFragmentDoc}
-`;
-export const GetCollectionSeoByHandleDocument = gql`
-  query getCollectionSeoByHandle($handle: String!) {
-    collection(handle: $handle) {
-      id
-      title
-      description
-      image {
-        id
-        originalSrc
-        altText
-      }
-      seo {
-        title
-        description
-      }
-    }
-  }
-`;
-export const CollectionsDocument = gql`
-  query collections(
-    $first: Int
-    $after: String
-    $before: String
-    $sortKey: CollectionSortKeys
-    $firstProducts: Int
-    $beforeProducts: String
-    $afterProducts: String
-    $productsSortKey: ProductCollectionSortKeys
-    $language: LanguageCode
-    $identifiers: [HasMetafieldsIdentifier!]!
-  ) @inContext(language: $language) {
-    collections(first: $first, after: $after, before: $before, sortKey: $sortKey) {
-      pageInfo {
-        ...PageInfoFields
-      }
+    fulfillmentLineItems(first: 100) {
       edges {
         node {
-          ...CollectionFields
-          products(
-            first: $firstProducts
-            after: $afterProducts
-            before: $beforeProducts
-            sortKey: $productsSortKey
-          ) {
-            edges {
-              cursor
-              node {
-                ...ProductFields
-              }
-            }
-            filters {
-              ...ProductFilterFields
-            }
-            pageInfo {
-              ...PageInfoFields
-            }
+          lineItem {
+            ...OrderLineItemFields
           }
         }
       }
     }
   }
-  ${PageInfoFieldsFragmentDoc}
-  ${CollectionFieldsFragmentDoc}
-  ${ProductFieldsFragmentDoc}
-  ${ProductFilterFieldsFragmentDoc}
-`;
-export const CustomerAccessTokenCreateDocument = gql`
-  mutation customerAccessTokenCreate(
-    $input: CustomerAccessTokenCreateInput!
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    customerAccessTokenCreate(input: $input) {
-      customerAccessToken {
-        accessToken
-        expiresAt
-      }
-      customerUserErrors {
-        ...CustomerUserErrorFields
-      }
+  currencyCode
+  customerUrl
+  email
+  financialStatus
+  orderNumber
+  phone
+  processedAt
+  subtotalPrice {
+    amount
+    currencyCode
+  }
+  totalPrice {
+    amount
+    currencyCode
+  }
+  totalRefunded {
+    currencyCode
+    amount
+  }
+  totalShippingPrice {
+    amount
+    currencyCode
+  }
+  totalTaxV2 {
+    amount
+    currencyCode
+  }
+  customAttributes {
+    key
+    value
+  }
+  shippingAddress {
+    ...CustomerAddressFields
+  }
+  metafields(identifiers: $identifiers) {
+    ...MetafieldFields
+  }
+}
+    ${OrderLineItemFieldsFragmentDoc}
+${CustomerAddressFieldsFragmentDoc}
+${MetafieldFieldsFragmentDoc}`;
+export const CartAttributesUpdateDocument = gql`
+    mutation cartAttributesUpdate($attributes: [AttributeInput!]!, $cartId: ID!, $first: Int, $last: Int, $after: String, $before: String, $language: LanguageCode) @inContext(language: $language) {
+  cartAttributesUpdate(attributes: $attributes, cartId: $cartId) {
+    cart {
+      ...CartFields
+    }
+    userErrors {
+      ...CartUserErrors
+    }
+    warnings {
+      message
     }
   }
-  ${CustomerUserErrorFieldsFragmentDoc}
-`;
-export const CustomerAccessTokenCreateWithMultipassDocument = gql`
-  mutation customerAccessTokenCreateWithMultipass($multipassToken: String!, $language: LanguageCode)
-  @inContext(language: $language) {
-    customerAccessTokenCreateWithMultipass(multipassToken: $multipassToken) {
-      customerAccessToken {
-        accessToken
-        expiresAt
-      }
-      customerUserErrors {
-        ...CustomerUserErrorFields
-      }
+}
+    ${CartFieldsFragmentDoc}
+${CartUserErrorsFragmentDoc}`;
+export const CartBuyerIdentityUpdateDocument = gql`
+    mutation cartBuyerIdentityUpdate($buyerIdentity: CartBuyerIdentityInput!, $cartId: ID!, $first: Int, $last: Int, $after: String, $before: String, $language: LanguageCode) @inContext(language: $language) {
+  cartBuyerIdentityUpdate(buyerIdentity: $buyerIdentity, cartId: $cartId) {
+    cart {
+      ...CartFields
+    }
+    userErrors {
+      ...CartUserErrors
+    }
+    warnings {
+      message
     }
   }
-  ${CustomerUserErrorFieldsFragmentDoc}
-`;
-export const CustomerAccessTokenDeleteDocument = gql`
-  mutation customerAccessTokenDelete($customerAccessToken: String!, $language: LanguageCode)
-  @inContext(language: $language) {
-    customerAccessTokenDelete(customerAccessToken: $customerAccessToken) {
-      deletedAccessToken
-      deletedCustomerAccessTokenId
-      userErrors {
-        ...UserErrorsFields
-      }
+}
+    ${CartFieldsFragmentDoc}
+${CartUserErrorsFragmentDoc}`;
+export const CartCreateDocument = gql`
+    mutation cartCreate($cartInput: CartInput, $first: Int, $last: Int, $after: String, $before: String, $language: LanguageCode) @inContext(language: $language) {
+  cartCreate(input: $cartInput) {
+    cart {
+      ...CartFields
+    }
+    userErrors {
+      ...CartUserErrors
+    }
+    warnings {
+      message
     }
   }
-  ${UserErrorsFieldsFragmentDoc}
-`;
-export const CustomerAccessTokenRenewDocument = gql`
-  mutation customerAccessTokenRenew($customerAccessToken: String!, $language: LanguageCode)
-  @inContext(language: $language) {
-    customerAccessTokenRenew(customerAccessToken: $customerAccessToken) {
-      customerAccessToken {
-        accessToken
-        expiresAt
-      }
-      userErrors {
-        ...UserErrorsFields
-      }
+}
+    ${CartFieldsFragmentDoc}
+${CartUserErrorsFragmentDoc}`;
+export const CartDiscountCodesUpdateDocument = gql`
+    mutation cartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]!, $first: Int, $last: Int, $after: String, $before: String, $language: LanguageCode) @inContext(language: $language) {
+  cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
+    cart {
+      ...CartFields
+    }
+    userErrors {
+      ...CartUserErrors
+    }
+    warnings {
+      message
     }
   }
-  ${UserErrorsFieldsFragmentDoc}
-`;
-export const CustomerActivateDocument = gql`
-  mutation customerActivate($id: ID!, $input: CustomerActivateInput!, $language: LanguageCode)
-  @inContext(language: $language) {
-    customerActivate(id: $id, input: $input) {
-      customer {
-        ...CustomerFields
-      }
-      customerAccessToken {
-        ...CustomerAccessTokenFields
-      }
-      customerUserErrors {
-        ...CustomerUserErrorFields
-      }
+}
+    ${CartFieldsFragmentDoc}
+${CartUserErrorsFragmentDoc}`;
+export const CartLinesAddDocument = gql`
+    mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!, $first: Int, $last: Int, $after: String, $before: String, $language: LanguageCode) @inContext(language: $language) {
+  cartLinesAdd(cartId: $cartId, lines: $lines) {
+    cart {
+      ...CartFields
+    }
+    userErrors {
+      ...CartUserErrors
+    }
+    warnings {
+      message
     }
   }
-  ${CustomerFieldsFragmentDoc}
-  ${CustomerAccessTokenFieldsFragmentDoc}
-  ${CustomerUserErrorFieldsFragmentDoc}
-`;
-export const CustomerActivateByUrlDocument = gql`
-  mutation customerActivateByUrl($activationUrl: URL!, $password: String!, $language: LanguageCode)
-  @inContext(language: $language) {
-    customerActivateByUrl(activationUrl: $activationUrl, password: $password) {
-      customer {
-        ...CustomerFields
-      }
-      customerAccessToken {
-        ...CustomerAccessTokenFields
-      }
-      customerUserErrors {
-        ...CustomerUserErrorFields
-      }
+}
+    ${CartFieldsFragmentDoc}
+${CartUserErrorsFragmentDoc}`;
+export const CartLinesRemoveDocument = gql`
+    mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!, $first: Int, $last: Int, $after: String, $before: String, $language: LanguageCode) @inContext(language: $language) {
+  cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+    cart {
+      ...CartFields
+    }
+    userErrors {
+      ...CartUserErrors
+    }
+    warnings {
+      message
     }
   }
-  ${CustomerFieldsFragmentDoc}
-  ${CustomerAccessTokenFieldsFragmentDoc}
-  ${CustomerUserErrorFieldsFragmentDoc}
-`;
-export const CustomerAddressCreateDocument = gql`
-  mutation customerAddressCreate(
-    $address: MailingAddressInput!
-    $customerAccessToken: String!
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    customerAddressCreate(address: $address, customerAccessToken: $customerAccessToken) {
-      customerAddress {
-        ...CustomerAddressFields
-      }
-      customerUserErrors {
-        ...CustomerUserErrorFields
-      }
+}
+    ${CartFieldsFragmentDoc}
+${CartUserErrorsFragmentDoc}`;
+export const CartLinesUpdateDocument = gql`
+    mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!, $first: Int, $last: Int, $after: String, $before: String, $language: LanguageCode) @inContext(language: $language) {
+  cartLinesUpdate(cartId: $cartId, lines: $lines) {
+    cart {
+      ...CartFields
+    }
+    userErrors {
+      ...CartUserErrors
+    }
+    warnings {
+      message
     }
   }
-  ${CustomerAddressFieldsFragmentDoc}
-  ${CustomerUserErrorFieldsFragmentDoc}
-`;
-export const CustomerAddressDeleteDocument = gql`
-  mutation customerAddressDelete(
-    $customerAccessToken: String!
-    $addressId: ID!
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    customerAddressDelete(customerAccessToken: $customerAccessToken, id: $addressId) {
-      deletedCustomerAddressId
-      customerUserErrors {
-        ...CustomerUserErrorFields
-      }
+}
+    ${CartFieldsFragmentDoc}
+${CartUserErrorsFragmentDoc}`;
+export const CartNoteUpdateDocument = gql`
+    mutation cartNoteUpdate($cartId: ID!, $first: Int, $last: Int, $after: String, $before: String, $note: String!, $language: LanguageCode) @inContext(language: $language) {
+  cartNoteUpdate(cartId: $cartId, note: $note) {
+    cart {
+      ...CartFields
+    }
+    userErrors {
+      ...CartUserErrors
+    }
+    warnings {
+      message
     }
   }
-  ${CustomerUserErrorFieldsFragmentDoc}
-`;
-export const CustomerAddressUpdateDocument = gql`
-  mutation customerAddressUpdate(
-    $address: MailingAddressInput!
-    $customerAccessToken: String!
-    $addressId: ID!
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    customerAddressUpdate(
-      address: $address
-      customerAccessToken: $customerAccessToken
-      id: $addressId
-    ) {
-      customerAddress {
-        ...CustomerAddressFields
-      }
-      customerUserErrors {
-        ...CustomerUserErrorFields
-      }
-      userErrors {
-        ...UserErrorsFields
-      }
-    }
+}
+    ${CartFieldsFragmentDoc}
+${CartUserErrorsFragmentDoc}`;
+export const GetCartDocument = gql`
+    query getCart($cartId: ID!, $first: Int, $last: Int, $after: String, $before: String, $language: LanguageCode) @inContext(language: $language) {
+  cart(id: $cartId) {
+    ...CartFields
   }
-  ${CustomerAddressFieldsFragmentDoc}
-  ${CustomerUserErrorFieldsFragmentDoc}
-  ${UserErrorsFieldsFragmentDoc}
-`;
-export const CustomerCreateDocument = gql`
-  mutation customerCreate($input: CustomerCreateInput!) {
-    customerCreate(input: $input) {
-      customer {
-        ...CustomerFields
-      }
-      customerUserErrors {
-        ...CustomerUserErrorFields
-      }
-      userErrors {
-        ...UserErrorsFields
-      }
-    }
+}
+    ${CartFieldsFragmentDoc}`;
+export const CheckoutUrlDocument = gql`
+    query checkoutURL($cartId: ID!, $language: LanguageCode) @inContext(language: $language) {
+  cart(id: $cartId) {
+    checkoutUrl
   }
-  ${CustomerFieldsFragmentDoc}
-  ${CustomerUserErrorFieldsFragmentDoc}
-  ${UserErrorsFieldsFragmentDoc}
-`;
-export const CustomerDefaultAddressUpdateDocument = gql`
-  mutation customerDefaultAddressUpdate(
-    $addressId: ID!
-    $customerAccessToken: String!
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    customerDefaultAddressUpdate(addressId: $addressId, customerAccessToken: $customerAccessToken) {
-      customer {
-        ...CustomerFields
-      }
-      customerUserErrors {
-        ...CustomerUserErrorFields
-      }
-    }
-  }
-  ${CustomerFieldsFragmentDoc}
-  ${CustomerUserErrorFieldsFragmentDoc}
-`;
-export const CustomerRecoverDocument = gql`
-  mutation customerRecover($email: String!, $language: LanguageCode)
-  @inContext(language: $language) {
-    customerRecover(email: $email) {
-      customerUserErrors {
-        ...CustomerUserErrorFields
-      }
-    }
-  }
-  ${CustomerUserErrorFieldsFragmentDoc}
-`;
-export const CustomerResetDocument = gql`
-  mutation customerReset($id: ID!, $input: CustomerResetInput!, $language: LanguageCode)
-  @inContext(language: $language) {
-    customerReset(id: $id, input: $input) {
-      customer {
-        ...CustomerFields
-      }
-      customerAccessToken {
-        ...CustomerAccessTokenFields
-      }
-      customerUserErrors {
-        ...CustomerUserErrorFields
-      }
-    }
-  }
-  ${CustomerFieldsFragmentDoc}
-  ${CustomerAccessTokenFieldsFragmentDoc}
-  ${CustomerUserErrorFieldsFragmentDoc}
-`;
-export const CustomerResetByUrlDocument = gql`
-  mutation customerResetByUrl($password: String!, $resetUrl: URL!, $language: LanguageCode)
-  @inContext(language: $language) {
-    customerResetByUrl(password: $password, resetUrl: $resetUrl) {
-      customer {
-        ...CustomerFields
-      }
-      customerAccessToken {
-        ...CustomerAccessTokenFields
-      }
-      customerUserErrors {
-        ...CustomerUserErrorFields
-      }
-    }
-  }
-  ${CustomerFieldsFragmentDoc}
-  ${CustomerAccessTokenFieldsFragmentDoc}
-  ${CustomerUserErrorFieldsFragmentDoc}
-`;
-export const CustomerUpdateDocument = gql`
-  mutation customerUpdate(
-    $customer: CustomerUpdateInput!
-    $customerAccessToken: String!
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    customerUpdate(customer: $customer, customerAccessToken: $customerAccessToken) {
-      customer {
-        ...CustomerFields
-      }
-      customerAccessToken {
-        ...CustomerAccessTokenFields
-      }
-      customerUserErrors {
-        ...CustomerUserErrorFields
-      }
-    }
-  }
-  ${CustomerFieldsFragmentDoc}
-  ${CustomerAccessTokenFieldsFragmentDoc}
-  ${CustomerUserErrorFieldsFragmentDoc}
-`;
-export const GetCustomerDocument = gql`
-  query getCustomer(
-    $customerAccessToken: String!
-    $language: LanguageCode
-    $metafields: [HasMetafieldsIdentifier!]!
-  ) @inContext(language: $language) {
-    customer(customerAccessToken: $customerAccessToken) {
-      ...CustomerFields
-      metafields(identifiers: $metafields) {
-        id
-        key
-        value
-        updatedAt
-      }
-    }
-  }
-  ${CustomerFieldsFragmentDoc}
-`;
-export const GetCustomerMetafieldsDocument = gql`
-  query getCustomerMetafields(
-    $customerAccessToken: String!
-    $metafields: [HasMetafieldsIdentifier!]!
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    customer(customerAccessToken: $customerAccessToken) {
-      metafields(identifiers: $metafields) {
-        key
-        value
-        updatedAt
-      }
-    }
-  }
-`;
-export const GetCustomerAddressesDocument = gql`
-  query getCustomerAddresses(
-    $customerAccessToken: String!
-    $first: Int
-    $last: Int
-    $before: String
-    $after: String
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    customer(customerAccessToken: $customerAccessToken) {
-      addresses(first: $first, last: $last, before: $before, after: $after) {
-        edges {
-          node {
-            ...CustomerAddressFields
-          }
-        }
-        pageInfo {
-          ...PageInfoFields
-        }
-      }
-    }
-  }
-  ${CustomerAddressFieldsFragmentDoc}
-  ${PageInfoFieldsFragmentDoc}
-`;
-export const GetCustomerOrdersDocument = gql`
-  query getCustomerOrders(
-    $customerAccessToken: String!
-    $first: Int
-    $last: Int
-    $before: String
-    $after: String
-    $sortKey: OrderSortKeys
-    $reverse: Boolean
-    $identifiers: [HasMetafieldsIdentifier!]!
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    customer(customerAccessToken: $customerAccessToken) {
-      orders(
-        first: $first
-        last: $last
-        before: $before
-        after: $after
-        sortKey: $sortKey
-        reverse: $reverse
-      ) {
-        edges {
-          node {
-            ...OrderFields
-          }
-          cursor
-        }
-        pageInfo {
-          ...PageInfoFields
-        }
-        totalCount
-      }
-    }
-  }
-  ${OrderFieldsFragmentDoc}
-  ${PageInfoFieldsFragmentDoc}
-`;
-export const GetProductByHandleDocument = gql`
-  query getProductByHandle(
-    $handle: String
-    $language: LanguageCode
-    $identifiers: [HasMetafieldsIdentifier!]!
-  ) @inContext(language: $language) {
-    product(handle: $handle) {
-      ...ProductFields
-    }
-  }
-  ${ProductFieldsFragmentDoc}
-`;
-export const GetProductSeoByHandleDocument = gql`
-  query getProductSeoByHandle($handle: String, $language: LanguageCode)
-  @inContext(language: $language) {
-    product(handle: $handle) {
-      id
-      title
-      description
-      seo {
-        description
-        title
-      }
-    }
-  }
-`;
-export const ProductRecommendationsDocument = gql`
-  query productRecommendations(
-    $productId: ID!
-    $language: LanguageCode
-    $identifiers: [HasMetafieldsIdentifier!]!
-  ) @inContext(language: $language) {
-    productRecommendations(productId: $productId) {
-      ...ProductFields
-    }
-  }
-  ${ProductFieldsFragmentDoc}
-`;
-export const GetProductsDocument = gql`
-  query getProducts(
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $sortKey: ProductSortKeys
-    $query: String
-    $language: LanguageCode
-    $identifiers: [HasMetafieldsIdentifier!]!
-  ) @inContext(language: $language) {
+}
+    `;
+export const CollectionDocument = gql`
+    query collection($handle: String!, $first: Int, $last: Int, $after: String, $before: String, $filters: [ProductFilter!], $sortKey: ProductCollectionSortKeys, $language: LanguageCode, $identifiers: [HasMetafieldsIdentifier!]!) @inContext(language: $language) {
+  collection(handle: $handle) {
+    ...CollectionFields
     products(
       first: $first
       last: $last
       after: $after
       before: $before
+      filters: $filters
       sortKey: $sortKey
-      query: $query
     ) {
-      pageInfo {
-        ...PageInfoFields
-      }
       edges {
         cursor
         node {
           ...ProductFields
         }
       }
-    }
-  }
-  ${PageInfoFieldsFragmentDoc}
-  ${ProductFieldsFragmentDoc}
-`;
-export const GetProductWithVariantDocument = gql`
-  query getProductWithVariant(
-    $handle: String!
-    $selectedOptions: [SelectedOptionInput!]
-    $ignoreUnknownOptions: Boolean = true
-    $caseInsensitiveMatch: Boolean = false
-    $identifiers: [HasMetafieldsIdentifier!]!
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    product(handle: $handle) {
-      ...ProductFields
-      selectedOrFirstAvailableVariant(
-        selectedOptions: $selectedOptions
-        ignoreUnknownOptions: $ignoreUnknownOptions
-        caseInsensitiveMatch: $caseInsensitiveMatch
-      ) {
-        ...ProductVariantFields
+      filters {
+        ...ProductFilterFields
+      }
+      pageInfo {
+        ...PageInfoFields
       }
     }
   }
-  ${ProductFieldsFragmentDoc}
-  ${ProductVariantFieldsFragmentDoc}
-`;
-export const GetProductsByIdsDocument = gql`
-  query getProductsByIds(
-    $ids: [ID!]!
-    $identifiers: [HasMetafieldsIdentifier!]!
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    nodes(ids: $ids) {
-      ... on Product {
-        ...ProductFields
-      }
+}
+    ${CollectionFieldsFragmentDoc}
+${ProductFieldsFragmentDoc}
+${ProductFilterFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
+export const GetCollectionSeoByHandleDocument = gql`
+    query getCollectionSeoByHandle($handle: String!) {
+  collection(handle: $handle) {
+    id
+    title
+    description
+    image {
+      id
+      originalSrc
+      altText
+    }
+    seo {
+      title
+      description
     }
   }
-  ${ProductFieldsFragmentDoc}
-`;
-export const PredictiveSearchDocument = gql`
-  query predictiveSearch(
-    $query: String!
-    $types: [PredictiveSearchType!]
-    $identifiers: [HasMetafieldsIdentifier!] = []
-  ) {
-    predictiveSearch(query: $query, types: $types) {
-      queries {
-        text
-      }
-      collections {
+}
+    `;
+export const CollectionsDocument = gql`
+    query collections($first: Int, $after: String, $before: String, $sortKey: CollectionSortKeys, $firstProducts: Int, $beforeProducts: String, $afterProducts: String, $productsSortKey: ProductCollectionSortKeys, $language: LanguageCode, $identifiers: [HasMetafieldsIdentifier!]!) @inContext(language: $language) {
+  collections(first: $first, after: $after, before: $before, sortKey: $sortKey) {
+    pageInfo {
+      ...PageInfoFields
+    }
+    edges {
+      node {
         ...CollectionFields
-      }
-      products {
-        ...ProductFields
+        products(
+          first: $firstProducts
+          after: $afterProducts
+          before: $beforeProducts
+          sortKey: $productsSortKey
+        ) {
+          edges {
+            cursor
+            node {
+              ...ProductFields
+            }
+          }
+          filters {
+            ...ProductFilterFields
+          }
+          pageInfo {
+            ...PageInfoFields
+          }
+        }
       }
     }
   }
-  ${CollectionFieldsFragmentDoc}
-  ${ProductFieldsFragmentDoc}
-`;
-export const SearchProductsDocument = gql`
-  query searchProducts(
-    $query: String!
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $identifiers: [HasMetafieldsIdentifier!] = []
-    $sortKey: SearchSortKeys
-    $productFilters: [ProductFilter!]
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    search(
-      query: $query
-      first: $first
-      types: [PRODUCT]
-      last: $last
-      after: $after
-      before: $before
-      productFilters: $productFilters
-      sortKey: $sortKey
-    ) {
+}
+    ${PageInfoFieldsFragmentDoc}
+${CollectionFieldsFragmentDoc}
+${ProductFieldsFragmentDoc}
+${ProductFilterFieldsFragmentDoc}`;
+export const CustomerAccessTokenCreateDocument = gql`
+    mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!, $language: LanguageCode) @inContext(language: $language) {
+  customerAccessTokenCreate(input: $input) {
+    customerAccessToken {
+      accessToken
+      expiresAt
+    }
+    customerUserErrors {
+      ...CustomerUserErrorFields
+    }
+  }
+}
+    ${CustomerUserErrorFieldsFragmentDoc}`;
+export const CustomerAccessTokenCreateWithMultipassDocument = gql`
+    mutation customerAccessTokenCreateWithMultipass($multipassToken: String!, $language: LanguageCode) @inContext(language: $language) {
+  customerAccessTokenCreateWithMultipass(multipassToken: $multipassToken) {
+    customerAccessToken {
+      accessToken
+      expiresAt
+    }
+    customerUserErrors {
+      ...CustomerUserErrorFields
+    }
+  }
+}
+    ${CustomerUserErrorFieldsFragmentDoc}`;
+export const CustomerAccessTokenDeleteDocument = gql`
+    mutation customerAccessTokenDelete($customerAccessToken: String!, $language: LanguageCode) @inContext(language: $language) {
+  customerAccessTokenDelete(customerAccessToken: $customerAccessToken) {
+    deletedAccessToken
+    deletedCustomerAccessTokenId
+    userErrors {
+      ...UserErrorsFields
+    }
+  }
+}
+    ${UserErrorsFieldsFragmentDoc}`;
+export const CustomerAccessTokenRenewDocument = gql`
+    mutation customerAccessTokenRenew($customerAccessToken: String!, $language: LanguageCode) @inContext(language: $language) {
+  customerAccessTokenRenew(customerAccessToken: $customerAccessToken) {
+    customerAccessToken {
+      accessToken
+      expiresAt
+    }
+    userErrors {
+      ...UserErrorsFields
+    }
+  }
+}
+    ${UserErrorsFieldsFragmentDoc}`;
+export const CustomerActivateDocument = gql`
+    mutation customerActivate($id: ID!, $input: CustomerActivateInput!, $language: LanguageCode) @inContext(language: $language) {
+  customerActivate(id: $id, input: $input) {
+    customer {
+      ...CustomerFields
+    }
+    customerAccessToken {
+      ...CustomerAccessTokenFields
+    }
+    customerUserErrors {
+      ...CustomerUserErrorFields
+    }
+  }
+}
+    ${CustomerFieldsFragmentDoc}
+${CustomerAccessTokenFieldsFragmentDoc}
+${CustomerUserErrorFieldsFragmentDoc}`;
+export const CustomerActivateByUrlDocument = gql`
+    mutation customerActivateByUrl($activationUrl: URL!, $password: String!, $language: LanguageCode) @inContext(language: $language) {
+  customerActivateByUrl(activationUrl: $activationUrl, password: $password) {
+    customer {
+      ...CustomerFields
+    }
+    customerAccessToken {
+      ...CustomerAccessTokenFields
+    }
+    customerUserErrors {
+      ...CustomerUserErrorFields
+    }
+  }
+}
+    ${CustomerFieldsFragmentDoc}
+${CustomerAccessTokenFieldsFragmentDoc}
+${CustomerUserErrorFieldsFragmentDoc}`;
+export const CustomerAddressCreateDocument = gql`
+    mutation customerAddressCreate($address: MailingAddressInput!, $customerAccessToken: String!, $language: LanguageCode) @inContext(language: $language) {
+  customerAddressCreate(
+    address: $address
+    customerAccessToken: $customerAccessToken
+  ) {
+    customerAddress {
+      ...CustomerAddressFields
+    }
+    customerUserErrors {
+      ...CustomerUserErrorFields
+    }
+  }
+}
+    ${CustomerAddressFieldsFragmentDoc}
+${CustomerUserErrorFieldsFragmentDoc}`;
+export const CustomerAddressDeleteDocument = gql`
+    mutation customerAddressDelete($customerAccessToken: String!, $addressId: ID!, $language: LanguageCode) @inContext(language: $language) {
+  customerAddressDelete(customerAccessToken: $customerAccessToken, id: $addressId) {
+    deletedCustomerAddressId
+    customerUserErrors {
+      ...CustomerUserErrorFields
+    }
+  }
+}
+    ${CustomerUserErrorFieldsFragmentDoc}`;
+export const CustomerAddressUpdateDocument = gql`
+    mutation customerAddressUpdate($address: MailingAddressInput!, $customerAccessToken: String!, $addressId: ID!, $language: LanguageCode) @inContext(language: $language) {
+  customerAddressUpdate(
+    address: $address
+    customerAccessToken: $customerAccessToken
+    id: $addressId
+  ) {
+    customerAddress {
+      ...CustomerAddressFields
+    }
+    customerUserErrors {
+      ...CustomerUserErrorFields
+    }
+    userErrors {
+      ...UserErrorsFields
+    }
+  }
+}
+    ${CustomerAddressFieldsFragmentDoc}
+${CustomerUserErrorFieldsFragmentDoc}
+${UserErrorsFieldsFragmentDoc}`;
+export const CustomerCreateDocument = gql`
+    mutation customerCreate($input: CustomerCreateInput!) {
+  customerCreate(input: $input) {
+    customer {
+      ...CustomerFields
+    }
+    customerUserErrors {
+      ...CustomerUserErrorFields
+    }
+    userErrors {
+      ...UserErrorsFields
+    }
+  }
+}
+    ${CustomerFieldsFragmentDoc}
+${CustomerUserErrorFieldsFragmentDoc}
+${UserErrorsFieldsFragmentDoc}`;
+export const CustomerDefaultAddressUpdateDocument = gql`
+    mutation customerDefaultAddressUpdate($addressId: ID!, $customerAccessToken: String!, $language: LanguageCode) @inContext(language: $language) {
+  customerDefaultAddressUpdate(
+    addressId: $addressId
+    customerAccessToken: $customerAccessToken
+  ) {
+    customer {
+      ...CustomerFields
+    }
+    customerUserErrors {
+      ...CustomerUserErrorFields
+    }
+  }
+}
+    ${CustomerFieldsFragmentDoc}
+${CustomerUserErrorFieldsFragmentDoc}`;
+export const CustomerRecoverDocument = gql`
+    mutation customerRecover($email: String!, $language: LanguageCode) @inContext(language: $language) {
+  customerRecover(email: $email) {
+    customerUserErrors {
+      ...CustomerUserErrorFields
+    }
+  }
+}
+    ${CustomerUserErrorFieldsFragmentDoc}`;
+export const CustomerResetDocument = gql`
+    mutation customerReset($id: ID!, $input: CustomerResetInput!, $language: LanguageCode) @inContext(language: $language) {
+  customerReset(id: $id, input: $input) {
+    customer {
+      ...CustomerFields
+    }
+    customerAccessToken {
+      ...CustomerAccessTokenFields
+    }
+    customerUserErrors {
+      ...CustomerUserErrorFields
+    }
+  }
+}
+    ${CustomerFieldsFragmentDoc}
+${CustomerAccessTokenFieldsFragmentDoc}
+${CustomerUserErrorFieldsFragmentDoc}`;
+export const CustomerResetByUrlDocument = gql`
+    mutation customerResetByUrl($password: String!, $resetUrl: URL!, $language: LanguageCode) @inContext(language: $language) {
+  customerResetByUrl(password: $password, resetUrl: $resetUrl) {
+    customer {
+      ...CustomerFields
+    }
+    customerAccessToken {
+      ...CustomerAccessTokenFields
+    }
+    customerUserErrors {
+      ...CustomerUserErrorFields
+    }
+  }
+}
+    ${CustomerFieldsFragmentDoc}
+${CustomerAccessTokenFieldsFragmentDoc}
+${CustomerUserErrorFieldsFragmentDoc}`;
+export const CustomerUpdateDocument = gql`
+    mutation customerUpdate($customer: CustomerUpdateInput!, $customerAccessToken: String!, $language: LanguageCode) @inContext(language: $language) {
+  customerUpdate(customer: $customer, customerAccessToken: $customerAccessToken) {
+    customer {
+      ...CustomerFields
+    }
+    customerAccessToken {
+      ...CustomerAccessTokenFields
+    }
+    customerUserErrors {
+      ...CustomerUserErrorFields
+    }
+  }
+}
+    ${CustomerFieldsFragmentDoc}
+${CustomerAccessTokenFieldsFragmentDoc}
+${CustomerUserErrorFieldsFragmentDoc}`;
+export const GetCustomerDocument = gql`
+    query getCustomer($customerAccessToken: String!, $language: LanguageCode, $metafields: [HasMetafieldsIdentifier!]!) @inContext(language: $language) {
+  customer(customerAccessToken: $customerAccessToken) {
+    ...CustomerFields
+    metafields(identifiers: $metafields) {
+      id
+      key
+      value
+      updatedAt
+    }
+  }
+}
+    ${CustomerFieldsFragmentDoc}`;
+export const GetCustomerMetafieldsDocument = gql`
+    query getCustomerMetafields($customerAccessToken: String!, $metafields: [HasMetafieldsIdentifier!]!, $language: LanguageCode) @inContext(language: $language) {
+  customer(customerAccessToken: $customerAccessToken) {
+    metafields(identifiers: $metafields) {
+      key
+      value
+      updatedAt
+    }
+  }
+}
+    `;
+export const GetCustomerAddressesDocument = gql`
+    query getCustomerAddresses($customerAccessToken: String!, $first: Int, $last: Int, $before: String, $after: String, $language: LanguageCode) @inContext(language: $language) {
+  customer(customerAccessToken: $customerAccessToken) {
+    addresses(first: $first, last: $last, before: $before, after: $after) {
       edges {
         node {
-          ... on Product {
-            ...ProductFields
-          }
+          ...CustomerAddressFields
         }
       }
       pageInfo {
         ...PageInfoFields
       }
-      productFilters {
-        ...ProductFilterFields
+    }
+  }
+}
+    ${CustomerAddressFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
+export const GetCustomerOrdersDocument = gql`
+    query getCustomerOrders($customerAccessToken: String!, $first: Int, $last: Int, $before: String, $after: String, $sortKey: OrderSortKeys, $reverse: Boolean, $identifiers: [HasMetafieldsIdentifier!]!, $language: LanguageCode) @inContext(language: $language) {
+  customer(customerAccessToken: $customerAccessToken) {
+    orders(
+      first: $first
+      last: $last
+      before: $before
+      after: $after
+      sortKey: $sortKey
+      reverse: $reverse
+    ) {
+      edges {
+        node {
+          ...OrderFields
+        }
+        cursor
+      }
+      pageInfo {
+        ...PageInfoFields
+      }
+      totalCount
+    }
+  }
+}
+    ${OrderFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
+export const GetProductByHandleDocument = gql`
+    query getProductByHandle($handle: String, $language: LanguageCode, $identifiers: [HasMetafieldsIdentifier!]!) @inContext(language: $language) {
+  product(handle: $handle) {
+    ...ProductFields
+  }
+}
+    ${ProductFieldsFragmentDoc}`;
+export const GetProductSeoByHandleDocument = gql`
+    query getProductSeoByHandle($handle: String, $language: LanguageCode) @inContext(language: $language) {
+  product(handle: $handle) {
+    id
+    title
+    description
+    seo {
+      description
+      title
+    }
+  }
+}
+    `;
+export const ProductRecommendationsDocument = gql`
+    query productRecommendations($productId: ID!, $language: LanguageCode, $identifiers: [HasMetafieldsIdentifier!]!) @inContext(language: $language) {
+  productRecommendations(productId: $productId) {
+    ...ProductFields
+  }
+}
+    ${ProductFieldsFragmentDoc}`;
+export const GetProductsDocument = gql`
+    query getProducts($first: Int, $last: Int, $after: String, $before: String, $sortKey: ProductSortKeys, $query: String, $language: LanguageCode, $identifiers: [HasMetafieldsIdentifier!]!) @inContext(language: $language) {
+  products(
+    first: $first
+    last: $last
+    after: $after
+    before: $before
+    sortKey: $sortKey
+    query: $query
+  ) {
+    pageInfo {
+      ...PageInfoFields
+    }
+    edges {
+      cursor
+      node {
+        ...ProductFields
       }
     }
   }
-  ${ProductFieldsFragmentDoc}
-  ${PageInfoFieldsFragmentDoc}
-  ${ProductFilterFieldsFragmentDoc}
-`;
-export const GetShopDocument = gql`
-  query getShop($language: LanguageCode) @inContext(language: $language) {
-    shop {
-      description
-      name
-      moneyFormat
-      shipsToCountries
-      primaryDomain {
-        host
-        url
+}
+    ${PageInfoFieldsFragmentDoc}
+${ProductFieldsFragmentDoc}`;
+export const GetProductWithVariantDocument = gql`
+    query getProductWithVariant($handle: String!, $selectedOptions: [SelectedOptionInput!], $ignoreUnknownOptions: Boolean = true, $caseInsensitiveMatch: Boolean = false, $identifiers: [HasMetafieldsIdentifier!]!, $language: LanguageCode) @inContext(language: $language) {
+  product(handle: $handle) {
+    ...ProductFields
+    selectedOrFirstAvailableVariant(
+      selectedOptions: $selectedOptions
+      ignoreUnknownOptions: $ignoreUnknownOptions
+      caseInsensitiveMatch: $caseInsensitiveMatch
+    ) {
+      ...ProductVariantFields
+    }
+  }
+}
+    ${ProductFieldsFragmentDoc}
+${ProductVariantFieldsFragmentDoc}`;
+export const GetProductsByIdsDocument = gql`
+    query getProductsByIds($ids: [ID!]!, $identifiers: [HasMetafieldsIdentifier!]!, $language: LanguageCode) @inContext(language: $language) {
+  nodes(ids: $ids) {
+    ... on Product {
+      ...ProductFields
+    }
+  }
+}
+    ${ProductFieldsFragmentDoc}`;
+export const PredictiveSearchDocument = gql`
+    query predictiveSearch($query: String!, $types: [PredictiveSearchType!], $identifiers: [HasMetafieldsIdentifier!] = []) {
+  predictiveSearch(query: $query, types: $types) {
+    queries {
+      text
+    }
+    collections {
+      ...CollectionFields
+    }
+    products {
+      ...ProductFields
+    }
+  }
+}
+    ${CollectionFieldsFragmentDoc}
+${ProductFieldsFragmentDoc}`;
+export const SearchProductsDocument = gql`
+    query searchProducts($query: String!, $first: Int, $last: Int, $after: String, $before: String, $identifiers: [HasMetafieldsIdentifier!] = [], $sortKey: SearchSortKeys, $productFilters: [ProductFilter!], $language: LanguageCode) @inContext(language: $language) {
+  search(
+    query: $query
+    first: $first
+    types: [PRODUCT]
+    last: $last
+    after: $after
+    before: $before
+    productFilters: $productFilters
+    sortKey: $sortKey
+  ) {
+    edges {
+      node {
+        ... on Product {
+          ...ProductFields
+        }
       }
-      brand {
-        shortDescription
-        slogan
-        logo {
-          image {
-            height
-            src
-            width
-            altText
-          }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+    productFilters {
+      ...ProductFilterFields
+    }
+  }
+}
+    ${ProductFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}
+${ProductFilterFieldsFragmentDoc}`;
+export const GetShopDocument = gql`
+    query getShop($language: LanguageCode) @inContext(language: $language) {
+  shop {
+    description
+    name
+    moneyFormat
+    shipsToCountries
+    primaryDomain {
+      host
+      url
+    }
+    brand {
+      shortDescription
+      slogan
+      logo {
+        image {
+          height
+          src
+          width
+          altText
         }
       }
     }
   }
-`;
+}
+    `;
 export const GetPrivacyPolicyDocument = gql`
-  query getPrivacyPolicy($language: LanguageCode) @inContext(language: $language) {
-    shop {
-      privacyPolicy {
-        id
-        body
-        title
-      }
-    }
-  }
-`;
-export const GetRefundPolicyDocument = gql`
-  query getRefundPolicy($language: LanguageCode) @inContext(language: $language) {
-    shop {
-      refundPolicy {
-        id
-        body
-        title
-      }
-    }
-  }
-`;
-export const GetShippingPolicyDocument = gql`
-  query getShippingPolicy($language: LanguageCode) @inContext(language: $language) {
-    shop {
-      shippingPolicy {
-        id
-        body
-        title
-      }
-    }
-  }
-`;
-export const GetTermsOfServiceDocument = gql`
-  query getTermsOfService($language: LanguageCode) @inContext(language: $language) {
-    shop {
-      termsOfService {
-        id
-        body
-        title
-      }
-    }
-  }
-`;
-export const GetSubscriptionPolicyDocument = gql`
-  query getSubscriptionPolicy($language: LanguageCode) @inContext(language: $language) {
-    shop {
-      subscriptionPolicy {
-        id
-        body
-        title
-      }
-    }
-  }
-`;
-export const GetMenuByHandleDocument = gql`
-  query getMenuByHandle($handle: String!, $language: LanguageCode) @inContext(language: $language) {
-    menu(handle: $handle) {
+    query getPrivacyPolicy($language: LanguageCode) @inContext(language: $language) {
+  shop {
+    privacyPolicy {
       id
+      body
+      title
+    }
+  }
+}
+    `;
+export const GetRefundPolicyDocument = gql`
+    query getRefundPolicy($language: LanguageCode) @inContext(language: $language) {
+  shop {
+    refundPolicy {
+      id
+      body
+      title
+    }
+  }
+}
+    `;
+export const GetShippingPolicyDocument = gql`
+    query getShippingPolicy($language: LanguageCode) @inContext(language: $language) {
+  shop {
+    shippingPolicy {
+      id
+      body
+      title
+    }
+  }
+}
+    `;
+export const GetTermsOfServiceDocument = gql`
+    query getTermsOfService($language: LanguageCode) @inContext(language: $language) {
+  shop {
+    termsOfService {
+      id
+      body
+      title
+    }
+  }
+}
+    `;
+export const GetSubscriptionPolicyDocument = gql`
+    query getSubscriptionPolicy($language: LanguageCode) @inContext(language: $language) {
+  shop {
+    subscriptionPolicy {
+      id
+      body
+      title
+    }
+  }
+}
+    `;
+export const GetMenuByHandleDocument = gql`
+    query getMenuByHandle($handle: String!, $language: LanguageCode) @inContext(language: $language) {
+  menu(handle: $handle) {
+    id
+    items {
+      id
+      resourceId
+      tags
+      title
+      type
+      url
       items {
         id
         resourceId
@@ -19325,1184 +12770,329 @@ export const GetMenuByHandleDocument = gql`
           title
           type
           url
-          items {
-            id
-            resourceId
-            tags
-            title
-            type
-            url
-          }
         }
       }
     }
   }
-`;
+}
+    `;
 export const GetPageByHandleDocument = gql`
-  query getPageByHandle($handle: String!, $language: LanguageCode) @inContext(language: $language) {
-    page(handle: $handle) {
-      bodySummary
-      handle
-      id
-      data: metafield(namespace: "custom", key: "data") {
-        value
+    query getPageByHandle($handle: String!, $language: LanguageCode) @inContext(language: $language) {
+  page(handle: $handle) {
+    bodySummary
+    handle
+    id
+    data: metafield(namespace: "custom", key: "data") {
+      value
+      type
+    }
+  }
+}
+    `;
+export const GetShopMetaobjectByHandleDocument = gql`
+    query getShopMetaobjectByHandle($handle: MetaobjectHandleInput, $language: LanguageCode) @inContext(language: $language) {
+  metaobject(handle: $handle) {
+    fields {
+      key
+      value
+    }
+  }
+}
+    `;
+export const GetShopMetaObjectsDocument = gql`
+    query getShopMetaObjects($type: String!, $sortKey: String, $first: Int, $language: LanguageCode) @inContext(language: $language) {
+  metaobjects(type: $type, sortKey: $sortKey, first: $first) {
+    edges {
+      node {
+        id
+        fields {
+          key
+          value
+        }
+        handle
+        updatedAt
         type
       }
     }
   }
-`;
-export const GetShopMetaobjectByHandleDocument = gql`
-  query getShopMetaobjectByHandle($handle: MetaobjectHandleInput, $language: LanguageCode)
-  @inContext(language: $language) {
-    metaobject(handle: $handle) {
-      fields {
-        key
-        value
-      }
-    }
-  }
-`;
-export const GetShopMetaObjectsDocument = gql`
-  query getShopMetaObjects($type: String!, $sortKey: String, $first: Int, $language: LanguageCode)
-  @inContext(language: $language) {
-    metaobjects(type: $type, sortKey: $sortKey, first: $first) {
+}
+    `;
+export const GetBlogByHandleDocument = gql`
+    query getBlogByHandle($handle: String!, $language: LanguageCode) @inContext(language: $language) {
+  blog(handle: $handle) {
+    id
+    title
+    articles(first: 5) {
       edges {
         node {
           id
-          fields {
-            key
-            value
-          }
-          handle
-          updatedAt
-          type
+          title
         }
       }
     }
   }
-`;
-export const GetBlogByHandleDocument = gql`
-  query getBlogByHandle($handle: String!, $language: LanguageCode) @inContext(language: $language) {
-    blog(handle: $handle) {
-      id
-      title
-      articles(first: 5) {
-        edges {
-          node {
-            id
-            title
-          }
-        }
-      }
-    }
-  }
-`;
+}
+    `;
 export const GetLocalizationDocument = gql`
-  query getLocalization($countryCode: CountryCode) @inContext(country: $countryCode) {
-    localization {
-      availableCountries {
-        currency {
-          isoCode
-          name
-          symbol
-        }
+    query getLocalization($countryCode: CountryCode) @inContext(country: $countryCode) {
+  localization {
+    availableCountries {
+      currency {
         isoCode
         name
-        unitSystem
+        symbol
       }
-      country {
-        currency {
-          isoCode
-          name
-          symbol
-        }
+      isoCode
+      name
+      unitSystem
+    }
+    country {
+      currency {
         isoCode
         name
-        unitSystem
+        symbol
       }
+      isoCode
+      name
+      unitSystem
     }
   }
-`;
+}
+    `;
 export const GetShopProductTagsDocument = gql`
-  query getShopProductTags($language: LanguageCode) @inContext(language: $language) {
-    productTags(first: 100) {
-      edges {
-        node
-      }
+    query getShopProductTags($language: LanguageCode) @inContext(language: $language) {
+  productTags(first: 100) {
+    edges {
+      node
     }
   }
-`;
+}
+    `;
 export const GetProductsForSitemapDocument = gql`
-  query getProductsForSitemap(
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $sortKey: ProductSortKeys
-    $query: String
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    products(
-      first: $first
-      last: $last
-      after: $after
-      before: $before
-      sortKey: $sortKey
-      query: $query
-    ) {
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-      edges {
-        cursor
-        node {
-          handle
-          updatedAt
-        }
+    query getProductsForSitemap($first: Int, $last: Int, $after: String, $before: String, $sortKey: ProductSortKeys, $query: String, $language: LanguageCode) @inContext(language: $language) {
+  products(
+    first: $first
+    last: $last
+    after: $after
+    before: $before
+    sortKey: $sortKey
+    query: $query
+  ) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    edges {
+      cursor
+      node {
+        handle
+        updatedAt
       }
     }
   }
-`;
+}
+    `;
 export const GetCollectionsForSitemapDocument = gql`
-  query getCollectionsForSitemap(
-    $first: Int
-    $last: Int
-    $after: String
-    $before: String
-    $sortKey: CollectionSortKeys
-    $query: String
-    $language: LanguageCode
-  ) @inContext(language: $language) {
-    collections(
-      first: $first
-      last: $last
-      after: $after
-      before: $before
-      sortKey: $sortKey
-      query: $query
-    ) {
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-      edges {
-        cursor
-        node {
-          handle
-          updatedAt
-        }
+    query getCollectionsForSitemap($first: Int, $last: Int, $after: String, $before: String, $sortKey: CollectionSortKeys, $query: String, $language: LanguageCode) @inContext(language: $language) {
+  collections(
+    first: $first
+    last: $last
+    after: $after
+    before: $before
+    sortKey: $sortKey
+    query: $query
+  ) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    edges {
+      cursor
+      node {
+        handle
+        updatedAt
       }
     }
   }
-`;
+}
+    `;
 
-export type SdkFunctionWrapper = <T>(
-  action: (requestHeaders?: Record<string, string>) => Promise<T>,
-  operationName: string,
-  operationType?: string,
-  variables?: any,
-) => Promise<T>;
+export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, _variables) =>
-  action();
+
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, _variables) => action();
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    cartAttributesUpdate(
-      variables: CartAttributesUpdateMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CartAttributesUpdateMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CartAttributesUpdateMutation>({
-            document: CartAttributesUpdateDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'cartAttributesUpdate',
-        'mutation',
-        variables,
-      );
+    cartAttributesUpdate(variables: CartAttributesUpdateMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CartAttributesUpdateMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CartAttributesUpdateMutation>({ document: CartAttributesUpdateDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'cartAttributesUpdate', 'mutation', variables);
     },
-    cartBuyerIdentityUpdate(
-      variables: CartBuyerIdentityUpdateMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CartBuyerIdentityUpdateMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CartBuyerIdentityUpdateMutation>({
-            document: CartBuyerIdentityUpdateDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'cartBuyerIdentityUpdate',
-        'mutation',
-        variables,
-      );
+    cartBuyerIdentityUpdate(variables: CartBuyerIdentityUpdateMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CartBuyerIdentityUpdateMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CartBuyerIdentityUpdateMutation>({ document: CartBuyerIdentityUpdateDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'cartBuyerIdentityUpdate', 'mutation', variables);
     },
-    cartCreate(
-      variables?: CartCreateMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CartCreateMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CartCreateMutation>({
-            document: CartCreateDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'cartCreate',
-        'mutation',
-        variables,
-      );
+    cartCreate(variables?: CartCreateMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CartCreateMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CartCreateMutation>({ document: CartCreateDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'cartCreate', 'mutation', variables);
     },
-    cartDiscountCodesUpdate(
-      variables: CartDiscountCodesUpdateMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CartDiscountCodesUpdateMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CartDiscountCodesUpdateMutation>({
-            document: CartDiscountCodesUpdateDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'cartDiscountCodesUpdate',
-        'mutation',
-        variables,
-      );
+    cartDiscountCodesUpdate(variables: CartDiscountCodesUpdateMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CartDiscountCodesUpdateMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CartDiscountCodesUpdateMutation>({ document: CartDiscountCodesUpdateDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'cartDiscountCodesUpdate', 'mutation', variables);
     },
-    cartLinesAdd(
-      variables: CartLinesAddMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CartLinesAddMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CartLinesAddMutation>({
-            document: CartLinesAddDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'cartLinesAdd',
-        'mutation',
-        variables,
-      );
+    cartLinesAdd(variables: CartLinesAddMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CartLinesAddMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CartLinesAddMutation>({ document: CartLinesAddDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'cartLinesAdd', 'mutation', variables);
     },
-    cartLinesRemove(
-      variables: CartLinesRemoveMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CartLinesRemoveMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CartLinesRemoveMutation>({
-            document: CartLinesRemoveDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'cartLinesRemove',
-        'mutation',
-        variables,
-      );
+    cartLinesRemove(variables: CartLinesRemoveMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CartLinesRemoveMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CartLinesRemoveMutation>({ document: CartLinesRemoveDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'cartLinesRemove', 'mutation', variables);
     },
-    cartLinesUpdate(
-      variables: CartLinesUpdateMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CartLinesUpdateMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CartLinesUpdateMutation>({
-            document: CartLinesUpdateDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'cartLinesUpdate',
-        'mutation',
-        variables,
-      );
+    cartLinesUpdate(variables: CartLinesUpdateMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CartLinesUpdateMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CartLinesUpdateMutation>({ document: CartLinesUpdateDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'cartLinesUpdate', 'mutation', variables);
     },
-    cartNoteUpdate(
-      variables: CartNoteUpdateMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CartNoteUpdateMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CartNoteUpdateMutation>({
-            document: CartNoteUpdateDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'cartNoteUpdate',
-        'mutation',
-        variables,
-      );
+    cartNoteUpdate(variables: CartNoteUpdateMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CartNoteUpdateMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CartNoteUpdateMutation>({ document: CartNoteUpdateDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'cartNoteUpdate', 'mutation', variables);
     },
-    getCart(
-      variables: GetCartQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetCartQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetCartQuery>({
-            document: GetCartDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getCart',
-        'query',
-        variables,
-      );
+    getCart(variables: GetCartQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetCartQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetCartQuery>({ document: GetCartDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getCart', 'query', variables);
     },
-    checkoutURL(
-      variables: CheckoutUrlQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CheckoutUrlQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CheckoutUrlQuery>({
-            document: CheckoutUrlDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'checkoutURL',
-        'query',
-        variables,
-      );
+    checkoutURL(variables: CheckoutUrlQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CheckoutUrlQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CheckoutUrlQuery>({ document: CheckoutUrlDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'checkoutURL', 'query', variables);
     },
-    collection(
-      variables: CollectionQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CollectionQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CollectionQuery>({
-            document: CollectionDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'collection',
-        'query',
-        variables,
-      );
+    collection(variables: CollectionQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CollectionQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CollectionQuery>({ document: CollectionDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'collection', 'query', variables);
     },
-    getCollectionSeoByHandle(
-      variables: GetCollectionSeoByHandleQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetCollectionSeoByHandleQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetCollectionSeoByHandleQuery>({
-            document: GetCollectionSeoByHandleDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getCollectionSeoByHandle',
-        'query',
-        variables,
-      );
+    getCollectionSeoByHandle(variables: GetCollectionSeoByHandleQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetCollectionSeoByHandleQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetCollectionSeoByHandleQuery>({ document: GetCollectionSeoByHandleDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getCollectionSeoByHandle', 'query', variables);
     },
-    collections(
-      variables: CollectionsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CollectionsQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CollectionsQuery>({
-            document: CollectionsDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'collections',
-        'query',
-        variables,
-      );
+    collections(variables: CollectionsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CollectionsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CollectionsQuery>({ document: CollectionsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'collections', 'query', variables);
     },
-    customerAccessTokenCreate(
-      variables: CustomerAccessTokenCreateMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerAccessTokenCreateMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerAccessTokenCreateMutation>({
-            document: CustomerAccessTokenCreateDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerAccessTokenCreate',
-        'mutation',
-        variables,
-      );
+    customerAccessTokenCreate(variables: CustomerAccessTokenCreateMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerAccessTokenCreateMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerAccessTokenCreateMutation>({ document: CustomerAccessTokenCreateDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerAccessTokenCreate', 'mutation', variables);
     },
-    customerAccessTokenCreateWithMultipass(
-      variables: CustomerAccessTokenCreateWithMultipassMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerAccessTokenCreateWithMultipassMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerAccessTokenCreateWithMultipassMutation>({
-            document: CustomerAccessTokenCreateWithMultipassDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerAccessTokenCreateWithMultipass',
-        'mutation',
-        variables,
-      );
+    customerAccessTokenCreateWithMultipass(variables: CustomerAccessTokenCreateWithMultipassMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerAccessTokenCreateWithMultipassMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerAccessTokenCreateWithMultipassMutation>({ document: CustomerAccessTokenCreateWithMultipassDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerAccessTokenCreateWithMultipass', 'mutation', variables);
     },
-    customerAccessTokenDelete(
-      variables: CustomerAccessTokenDeleteMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerAccessTokenDeleteMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerAccessTokenDeleteMutation>({
-            document: CustomerAccessTokenDeleteDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerAccessTokenDelete',
-        'mutation',
-        variables,
-      );
+    customerAccessTokenDelete(variables: CustomerAccessTokenDeleteMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerAccessTokenDeleteMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerAccessTokenDeleteMutation>({ document: CustomerAccessTokenDeleteDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerAccessTokenDelete', 'mutation', variables);
     },
-    customerAccessTokenRenew(
-      variables: CustomerAccessTokenRenewMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerAccessTokenRenewMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerAccessTokenRenewMutation>({
-            document: CustomerAccessTokenRenewDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerAccessTokenRenew',
-        'mutation',
-        variables,
-      );
+    customerAccessTokenRenew(variables: CustomerAccessTokenRenewMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerAccessTokenRenewMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerAccessTokenRenewMutation>({ document: CustomerAccessTokenRenewDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerAccessTokenRenew', 'mutation', variables);
     },
-    customerActivate(
-      variables: CustomerActivateMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerActivateMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerActivateMutation>({
-            document: CustomerActivateDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerActivate',
-        'mutation',
-        variables,
-      );
+    customerActivate(variables: CustomerActivateMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerActivateMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerActivateMutation>({ document: CustomerActivateDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerActivate', 'mutation', variables);
     },
-    customerActivateByUrl(
-      variables: CustomerActivateByUrlMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerActivateByUrlMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerActivateByUrlMutation>({
-            document: CustomerActivateByUrlDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerActivateByUrl',
-        'mutation',
-        variables,
-      );
+    customerActivateByUrl(variables: CustomerActivateByUrlMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerActivateByUrlMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerActivateByUrlMutation>({ document: CustomerActivateByUrlDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerActivateByUrl', 'mutation', variables);
     },
-    customerAddressCreate(
-      variables: CustomerAddressCreateMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerAddressCreateMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerAddressCreateMutation>({
-            document: CustomerAddressCreateDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerAddressCreate',
-        'mutation',
-        variables,
-      );
+    customerAddressCreate(variables: CustomerAddressCreateMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerAddressCreateMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerAddressCreateMutation>({ document: CustomerAddressCreateDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerAddressCreate', 'mutation', variables);
     },
-    customerAddressDelete(
-      variables: CustomerAddressDeleteMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerAddressDeleteMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerAddressDeleteMutation>({
-            document: CustomerAddressDeleteDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerAddressDelete',
-        'mutation',
-        variables,
-      );
+    customerAddressDelete(variables: CustomerAddressDeleteMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerAddressDeleteMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerAddressDeleteMutation>({ document: CustomerAddressDeleteDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerAddressDelete', 'mutation', variables);
     },
-    customerAddressUpdate(
-      variables: CustomerAddressUpdateMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerAddressUpdateMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerAddressUpdateMutation>({
-            document: CustomerAddressUpdateDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerAddressUpdate',
-        'mutation',
-        variables,
-      );
+    customerAddressUpdate(variables: CustomerAddressUpdateMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerAddressUpdateMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerAddressUpdateMutation>({ document: CustomerAddressUpdateDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerAddressUpdate', 'mutation', variables);
     },
-    customerCreate(
-      variables: CustomerCreateMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerCreateMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerCreateMutation>({
-            document: CustomerCreateDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerCreate',
-        'mutation',
-        variables,
-      );
+    customerCreate(variables: CustomerCreateMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerCreateMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerCreateMutation>({ document: CustomerCreateDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerCreate', 'mutation', variables);
     },
-    customerDefaultAddressUpdate(
-      variables: CustomerDefaultAddressUpdateMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerDefaultAddressUpdateMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerDefaultAddressUpdateMutation>({
-            document: CustomerDefaultAddressUpdateDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerDefaultAddressUpdate',
-        'mutation',
-        variables,
-      );
+    customerDefaultAddressUpdate(variables: CustomerDefaultAddressUpdateMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerDefaultAddressUpdateMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerDefaultAddressUpdateMutation>({ document: CustomerDefaultAddressUpdateDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerDefaultAddressUpdate', 'mutation', variables);
     },
-    customerRecover(
-      variables: CustomerRecoverMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerRecoverMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerRecoverMutation>({
-            document: CustomerRecoverDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerRecover',
-        'mutation',
-        variables,
-      );
+    customerRecover(variables: CustomerRecoverMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerRecoverMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerRecoverMutation>({ document: CustomerRecoverDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerRecover', 'mutation', variables);
     },
-    customerReset(
-      variables: CustomerResetMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerResetMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerResetMutation>({
-            document: CustomerResetDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerReset',
-        'mutation',
-        variables,
-      );
+    customerReset(variables: CustomerResetMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerResetMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerResetMutation>({ document: CustomerResetDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerReset', 'mutation', variables);
     },
-    customerResetByUrl(
-      variables: CustomerResetByUrlMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerResetByUrlMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerResetByUrlMutation>({
-            document: CustomerResetByUrlDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerResetByUrl',
-        'mutation',
-        variables,
-      );
+    customerResetByUrl(variables: CustomerResetByUrlMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerResetByUrlMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerResetByUrlMutation>({ document: CustomerResetByUrlDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerResetByUrl', 'mutation', variables);
     },
-    customerUpdate(
-      variables: CustomerUpdateMutationVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<CustomerUpdateMutation> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<CustomerUpdateMutation>({
-            document: CustomerUpdateDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'customerUpdate',
-        'mutation',
-        variables,
-      );
+    customerUpdate(variables: CustomerUpdateMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CustomerUpdateMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CustomerUpdateMutation>({ document: CustomerUpdateDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'customerUpdate', 'mutation', variables);
     },
-    getCustomer(
-      variables: GetCustomerQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetCustomerQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetCustomerQuery>({
-            document: GetCustomerDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getCustomer',
-        'query',
-        variables,
-      );
+    getCustomer(variables: GetCustomerQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetCustomerQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetCustomerQuery>({ document: GetCustomerDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getCustomer', 'query', variables);
     },
-    getCustomerMetafields(
-      variables: GetCustomerMetafieldsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetCustomerMetafieldsQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetCustomerMetafieldsQuery>({
-            document: GetCustomerMetafieldsDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getCustomerMetafields',
-        'query',
-        variables,
-      );
+    getCustomerMetafields(variables: GetCustomerMetafieldsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetCustomerMetafieldsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetCustomerMetafieldsQuery>({ document: GetCustomerMetafieldsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getCustomerMetafields', 'query', variables);
     },
-    getCustomerAddresses(
-      variables: GetCustomerAddressesQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetCustomerAddressesQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetCustomerAddressesQuery>({
-            document: GetCustomerAddressesDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getCustomerAddresses',
-        'query',
-        variables,
-      );
+    getCustomerAddresses(variables: GetCustomerAddressesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetCustomerAddressesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetCustomerAddressesQuery>({ document: GetCustomerAddressesDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getCustomerAddresses', 'query', variables);
     },
-    getCustomerOrders(
-      variables: GetCustomerOrdersQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetCustomerOrdersQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetCustomerOrdersQuery>({
-            document: GetCustomerOrdersDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getCustomerOrders',
-        'query',
-        variables,
-      );
+    getCustomerOrders(variables: GetCustomerOrdersQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetCustomerOrdersQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetCustomerOrdersQuery>({ document: GetCustomerOrdersDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getCustomerOrders', 'query', variables);
     },
-    getProductByHandle(
-      variables: GetProductByHandleQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetProductByHandleQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetProductByHandleQuery>({
-            document: GetProductByHandleDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getProductByHandle',
-        'query',
-        variables,
-      );
+    getProductByHandle(variables: GetProductByHandleQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetProductByHandleQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProductByHandleQuery>({ document: GetProductByHandleDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getProductByHandle', 'query', variables);
     },
-    getProductSeoByHandle(
-      variables?: GetProductSeoByHandleQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetProductSeoByHandleQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetProductSeoByHandleQuery>({
-            document: GetProductSeoByHandleDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getProductSeoByHandle',
-        'query',
-        variables,
-      );
+    getProductSeoByHandle(variables?: GetProductSeoByHandleQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetProductSeoByHandleQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProductSeoByHandleQuery>({ document: GetProductSeoByHandleDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getProductSeoByHandle', 'query', variables);
     },
-    productRecommendations(
-      variables: ProductRecommendationsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<ProductRecommendationsQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<ProductRecommendationsQuery>({
-            document: ProductRecommendationsDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'productRecommendations',
-        'query',
-        variables,
-      );
+    productRecommendations(variables: ProductRecommendationsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ProductRecommendationsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ProductRecommendationsQuery>({ document: ProductRecommendationsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'productRecommendations', 'query', variables);
     },
-    getProducts(
-      variables: GetProductsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetProductsQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetProductsQuery>({
-            document: GetProductsDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getProducts',
-        'query',
-        variables,
-      );
+    getProducts(variables: GetProductsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetProductsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProductsQuery>({ document: GetProductsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getProducts', 'query', variables);
     },
-    getProductWithVariant(
-      variables: GetProductWithVariantQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetProductWithVariantQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetProductWithVariantQuery>({
-            document: GetProductWithVariantDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getProductWithVariant',
-        'query',
-        variables,
-      );
+    getProductWithVariant(variables: GetProductWithVariantQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetProductWithVariantQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProductWithVariantQuery>({ document: GetProductWithVariantDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getProductWithVariant', 'query', variables);
     },
-    getProductsByIds(
-      variables: GetProductsByIdsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetProductsByIdsQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetProductsByIdsQuery>({
-            document: GetProductsByIdsDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getProductsByIds',
-        'query',
-        variables,
-      );
+    getProductsByIds(variables: GetProductsByIdsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetProductsByIdsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProductsByIdsQuery>({ document: GetProductsByIdsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getProductsByIds', 'query', variables);
     },
-    predictiveSearch(
-      variables: PredictiveSearchQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<PredictiveSearchQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<PredictiveSearchQuery>({
-            document: PredictiveSearchDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'predictiveSearch',
-        'query',
-        variables,
-      );
+    predictiveSearch(variables: PredictiveSearchQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<PredictiveSearchQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<PredictiveSearchQuery>({ document: PredictiveSearchDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'predictiveSearch', 'query', variables);
     },
-    searchProducts(
-      variables: SearchProductsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<SearchProductsQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<SearchProductsQuery>({
-            document: SearchProductsDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'searchProducts',
-        'query',
-        variables,
-      );
+    searchProducts(variables: SearchProductsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<SearchProductsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<SearchProductsQuery>({ document: SearchProductsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'searchProducts', 'query', variables);
     },
-    getShop(
-      variables?: GetShopQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetShopQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetShopQuery>({
-            document: GetShopDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getShop',
-        'query',
-        variables,
-      );
+    getShop(variables?: GetShopQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetShopQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetShopQuery>({ document: GetShopDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getShop', 'query', variables);
     },
-    getPrivacyPolicy(
-      variables?: GetPrivacyPolicyQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetPrivacyPolicyQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetPrivacyPolicyQuery>({
-            document: GetPrivacyPolicyDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getPrivacyPolicy',
-        'query',
-        variables,
-      );
+    getPrivacyPolicy(variables?: GetPrivacyPolicyQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetPrivacyPolicyQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetPrivacyPolicyQuery>({ document: GetPrivacyPolicyDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getPrivacyPolicy', 'query', variables);
     },
-    getRefundPolicy(
-      variables?: GetRefundPolicyQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetRefundPolicyQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetRefundPolicyQuery>({
-            document: GetRefundPolicyDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getRefundPolicy',
-        'query',
-        variables,
-      );
+    getRefundPolicy(variables?: GetRefundPolicyQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetRefundPolicyQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetRefundPolicyQuery>({ document: GetRefundPolicyDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getRefundPolicy', 'query', variables);
     },
-    getShippingPolicy(
-      variables?: GetShippingPolicyQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetShippingPolicyQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetShippingPolicyQuery>({
-            document: GetShippingPolicyDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getShippingPolicy',
-        'query',
-        variables,
-      );
+    getShippingPolicy(variables?: GetShippingPolicyQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetShippingPolicyQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetShippingPolicyQuery>({ document: GetShippingPolicyDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getShippingPolicy', 'query', variables);
     },
-    getTermsOfService(
-      variables?: GetTermsOfServiceQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetTermsOfServiceQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetTermsOfServiceQuery>({
-            document: GetTermsOfServiceDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getTermsOfService',
-        'query',
-        variables,
-      );
+    getTermsOfService(variables?: GetTermsOfServiceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetTermsOfServiceQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetTermsOfServiceQuery>({ document: GetTermsOfServiceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getTermsOfService', 'query', variables);
     },
-    getSubscriptionPolicy(
-      variables?: GetSubscriptionPolicyQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetSubscriptionPolicyQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetSubscriptionPolicyQuery>({
-            document: GetSubscriptionPolicyDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getSubscriptionPolicy',
-        'query',
-        variables,
-      );
+    getSubscriptionPolicy(variables?: GetSubscriptionPolicyQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetSubscriptionPolicyQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetSubscriptionPolicyQuery>({ document: GetSubscriptionPolicyDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getSubscriptionPolicy', 'query', variables);
     },
-    getMenuByHandle(
-      variables: GetMenuByHandleQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetMenuByHandleQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetMenuByHandleQuery>({
-            document: GetMenuByHandleDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getMenuByHandle',
-        'query',
-        variables,
-      );
+    getMenuByHandle(variables: GetMenuByHandleQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetMenuByHandleQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetMenuByHandleQuery>({ document: GetMenuByHandleDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getMenuByHandle', 'query', variables);
     },
-    getPageByHandle(
-      variables: GetPageByHandleQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetPageByHandleQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetPageByHandleQuery>({
-            document: GetPageByHandleDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getPageByHandle',
-        'query',
-        variables,
-      );
+    getPageByHandle(variables: GetPageByHandleQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetPageByHandleQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetPageByHandleQuery>({ document: GetPageByHandleDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getPageByHandle', 'query', variables);
     },
-    getShopMetaobjectByHandle(
-      variables?: GetShopMetaobjectByHandleQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetShopMetaobjectByHandleQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetShopMetaobjectByHandleQuery>({
-            document: GetShopMetaobjectByHandleDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getShopMetaobjectByHandle',
-        'query',
-        variables,
-      );
+    getShopMetaobjectByHandle(variables?: GetShopMetaobjectByHandleQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetShopMetaobjectByHandleQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetShopMetaobjectByHandleQuery>({ document: GetShopMetaobjectByHandleDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getShopMetaobjectByHandle', 'query', variables);
     },
-    getShopMetaObjects(
-      variables: GetShopMetaObjectsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetShopMetaObjectsQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetShopMetaObjectsQuery>({
-            document: GetShopMetaObjectsDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getShopMetaObjects',
-        'query',
-        variables,
-      );
+    getShopMetaObjects(variables: GetShopMetaObjectsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetShopMetaObjectsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetShopMetaObjectsQuery>({ document: GetShopMetaObjectsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getShopMetaObjects', 'query', variables);
     },
-    getBlogByHandle(
-      variables: GetBlogByHandleQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetBlogByHandleQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetBlogByHandleQuery>({
-            document: GetBlogByHandleDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getBlogByHandle',
-        'query',
-        variables,
-      );
+    getBlogByHandle(variables: GetBlogByHandleQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetBlogByHandleQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetBlogByHandleQuery>({ document: GetBlogByHandleDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getBlogByHandle', 'query', variables);
     },
-    getLocalization(
-      variables?: GetLocalizationQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetLocalizationQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetLocalizationQuery>({
-            document: GetLocalizationDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getLocalization',
-        'query',
-        variables,
-      );
+    getLocalization(variables?: GetLocalizationQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetLocalizationQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetLocalizationQuery>({ document: GetLocalizationDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getLocalization', 'query', variables);
     },
-    getShopProductTags(
-      variables?: GetShopProductTagsQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetShopProductTagsQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetShopProductTagsQuery>({
-            document: GetShopProductTagsDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getShopProductTags',
-        'query',
-        variables,
-      );
+    getShopProductTags(variables?: GetShopProductTagsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetShopProductTagsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetShopProductTagsQuery>({ document: GetShopProductTagsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getShopProductTags', 'query', variables);
     },
-    getProductsForSitemap(
-      variables?: GetProductsForSitemapQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetProductsForSitemapQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetProductsForSitemapQuery>({
-            document: GetProductsForSitemapDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getProductsForSitemap',
-        'query',
-        variables,
-      );
+    getProductsForSitemap(variables?: GetProductsForSitemapQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetProductsForSitemapQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetProductsForSitemapQuery>({ document: GetProductsForSitemapDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getProductsForSitemap', 'query', variables);
     },
-    getCollectionsForSitemap(
-      variables?: GetCollectionsForSitemapQueryVariables,
-      requestHeaders?: GraphQLClientRequestHeaders,
-      signal?: RequestInit['signal'],
-    ): Promise<GetCollectionsForSitemapQuery> {
-      return withWrapper(
-        (wrappedRequestHeaders) =>
-          client.request<GetCollectionsForSitemapQuery>({
-            document: GetCollectionsForSitemapDocument,
-            variables,
-            requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders },
-            signal,
-          }),
-        'getCollectionsForSitemap',
-        'query',
-        variables,
-      );
-    },
+    getCollectionsForSitemap(variables?: GetCollectionsForSitemapQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetCollectionsForSitemapQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetCollectionsForSitemapQuery>({ document: GetCollectionsForSitemapDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getCollectionsForSitemap', 'query', variables);
+    }
   };
 }
 export type Sdk = ReturnType<typeof getSdk>;

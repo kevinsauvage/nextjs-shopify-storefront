@@ -21,7 +21,6 @@ import {
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
 import { breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/server/structured-data';
 import { parseFiltersQuery } from '@/shopify/helpers';
-import { ProductCollectionSortKeys } from '@/shopify/storefront';
 
 import Filters from '../_components/Filters';
 import Sort from '../_components/Sort';
@@ -243,17 +242,17 @@ const CollectionProducts = async ({
   const sortingOptions = [
     {
       label: 'Best Selling',
-      name: ProductCollectionSortKeys.BestSelling,
+      name: 'BEST_SELLING',
     },
     {
       label: 'Relevance',
-      name: ProductCollectionSortKeys.Relevance,
+      name: 'RELEVANCE',
     },
     {
       label: 'Price, low to high',
-      name: ProductCollectionSortKeys.Price,
+      name: 'PRICE',
     },
-    { label: 'New Arrivals', name: ProductCollectionSortKeys.Created },
+    { label: 'New Arrivals', name: 'CREATED' },
   ];
 
   return (
@@ -279,7 +278,7 @@ const CollectionProducts = async ({
                   query={
                     searchParameters.sort_key
                       ? searchParameters
-                      : { sort_key: ProductCollectionSortKeys.BestSelling }
+                      : { sort_key: 'BEST_SELLING' }
                   }
                   sortingOptions={sortingOptions}
                 />

@@ -12,7 +12,6 @@ import seo from '@/data/seo';
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { adjustPaginationVariables } from '@/shopify/helpers';
 import { storefrontSdk } from '@/shopify/index';
-import { LanguageCode, OrderSortKeys } from '@/shopify/storefront';
 
 import BackButton from '../_components/BackButton';
 import Orders from '../_components/Orders';
@@ -45,8 +44,8 @@ const Page = async ({
       last: undefined,
     }),
     identifiers: [],
-    language: LanguageCode.En,
-    sortKey: OrderSortKeys.ProcessedAt,
+    language: 'EN',
+    sortKey: 'PROCESSED_AT',
   });
 
   if (response?.customer?.orders === undefined) {

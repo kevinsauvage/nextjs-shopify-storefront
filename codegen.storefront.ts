@@ -34,6 +34,11 @@ const config: CodegenConfig = {
   generates: {
     'src/shopify/storefront/index.ts': {
       config: {
+        // Emit enums as string-literal unions, not runtime objects. The
+        // generated SDK is imported by client components for types only; with
+        // no runtime enums, a stray value import can no longer pull the SDK
+        // (and its graphql-request dependency) into a client bundle.
+        enumsAsTypes: true,
         scalars: {
           Color: 'string',
           DateTime: 'string',

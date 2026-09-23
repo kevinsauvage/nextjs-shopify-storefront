@@ -10,7 +10,6 @@ import config from '@/config';
 import seo from '@/data/seo';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
 import { storefrontSdk } from '@/shopify/index';
-import { CollectionSortKeys, ProductSortKeys } from '@/shopify/storefront/index';
 
 import HomeSection from './_components/HomeSection';
 import ProductSection from './_components/ProductSection';
@@ -57,17 +56,17 @@ const Home = async () => {
       first: 100,
       firstProducts: 1,
       identifiers: [{ key: 'featured', namespace: 'custom' }],
-      sortKey: CollectionSortKeys?.Relevance,
+      sortKey: 'RELEVANCE',
     }),
     storefrontSdk().getProducts({
       first: 8,
       identifiers: [],
-      sortKey: ProductSortKeys.BestSelling,
+      sortKey: 'BEST_SELLING',
     }),
     storefrontSdk().getProducts({
       first: 8,
       identifiers: [],
-      sortKey: ProductSortKeys.CreatedAt,
+      sortKey: 'CREATED_AT',
     }),
   ]);
 

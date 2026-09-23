@@ -2,7 +2,7 @@ import 'server-only';
 
 import { storefrontSdk } from '@/shopify';
 import { adjustPaginationVariables, parseFiltersQuery } from '@/shopify/helpers';
-import { ProductCollectionSortKeys } from '@/shopify/storefront';
+import type { ProductCollectionSortKeys } from '@/shopify/storefront';
 
 export const COLLECTION_PAGE_SIZE = 16;
 
@@ -14,13 +14,29 @@ export type CollectionQuery = {
   sort_key?: string;
 };
 
+/** Valid `ProductCollectionSortKeys` values, for runtime query-param parsing. */
+const COLLECTION_SORT_KEYS = [
+  'BEST_SELLING',
+  'COLLECTION_DEFAULT',
+  'CREATED',
+  'ID',
+  'MANUAL',
+  'PRICE',
+  'RELEVANCE',
+  'TITLE',
+] as const satisfies readonly ProductCollectionSortKeys[];
+
+/** Compare sort keys ignoring case and separators (`best-selling` ≡ `BEST_SELLING`). */
+export const normalizeSortKey = (value: string): string =>
+  value.toLowerCase().replace(/[^a-z0-9]/g, '');
+
 /** Resolve a raw `sort_key` query value to a known sort key, defaulting safely. */
 export const resolveCollectionSortKey = (raw?: string): ProductCollectionSortKeys => {
-  const key = Object.keys(ProductCollectionSortKeys).find(
-    (candidate) => candidate.toLowerCase() === raw?.toLowerCase(),
-  ) as keyof typeof ProductCollectionSortKeys | undefined;
+  const normalized = raw ? normalizeSortKey(raw) : '';
 
-  return (key && ProductCollectionSortKeys[key]) || ProductCollectionSortKeys.BestSelling;
+  return (
+    COLLECTION_SORT_KEYS.find((key) => normalizeSortKey(key) === normalized) ?? 'BEST_SELLING'
+  );
 };
 
 /** Fetch a single page of a collection. */
