@@ -14,6 +14,10 @@ type CachedToken = {
 
 let cachedToken: CachedToken | null = null;
 let inFlight: Promise<string | null> | null = null;
+// Short negative cache: a persistent failure (e.g. bad SHOPIFY_SCOPE) must not
+// hit the Admin API and spam the logs on every request.
+let failedAt = 0;
+const NEGATIVE_CACHE_MS = 60_000;
 
 const isUsable = (token: CachedToken | null): token is CachedToken =>
   token !== null && token.expiresAt - 60_000 > Date.now();
@@ -24,10 +28,26 @@ const createDelegateAccessToken = async (): Promise<string | null> => {
     return null;
   }
 
+  // Normalize: a stray space after a comma would otherwise be sent as
+  // `" read_x"` and rejected by Shopify with an "is invalid" user error.
+  const requestedScopes = Array.from(
+    new Set(
+      delegateAccessScope
+        .split(',')
+        .map((scope) => scope.trim())
+        .filter((scope) => scope.length > 0),
+    ),
+  );
+
+  if (requestedScopes.length === 0) {
+    safeLogError('getDelegateAccessToken', new Error('SHOPIFY_SCOPE is empty'));
+    return null;
+  }
+
   try {
     const response = await adminSdk().delegateAccessTokenCreate({
       input: {
-        delegateAccessScope: delegateAccessScope.split(','),
+        delegateAccessScope: requestedScopes,
         expiresIn,
       },
     });
@@ -35,7 +55,10 @@ const createDelegateAccessToken = async (): Promise<string | null> => {
     const { delegateAccessToken, userErrors } = response?.delegateAccessTokenCreate || {};
 
     if (userErrors && userErrors.length > 0) {
-      safeLogError('getDelegateAccessToken - user errors', userErrors);
+      failedAt = Date.now();
+      safeLogError('getDelegateAccessToken - user errors', userErrors, {
+        delegateAccessScope: requestedScopes,
+      });
     }
 
     if (!delegateAccessToken?.accessToken) {
@@ -50,6 +73,7 @@ const createDelegateAccessToken = async (): Promise<string | null> => {
     return cachedToken.value;
   } catch (error) {
     // Admin may be unconfigured; degrade gracefully instead of failing the request.
+    failedAt = Date.now();
     safeLogError('getDelegateAccessToken', error);
     return null;
   }
@@ -62,6 +86,10 @@ const createDelegateAccessToken = async (): Promise<string | null> => {
 export const getDelegateAccessToken = async (): Promise<string | null> => {
   if (isUsable(cachedToken)) {
     return cachedToken.value;
+  }
+
+  if (Date.now() - failedAt < NEGATIVE_CACHE_MS) {
+    return null;
   }
 
   inFlight ??= createDelegateAccessToken().finally(() => {
