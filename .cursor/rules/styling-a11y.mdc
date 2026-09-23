@@ -1,0 +1,14 @@
+---
+description: Styling and WCAG 2.1 AA accessibility
+globs: ["src/**/*.tsx", "src/**/*.scss", "src/**/*.css"]
+alwaysApply: false
+---
+
+# Styling + a11y
+
+- Tailwind first; SCSS modules for complex cases; keep idiomatic property
+  order (`stylelint-config-idiomatic-order`). Lint with `yarn lint:css`.
+- WCAG 2.1 AA: headings in order with names, labeled controls,
+  `aria-current` on breadcrumbs, live regions for search results,
+  accessible names on sliders and carousel regions.
+- Sanitize every `dangerouslySetInnerHTML` via `@/utils/sanitize`.

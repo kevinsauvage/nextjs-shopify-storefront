@@ -1,0 +1,16 @@
+---
+description: Next.js App Router page and layout conventions
+globs: ["src/app/**/*"]
+alwaysApply: false
+---
+
+# App Router
+
+- Server Components by default; `'use client'` only for interactivity.
+- Never write cookies during render — use `proxy.ts`, route handlers, or
+  server actions.
+- `next/image` without `priority` except the true above-the-fold hero;
+  grids/lists never use `priority`. Remote hosts: `cdn.shopify.com`,
+  `res.cloudinary.com`.
+- Respect `cacheComponents: true`: keep prerendered routes static-safe,
+  session logic at request boundaries.

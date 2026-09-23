@@ -1,0 +1,20 @@
+---
+description: Universal repo contract for nextjs-shopify-ecommerce
+alwaysApply: true
+---
+
+# Core (always applied)
+
+See `AGENTS.md` — the single source of truth. This rule is the Cursor delta.
+
+- Stack: Node 24, `yarn@1.22.22` (never npm/pnpm/bun), Next 16.3.6 App Router,
+  React 19.2, TS 5.9 strict, Tailwind 4.1, zod, Vitest 3. Alias `@/*` → `src/*`.
+- Server Components by default; mutations only via
+  `src/actions/*Actions.ts` → `src/services/`.
+- Never edit generated `src/shopify/storefront/index.ts` /
+  `src/shopify/admin/index.ts`. Never read `.env*.local`.
+- No `any`, `import type` inline, handle `T | undefined` from indexing.
+- Sanitize store HTML via `@/utils/sanitize`; cookies only in `proxy.ts` /
+  route handlers / server actions; errors via `reportError`, never `console.*`.
+- Verify: `yarn lint`, `yarn typegen && yarn lint-ts`,
+  `yarn vitest run <path>`, `yarn test:coverage`.

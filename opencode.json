@@ -1,0 +1,19 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md"],
+  "formatter": true,
+  "permission": {
+    "edit": "allow",
+    "bash": "ask",
+    "webfetch": "allow",
+    "bash:yarn lint": "allow",
+    "bash:yarn lint-ts": "allow",
+    "bash:yarn typegen": "allow",
+    "bash:yarn vitest run *": "allow",
+    "bash:yarn test*": "allow",
+    "bash:yarn format:check": "allow",
+    "bash:yarn lint:css": "allow",
+    "bash:git push --force*": "deny",
+    "bash:rm -rf *": "deny"
+  }
+}

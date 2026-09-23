@@ -1,0 +1,14 @@
+---
+description: Shopify GraphQL documents and codegen workflow
+globs: ["src/shopify/**/*"]
+alwaysApply: false
+---
+
+# Shopify
+
+- Hand-write documents + clients only. `storefront/index.ts` and
+  `admin/index.ts` are GENERATED — never edit; run `yarn codegen`.
+- Codegen needs `SHOPIFY_*` env; without it, `yarn typegen && yarn lint-ts`
+  is the fallback — say so instead of failing silently.
+- Deduplicate redaction logic; share one helper between
+  `src/lib/logger.ts` and `src/shopify/index.ts`.

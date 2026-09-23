@@ -1,0 +1,15 @@
+---
+description: TypeScript and React code style
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: false
+---
+
+# TypeScript + React
+
+- `import type { X }` inline type imports (`consistent-type-imports`).
+- `noUncheckedIndexedAccess`: handle `T | undefined` from indexing explicitly.
+- No `any` without justification; no non-null assertion without a comment.
+- `simple-import-sort` order: side-effect → `react`/`next` → `@/` →
+  relative → CSS. Run `yarn lint-fix`, don't hand-sort.
+- `prefer-const`, `no-var`, arrow callbacks, template literals; `_`-prefix
+  intentionally unused args (`argsIgnorePattern: ^_`).

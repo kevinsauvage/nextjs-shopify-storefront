@@ -1,0 +1,15 @@
+---
+description: Vitest unit-test conventions
+globs: ["src/**/*.test.ts"]
+alwaysApply: false
+---
+
+# Testing
+
+- Colocated `*.test.ts`, node env, `server-only` aliased to no-op.
+- Test every change in `actions/`, `services/`, `lib/`,
+  `shopify/helpers.ts`. Do not unit-test `app/**` or `components/**`
+  (typecheck + build cover those).
+- Floors: branches 74, functions 68, lines/statements 35 — never lower.
+- Smallest focused reproduction first: `yarn vitest run <path>`, then
+  `yarn test:coverage`.

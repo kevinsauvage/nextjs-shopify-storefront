@@ -42,3 +42,6 @@ next-env.d.ts
 
 /public/sitemap*
 .dccache
+
+# Cursor rule files use YAML-frontmatter MDC format (no Prettier parser)
+*.mdc
