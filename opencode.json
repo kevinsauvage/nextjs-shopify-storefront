@@ -1,19 +1,65 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["AGENTS.md"],
-  "formatter": true,
+  "instructions": ["AGENTS.md", ".cursor/rules/*.mdc"],
   "permission": {
-    "edit": "allow",
-    "bash": "ask",
+    "edit": {
+      "*": "allow",
+      ".env*": "deny",
+      ".env.example": "allow"
+    },
+    "bash": {
+      "*": "ask",
+      "git status*": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "git show*": "allow",
+      "git branch*": "allow",
+      "graft *": "allow",
+      "rg *": "allow",
+      "yarn lint": "allow",
+      "yarn format:check": "allow",
+      "yarn typegen": "allow",
+      "yarn lint-ts": "allow",
+      "yarn lint:css": "allow",
+      "yarn vitest run*": "allow",
+      "yarn test": "allow",
+      "yarn test:coverage": "allow",
+      "yarn codegen": "allow",
+      "git push --force*main*": "deny",
+      "git push --force*master*": "deny",
+      "rm -rf *": "deny"
+    },
+    "external_directory": "ask",
     "webfetch": "allow",
-    "bash:yarn lint": "allow",
-    "bash:yarn lint-ts": "allow",
-    "bash:yarn typegen": "allow",
-    "bash:yarn vitest run *": "allow",
-    "bash:yarn test*": "allow",
-    "bash:yarn format:check": "allow",
-    "bash:yarn lint:css": "allow",
-    "bash:git push --force*": "deny",
-    "bash:rm -rf *": "deny"
+    "websearch": "allow"
+  },
+  "mcp": {
+    "graft": {
+      "type": "local",
+      "command": ["graft", "mcp"],
+      "enabled": true
+    }
+  },
+  "agent": {
+    "reviewer": {
+      "description": "Independent review of a high-risk diff (auth/session, Shopify tokens, rate limiting, store HTML, Server Action validation). Read-only.",
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "deny",
+          "git status*": "allow",
+          "git diff*": "allow",
+          "git log*": "allow",
+          "git show*": "allow",
+          "graft *": "allow",
+          "yarn lint": "allow",
+          "yarn typegen": "allow",
+          "yarn lint-ts": "allow",
+          "yarn vitest run*": "allow"
+        }
+      },
+      "prompt": "You are an independent reviewer for the nextjs-shopify-ecommerce codebase (Next.js 16 App Router + Shopify Storefront API). Review the working-tree diff only — never edit. Report findings in severity order with file:line references, then a verdict: APPROVE or REQUEST CHANGES. Check: (1) auth/session integrity — token renewal and cookie writes happen only in src/proxy.ts, route handlers, or server actions, never during Server Component render; authz is re-checked in actions, never trusted from layout/proxy alone; (2) secrets — no tokens, cookies, or PII committed, printed, or logged, and redaction logic is shared (not duplicated) between src/lib/logger.ts and src/shopify/index.ts; (3) input validation — every Server Action validates with zod and bounds quantities/limits (cartActions.ts pattern), mutations are rate-limited; (4) store HTML — every dangerouslySetInnerHTML goes through @/utils/sanitize; (5) type safety — no `any` without justification, inline `import type`, explicit handling of `T | undefined` from indexed access; (6) generated files untouched — src/shopify/storefront/index.ts and src/shopify/admin/index.ts change only via `yarn codegen`; (7) images/a11y — no `priority` in grids/lists, headings in order, labeled controls, `aria-current` on breadcrumbs; (8) tests — colocated *.test.ts for new logic in actions/services/lib/shopify helpers, and coverage floors (branches 74, functions 68, lines/statements 35) are not lowered. Flag assumptions as [ASSUMPTION]."
+    }
   }
 }

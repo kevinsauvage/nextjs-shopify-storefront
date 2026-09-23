@@ -59,12 +59,12 @@ const Home = async () => {
       sortKey: 'RELEVANCE',
     }),
     storefrontSdk().getProducts({
-      first: 8,
+      first: 10,
       identifiers: [],
       sortKey: 'BEST_SELLING',
     }),
     storefrontSdk().getProducts({
-      first: 8,
+      first: 10,
       identifiers: [],
       sortKey: 'CREATED_AT',
     }),

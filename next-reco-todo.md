@@ -24,29 +24,6 @@
       `04-functions/catchError.md`. ✅ Current `global-error.tsx` correctly renders its own
       `<html>`/`<body>`.
 
-## 3. Data security & server/client boundary
-
-- [x] **P1 — DONE: Make generated enums type-only for client safety.** `enumsAsTypes: true` added to
-      `codegen.storefront.ts` and the SDK regenerated — `src/shopify/storefront/index.ts` now has
-      **0** runtime `export enum` (all string-literal unions), so a stray value import can no longer
-      pull the SDK/graphql-request into a client bundle. The 7 runtime enum usages were replaced
-      with string literals (`page.tsx`, `collections/page.tsx`, `[collectionSlug]/page.tsx`,
-      `search/page.tsx`, `account/orders/page.tsx`, `lib/server/account.ts`,
-      `lib/server/collection.ts`). Bonus fix: `resolveCollectionSortKey`/`resolveSearchSortKey` now
-      match enum **values** (`best-selling` ≡ `BEST_SELLING`) instead of member names, so sorting
-      actually takes effect server-side. Admin SDK left as-is (server-only). Doc:
-      `05-server-and-client-components.md`.
-
-- [ ] **P2 — Enable React Taint.** `experimental.taint` is off; `data-security.md` recommends
-      `experimental_taintUniqueValue` / `experimental_taintObjectReference` for secrets
-      (`SHOPIFY_STORE_FRONT_ACCESS_TOKEN`, delegate tokens). Doc:
-      `05-config/01-next-config-js/taint.md`.
-
-- [ ] **P2 — Configure Server Actions for non-Vercel deploys.** No
-      `experimental.serverActions.allowedOrigins` / `bodySizeLimit` / `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY`
-      config. Only needed behind a custom proxy/CDN or multi-instance self-hosting. Doc:
-      `server-actions.md:82-85`.
-
 ## 5. Fonts, CSS, metadata, routing
 
 - [ ] **P2 — Enable `typedRoutes`.** Stable and no longer under `experimental`. Gives type-checked

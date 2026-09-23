@@ -4,7 +4,7 @@ import { storefrontSdk } from '@/shopify';
 import { adjustPaginationVariables, parseFiltersQuery } from '@/shopify/helpers';
 import type { ProductCollectionSortKeys } from '@/shopify/storefront';
 
-export const COLLECTION_PAGE_SIZE = 16;
+export const COLLECTION_PAGE_SIZE = 20;
 
 export type CollectionQuery = {
   after?: string;
