@@ -34,10 +34,16 @@ export class AddressService {
       return { error: this.UNAUTHENTICATED_ERROR };
     }
 
-    const response = await storefrontSdk('private').customerAddressCreate({
-      address: input,
-      customerAccessToken,
-    });
+    let response;
+    try {
+      response = await storefrontSdk('private').customerAddressCreate({
+        address: input,
+        customerAccessToken,
+      });
+    } catch (error) {
+      safeLogError('AddressService.createAddress', error);
+      return { error: 'Failed to create address' };
+    }
 
     const { customerUserErrors, customerAddress } = response?.customerAddressCreate || {};
 
@@ -65,11 +71,17 @@ export class AddressService {
       return { error: 'Address ID is required for update' };
     }
 
-    const response = await storefrontSdk('private').customerAddressUpdate({
-      address,
-      addressId: id,
-      customerAccessToken,
-    });
+    let response;
+    try {
+      response = await storefrontSdk('private').customerAddressUpdate({
+        address,
+        addressId: id,
+        customerAccessToken,
+      });
+    } catch (error) {
+      safeLogError('AddressService.updateAddress', error);
+      return { error: 'Failed to update address' };
+    }
 
     const { customerUserErrors, customerAddress } = response?.customerAddressUpdate || {};
 
@@ -92,10 +104,16 @@ export class AddressService {
       return { error: this.UNAUTHENTICATED_ERROR };
     }
 
-    const response = await storefrontSdk('private').customerAddressDelete({
-      addressId,
-      customerAccessToken,
-    });
+    let response;
+    try {
+      response = await storefrontSdk('private').customerAddressDelete({
+        addressId,
+        customerAccessToken,
+      });
+    } catch (error) {
+      safeLogError('AddressService.deleteAddress', error);
+      return { error: 'Failed to delete address' };
+    }
 
     const { customerUserErrors, deletedCustomerAddressId } = response?.customerAddressDelete || {};
 

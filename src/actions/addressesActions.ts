@@ -5,7 +5,8 @@ import { redirect } from 'next/navigation';
 import config from '@/config';
 import { AddressService } from '@/services/address.service';
 import type { FormState } from '@/types/formActions';
-import { serviceErrorsToFormState, zodErrorsToFormState } from '@/utils/form-actions';
+import { safeLogError } from '@/utils/api-responses';
+import { formError, serviceErrorsToFormState, zodErrorsToFormState } from '@/utils/form-actions';
 
 import { z } from 'zod';
 
@@ -31,7 +32,13 @@ export async function createAddressAction(input: AddressInput): Promise<FormStat
     return zodErrorsToFormState(result.error);
   }
 
-  const serviceResult = await AddressService.createAddress(result.data);
+  let serviceResult;
+  try {
+    serviceResult = await AddressService.createAddress(result.data);
+  } catch (error) {
+    safeLogError('createAddressAction', error);
+    return formError('Failed to create address');
+  }
 
   const errorState = serviceErrorsToFormState(serviceResult);
   if (errorState) return errorState;
@@ -40,7 +47,13 @@ export async function createAddressAction(input: AddressInput): Promise<FormStat
 }
 
 export async function deleteAddressAction(addressId: string): Promise<FormState> {
-  const serviceResult = await AddressService.deleteAddress(addressId);
+  let serviceResult;
+  try {
+    serviceResult = await AddressService.deleteAddress(addressId);
+  } catch (error) {
+    safeLogError('deleteAddressAction', error);
+    return formError('Failed to delete address');
+  }
 
   const errorState = serviceErrorsToFormState(serviceResult);
   if (errorState) return errorState;
@@ -49,7 +62,13 @@ export async function deleteAddressAction(addressId: string): Promise<FormState>
 }
 
 export async function setDefaultAddressAction(addressId: string): Promise<FormState> {
-  const serviceResult = await AddressService.setDefaultAddress(addressId);
+  let serviceResult;
+  try {
+    serviceResult = await AddressService.setDefaultAddress(addressId);
+  } catch (error) {
+    safeLogError('setDefaultAddressAction', error);
+    return formError('Failed to set default address');
+  }
 
   const errorState = serviceErrorsToFormState(serviceResult);
   if (errorState) return errorState;
@@ -63,7 +82,13 @@ export async function updateAddressAction(input: AddressInput): Promise<FormStat
     return zodErrorsToFormState(result.error);
   }
 
-  const serviceResult = await AddressService.updateAddress(result.data);
+  let serviceResult;
+  try {
+    serviceResult = await AddressService.updateAddress(result.data);
+  } catch (error) {
+    safeLogError('updateAddressAction', error);
+    return formError('Failed to update address');
+  }
 
   const errorState = serviceErrorsToFormState(serviceResult);
   if (errorState) return errorState;
