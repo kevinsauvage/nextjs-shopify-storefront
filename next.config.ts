@@ -110,7 +110,7 @@ const nextConfig: NextConfig = {
     ]);
   },
   images: {
-    qualities: [70, 75, 78, 80, 82, 85, 90],
+    unoptimized: true,
     remotePatterns: [
       {
         hostname: 'res.cloudinary.com',

@@ -1,4 +1,4 @@
-import { cache } from 'react';
+import { cache, Suspense } from 'react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,10 +9,15 @@ import EmptyState from '@/components/EmptyState';
 import JsonLd from '@/components/JsonLd';
 import ListingHeader from '@/components/ListingHeader';
 import PageInfoPagination from '@/components/PageInfoPagination';
+import ProductGridSkeleton from '@/components/ProductGridSkeleton';
 import ProductsList from '@/components/ProductsList';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import config from '@/config';
-import { fetchCollectionPage } from '@/lib/server/collection';
+import {
+  fetchCollectionPage,
+  getCollectionHandlesForStaticParams,
+} from '@/lib/server/collection';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
 import { breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/server/structured-data';
 import { parseFiltersQuery } from '@/shopify/helpers';
@@ -22,6 +27,14 @@ import Filters from '../_components/Filters';
 import Sort from '../_components/Sort';
 
 type parametersType = { collectionSlug: string };
+
+type SearchParameters = {
+  after?: string;
+  before?: string;
+  filters?: string;
+  sort_key?: string;
+  reverse?: boolean;
+};
 
 /**
  * Collection lookup memoized for the lifetime of a single request.
@@ -39,6 +52,11 @@ const getCollection = cache(
     reverse: boolean,
   ) => fetchCollectionPage(handle, { after, before, filters, reverse, sort_key: sortKey }),
 );
+
+/** Prerender the known collection paths so their hero ships in the static shell. */
+export async function generateStaticParams(): Promise<Array<parametersType>> {
+  return getCollectionHandlesForStaticParams();
+}
 
 export async function generateMetadata({
   params,
@@ -77,79 +95,34 @@ export async function generateMetadata({
   });
 }
 
-const CollectionSlugPage = async ({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ collectionSlug: string }>;
-  searchParams?: Promise<{
-    after?: string;
-    before?: string;
-    filters?: string;
-    sort_key?: string;
-    reverse?: boolean;
-  }>;
-}) => {
+/**
+ * Static part of the page: JSON-LD, breadcrumb and hero. Depends only on
+ * `params`, so with `generateStaticParams` it renders into the prerendered
+ * shell instead of waiting on request-time `searchParams`.
+ */
+const CollectionHeader = async ({ params }: { params: Promise<parametersType> }) => {
   const { collectionSlug } = await params;
-  const searchParameters = (await searchParams) || {};
 
   const collection = await getCollection(
     collectionSlug,
-    searchParameters?.sort_key,
-    searchParameters?.filters,
-    searchParameters?.after || undefined,
-    searchParameters?.before || undefined,
-    searchParameters?.reverse || false,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    false,
   );
 
   // A missing collection is a real 404; an existing collection with no matching
-  // products is an empty state (handled below), not a missing page.
+  // products is an empty state (handled in the products section), not a 404.
   if (!collection) {
     notFound();
   }
 
-  const { products } = collection;
-  const { filters, pageInfo, edges } = products || {};
-
   const collectionImage = collection.image;
   const basePath = `${config.routes.collection}/${collectionSlug}`;
 
-  const safeFilters = filters || [];
-  const safePageInfo = pageInfo || {
-    endCursor: null,
-    hasNextPage: false,
-    hasPreviousPage: false,
-    startCursor: null,
-  };
-  const safeSearchParameters = {
-    after: searchParameters?.after,
-    before: searchParameters?.before,
-    filters: searchParameters?.filters,
-    sort_key: searchParameters?.sort_key,
-  };
-
-  const safeEdges = edges ?? [];
-  const pageCount = safeEdges.length;
-  const activeFilterCount = parseFiltersQuery(searchParameters?.filters).length;
-
-  const sortingOptions = [
-    {
-      label: 'Best Selling',
-      name: ProductCollectionSortKeys.BestSelling,
-    },
-    {
-      label: 'Relevance',
-      name: ProductCollectionSortKeys.Relevance,
-    },
-    {
-      label: 'Price, low to high',
-      name: ProductCollectionSortKeys.Price,
-    },
-    { label: 'New Arrivals', name: ProductCollectionSortKeys.Created },
-  ];
-
   return (
-    <div className="pb-16 md:pb-24">
+    <>
       <JsonLd
         data={[
           collectionPageJsonLd({
@@ -176,7 +149,7 @@ const CollectionSlugPage = async ({
         <section className="relative isolate overflow-hidden">
           <div className="relative h-[40vh] min-h-[300px] w-full md:h-[52vh] md:min-h-[420px]">
             <Image
-              src={collectionImage.src}
+              src={collectionImage.large || collectionImage.src}
               alt={collectionImage.altText || collection.title || 'Collection image'}
               fill
               preload
@@ -213,68 +186,178 @@ const CollectionSlugPage = async ({
           </div>
         </section>
       )}
+    </>
+  );
+};
 
-      {/* Sibling collection navigation is provided by the header dropdowns. */}
+/**
+ * Request-time part of the page: sort/filter toolbar, product grid, pagination.
+ * Reads `searchParams`, so it streams in while the header above stays static.
+ */
+const CollectionProducts = async ({
+  params,
+  searchParams,
+}: {
+  params: Promise<parametersType>;
+  searchParams?: Promise<SearchParameters>;
+}) => {
+  const { collectionSlug } = await params;
+  const searchParameters = (await searchParams) || {};
 
-      <div className="container mx-auto px-4 py-8 md:px-6 md:py-12">
-        {pageCount > 0 ? (
-          <>
-            <div className="sticky top-16 z-30 -mx-4 mb-8 border-b border-border/60 bg-background/85 px-4 py-3 backdrop-blur-md md:top-20 md:-mx-6 md:px-6">
-              <ListingHeader className="mb-0 items-center">
-                <span className="text-caption-sm uppercase tracking-widest text-muted">
-                  Showing {pageCount}
-                  {safePageInfo.hasNextPage ? '+' : ''} {pageCount === 1 ? 'piece' : 'pieces'}
-                </span>
-                <div className="flex items-center gap-2">
-                  {activeFilterCount > 0 ? (
-                    <Link
-                      href={basePath}
-                      className="link-underline text-caption-sm font-medium text-secondary"
-                    >
-                      Clear filters
-                    </Link>
-                  ) : null}
-                  <Sort
-                    query={
-                      searchParameters?.sort_key
-                        ? searchParameters
-                        : { sort_key: ProductCollectionSortKeys.BestSelling }
-                    }
-                    sortingOptions={sortingOptions}
-                  />
-                  <Filters filters={safeFilters} query={safeSearchParameters} />
-                </div>
-              </ListingHeader>
-            </div>
+  const collection = await getCollection(
+    collectionSlug,
+    searchParameters.sort_key,
+    searchParameters.filters,
+    searchParameters.after || undefined,
+    searchParameters.before || undefined,
+    searchParameters.reverse || false,
+  );
 
-            <ProductsList products={safeEdges.map((edge) => edge.node)} layout="grid" />
-            <PageInfoPagination
-              pageInfo={safePageInfo}
-              searchParameters={safeSearchParameters}
-              basePath={basePath}
-            />
-          </>
-        ) : (
-          <EmptyState
-            variant="default"
-            title="No products here yet"
-            subtitle="This collection doesn't have any products matching your selection. Try clearing filters or browse our other collections."
-            altText="No products in collection"
-            primaryAction={
-              <Link href={config.routes.collection}>
-                <Button variant="default">Browse Collections</Button>
-              </Link>
-            }
-            secondaryAction={
-              <Link href={config.routes.home} className="link">
-                Go home
-              </Link>
-            }
+  if (!collection) {
+    notFound();
+  }
+
+  const { products } = collection;
+  const { filters, pageInfo, edges } = products || {};
+
+  const basePath = `${config.routes.collection}/${collectionSlug}`;
+
+  const safeFilters = filters || [];
+  const safePageInfo = pageInfo || {
+    endCursor: null,
+    hasNextPage: false,
+    hasPreviousPage: false,
+    startCursor: null,
+  };
+  const safeSearchParameters = {
+    after: searchParameters.after,
+    before: searchParameters.before,
+    filters: searchParameters.filters,
+    sort_key: searchParameters.sort_key,
+  };
+
+  const safeEdges = edges ?? [];
+  const pageCount = safeEdges.length;
+  const activeFilterCount = parseFiltersQuery(searchParameters.filters).length;
+
+  const sortingOptions = [
+    {
+      label: 'Best Selling',
+      name: ProductCollectionSortKeys.BestSelling,
+    },
+    {
+      label: 'Relevance',
+      name: ProductCollectionSortKeys.Relevance,
+    },
+    {
+      label: 'Price, low to high',
+      name: ProductCollectionSortKeys.Price,
+    },
+    { label: 'New Arrivals', name: ProductCollectionSortKeys.Created },
+  ];
+
+  return (
+    <div className="container mx-auto px-4 py-8 md:px-6 md:py-12">
+      {pageCount > 0 ? (
+        <>
+          <div className="sticky top-16 z-30 -mx-4 mb-8 border-b border-border/60 bg-background/85 px-4 py-3 backdrop-blur-md md:top-20 md:-mx-6 md:px-6">
+            <ListingHeader className="mb-0 items-center">
+              <span className="text-caption-sm uppercase tracking-widest text-muted">
+                Showing {pageCount}
+                {safePageInfo.hasNextPage ? '+' : ''} {pageCount === 1 ? 'piece' : 'pieces'}
+              </span>
+              <div className="flex items-center gap-2">
+                {activeFilterCount > 0 ? (
+                  <Link
+                    href={basePath}
+                    className="link-underline text-caption-sm font-medium text-secondary"
+                  >
+                    Clear filters
+                  </Link>
+                ) : null}
+                <Sort
+                  query={
+                    searchParameters.sort_key
+                      ? searchParameters
+                      : { sort_key: ProductCollectionSortKeys.BestSelling }
+                  }
+                  sortingOptions={sortingOptions}
+                />
+                <Filters filters={safeFilters} query={safeSearchParameters} />
+              </div>
+            </ListingHeader>
+          </div>
+
+          <ProductsList products={safeEdges.map((edge) => edge.node)} layout="grid" />
+          <PageInfoPagination
+            pageInfo={safePageInfo}
+            searchParameters={safeSearchParameters}
+            basePath={basePath}
           />
-        )}
-      </div>
+        </>
+      ) : (
+        <EmptyState
+          variant="default"
+          title="No products here yet"
+          subtitle="This collection doesn't have any products matching your selection. Try clearing filters or browse our other collections."
+          altText="No products in collection"
+          primaryAction={
+            <Link href={config.routes.collection}>
+              <Button variant="default">Browse Collections</Button>
+            </Link>
+          }
+          secondaryAction={
+            <Link href={config.routes.home} className="link">
+              Go home
+            </Link>
+          }
+        />
+      )}
     </div>
   );
 };
+
+const CollectionHeaderFallback = () => (
+  <>
+    <div className="border-b border-border/60 bg-secondary/30">
+      <div className="container mx-auto px-4 py-3 md:px-6">
+        <Skeleton className="h-5 w-48" />
+      </div>
+    </div>
+    <section className="relative isolate overflow-hidden">
+      <Skeleton className="h-[40vh] min-h-[300px] w-full rounded-none bg-muted md:h-[52vh] md:min-h-[420px]" />
+    </section>
+  </>
+);
+
+const CollectionProductsFallback = () => (
+  <div className="container mx-auto px-4 py-8 md:px-6 md:py-12">
+    <div className="mb-8 flex items-center justify-between gap-4 border-b border-border/60 pb-3">
+      <Skeleton className="h-4 w-32" />
+      <div className="flex gap-2">
+        <Skeleton className="h-11 w-32" />
+        <Skeleton className="h-11 w-28" />
+      </div>
+    </div>
+    <ProductGridSkeleton />
+  </div>
+);
+
+const CollectionSlugPage = ({
+  params,
+  searchParams,
+}: {
+  params: Promise<parametersType>;
+  searchParams?: Promise<SearchParameters>;
+}) => (
+  <div className="pb-16 md:pb-24">
+    <Suspense fallback={<CollectionHeaderFallback />}>
+      <CollectionHeader params={params} />
+    </Suspense>
+    <Suspense fallback={<CollectionProductsFallback />}>
+      <CollectionProducts params={params} searchParams={searchParams} />
+    </Suspense>
+  </div>
+);
 
 export default CollectionSlugPage;

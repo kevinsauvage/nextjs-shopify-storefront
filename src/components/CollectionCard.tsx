@@ -28,7 +28,7 @@ const CollectionCard = ({
     >
       {image?.src ? (
         <Image
-          src={image.src}
+          src={image.large || image.medium || image.src}
           alt={image.altText || title || 'Collection image'}
           fill
           quality={80}

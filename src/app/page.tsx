@@ -131,7 +131,7 @@ const Home = async () => {
             <div className="media-frame lift animate-rise animate-rise-2 relative aspect-[4/5] shadow-[0_32px_80px_-32px_rgb(12_10_9/0.45)]">
               {heroImage?.src ? (
                 <Image
-                  src={heroImage.src}
+                  src={heroImage.large || heroImage.src}
                   alt={
                     heroImage.altText || featuredCollections[0]?.node.title || 'Featured collection'
                   }

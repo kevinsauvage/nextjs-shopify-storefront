@@ -41,3 +41,36 @@ export const fetchCollectionPage = async (handle: string, query: CollectionQuery
 
   return response.collection ?? null;
 };
+
+const STATIC_PARAMS_PAGE_SIZE = 250;
+
+/**
+ * Every collection handle, for `generateStaticParams`. Under Cache Components a
+ * dynamic route prerenders the params returned here so its static shell (hero,
+ * breadcrumb, JSON-LD) ships without waiting on request-time `searchParams`.
+ */
+export const getCollectionHandlesForStaticParams = async (): Promise<
+  Array<{ collectionSlug: string }>
+> => {
+  const handles: Array<{ collectionSlug: string }> = [];
+  let after: string | undefined;
+  let hasNextPage = true;
+
+  while (hasNextPage) {
+    // Sequential cursor pagination: each request depends on the previous cursor.
+    // eslint-disable-next-line no-await-in-loop
+    const { collections } = await storefrontSdk().getCollectionsForSitemap({
+      after,
+      first: STATIC_PARAMS_PAGE_SIZE,
+    });
+
+    for (const edge of collections.edges) {
+      if (edge.node.handle) handles.push({ collectionSlug: edge.node.handle });
+    }
+
+    hasNextPage = collections.pageInfo.hasNextPage && Boolean(collections.pageInfo.endCursor);
+    after = collections.pageInfo.endCursor ?? undefined;
+  }
+
+  return handles;
+};
