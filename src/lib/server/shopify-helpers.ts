@@ -36,7 +36,7 @@ export const setShopifyToken = async (customerAccessToken: CustomerAccessToken):
     ...getSecureCookieOptions({ expires: expiresAtDate }),
   });
 
-  // Readable marker so the client can skip `getSessionAction` when signed out.
+  // Readable marker mirroring the token — the client's session signal.
   cookieStore.set({
     name: config.cookies.sessionPresent,
     value: '1',

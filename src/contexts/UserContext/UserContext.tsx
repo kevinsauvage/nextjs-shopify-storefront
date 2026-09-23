@@ -1,9 +1,8 @@
 'use client';
 
-import { createContext, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-import { getSessionAction } from '@/actions/sessionActions';
 import {
   addToWishlistAction,
   getWishlistIdsAction,
@@ -52,53 +51,19 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [sessionResolved, setSessionResolved] = useState(false);
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
   const [wishlistLoaded, setWishlistLoaded] = useState(false);
-  // Last readable session marker we resolved against. Lets a navigation re-check
-  // cheaply: only a marker change (login/logout/renewal) triggers the server
-  // action, so ordinary navigations never POST.
-  const lastSessionMarker = useRef<string | null>(null);
 
   // The session lives in an httpOnly cookie, so it is resolved client-side to
-  // keep the root layout (and the catalog) statically renderable. The readable
-  // marker is set/cleared alongside the token, so a missing marker is a
-  // definitive "signed out" without a round-trip, and a changed marker is the
-  // only time the session is re-resolved.
+  // keep the root layout (and the catalog) statically renderable.
+  //
+  // Single source of truth: the readable marker, written and cleared atomically
+  // with the token (login/register/reset, renewal, logout, stale-session
+  // cleanup). Re-read on every navigation — a plain cookie read, zero server
+  // round-trips. Sessions predating the marker are minted one by the proxy on
+  // the next origin hit, so they self-heal.
   useEffect(() => {
-    const marker = getCookieFront(config.cookies.sessionPresent);
-
-    if (!marker) {
-      if (lastSessionMarker.current === '') return;
-      lastSessionMarker.current = '';
-      // Resolve in a microtask so the effect body itself stays free of
-      // synchronous state updates (avoids cascading renders).
-      Promise.resolve().then(() => {
-        setIsLoggedIn(false);
-        setSessionResolved(true);
-      });
-      return;
-    }
-
-    if (lastSessionMarker.current === marker) return;
-
-    let cancelled = false;
-    lastSessionMarker.current = marker;
-
-    getSessionAction()
-      .then((loggedIn) => {
-        if (cancelled) return;
-        setIsLoggedIn(loggedIn);
-      })
-      .catch((error) => {
-        console.error('Failed to resolve session:', error);
-      })
-      // Always resolve, even on failure, so the UI never stays in a loading state.
-      .finally(() => {
-        if (cancelled) return;
-        setSessionResolved(true);
-      });
-
-    return () => {
-      cancelled = true;
-    };
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing external cookie state on navigation
+    setIsLoggedIn(getCookieFront(config.cookies.sessionPresent) !== '');
+    setSessionResolved(true);
   }, [pathname]);
 
   // Load wishlist ids client-side so the root layout does not block every page

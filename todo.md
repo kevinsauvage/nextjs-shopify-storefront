@@ -24,8 +24,11 @@ Legend: **P1** = high · **P2** = medium
 
 ## P1 — Performance & UX
 
-- [ ] **1. Cart/User providers fire server actions on every page and every navigation.**
-  `src/contexts/CartContext/CartContext.tsx:50-70` calls `getCartAction()` on mount even with no cart cookie; `src/contexts/UserContext/UserContext.tsx:43-59` calls `getSessionAction()` on mount and again on every `pathname` change. Adds a POST serverless round-trip after hydration on every route/navigation. Gate on a readable marker cookie and avoid the per-navigation action.
+- [x] **1. Cart/User providers fire server actions on every page and every navigation.**
+  `UserContext` no longer calls any server action: `isLoggedIn` is derived from the readable
+  `x-has-session` marker (written/cleared atomically with the token), re-read on every navigation —
+  zero POSTs. `CartContext` still calls `getCartAction()` on mount, but only when the `x-has-cart`
+  marker exists. (`src/actions/sessionActions.ts` deleted as unused.)
 
 - [ ] **2. Images are over-prioritized, hurting LCP.**
   `src/components/ProductsList.tsx:24` marks `index < 5` priority; the home page renders two 8-product grids plus `CollectionGrid` (`CollectionGrid.tsx:28`) → ~10+ competing `<link rel=preload>`. Only the true above-the-fold hero should be priority/preload (`src/app/page.tsx:141`). Drop priority from grids; migrate `priority` → `preload` (Next 16 deprecation).
