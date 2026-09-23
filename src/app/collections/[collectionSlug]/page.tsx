@@ -12,10 +12,10 @@ import PageInfoPagination from '@/components/PageInfoPagination';
 import ProductsList from '@/components/ProductsList';
 import { Button } from '@/components/ui/button';
 import config from '@/config';
+import { fetchCollectionPage } from '@/lib/server/collection';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
 import { breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/server/structured-data';
-import { storefrontSdk } from '@/shopify';
-import { adjustPaginationVariables, parseFiltersQuery } from '@/shopify/helpers';
+import { parseFiltersQuery } from '@/shopify/helpers';
 import { ProductCollectionSortKeys } from '@/shopify/storefront';
 
 import Filters from '../_components/Filters';
@@ -23,39 +23,21 @@ import Sort from '../_components/Sort';
 
 type parametersType = { collectionSlug: string };
 
-const COLLECTION_PAGE_SIZE = 16;
-
 /**
  * Collection lookup memoized for the lifetime of a single request.
  * `generateMetadata` and the page body both need the collection; without this
  * they each issue the same Shopify round-trip. Arguments are primitives so
- * React's `cache` can dedupe them by value.
+ * React's `cache` can dedupe them by value (the default view hits the cache).
  */
 const getCollection = cache(
   async (
     handle: string,
-    sortKey: ProductCollectionSortKeys,
+    sortKey: string | undefined,
     filters: string | undefined,
     after: string | undefined,
     before: string | undefined,
     reverse: boolean,
-  ) => {
-    const response = await storefrontSdk().collection({
-      filters: parseFiltersQuery(filters),
-      ...adjustPaginationVariables({
-        after,
-        before,
-        first: COLLECTION_PAGE_SIZE,
-        last: COLLECTION_PAGE_SIZE,
-        reverse,
-      }),
-      handle,
-      identifiers: [],
-      sortKey,
-    });
-
-    return response.collection ?? null;
-  },
+  ) => fetchCollectionPage(handle, { after, before, filters, reverse, sort_key: sortKey }),
 );
 
 export async function generateMetadata({
@@ -67,7 +49,7 @@ export async function generateMetadata({
 
   const collection = await getCollection(
     collectionSlug,
-    ProductCollectionSortKeys.BestSelling,
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -111,13 +93,9 @@ const CollectionSlugPage = async ({
   const { collectionSlug } = await params;
   const searchParameters = (await searchParams) || {};
 
-  const sortKey = Object.keys(ProductCollectionSortKeys).find(
-    (key) => key.toLowerCase() === searchParameters?.sort_key?.toLowerCase(),
-  ) as keyof typeof ProductCollectionSortKeys;
-
   const collection = await getCollection(
     collectionSlug,
-    ProductCollectionSortKeys[sortKey] || ProductCollectionSortKeys.BestSelling,
+    searchParameters?.sort_key,
     searchParameters?.filters,
     searchParameters?.after || undefined,
     searchParameters?.before || undefined,
@@ -133,7 +111,7 @@ const CollectionSlugPage = async ({
   const { products } = collection;
   const { filters, pageInfo, edges } = products || {};
 
-  const collectionImage = collection?.image;
+  const collectionImage = collection.image;
   const basePath = `${config.routes.collection}/${collectionSlug}`;
 
   const safeFilters = filters || [];
@@ -150,9 +128,9 @@ const CollectionSlugPage = async ({
     sort_key: searchParameters?.sort_key,
   };
 
-  const activeFilterCount = parseFiltersQuery(searchParameters?.filters).length;
   const safeEdges = edges ?? [];
   const pageCount = safeEdges.length;
+  const activeFilterCount = parseFiltersQuery(searchParameters?.filters).length;
 
   const sortingOptions = [
     {
@@ -167,7 +145,6 @@ const CollectionSlugPage = async ({
       label: 'Price, low to high',
       name: ProductCollectionSortKeys.Price,
     },
-
     { label: 'New Arrivals', name: ProductCollectionSortKeys.Created },
   ];
 
@@ -176,21 +153,21 @@ const CollectionSlugPage = async ({
       <JsonLd
         data={[
           collectionPageJsonLd({
-            name: collection?.title || 'Collection',
-            description: collection?.description,
+            name: collection.title || 'Collection',
+            description: collection.description,
             url: basePath,
           }),
           breadcrumbJsonLd([
             { name: 'Home', url: config.routes.home },
             { name: 'Collections', url: config.routes.collection },
-            { name: collection?.title || 'Collection', url: basePath },
+            { name: collection.title || 'Collection', url: basePath },
           ]),
         ]}
       />
       {/* Breadcrumb bar */}
       <div className="border-b border-border/60 bg-secondary/30">
         <div className="container mx-auto px-4 py-3 md:px-6">
-          <Breadcrumbs lastElement={collection?.title} />
+          <Breadcrumbs lastElement={collection.title} />
         </div>
       </div>
 
@@ -200,7 +177,7 @@ const CollectionSlugPage = async ({
           <div className="relative h-[40vh] min-h-[300px] w-full md:h-[52vh] md:min-h-[420px]">
             <Image
               src={collectionImage.src}
-              alt={collectionImage.altText || collection?.title || 'Collection image'}
+              alt={collectionImage.altText || collection.title || 'Collection image'}
               fill
               priority
               quality={82}
@@ -214,8 +191,8 @@ const CollectionSlugPage = async ({
           <div className="absolute inset-0 flex items-end">
             <div className="container mx-auto px-4 pb-10 md:px-6 md:pb-14">
               <span className="text-eyebrow text-white/80">Collection</span>
-              <h1 className="mt-3 max-w-3xl text-white">{collection?.title || 'Collection'}</h1>
-              {collection?.description ? (
+              <h1 className="mt-3 max-w-3xl text-white">{collection.title || 'Collection'}</h1>
+              {collection.description ? (
                 <p className="mt-4 max-w-2xl text-body-lg text-white/85">
                   {collection.description}
                 </p>
@@ -227,8 +204,8 @@ const CollectionSlugPage = async ({
         <section className="border-b border-border/60">
           <div className="container mx-auto px-4 py-14 text-center md:px-6 md:py-20">
             <span className="text-eyebrow">Collection</span>
-            <h1 className="mt-4 text-balance">{collection?.title || 'Collection'}</h1>
-            {collection?.description ? (
+            <h1 className="mt-4 text-balance">{collection.title || 'Collection'}</h1>
+            {collection.description ? (
               <p className="mx-auto mt-5 max-w-2xl text-pretty text-body-lg text-secondary">
                 {collection.description}
               </p>

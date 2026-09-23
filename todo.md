@@ -1,16 +1,15 @@
 # TODO — remaining fixes
 
-Analysis of the Next.js 16 / Shopify storefront. Baseline gates after the latest pass: `type-check` ✅ · `test` 163/163 ✅ · `lint` 0 errors · `prettier` ✅ · `yarn install --frozen-lockfile` ✅.
+Analysis of the Next.js 16 / Shopify storefront. Baseline gates after the latest pass: `type-check` ✅ · `test` 163/163 ✅ · `lint` 0 errors · `prettier` ✅ · `next build` ✅ (collection route now **SSG**) · `yarn install --frozen-lockfile` ✅.
 
 Legend: **P1** = high · **P2** = medium
 
-## ✅ Fixed (13 of 20)
+## ✅ Fixed (14 of 20)
 
 - Session/wishlist resolution failure no longer pins the UI in a skeleton (`UserContext.tsx` — flags set in `finally`).
 - Valid-but-empty collection now shows an empty state; a missing collection returns a real 404 (`collections/[collectionSlug]/page.tsx`).
 - Route error boundaries now report through `reportError` (`cart`, `account`, product).
 - Auth rate limiting fails closed on backend outage and normalizes the login/recover email key (`rate-limit.ts`, `authActions.ts`).
-- Collection fetch is de-duplicated across `generateMetadata`/page via React `cache()` (removed the extra `getCollectionSeoByHandle` round-trip).
 - Removed the root-layout `alternates.canonical` that private pages inherited.
 - Declared `images.qualities` in `next.config.ts` (Next 16 was coercing custom quality values).
 - Fonts no longer pin 4 explicit weights each (variable fonts; only the body font preloads).
@@ -18,41 +17,39 @@ Legend: **P1** = high · **P2** = medium
 - Added a skip-to-content link + `<main id="main">`; empty cart now has an `h1` (`layout.tsx`, `CartEmptyState.tsx`).
 - `robots.ts` disallows the bare `/account`; homepage title is descriptive (`data/seo.ts`).
 - Removed dead code: `components/Price.tsx`, `components/ui/tabs.tsx` + `@radix-ui/react-tabs` dependency, and `getStandardCookieOptions`.
-- Address create/update/delete now catch Shopify/network failures and return a `FormState` instead of throwing out of the server action (`address.service.ts`, `addressesActions.ts`), with new coverage in `address.service.test.ts`.
+- Address create/update/delete now catch Shopify/network failures and return a `FormState` instead of throwing (`address.service.ts`, `addressesActions.ts`), with new coverage in `address.service.test.ts`.
+- **Collection page is now statically prerendered (SSG).** The server page no longer reads `searchParams`; it renders the default view (hero, breadcrumb, JSON-LD, default grid) via a request-memoized fetch and hands it to a new client component that reads the URL itself and resolves filtered/sorted/paginated views through a validated server action. Added `generateStaticParams` (from `getCollectionsForSitemap`) and `revalidate`. New: `lib/collection-types.ts`, `lib/server/collection.ts`, `actions/collectionActions.ts`, `[collectionSlug]/_components/CollectionProducts.tsx`.
 
 ---
 
 ## P1 — Performance & UX
 
-- [ ] **1. Collection detail is still fully dynamic per request.**
-  The duplicate fetch is fixed, but `src/app/collections/[collectionSlug]/page.tsx:112` still reads `searchParams` (opts the route out of ISR/static rendering; no `generateStaticParams`). Move filter/sort/pagination into a client component (or a PPR Suspense boundary) so the base collection HTML is cacheable.
-
-- [ ] **2. Cart/User providers fire server actions on every page and every navigation.**
+- [ ] **1. Cart/User providers fire server actions on every page and every navigation.**
   `src/contexts/CartContext/CartContext.tsx:50-70` calls `getCartAction()` on mount even with no cart cookie; `src/contexts/UserContext/UserContext.tsx:43-59` calls `getSessionAction()` on mount and again on every `pathname` change. Adds a POST serverless round-trip after hydration on every route/navigation. Gate on a readable marker cookie and avoid the per-navigation action.
 
-- [ ] **3. Images are over-prioritized, hurting LCP.**
+- [ ] **2. Images are over-prioritized, hurting LCP.**
   `src/components/ProductsList.tsx:24` marks `index < 5` priority; the home page renders two 8-product grids plus `CollectionGrid` (`CollectionGrid.tsx:28`) → ~10+ competing `<link rel=preload>`. Only the true above-the-fold hero should be priority/preload (`src/app/page.tsx:141`). Drop priority from grids; migrate `priority` → `preload` (Next 16 deprecation).
 
-- [ ] **4. `EmptyState` is a client component that reveals its content only after hydration.**
+- [ ] **3. `EmptyState` is a client component that reveals its content only after hydration.**
   `src/components/EmptyState.tsx:1,41-47` starts at `opacity-0` and flips via `useEffect`+`setTimeout`. On server-rendered pages that use it (`not-found.tsx`, `search/page.tsx`, empty cart/orders/addresses/collections) the content is invisible until JS runs, and client JS ships for static markup. Convert to a server component with a pure CSS entrance animation.
 
-- [ ] **5. Optimistic/concurrency bugs in wishlist and cart state.**
+- [ ] **4. Optimistic/concurrency bugs in wishlist and cart state.**
   `UserContext.tsx:91-115` captures `wishlistIds` from the closure and calls `setWishlistIds(previousIds)` on failure, so two rapid toggles both roll back to the same list and erase a successful change; `handleSetWishlist` also changes identity on every toggle → whole grid re-renders (`:118-127`). `CartContext.tsx:72-150` has no request sequencing, so concurrent mutations can resolve out of order and write a stale cart. Use functional updates + a request id/optimistic rollback.
 
 ## P1 — Accessibility (WCAG 2.1 AA)
 
-- [ ] **6. Fix heading-order skips across pages.**
+- [ ] **5. Fix heading-order skips across pages.**
   PDP jumps `h1` → `h3` (option) → `h2` (Quantity) at `src/components/ProductDescriptionClient.tsx:142,218-229` / `src/components/Option.tsx:31`. Cart/collections render `h3` card titles directly under the page `h1` (`CartSummary.tsx:35`, `CartPromoCode.tsx:14`, `CollectionCard.tsx:53`, `ProductCardDefault.tsx:127`). Auth pages lose their only `h1` below `lg` (`src/app/(auth)/_components/AuthShell.tsx:27,31`). Introduce the missing `h2` section headings and demote/make headings responsive.
 
-- [ ] **7. Fix form/widget accessibility cluster.**
+- [ ] **6. Fix form/widget accessibility cluster.**
   Predictive search results are neither announced nor keyboard-navigable (`src/components/SearchResults.tsx:127` has no role/`aria-live`, no arrow-key combobox handling). The `<label htmlFor="quantity">` in `QuickBuyContent.tsx:241` points at nothing in `QuantityStepper.tsx` (WCAG 1.3.1/4.1.2). The price `Slider` has no accessible name (`Filters.tsx:264-271`). Breadcrumb `<nav>` is unlabeled and lacks `aria-current` (`Breadcrumbs.tsx:75,83`). Labeled carousel regions lack an accessible name (`ProductRecommendations.tsx:22`). Fix each per its WCAG criterion.
 
 ## P2 — Quality & testing
 
-- [ ] **8. Remove duplicated redaction logic and stop shipping `console.error`.**
+- [ ] **7. Remove duplicated redaction logic and stop shipping `console.error`.**
   Duplicate redaction regex/mapper exists in `src/lib/logger.ts:24-55` and `src/shopify/index.ts:69-84` — export one helper and reuse. Replace remaining `console.error` in app code (`CartContext.tsx`, `UserContext.tsx`, `ProductCardActions.tsx`, `ProductActions.tsx`, `Search.tsx`, `sitemap.ts`, `CartRemove.tsx`, `DiscountCodes.tsx`, `Address.tsx`, `WishlistContent.tsx`, `lib/client/cookies.ts`) with `reportError`/`toast`, since production `removeConsole` keeps `error`.
 
-- [ ] **9. Add tests for the security-critical, currently-0%-covered modules.**
+- [ ] **8. Add tests for the security-critical, currently-0%-covered modules.**
   `coverage/lcov.info` shows `src/proxy.ts` (0/53), `src/lib/server/rate-limit.ts` (0/31), `src/lib/server/delegate-token.ts` (0/47), `src/lib/token-renewal.ts` (8/36), `src/shopify/index.ts` (0/97), and the auth actions & services at 0%. These back auth, session renewal, rate limiting, and authorization. Raise the low thresholds in `vitest.config.ts:36-41` (`lines/statements: 35`) as coverage grows.
 
 ---
