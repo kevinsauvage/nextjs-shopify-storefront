@@ -68,7 +68,7 @@ const ProductCardDefault = ({ product, preload = false, className }: ProductCard
                 alt={primary.altText || title || 'Product image'}
                 fill
                 preload={preload}
-                quality={78}
+                quality={75}
                 sizes={CARD_SIZES}
                 placeholder={primary.blurDataURL ? 'blur' : 'empty'}
                 blurDataURL={primary.blurDataURL || undefined}
@@ -85,7 +85,7 @@ const ProductCardDefault = ({ product, preload = false, className }: ProductCard
                 src={secondary.medium || secondary.src}
                 alt=""
                 fill
-                quality={78}
+                quality={75}
                 sizes={CARD_SIZES}
                 className="absolute inset-0 object-cover opacity-0 transition-opacity duration-500 ease-out group-hover/card:opacity-100"
               />

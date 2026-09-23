@@ -149,7 +149,7 @@ const CollectionHeader = async ({ params }: { params: Promise<parametersType> })
               alt={collectionImage.altText || collection.title || 'Collection image'}
               fill
               preload
-              quality={82}
+              quality={80}
               sizes="100vw"
               placeholder={collectionImage.blurDataURL ? 'blur' : 'empty'}
               blurDataURL={collectionImage.blurDataURL || undefined}
