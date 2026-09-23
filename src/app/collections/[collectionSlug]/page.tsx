@@ -14,10 +14,7 @@ import ProductsList from '@/components/ProductsList';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import config from '@/config';
-import {
-  fetchCollectionPage,
-  getCollectionHandlesForStaticParams,
-} from '@/lib/server/collection';
+import { fetchCollectionPage, getCollectionHandlesForStaticParams } from '@/lib/server/collection';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
 import { breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/server/structured-data';
 import { parseFiltersQuery } from '@/shopify/helpers';
@@ -276,9 +273,7 @@ const CollectionProducts = async ({
                 ) : null}
                 <Sort
                   query={
-                    searchParameters.sort_key
-                      ? searchParameters
-                      : { sort_key: 'BEST_SELLING' }
+                    searchParameters.sort_key ? searchParameters : { sort_key: 'BEST_SELLING' }
                   }
                   sortingOptions={sortingOptions}
                 />

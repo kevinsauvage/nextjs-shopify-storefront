@@ -34,9 +34,7 @@ export const normalizeSortKey = (value: string): string =>
 export const resolveCollectionSortKey = (raw?: string): ProductCollectionSortKeys => {
   const normalized = raw ? normalizeSortKey(raw) : '';
 
-  return (
-    COLLECTION_SORT_KEYS.find((key) => normalizeSortKey(key) === normalized) ?? 'BEST_SELLING'
-  );
+  return COLLECTION_SORT_KEYS.find((key) => normalizeSortKey(key) === normalized) ?? 'BEST_SELLING';
 };
 
 /** Fetch a single page of a collection. */

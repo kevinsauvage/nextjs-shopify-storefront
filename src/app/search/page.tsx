@@ -18,7 +18,11 @@ import {
   parseFiltersQuery,
 } from '@/shopify/helpers';
 import { storefrontSdk } from '@/shopify/index';
-import type { ProductFieldsFragment, SearchProductsQuery, SearchSortKeys } from '@/shopify/storefront';
+import type {
+  ProductFieldsFragment,
+  SearchProductsQuery,
+  SearchSortKeys,
+} from '@/shopify/storefront';
 
 import Filters from '../collections/_components/Filters';
 import Sort from '../collections/_components/Sort';

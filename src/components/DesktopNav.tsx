@@ -45,7 +45,10 @@ const DesktopNav = ({ items, pathname = '' }: { items: MenuItems; pathname?: str
       <NavigationMenuList className="gap-0.5">
         <NavigationMenuItem>
           <NavigationMenuLink asChild active={pathname === config.routes.home}>
-            <Link href={config.routes.home} className={triggerClass(pathname === config.routes.home)}>
+            <Link
+              href={config.routes.home}
+              className={triggerClass(pathname === config.routes.home)}
+            >
               Home
             </Link>
           </NavigationMenuLink>
