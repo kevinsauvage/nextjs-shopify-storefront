@@ -1,6 +1,8 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  cacheComponents: true,
+
   poweredByHeader: false,
 
   // Pin Turbopack's root to this project so a stray lockfile in a parent

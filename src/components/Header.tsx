@@ -1,9 +1,11 @@
+import { Suspense } from 'react';
+
 import Logo from '@/components/Logo';
 import UserButtons from '@/components/UserButtons';
 import type { GetMenuByHandleQuery } from '@/shopify/storefront';
 
-import DesktopNav from './DesktopNav';
-import HamburgerMenu from './HamburgerMenu';
+import DesktopNav, { DesktopNavView } from './DesktopNav';
+import HamburgerMenu, { HamburgerMenuView } from './HamburgerMenu';
 
 import { Truck } from 'lucide-react';
 
@@ -26,10 +28,14 @@ const Header = ({
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex h-16 w-full items-center gap-3 md:h-[72px]">
             <div className="flex flex-1 items-center gap-2">
-              <HamburgerMenu headerMenu={headerMenu} />
+              <Suspense fallback={<HamburgerMenuView headerMenu={headerMenu} />}>
+                <HamburgerMenu headerMenu={headerMenu} />
+              </Suspense>
               <Logo />
             </div>
-            <DesktopNav items={navItems} />
+            <Suspense fallback={<DesktopNavView items={navItems} />}>
+              <DesktopNav items={navItems} />
+            </Suspense>
             <div className="flex flex-1 justify-end">
               <UserButtons />
             </div>

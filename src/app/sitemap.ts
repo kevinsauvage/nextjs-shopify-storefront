@@ -1,12 +1,9 @@
 import type { MetadataRoute } from 'next';
+import { cacheLife, cacheTag } from 'next/cache';
 
 import config, { sitemap as sitemapConfig } from '@/config';
 import { getBaseUrl } from '@/lib/server/metadata';
 import { storefrontSdk } from '@/shopify';
-
-export const dynamic = 'force-static';
-
-export const revalidate = 3600; // Revalidate every hour
 
 const PAGE_SIZE = 250;
 
@@ -66,6 +63,10 @@ const getStaticEntries = (baseUrl: string, now: Date): MetadataRoute.Sitemap =>
   }));
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  'use cache';
+  cacheLife('hours');
+  cacheTag('shopify');
+
   const baseUrl = getBaseUrl();
   const now = new Date();
 

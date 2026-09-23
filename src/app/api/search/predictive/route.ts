@@ -10,8 +10,6 @@ import {
   HTTP_STATUS,
 } from '@/utils/api-responses';
 
-export const dynamic = 'force-dynamic';
-
 const MIN_QUERY_LENGTH = 2;
 const MAX_QUERY_LENGTH = 100;
 const RATE_LIMIT_TOKENS = 30;

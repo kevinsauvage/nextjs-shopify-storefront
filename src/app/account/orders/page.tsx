@@ -17,8 +17,6 @@ import { LanguageCode, OrderSortKeys } from '@/shopify/storefront';
 import BackButton from '../_components/BackButton';
 import Orders from '../_components/Orders';
 
-export const dynamic = 'force-dynamic'; // Orders are user-specific
-
 export const metadata: Metadata = {
   description: seo.account.orders.description,
   title: seo.account.orders.title,

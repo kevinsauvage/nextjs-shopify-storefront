@@ -14,8 +14,6 @@ import BackButton from '../_components/BackButton';
 
 import UpdateUserForm from './_components/UpdateUserForm';
 
-export const dynamic = 'force-dynamic';
-
 export const metadata: Metadata = {
   description: seo.account.update.description,
   title: seo.account.update.title,

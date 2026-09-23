@@ -1,18 +1,5 @@
 # next-reco-todo.md
 
-## 0. Upgrade hygiene (do first)
-
-- [x] **P0 — DONE: Silence the Turbopack root warning.** `next.config.ts` now pins
-      `turbopack: { root: import.meta.dirname }`. Verified: `next dev` and `next build` on 16.3.6
-      no longer print the *"ignored pnpm-lock.yaml … set `turbopack.root`"* warning.
-      Doc: `01-app/03-api-reference/05-config/01-next-config-js/turbopack.md` → _Root directory_.
-
-- [x] **P0 — DONE: Drop the now-redundant Turbopack flags.** `package.json` scripts are now
-      `"dev": "next dev"` and `"build": "yarn codegen && next build"` (Turbopack is the 16 default).
-      Doc: `01-app/02-guides/upgrading/version-16.md` → _Turbopack by default_.
-
----
-
 ## 1. Caching & revalidation
 
 Reference: `01-app/01-getting-started/08-caching.md`, `09-revalidating.md`,
@@ -24,18 +11,23 @@ Current state: the app caches **only** through `fetch(..., { next: { revalidate 
 `updateTag`, or `refresh` usage anywhere (verified by scan). That is the "previous model"; the docs
 now center on **Cache Components**.
 
-- [ ] **P1 — DEFERRED (migration): Adopt Cache Components (`cacheComponents: true`).** Doc:
-      `01-app/03-api-reference/05-config/01-next-config-js/cacheComponents.md`. This is a migration,
-      not a flag flip: it enables PPR/static shells and **removes** the `dynamic`, `dynamicParams`,
-      `revalidate`, and `fetchCache` segment configs. Existing code that relies on those
-      (`src/app/page.tsx:20`, `src/app/collections/page.tsx:12`,
-      `src/app/collections/products/[productSlug]/page.tsx:15`, `src/app/sitemap.ts:7,9`, and the
-      `force-dynamic` account routes) must be re-expressed with `use cache` + `<Suspense>`.
-      Consider the `next-cache-components-adoption` skill from `01-app/02-guides/ai-agents.md`.
+- [x] **P1 — DONE: Adopt Cache Components (`cacheComponents: true`).** Enabled in `next.config.ts`.
+      Removed every `dynamic`/`revalidate` segment config. Fixed synchronous IO that blocked
+      prerender (`Footer` `new Date()` → module constant; `isomorphic-dompurify` `new Date()` →
+      `sanitizeHtmlCached` with `'use cache'` + `cacheTag('shopify')`). Moved route-hook reads out of
+      shared components into `<Suspense>`-wrapped leaves (`DesktopNav`/`HamburgerMenu` via a
+      `pathname` prop, `UserContext` via a `PathnameWatcher`). Sitemap is now `'use cache'`
+      (`cacheLife('hours')` + `cacheTag('shopify')`) and prerenders again. Build now emits PPR:
+      `/account*`, `/search`, `/collections/[collectionSlug]`, product pages are `◐`; the rest `○`.
+      Doc: `cacheComponents.md`, `02-guides/migrating-to-cache-components.md`.
 
-- [ ] **P1 — DEFERRED (needs Cache Components): Use `updateTag` for read-your-own-writes mutations.** Cart/wishlist/address actions
-      should `updateTag(...)` (Server-Action-only, immediate expiry) rather than relying on a full
-      client refresh. Doc: `04-functions/updateTag.md`.
+- [x] **P1 — DONE: Use `updateTag` for read-your-own-writes.** `getWishlistIds` is now read through
+      `getWishlistIdsCached()` (`'use cache: private'` + `cacheLife({ stale: Infinity })` +
+      `cacheTag('wishlist')`), so ordinary navigations do not re-fetch it; `addToWishlistAction` and
+      `removeFromWishlistAction` call `updateTag('wishlist')` after the write so the header/UI show
+      the user's own change immediately. Catalog reads stay invalidatable via the fetch
+      `next.tags: ['shopify']` (use `revalidateTag('shopify', 'max')` from a webhook). Doc:
+      `04-functions/updateTag.md`.
 - [ ] **P2 — `revalidateTag` signature.** When introduced, the single-arg form is deprecated in 16 —
       always `revalidateTag(tag, 'max')` (or `{ expire: 0 }`). Doc: `revalidateTag.md`.
 - [ ] **P2 — Use `after()` for post-response work.** Error reporting / analytics currently run inline

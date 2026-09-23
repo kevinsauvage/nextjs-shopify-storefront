@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { cacheLife, cacheTag } from 'next/cache';
+
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { adminSdk, storefrontSdk } from '@/shopify';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
@@ -20,6 +22,9 @@ export const isValidWishlistProductId = (value: unknown): value is string =>
   PRODUCT_GID_PATTERN.test(value);
 
 const WISHLIST_METAFIELD = { key: 'wishlist', namespace: 'custom' } as const;
+
+/** Cache tag for the customer's wishlist ids. Invalidated with `updateTag`. */
+export const WISHLIST_TAG = 'wishlist';
 
 export type WishlistState = {
   customerId: string | null;
@@ -232,4 +237,19 @@ export class WishlistService {
       return this.updateWishlist(nextIds, customerId);
     });
   }
+}
+
+/**
+ * Read-your-own-writes cached wishlist ids for the UI.
+ *
+ * `use cache: private` may read cookies (the customer token), and
+ * `stale: Infinity` keeps the value on the client until a wishlist mutation
+ * calls `updateTag(WISHLIST_TAG)` — so ordinary navigations do not re-fetch the
+ * wishlist, but the user always sees their own change immediately.
+ */
+export async function getWishlistIdsCached(): Promise<string[]> {
+  'use cache: private';
+  cacheLife({ stale: Infinity });
+  cacheTag(WISHLIST_TAG);
+  return (await WishlistService.getWishlistState()).ids;
 }

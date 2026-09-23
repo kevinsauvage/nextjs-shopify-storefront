@@ -1,7 +1,7 @@
 import type { GetProductByHandleQuery } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
 import { mapShopifyImagesToImageFields } from '@/utils/images';
-import { sanitizeHtml } from '@/utils/sanitize';
+import { sanitizeHtmlCached } from '@/utils/sanitize';
 
 import { Badge } from './ui/badge';
 import PhotoGallery from './PhotoGallery';
@@ -13,11 +13,11 @@ type ProductDescriptionProps = {
   className?: string;
 };
 
-const ProductDescription = ({ product, isModal, className }: ProductDescriptionProps) => {
+const ProductDescription = async ({ product, isModal, className }: ProductDescriptionProps) => {
   if (!product) return null;
 
   const { images } = product;
-  const descriptionHtml = sanitizeHtml(
+  const descriptionHtml = await sanitizeHtmlCached(
     typeof product.descriptionHtml === 'string' ? product.descriptionHtml : '',
   );
 

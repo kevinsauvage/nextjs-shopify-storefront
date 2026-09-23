@@ -17,8 +17,6 @@ import ProductSection from './_components/ProductSection';
 
 import { ArrowRight, Award, RotateCcw, ShieldCheck, Sparkles, Star, Truck } from 'lucide-react';
 
-export const revalidate = 3600; // 1 hour
-
 export const metadata: Metadata = generateMetadataUtil({
   title: seo.home.title,
   description: seo.home.description,

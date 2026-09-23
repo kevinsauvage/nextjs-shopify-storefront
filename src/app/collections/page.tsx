@@ -9,8 +9,6 @@ import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata'
 import { storefrontSdk } from '@/shopify/index';
 import { CollectionSortKeys } from '@/shopify/storefront/index';
 
-export const revalidate = 3600; // Revalidate every hour
-
 export const metadata: Metadata = generateMetadataUtil({
   title: 'Collections',
   description: 'Browse all of our collections to find the products you love.',

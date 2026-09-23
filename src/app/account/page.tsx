@@ -17,8 +17,6 @@ import UserFullName from './_components/UserFullName';
 
 import { ArrowRight, MapPin, UserRound } from 'lucide-react';
 
-export const dynamic = 'force-dynamic'; // Account data is user-specific
-
 export const metadata: Metadata = {
   description: seo.account.description,
   title: seo.account.title,

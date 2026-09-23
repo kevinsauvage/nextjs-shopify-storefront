@@ -1,10 +1,14 @@
 'use server';
 
+import { updateTag } from 'next/cache';
+
 import { getClientIp } from '@/lib/server/client-ip';
 import { isRateLimited } from '@/lib/server/rate-limit';
 import {
+  getWishlistIdsCached,
   isValidWishlistProductId,
   WISHLIST_MAX_ITEMS,
+  WISHLIST_TAG,
   WishlistService,
 } from '@/services/wishlist.service';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
@@ -32,7 +36,7 @@ const normalizeIds = (productIds: unknown): string[] =>
 
 export async function getWishlistIdsAction(): Promise<string[]> {
   try {
-    return await WishlistService.getWishlistIds();
+    return await getWishlistIdsCached();
   } catch (error) {
     safeLogError('getWishlistIdsAction', error);
     return [];
@@ -90,6 +94,9 @@ export async function addToWishlistAction(productId: string): Promise<WishlistAc
       return { success: false, message: result.message || GENERIC_ERROR };
     }
 
+    // Read-your-own-writes: expire the cached ids so the header/UI reflect the add.
+    updateTag(WISHLIST_TAG);
+
     return { success: true, data: result.data, message: 'Product added to wishlist' };
   } catch (error) {
     safeLogError('addToWishlistAction', error);
@@ -125,6 +132,9 @@ export async function removeFromWishlistAction(productId: string): Promise<Wishl
     if (!result.success) {
       return { success: false, message: result.message || GENERIC_ERROR };
     }
+
+    // Read-your-own-writes: expire the cached ids so the header/UI reflect the removal.
+    updateTag(WISHLIST_TAG);
 
     return { success: true, data: result.data, message: 'Product removed from wishlist' };
   } catch (error) {

@@ -39,9 +39,7 @@ const triggerClass = (active: boolean) =>
     active ? 'text-foreground' : 'text-secondary hover:text-foreground',
   );
 
-const DesktopNav = ({ items }: { items: MenuItems }) => {
-  const pathname = usePathname();
-
+const DesktopNav = ({ items, pathname = '' }: { items: MenuItems; pathname?: string }) => {
   return (
     <NavigationMenu className="hidden lg:flex" viewport={false}>
       <NavigationMenuList className="gap-0.5">
@@ -103,4 +101,15 @@ const DesktopNav = ({ items }: { items: MenuItems }) => {
   );
 };
 
-export default DesktopNav;
+/**
+ * Reads the route pathname (which suspends on routes with unknown dynamic
+ * params under Cache Components) so callers can wrap it in `<Suspense>` and
+ * keep the static shell — see `Header`.
+ */
+const DesktopNavWithPathname = ({ items }: { items: MenuItems }) => {
+  const pathname = usePathname();
+  return <DesktopNav items={items} pathname={pathname} />;
+};
+
+export { DesktopNav as DesktopNavView };
+export default DesktopNavWithPathname;

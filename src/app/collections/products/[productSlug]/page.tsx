@@ -12,8 +12,6 @@ import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata'
 import { breadcrumbJsonLd, productJsonLd } from '@/lib/server/structured-data';
 import { storefrontSdk } from '@/shopify';
 
-export const revalidate = 3600;
-
 const STATIC_PARAMS_PAGE_SIZE = 250;
 
 /**

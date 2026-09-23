@@ -22,6 +22,10 @@ const socials = [
   { label: 'LinkedIn', href: siteMetadata.linkedin, Icon: Linkedin },
 ];
 
+// Computed once at module evaluation (build/start), not during render, so it is
+// a stable prerenderable value under Cache Components.
+const CURRENT_YEAR = new Date().getFullYear();
+
 const Footer = ({ menuItems }: FooterProps) => {
   return (
     <footer className="mt-auto border-t border-border bg-[var(--sidebar)]">
@@ -90,7 +94,7 @@ const Footer = ({ menuItems }: FooterProps) => {
 
         <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
           <p className="text-caption text-secondary">
-            Copyright © {new Date().getFullYear()} {siteMetadata.companyName}. All rights reserved.
+            Copyright © {CURRENT_YEAR} {siteMetadata.companyName}. All rights reserved.
           </p>
           <p className="text-caption text-secondary">Crafted with care.</p>
         </div>

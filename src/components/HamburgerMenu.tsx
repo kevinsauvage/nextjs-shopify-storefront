@@ -35,14 +35,15 @@ import {
 
 const HamburgerMenu = ({
   headerMenu,
+  pathname = '',
 }: {
   headerMenu: GetMenuByHandleQuery['menu'] | null | undefined;
+  pathname?: string;
 }) => {
   const [open, setOpen] = useState(false);
   const [expandedMenus, setExpandedMenus] = useState<{ [key: string]: boolean }>({});
   const { isLoggedIn } = useUserContext();
   const router = useRouter();
-  const pathname = usePathname();
 
   const toggleMenu = (id: string) => {
     setExpandedMenus((previous) => ({
@@ -326,4 +327,19 @@ const HamburgerMenu = ({
   );
 };
 
-export default HamburgerMenu;
+/**
+ * Reads the route pathname (which suspends on routes with unknown dynamic
+ * params under Cache Components) so callers can wrap it in `<Suspense>` and
+ * keep the static shell — see `Header`.
+ */
+const HamburgerMenuWithPathname = ({
+  headerMenu,
+}: {
+  headerMenu: GetMenuByHandleQuery['menu'] | null | undefined;
+}) => {
+  const pathname = usePathname();
+  return <HamburgerMenu headerMenu={headerMenu} pathname={pathname} />;
+};
+
+export { HamburgerMenu as HamburgerMenuView };
+export default HamburgerMenuWithPathname;

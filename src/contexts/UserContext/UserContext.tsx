@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createContext, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { getSessionAction } from '@/actions/sessionActions';
@@ -30,9 +30,24 @@ export const UserContext = createContext<UserContextValue>({
   wishlistReady: false,
 });
 
+/**
+ * Reports the current pathname to the provider. `usePathname()` suspends on
+ * routes whose dynamic params are unknown at build time, so it lives in its own
+ * component under a `<Suspense>` boundary to keep the app shell prerenderable.
+ */
+const PathnameWatcher = ({ onChange }: { onChange: (pathname: string) => void }) => {
+  const pathname = usePathname();
+
+  useEffect(() => {
+    onChange(pathname);
+  }, [pathname, onChange]);
+
+  return null;
+};
+
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const pathname = usePathname();
+  const [pathname, setPathname] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [sessionResolved, setSessionResolved] = useState(false);
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
@@ -116,7 +131,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     async (isWishlisted: boolean, productId: string) => {
       if (!isLoggedIn) {
         toast.info('You need to login to add products to your wishlist');
-        router.push(`${config.routes.login}?redirect=${pathname}`);
+        const returnTo = typeof window === 'undefined' ? pathname : window.location.pathname;
+        router.push(`${config.routes.login}?redirect=${returnTo}`);
         return;
       }
 
@@ -158,5 +174,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     [handleSetWishlist, isLoggedIn, sessionResolved, wishlistIds, wishlistLoaded],
   );
 
-  return <UserContext.Provider value={values}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={values}>
+      <Suspense fallback={null}>
+        <PathnameWatcher onChange={setPathname} />
+      </Suspense>
+      {children}
+    </UserContext.Provider>
+  );
 };
