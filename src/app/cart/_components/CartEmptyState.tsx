@@ -33,9 +33,9 @@ const CartEmptyState = () => {
         <div className="order-2 text-center lg:order-1 lg:text-left">
           <span className="text-eyebrow-gold">Nothing here yet</span>
 
-          <h2 id="empty-cart-title" className="mt-3 text-balance text-heading-3">
+          <h1 id="empty-cart-title" className="mt-3 text-balance text-heading-3">
             Your cart is empty
-          </h2>
+          </h1>
 
           <p className="mx-auto mt-3 max-w-md text-body-sm text-secondary lg:mx-0 md:text-body">
             Once you add a piece it will appear here, ready for a secure checkout. Start with the

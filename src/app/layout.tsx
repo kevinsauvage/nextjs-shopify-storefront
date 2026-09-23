@@ -26,9 +26,6 @@ export const metadata: Metadata = {
   },
   description: siteMetadata.about.short,
   applicationName: siteMetadata.companyName,
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -78,15 +75,13 @@ const inter = Inter({
   variable: '--font-sans',
   display: 'swap',
   preload: true,
-  weight: ['400', '500', '600', '700'], // Body: 400-500, Headings: 600-700
 });
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
   variable: '--font-display',
   display: 'swap',
-  preload: true,
-  weight: ['400', '500', '600', '700'], // Editorial display serif
+  preload: false,
 });
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
@@ -107,6 +102,12 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
         <link rel="dns-prefetch" href="https://cdn.shopify.com" />
       </head>
       <body className="relative bg-background min-h-screen flex flex-col">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:shadow-lg focus:ring-2 focus:ring-ring"
+        >
+          Skip to content
+        </a>
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         <GtmScript />
         <CookieBanner />
@@ -119,7 +120,7 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
           <CartProvider>
             <UserProvider>
               <Header headerMenu={headerMenu?.menu || null} />
-              <main className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)]">
+              <main id="main" className="min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)]">
                 {children}
               </main>
               <Toaster richColors />

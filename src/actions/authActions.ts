@@ -56,7 +56,7 @@ export async function registerAction(input: RegisterInput): Promise<FormState> {
   const { email, password, firstName, lastName } = result.data;
 
   const ip = await getClientIp();
-  if (await isRateLimited('auth:register', ip, 5, '10 m')) {
+  if (await isRateLimited('auth:register', ip, 5, '10 m', { failClosed: true })) {
     return tooManyAttempts();
   }
 
@@ -87,9 +87,12 @@ export async function loginAction(input: LoginInput): Promise<FormState> {
   const ip = await getClientIp();
   // Two buckets: per-target (ip:email) and a global per-IP cap. The latter stops
   // credential stuffing / spraying across many different emails from one host.
+  // The email is normalized so casing/whitespace variants share one bucket.
   const [targetLimited, ipLimited] = await Promise.all([
-    isRateLimited('auth:login', `${ip}:${email}`, 5, '10 m'),
-    isRateLimited('auth:login:ip', ip, 30, '10 m'),
+    isRateLimited('auth:login', `${ip}:${email.trim().toLowerCase()}`, 5, '10 m', {
+      failClosed: true,
+    }),
+    isRateLimited('auth:login:ip', ip, 30, '10 m', { failClosed: true }),
   ]);
   if (targetLimited || ipLimited) {
     return tooManyAttempts();
@@ -117,8 +120,10 @@ export const recoverPasswordAction = async (input: RecoverPasswordInput): Promis
 
   const ip = await getClientIp();
   const [targetLimited, ipLimited] = await Promise.all([
-    isRateLimited('auth:recover', `${ip}:${result.data.email}`, 3, '15 m'),
-    isRateLimited('auth:recover:ip', ip, 10, '15 m'),
+    isRateLimited('auth:recover', `${ip}:${result.data.email.trim().toLowerCase()}`, 3, '15 m', {
+      failClosed: true,
+    }),
+    isRateLimited('auth:recover:ip', ip, 10, '15 m', { failClosed: true }),
   ]);
   if (targetLimited || ipLimited) {
     return tooManyAttempts();
@@ -151,7 +156,7 @@ export const resetPasswordAction = async (input: ResetPasswordInput): Promise<Fo
   const { password, resetUrl } = result.data;
 
   const ip = await getClientIp();
-  if (await isRateLimited('auth:reset', ip, 5, '15 m')) {
+  if (await isRateLimited('auth:reset', ip, 5, '15 m', { failClosed: true })) {
     return tooManyAttempts();
   }
 

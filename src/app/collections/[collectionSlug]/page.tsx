@@ -1,6 +1,8 @@
+import { cache } from 'react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import EmptyState from '@/components/EmptyState';
@@ -21,6 +23,41 @@ import Sort from '../_components/Sort';
 
 type parametersType = { collectionSlug: string };
 
+const COLLECTION_PAGE_SIZE = 16;
+
+/**
+ * Collection lookup memoized for the lifetime of a single request.
+ * `generateMetadata` and the page body both need the collection; without this
+ * they each issue the same Shopify round-trip. Arguments are primitives so
+ * React's `cache` can dedupe them by value.
+ */
+const getCollection = cache(
+  async (
+    handle: string,
+    sortKey: ProductCollectionSortKeys,
+    filters: string | undefined,
+    after: string | undefined,
+    before: string | undefined,
+    reverse: boolean,
+  ) => {
+    const response = await storefrontSdk().collection({
+      filters: parseFiltersQuery(filters),
+      ...adjustPaginationVariables({
+        after,
+        before,
+        first: COLLECTION_PAGE_SIZE,
+        last: COLLECTION_PAGE_SIZE,
+        reverse,
+      }),
+      handle,
+      identifiers: [],
+      sortKey,
+    });
+
+    return response.collection ?? null;
+  },
+);
+
 export async function generateMetadata({
   params,
 }: {
@@ -28,11 +65,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { collectionSlug } = await params;
 
-  const collectionResponse = await storefrontSdk().getCollectionSeoByHandle({
-    handle: collectionSlug,
-  });
-
-  const { collection } = collectionResponse || {};
+  const collection = await getCollection(
+    collectionSlug,
+    ProductCollectionSortKeys.BestSelling,
+    undefined,
+    undefined,
+    undefined,
+    false,
+  );
 
   if (!collection) {
     return generateMetadataUtil({
@@ -45,7 +85,7 @@ export async function generateMetadata({
 
   const title = collection.seo?.title || collection.title || 'Collection';
   const description = collection.seo?.description || collection.description || 'Collection';
-  const collectionImage = collection.image?.originalSrc;
+  const collectionImage = collection.image?.src;
 
   return generateMetadataUtil({
     title,
@@ -75,24 +115,22 @@ const CollectionSlugPage = async ({
     (key) => key.toLowerCase() === searchParameters?.sort_key?.toLowerCase(),
   ) as keyof typeof ProductCollectionSortKeys;
 
-  const [response] = await Promise.all([
-    storefrontSdk().collection({
-      filters: parseFiltersQuery(searchParameters?.filters),
-      ...adjustPaginationVariables({
-        after: searchParameters?.after || undefined,
-        before: searchParameters?.before || undefined,
-        first: 16,
-        last: 16,
-        reverse: searchParameters?.reverse || false,
-      }),
-      handle: collectionSlug,
-      identifiers: [],
-      sortKey: ProductCollectionSortKeys[sortKey] || ProductCollectionSortKeys.BestSelling,
-    }),
-  ]);
+  const collection = await getCollection(
+    collectionSlug,
+    ProductCollectionSortKeys[sortKey] || ProductCollectionSortKeys.BestSelling,
+    searchParameters?.filters,
+    searchParameters?.after || undefined,
+    searchParameters?.before || undefined,
+    searchParameters?.reverse || false,
+  );
 
-  const { collection } = response || {};
-  const { products } = collection || {};
+  // A missing collection is a real 404; an existing collection with no matching
+  // products is an empty state (handled below), not a missing page.
+  if (!collection) {
+    notFound();
+  }
+
+  const { products } = collection;
   const { filters, pageInfo, edges } = products || {};
 
   const collectionImage = collection?.image;
@@ -242,9 +280,9 @@ const CollectionSlugPage = async ({
         ) : (
           <EmptyState
             variant="default"
-            title="Collection not found"
-            subtitle="This collection doesn't exist or has been removed. Browse our other collections to find what you're looking for."
-            altText="Collection Not Found"
+            title="No products here yet"
+            subtitle="This collection doesn't have any products matching your selection. Try clearing filters or browse our other collections."
+            altText="No products in collection"
             primaryAction={
               <Link href={config.routes.collection}>
                 <Button variant="default">Browse Collections</Button>

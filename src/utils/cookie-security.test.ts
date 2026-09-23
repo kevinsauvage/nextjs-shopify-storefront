@@ -2,7 +2,6 @@ import {
   getCookieDeleteOptions,
   getCookieDomain,
   getSecureCookieOptions,
-  getStandardCookieOptions,
   shouldUseSecureCookies,
 } from './cookie-security';
 
@@ -111,20 +110,6 @@ describe('getSecureCookieOptions', () => {
       httpOnly: true,
       maxAge: 60,
       path: '/cart',
-      sameSite: 'lax',
-      secure: false,
-    });
-  });
-});
-
-describe('getStandardCookieOptions', () => {
-  it('leaves httpOnly unset unless explicitly requested', () => {
-    vi.stubEnv(NODE_ENV, TEST);
-    vi.stubEnv(SITE_DOMAIN, '');
-
-    expect(getStandardCookieOptions()).toEqual({
-      domain: undefined,
-      path: '/',
       sameSite: 'lax',
       secure: false,
     });

@@ -10,6 +10,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
       disallow: [
+        '/account', // Private account overview (bare route)
         '/account/', // Private user account pages (orders, addresses, wishlist, etc.)
         '/api/', // API routes (not meant for search engines)
         '/search', // Dynamic search pages (not useful for SEO)

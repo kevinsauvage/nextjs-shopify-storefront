@@ -31,21 +31,25 @@ const getLimiter = (name: string, tokens: number, window: Duration): Ratelimit =
 /**
  * Returns `true` when `key` has exceeded `tokens` requests per `window`.
  *
- * Fails open: if the limiter backend (Upstash) is unavailable, the request is
- * allowed through rather than turning a limiter outage into an auth/checkout
- * outage. The failure is logged so it is still observable.
+ * Fails open by default: if the limiter backend (Upstash) is unavailable, the
+ * request is allowed through rather than turning a limiter outage into a
+ * checkout/catalog outage. The failure is logged so it is still observable.
+ *
+ * Pass `{ failClosed: true }` for security-sensitive buckets (auth): when the
+ * backend is down, deny the request instead of allowing unlimited attempts.
  */
 export const isRateLimited = async (
   name: string,
   key: string,
   tokens: number,
   window: Duration,
+  { failClosed = false }: { failClosed?: boolean } = {},
 ): Promise<boolean> => {
   try {
     const { success } = await getLimiter(name, tokens, window).limit(key);
     return !success;
   } catch (error) {
     reportError('isRateLimited', error, { name });
-    return false;
+    return failClosed;
   }
 };

@@ -47,10 +47,14 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       .then((loggedIn) => {
         if (cancelled) return;
         setIsLoggedIn(loggedIn);
-        setSessionResolved(true);
       })
       .catch((error) => {
         console.error('Failed to resolve session:', error);
+      })
+      // Always resolve, even on failure, so the UI never stays in a loading state.
+      .finally(() => {
+        if (cancelled) return;
+        setSessionResolved(true);
       });
 
     return () => {
@@ -69,10 +73,14 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       .then((ids) => {
         if (cancelled) return;
         setWishlistIds(ids);
-        setWishlistLoaded(true);
       })
       .catch((error) => {
         console.error('Failed to load wishlist:', error);
+      })
+      // Always mark as loaded so a failure cannot pin the wishlist in a skeleton.
+      .finally(() => {
+        if (cancelled) return;
+        setWishlistLoaded(true);
       });
 
     return () => {

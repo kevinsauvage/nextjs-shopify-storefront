@@ -39,7 +39,7 @@ const seo = {
   home: {
     description:
       'Shop our curated collection of products. Discover new arrivals, best sellers, and exclusive offers with fast, secure checkout.',
-    title: 'Home',
+    title: 'Curated Fashion, Jewelry & Accessories',
   },
   login: {
     description:

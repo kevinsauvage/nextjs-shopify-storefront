@@ -6,10 +6,11 @@ import Link from 'next/link';
 import NotFoundIllustration from '@/assets/NotFoundIllustration.png';
 import EmptyState from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
+import { reportError } from '@/lib/logger';
 
 const CartError = ({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) => {
   useEffect(() => {
-    console.error('Cart error:', error);
+    reportError('app/cart-error-boundary', error, { digest: error.digest });
   }, [error]);
 
   return (

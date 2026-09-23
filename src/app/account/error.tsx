@@ -8,6 +8,7 @@ import EmptyState from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import config from '@/config';
+import { reportError } from '@/lib/logger';
 
 const AccountError = ({
   error,
@@ -17,7 +18,7 @@ const AccountError = ({
   reset: () => void;
 }) => {
   useEffect(() => {
-    console.error('Account error:', error);
+    reportError('app/account-error-boundary', error, { digest: error.digest });
   }, [error]);
 
   return (

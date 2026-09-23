@@ -42,6 +42,7 @@ type SearchParameters = {
 
 const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> }) => {
   const searchParameters = await searchParams;
+  const hasQuery = Boolean(searchParameters.searchQuery?.trim());
 
   const sortKey = Object.keys(SearchSortKeys).find(
     (key) => key.toLowerCase() === searchParameters.sort_key?.toLowerCase(),
@@ -100,7 +101,21 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
           ))}
         </div>
       </PageBanner>
-      {products.length > 0 ? (
+      {!hasQuery ? (
+        <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 space-y-6">
+          <EmptyState
+            variant="search"
+            title="Search our store"
+            subtitle="Enter a keyword to find products. Try a material, category, or product name — or pick a popular search above."
+            altText="Search our store"
+            primaryAction={
+              <Button variant="default" asChild>
+                <Link href="/collections">Browse Collections</Link>
+              </Button>
+            }
+          />
+        </div>
+      ) : products.length > 0 ? (
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 space-y-6">
           <ListingHeader>
             <Sort
