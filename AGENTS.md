@@ -65,12 +65,24 @@ yarn build                  # yarn codegen && next build (needs Shopify env)
   relative → CSS. Run `yarn lint-fix` instead of hand-sorting.
 - Types: `import type { X }` inline type imports; `noUncheckedIndexedAccess`
   is on — handle `T | undefined` from indexing explicitly.
+- Routes: `typedRoutes` is on. New links must satisfy `Route`:
+  `config.routes` literals, `` `/collections/${string}` ``-shaped templates
+  for dynamic paths, `withQuery()` (`src/utils/url.ts`) for query-string
+  navigations. CMS-driven URLs funnel through `normalizeMenuHref` (the single
+  `as Route` point) — never scatter assertions at call sites.
 - Errors: use `reportError`/`src/lib/logger.ts`, never raw `console.*`
   (production strips all but `warn`/`error` via `next.config.ts:14-16`).
+  Post-response reporting goes through `after()` in
+  `src/lib/server/error-reporter.ts` (falls back outside request scope).
 - Store HTML rendered with `dangerouslySetInnerHTML` MUST go through
   `@/utils/sanitize`. Never bypass.
 - Cookies: writes only in `proxy.ts` / route handlers / server actions —
   never during Server Component render (breaks static caching).
+- Optimistic UI: `useOptimistic` in a transition for toggles with cheap
+  rollback (wishlist pattern); request-id sequencing for server-computed
+  state (cart pattern, same as `Search.tsx`) — never captured-snapshot
+  rollbacks. `catchError` boundaries only around non-critical islands
+  (`SearchResultsBoundary.tsx` pattern).
 - Styling: Tailwind first; SCSS modules for complex cases. Keep
   idiomatic property order (`stylelint-config-idiomatic-order`).
 - A11y (WCAG 2.1 AA): named headings in order, labeled form controls,

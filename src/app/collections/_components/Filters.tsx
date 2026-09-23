@@ -23,6 +23,7 @@ import {
 import { Slider } from '@/components/ui/slider';
 import type { Filter } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
+import { withQuery } from '@/utils/url';
 
 import { RotateCcw, SlidersHorizontal, Sparkles } from 'lucide-react';
 
@@ -117,7 +118,7 @@ const Filters = ({
     newSearchParameters.delete('before');
     setPriceTouched(false);
     setSelectedFilters([]);
-    router.push(`${pathname}?${newSearchParameters.toString()}`);
+    router.push(withQuery(pathname, newSearchParameters));
   }, [pathname, router, toSearchParameters]);
 
   const applyFilters = useCallback(() => {
@@ -145,7 +146,7 @@ const Filters = ({
       );
     }
 
-    router.push(`${pathname}?${newSearchParameters.toString()}`);
+    router.push(withQuery(pathname, newSearchParameters));
     setOpen(false);
   }, [filters, pathname, priceRange, priceTouched, router, selectedFilters, toSearchParameters]);
 

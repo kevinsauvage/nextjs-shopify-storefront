@@ -115,7 +115,7 @@ const CollectionHeader = async ({ params }: { params: Promise<parametersType> })
   }
 
   const collectionImage = collection.image;
-  const basePath = `${config.routes.collection}/${collectionSlug}`;
+  const basePath: `/collections/${string}` = `${config.routes.collection}/${collectionSlug}`;
 
   return (
     <>
@@ -216,7 +216,7 @@ const CollectionProducts = async ({
   const { products } = collection;
   const { filters, pageInfo, edges } = products || {};
 
-  const basePath = `${config.routes.collection}/${collectionSlug}`;
+  const basePath: `/collections/${string}` = `${config.routes.collection}/${collectionSlug}`;
 
   const safeFilters = filters || [];
   const safePageInfo = pageInfo || {

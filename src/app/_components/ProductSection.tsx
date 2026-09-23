@@ -1,3 +1,4 @@
+import type { Route } from 'next';
 import Link from 'next/link';
 
 import ProductsList from '@/components/ProductsList';
@@ -13,7 +14,7 @@ type ProductSectionProps = {
   title: string;
   eyebrow?: string;
   products: ProductFieldsFragment[];
-  viewAllLink?: string;
+  viewAllLink?: Route;
   viewAllLabel?: string;
   className?: string;
 };

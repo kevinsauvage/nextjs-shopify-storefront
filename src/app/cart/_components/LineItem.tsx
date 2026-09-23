@@ -25,8 +25,9 @@ const LineItem: React.FC<{
   const hasDiscount = totalDiscount > 0;
   const { currencyCode } = node.cost.totalAmount;
 
-  // Get product handle for link
-  const productHandle =
+  // Get product handle for link. `'#'` is a no-op anchor for lines whose
+  // product was deleted; the template shape matches the dynamic product route.
+  const productHandle: `/collections/products/${string}` | '#' =
     'product' in node.merchandise && node.merchandise.product?.handle
       ? `${config.routes.collection}/products/${node.merchandise.product.handle}`
       : '#';

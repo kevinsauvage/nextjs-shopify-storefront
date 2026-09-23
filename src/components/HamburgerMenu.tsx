@@ -66,7 +66,7 @@ const HamburgerMenu = ({
     ...(isLoggedIn
       ? [{ Icon: LogOut, id: 'logout', link: config.routes.logout, text: 'Logout' }]
       : []),
-  ];
+  ] as const;
 
   const menuItems = headerMenu?.items || [];
 

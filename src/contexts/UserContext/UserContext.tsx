@@ -1,6 +1,15 @@
 'use client';
 
-import { createContext, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  createContext,
+  startTransition,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useOptimistic,
+  useState,
+} from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import {
@@ -10,6 +19,7 @@ import {
 } from '@/actions/wishlistActions';
 import config from '@/config';
 import { getCookieFront } from '@/lib/client/cookies';
+import { reportError } from '@/lib/logger';
 
 import { toast } from 'sonner';
 
@@ -52,6 +62,19 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
   const [wishlistLoaded, setWishlistLoaded] = useState(false);
 
+  // Optimistic view over the last server-confirmed ids. Updated inside a
+  // transition before the write lands; React discards it automatically when
+  // `wishlistIds` commits, so failures revert without a captured snapshot.
+  const [optimisticWishlistIds, addOptimisticWishlist] = useOptimistic(
+    wishlistIds,
+    (state: string[], { isWishlisted, productId }: { isWishlisted: boolean; productId: string }) =>
+      isWishlisted
+        ? state.filter((id) => id !== productId)
+        : state.includes(productId)
+          ? state
+          : [...state, productId],
+  );
+
   // The session lives in an httpOnly cookie, so it is resolved client-side to
   // keep the root layout (and the catalog) statically renderable.
   //
@@ -79,7 +102,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         setWishlistIds(ids);
       })
       .catch((error) => {
-        console.error('Failed to load wishlist:', error);
+        reportError('wishlist/load', error);
       })
       // Always mark as loaded so a failure cannot pin the wishlist in a skeleton.
       .finally(() => {
@@ -101,31 +124,33 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-      const previousIds = wishlistIds;
-      // Update optimistically; revert if the write fails.
-      setWishlistIds(
-        isWishlisted ? previousIds.filter((id) => id !== productId) : [...previousIds, productId],
-      );
+      // Optimistic toggle with automatic rollback: the optimistic layer is
+      // discarded whenever the base state commits, so a failed write reverts
+      // to the *latest* ids instead of a stale closure snapshot. This fixes
+      // the lost-update bug where two rapid toggles rolled back to the same
+      // list. No `wishlistIds` dependency → stable identity, no grid
+      // re-render per toggle.
+      startTransition(async () => {
+        addOptimisticWishlist({ isWishlisted, productId });
 
-      try {
-        const result = isWishlisted
-          ? await removeFromWishlistAction(productId)
-          : await addToWishlistAction(productId);
+        try {
+          const result = isWishlisted
+            ? await removeFromWishlistAction(productId)
+            : await addToWishlistAction(productId);
 
-        if (result?.success && result.data) {
-          setWishlistIds(result.data);
-          toast.success(result.message);
-        } else {
-          setWishlistIds(previousIds);
-          toast.error(result?.message || 'Something went wrong');
+          if (result?.success && result.data) {
+            setWishlistIds(result.data);
+            toast.success(result.message);
+          } else {
+            toast.error(result?.message || 'Something went wrong');
+          }
+        } catch (error) {
+          reportError('wishlist/toggle', error, { productId });
+          toast.error('Something went wrong');
         }
-      } catch (error) {
-        setWishlistIds(previousIds);
-        console.error('Wishlist operation error:', error);
-        toast.error('Something went wrong');
-      }
+      });
     },
-    [isLoggedIn, pathname, router, wishlistIds],
+    [addOptimisticWishlist, isLoggedIn, pathname, router],
   );
 
   const values = useMemo(
@@ -133,10 +158,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       handleSetWishlist,
       isLoggedIn,
       // Never expose a stale wishlist once the session ends.
-      wishlistIds: isLoggedIn ? wishlistIds : [],
+      wishlistIds: isLoggedIn ? optimisticWishlistIds : [],
       wishlistReady: sessionResolved && (!isLoggedIn || wishlistLoaded),
     }),
-    [handleSetWishlist, isLoggedIn, sessionResolved, wishlistIds, wishlistLoaded],
+    [handleSetWishlist, isLoggedIn, optimisticWishlistIds, sessionResolved, wishlistLoaded],
   );
 
   return (

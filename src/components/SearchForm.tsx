@@ -1,30 +1,18 @@
 'use client';
 
-import { useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
-
-import { searchAction } from '@/actions/searchActions';
+import Form from 'next/form';
 
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 
 import { Search } from 'lucide-react';
 
-const SubmitButton = ({ ...properties }: React.ComponentProps<'button'>) => {
-  const status = useFormStatus();
-  return (
-    <button
-      type="submit"
-      disabled={status.pending}
-      className="group absolute right-3 top-1/2 -translate-y-1/2"
-      aria-label="Search"
-      {...properties}
-    >
-      <Search className="text-secondary group-hover:text-primary transition-colors" />
-    </button>
-  );
-};
-
+/**
+ * GET navigation via `next/form` (prefetch + no server action): submitting
+ * sends the `searchQuery` field to `/search?searchQuery=…`, which is exactly
+ * the shape `src/app/search/page.tsx` reads. Live suggestions still flow
+ * through the controlled `onChange` in `Search.tsx`.
+ */
 const SearchForm = ({
   value,
   onChange,
@@ -32,10 +20,8 @@ const SearchForm = ({
   value: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 }) => {
-  const [, action] = useActionState(() => searchAction(value), value);
-
   return (
-    <form action={action} className="relative w-full max-w-2xl mx-auto">
+    <Form action="/search" className="relative w-full max-w-2xl mx-auto">
       <Label aria-label="Search" className="flex items-center">
         <Input
           className="py-7 pl-8 pr-11"
@@ -51,8 +37,14 @@ const SearchForm = ({
           value={value}
         />
       </Label>
-      <SubmitButton />
-    </form>
+      <button
+        type="submit"
+        aria-label="Search"
+        className="group absolute right-3 top-1/2 -translate-y-1/2"
+      >
+        <Search className="text-secondary group-hover:text-primary transition-colors" />
+      </button>
+    </Form>
   );
 };
 

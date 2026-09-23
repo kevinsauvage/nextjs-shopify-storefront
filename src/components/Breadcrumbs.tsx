@@ -1,4 +1,5 @@
 'use client';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -17,7 +18,7 @@ const safeDecode = (value: string): string => {
   }
 };
 
-const Crumbs = ({ title, href, last }: { title: string; href: string; last: boolean }) => {
+const Crumbs = ({ title, href, last }: { title: string; href: Route; last: boolean }) => {
   if (last) {
     const t = safeDecode(title)
       .replace('gid://shopify/Order/', '')
@@ -53,7 +54,9 @@ const Breadcrumbs = ({ lastElement }: { lastElement?: string }) => {
 
     const crumbList = asPathNestedRoutes
       .map((subpath, index) => {
-        const href = `/${asPathNestedRoutes.slice(0, index + 1).join('/')}`;
+        // Built from the live pathname, so it cannot be statically verified;
+        // the single assertion lives here instead of at each `Link`.
+        const href = `/${asPathNestedRoutes.slice(0, index + 1).join('/')}` as Route;
         const title = subpath.split('-').join(' ').replaceAll('_', ' ');
         return {
           href,
@@ -63,7 +66,7 @@ const Breadcrumbs = ({ lastElement }: { lastElement?: string }) => {
       })
       .filter((crumb) => !filterCrumb.has(crumb.title.toLowerCase()));
 
-    return [{ href: '/', title: 'Home' }, ...crumbList];
+    return [{ href: '/', title: 'Home' } as const, ...crumbList];
   }
 
   // Call the function to generate the breadcrumbs list

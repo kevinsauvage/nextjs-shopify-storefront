@@ -5,7 +5,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 import SearchForm from '@/components/SearchForm';
+import SearchResultsBoundary from '@/components/SearchResultsBoundary';
 import useOnClickOutside from '@/hooks/useClickOutside';
+import { reportError } from '@/lib/logger';
 import type { PredictiveSearchQuery } from '@/shopify/storefront';
 import debounce from '@/utils/debounce';
 
@@ -65,7 +67,7 @@ const Search = ({ searchQuery }: { searchQuery: string }) => {
       // Aborted requests are expected; only surface genuine failures.
       if (controller.signal.aborted || requestId !== requestIdRef.current) return;
 
-      console.error('Search error:', error);
+      reportError('search/predictive-client', error);
       setResults(null);
     }
   }, []);
@@ -93,7 +95,11 @@ const Search = ({ searchQuery }: { searchQuery: string }) => {
         }}
       />
 
-      {results && <SearchResults results={results} />}
+      {results && (
+        <SearchResultsBoundary>
+          <SearchResults results={results} />
+        </SearchResultsBoundary>
+      )}
     </div>
   );
 };

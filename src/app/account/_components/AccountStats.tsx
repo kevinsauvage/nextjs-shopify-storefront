@@ -1,5 +1,6 @@
 'use client';
 
+import type { Route } from 'next';
 import Link from 'next/link';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -14,7 +15,7 @@ type StatCardProps = {
   title: string;
   value: string | number;
   icon: React.ReactNode;
-  href?: string;
+  href?: Route;
   description?: string;
   className?: string;
 };

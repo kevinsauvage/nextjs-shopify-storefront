@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { after } from 'next/server';
+
 import { setErrorReporter } from '@/lib/logger';
 
 /**
@@ -15,18 +17,29 @@ export const registerErrorReporter = (): void => {
   if (!url) return;
 
   setErrorReporter(({ context, error, meta }) => {
-    fetch(url, {
-      body: JSON.stringify({
-        context,
-        message: error.message,
-        stack: error.stack,
-        meta,
-        timestamp: new Date().toISOString(),
-      }),
-      headers: { 'Content-Type': 'application/json' },
-      method: 'POST',
-    }).catch(() => {
-      // Never let reporting failures affect the application.
-    });
+    const send = () => {
+      fetch(url, {
+        body: JSON.stringify({
+          context,
+          message: error.message,
+          stack: error.stack,
+          meta,
+          timestamp: new Date().toISOString(),
+        }),
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+      }).catch(() => {
+        // Never let reporting failures affect the application.
+      });
+    };
+
+    // Inside a request (route handler, server action) defer past the
+    // response so serverless runtimes cannot freeze mid-POST. Outside one
+    // (prerender, startup) `after()` throws — fall back to fire-and-forget.
+    try {
+      after(send);
+    } catch {
+      send();
+    }
   });
 };

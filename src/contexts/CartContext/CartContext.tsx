@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   addCartLinesAction,
@@ -11,6 +11,7 @@ import {
 } from '@/actions/cartActions';
 import config from '@/config';
 import { getCookieFront } from '@/lib/client/cookies';
+import { reportError } from '@/lib/logger';
 import type { CartFieldsFragment } from '@/shopify/storefront';
 
 import { toast } from 'sonner';
@@ -45,6 +46,10 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartFieldsFragment | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Monotonic id so concurrent mutations cannot resolve out of order: only
+  // the latest response may write the cart; stale ones are dropped. (The
+  // same pattern already guards predictive search in `Search.tsx`.)
+  const requestIdRef = useRef(0);
 
   // The cart id lives in an httpOnly cookie, so the cart is hydrated client-side
   // to keep the root layout (and the catalog) statically renderable. A cart is
@@ -75,7 +80,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
-  const handleResponse = useCallback((response: CartResponse) => {
+  const handleResponse = useCallback((requestId: number, response: CartResponse) => {
+    if (requestId !== requestIdRef.current) return;
     setCart(response.data);
     setError(null);
     if (response.message) {
@@ -83,61 +89,73 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
+  const handleMutationError = useCallback(
+    (requestId: number, context: string, caughtError: unknown, fallbackMessage: string) => {
+      if (requestId !== requestIdRef.current) return;
+      reportError(context, caughtError);
+      toast.error(getErrorMessage(caughtError, fallbackMessage));
+    },
+    [],
+  );
+
   const removeFromCart = useCallback(
     async (lineItemId: string) => {
       if (!lineItemId) {
-        console.error('Missing line item ID');
+        reportError('cart/remove', new Error('Missing line item ID'));
         return;
       }
 
+      const requestId = (requestIdRef.current += 1);
       try {
         const response = await removeCartLineAction(lineItemId);
-        handleResponse(response);
+        handleResponse(requestId, response);
       } catch (caughtError) {
-        toast.error(getErrorMessage(caughtError, 'Failed to remove item'));
+        handleMutationError(requestId, 'cart/remove', caughtError, 'Failed to remove item');
       }
     },
-    [handleResponse],
+    [handleMutationError, handleResponse],
   );
 
   const handleQuantityChange = useCallback(
     async (id: string, quantity: number) => {
       if (!id || !quantity) {
-        console.error('Missing required parameters: id or quantity');
+        reportError('cart/quantity', new Error('Missing required parameters: id or quantity'));
         return;
       }
 
+      const requestId = (requestIdRef.current += 1);
       try {
         const response = await updateCartLinesAction([{ id, quantity }]);
-        handleResponse(response);
+        handleResponse(requestId, response);
       } catch (caughtError) {
-        toast.error(getErrorMessage(caughtError, 'Failed to update cart'));
+        handleMutationError(requestId, 'cart/quantity', caughtError, 'Failed to update cart');
       }
     },
-    [handleResponse],
+    [handleMutationError, handleResponse],
   );
 
   const handleAddToCart = useCallback(
     async (variantId: string, quantity = 1) => {
       if (!variantId) {
-        console.error('Missing variant ID');
+        reportError('cart/add', new Error('Missing variant ID'));
         return;
       }
 
+      const requestId = (requestIdRef.current += 1);
       try {
         const response = await addCartLinesAction([{ merchandiseId: variantId, quantity }]);
-        handleResponse(response);
+        handleResponse(requestId, response);
       } catch (caughtError) {
-        toast.error(getErrorMessage(caughtError, 'Failed to add to cart'));
+        handleMutationError(requestId, 'cart/add', caughtError, 'Failed to add to cart');
       }
     },
-    [handleResponse],
+    [handleMutationError, handleResponse],
   );
 
   const updateDiscountCodes = useCallback(
     async (discountCodes: string[]) => {
       if (!Array.isArray(discountCodes)) {
-        console.error('Invalid discount codes format');
+        reportError('cart/discount', new Error('Invalid discount codes format'));
         return;
       }
 
@@ -145,14 +163,20 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         .map((code) => String(code).trim())
         .filter((code) => code.length > 0);
 
+      const requestId = (requestIdRef.current += 1);
       try {
         const response = await updateDiscountCodesAction(validCodes);
-        handleResponse(response);
+        handleResponse(requestId, response);
       } catch (caughtError) {
-        toast.error(getErrorMessage(caughtError, 'Failed to update discount codes'));
+        handleMutationError(
+          requestId,
+          'cart/discount',
+          caughtError,
+          'Failed to update discount codes',
+        );
       }
     },
-    [handleResponse],
+    [handleMutationError, handleResponse],
   );
 
   const value = useMemo<CartContextType>(

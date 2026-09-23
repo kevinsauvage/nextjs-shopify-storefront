@@ -1,5 +1,6 @@
 'use client';
 
+import type { Route } from 'next';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -21,10 +22,10 @@ type MenuItems = NonNullable<GetMenuByHandleQuery['menu']>['items'];
 type MenuItem = MenuItems[number];
 
 /** Returns a navigable href, or null for placeholder anchors (`#`, empty). */
-const resolveHref = (url?: string | null): string | null => {
+const resolveHref = (url?: string | null): Route | null => {
   const href = normalizeMenuHref(url).trim();
   if (!href || href === '#' || href === '/#') return null;
-  return href;
+  return href as Route;
 };
 
 const isActivePath = (pathname: string, href: string): boolean =>
@@ -79,7 +80,7 @@ const DesktopNav = ({ items, pathname = '' }: { items: MenuItems; pathname?: str
               <NavigationMenuContent className="absolute top-full left-0 mt-1 !w-[15rem] rounded-2xl border border-border/60 bg-popover p-2 shadow-[0_24px_60px_-30px_rgb(12_10_9/0.45)]">
                 <ul className="grid gap-0.5">
                   {children.map((child) => {
-                    const childHref = resolveHref(child.url) as string;
+                    const childHref = resolveHref(child.url) as Route;
                     const childActive = isActivePath(pathname, childHref);
                     return (
                       <li key={child.id}>

@@ -1,4 +1,4 @@
-import type { MetadataRoute } from 'next';
+import type { MetadataRoute, Route } from 'next';
 
 import { COOKIES } from './constants';
 
@@ -42,7 +42,9 @@ const config = {
     search: '/search',
     shipping: '/shipping',
     terms: '/terms',
-  },
+    // Literal types so `Link href`/`redirect` stay type-checked with
+    // `typedRoutes`; `satisfies` proves every entry is a real route.
+  } as const satisfies Record<string, Route>,
 };
 
 export const accountNav = [

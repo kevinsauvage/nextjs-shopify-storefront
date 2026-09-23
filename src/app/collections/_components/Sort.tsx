@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { withQuery } from '@/utils/url';
 
 import { Check, SortDesc } from 'lucide-react';
 
@@ -79,7 +80,7 @@ const SortInner = ({ query, sortingOptions }: SortProps) => {
     parameters.delete('after');
     parameters.delete('before');
 
-    router.push(`${pathname}?${parameters.toString()}`);
+    router.push(withQuery(pathname, parameters));
   };
 
   return (

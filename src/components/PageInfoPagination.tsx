@@ -1,3 +1,4 @@
+import type { Route } from 'next';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -24,7 +25,9 @@ const PageInfoPagination = ({
     <div className="flex items-center justify-between gap-2">
       {pageInfo.hasPreviousPage ? (
         <Button asChild variant="secondary" size="default">
-          <Link href={previousPath} aria-label="Previous Page">
+          {/* Helpers build `${Route}?${params}`; the Link renders only when
+              the page exists, so the single assertion lives here. */}
+          <Link href={previousPath as Route} aria-label="Previous Page">
             Previous
           </Link>
         </Button>
@@ -36,7 +39,7 @@ const PageInfoPagination = ({
 
       {pageInfo.hasNextPage ? (
         <Button asChild variant="secondary" size="default">
-          <Link href={nextPath} aria-label="Next Page">
+          <Link href={nextPath as Route} aria-label="Next Page">
             Next
           </Link>
         </Button>

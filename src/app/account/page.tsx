@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
@@ -32,7 +33,7 @@ const AccountCardCTA = ({
   title: string;
   description: string;
   buttonText: string;
-  buttonLink: string;
+  buttonLink: Route;
   icon?: React.ReactNode;
 }) => {
   return (

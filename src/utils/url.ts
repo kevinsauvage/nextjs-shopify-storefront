@@ -8,6 +8,8 @@
  * a store-owned origin is rewritten to a relative path that keeps the user on
  * the custom storefront. Genuinely external URLs are left untouched.
  */
+import type { Route } from 'next';
+
 const PLACEHOLDER_ORIGIN = 'https://menu.invalid';
 
 const parseOrigin = (value?: string | null): string | null => {
@@ -34,8 +36,8 @@ const isShopifyHost = (hostname: string): boolean =>
 const isInternalOrigin = (origin: string, hostname: string): boolean =>
   internalOrigins.has(origin) || isShopifyHost(hostname);
 
-export const normalizeMenuHref = (url?: string | null): string => {
-  if (!url) return '';
+export const normalizeMenuHref = (url?: string | null): Route => {
+  if (!url) return '' as Route;
 
   try {
     const parsed = new URL(url, PLACEHOLDER_ORIGIN);
@@ -43,17 +45,21 @@ export const normalizeMenuHref = (url?: string | null): string => {
 
     // Relative URL - already internal.
     if (parsed.origin === PLACEHOLDER_ORIGIN) {
-      return path;
+      // CMS-driven URLs cannot be statically verified against the route
+      // manifest, so the single assertion lives here instead of at every
+      // `Link` call site. Absolute URLs with a protocol and statically
+      // known shapes still satisfy `Route` at runtime.
+      return path as Route;
     }
 
     // Absolute store URL - strip the origin so navigation stays on this site.
     if (isInternalOrigin(parsed.origin, parsed.hostname)) {
-      return path;
+      return path as Route;
     }
 
-    return url;
+    return url as Route;
   } catch {
-    return url;
+    return url as Route;
   }
 };
 
@@ -64,10 +70,18 @@ export const normalizeMenuHref = (url?: string | null): string => {
  * (`/\host`) values so a `?redirect=` query cannot bounce an authenticated
  * user off-site.
  */
-export const safeInternalPath = (value: string | null | undefined, fallback: string): string => {
+export const safeInternalPath = (value: string | null | undefined, fallback: Route): Route => {
   if (value?.startsWith('/') && !value.startsWith('//') && !value.startsWith('/\\')) {
-    return value;
+    return value as Route;
   }
 
   return fallback;
 };
+
+/**
+ * Appends query parameters to a known route. Centralizes the single `Route`
+ * assertion for programmatically built URLs (filters, sort, pagination) so
+ * `typedRoutes` stays enabled without an `as Route` at every call site.
+ */
+export const withQuery = (pathname: string, parameters: URLSearchParams): Route =>
+  `${pathname}?${parameters.toString()}` as Route;

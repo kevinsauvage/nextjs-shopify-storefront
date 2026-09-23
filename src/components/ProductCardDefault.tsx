@@ -51,7 +51,9 @@ const ProductCardDefault = ({ product, preload = false, className }: ProductCard
     ? discountPercentOf(Number(price?.amount), Number(compareAtPrice?.amount))
     : null;
 
-  const href = `${config.routes.collection}/products/${handle}`;
+  // Template shape matches the dynamic product route, so `typedRoutes`
+  // validates it at each `Link` call site.
+  const href: `/collections/products/${string}` = `${config.routes.collection}/products/${handle}`;
 
   return (
     <div className={cn('group/card relative flex h-full flex-col', className)}>

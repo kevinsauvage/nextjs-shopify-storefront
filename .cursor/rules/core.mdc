@@ -14,6 +14,9 @@ See `AGENTS.md` — the single source of truth. This rule is the Cursor delta.
 - Never edit generated `src/shopify/storefront/index.ts` /
   `src/shopify/admin/index.ts`. Never read `.env*.local`.
 - No `any`, `import type` inline, handle `T | undefined` from indexing.
+- Links/redirects must satisfy `Route` (`typedRoutes`): config literals,
+  `` `/collections/${string}` `` templates, `withQuery()` for query strings,
+  `normalizeMenuHref()` for CMS urls — never scatter `as Route`.
 - Sanitize store HTML via `@/utils/sanitize`; cookies only in `proxy.ts` /
   route handlers / server actions; errors via `reportError`, never `console.*`.
 - Verify: `yarn lint`, `yarn typegen && yarn lint-ts`,

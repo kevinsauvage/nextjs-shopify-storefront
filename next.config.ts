@@ -2,6 +2,12 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  typedRoutes: true,
+
+  experimental: {
+    // Enables `src/app/global-not-found.tsx` for URLs matching no route.
+    globalNotFound: true,
+  },
 
   poweredByHeader: false,
 
