@@ -22,6 +22,9 @@ import { toast } from 'sonner';
 type UserContextValue = {
   handleSetWishlist: (isWishlisted: boolean, productId: string) => Promise<void>;
   isLoggedIn: boolean;
+  /** Product IDs with an in-flight wishlist write. Cards derive their loading
+   * state from this; the optimistic `wishlistIds` above already flips instantly. */
+  pendingWishlistIds: string[];
   wishlistIds: string[];
   wishlistReady: boolean;
 };
@@ -31,6 +34,7 @@ export const UserContext = createContext<UserContextValue>({
     // noop
   },
   isLoggedIn: false,
+  pendingWishlistIds: [],
   wishlistIds: [],
   wishlistReady: false,
 });
@@ -57,6 +61,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [sessionResolved, setSessionResolved] = useState(false);
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
   const [wishlistLoaded, setWishlistLoaded] = useState(false);
+  // In-flight wishlist writes by product ID. Set outside the transition so the
+  // very next render already disables the toggle; cleared in the `finally`
+  // below, which runs at true completion (unlike the `startTransition` call
+  // itself, which only schedules the work).
+  const [pendingWishlistIds, setPendingWishlistIds] = useState<string[]>([]);
 
   // Optimistic view over the last server-confirmed ids. Updated inside a
   // transition before the write lands; React discards it automatically when
@@ -80,7 +89,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   // round-trips. Sessions predating the marker are minted one by the proxy on
   // the next origin hit, so they self-heal.
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing external cookie state on navigation
     setIsLoggedIn(getCookieFront(config.cookies.sessionPresent) !== '');
     setSessionResolved(true);
   }, [pathname]);
@@ -126,22 +134,35 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       // the lost-update bug where two rapid toggles rolled back to the same
       // list. No `wishlistIds` dependency → stable identity, no grid
       // re-render per toggle.
-      startTransition(async () => {
-        addOptimisticWishlist({ isWishlisted, productId });
+      //
+      // The returned promise resolves at true completion (not when the
+      // transition is scheduled): callers can `await` the toggle, and
+      // `pendingWishlistIds` covers the flight for callers that don't.
+      setPendingWishlistIds((previous) =>
+        previous.includes(productId) ? previous : [...previous, productId],
+      );
 
-        try {
-          const result = await setWishlistMembershipAction(isWishlisted, productId);
+      return new Promise<void>((resolve) => {
+        startTransition(async () => {
+          addOptimisticWishlist({ isWishlisted, productId });
 
-          if (result?.success && result.data) {
-            setWishlistIds(result.data);
-            toast.success(result.message);
-          } else {
-            toast.error(result?.message || 'Something went wrong');
+          try {
+            const result = await setWishlistMembershipAction(isWishlisted, productId);
+
+            if (result?.success && result.data) {
+              setWishlistIds(result.data);
+              toast.success(result.message);
+            } else {
+              toast.error(result?.message || 'Something went wrong');
+            }
+          } catch (error) {
+            reportError('wishlist/toggle', error, { productId });
+            toast.error('Something went wrong');
+          } finally {
+            setPendingWishlistIds((previous) => previous.filter((id) => id !== productId));
+            resolve();
           }
-        } catch (error) {
-          reportError('wishlist/toggle', error, { productId });
-          toast.error('Something went wrong');
-        }
+        });
       });
     },
     [addOptimisticWishlist, isLoggedIn, pathname, router],
@@ -151,11 +172,19 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     () => ({
       handleSetWishlist,
       isLoggedIn,
+      pendingWishlistIds,
       // Never expose a stale wishlist once the session ends.
       wishlistIds: isLoggedIn ? optimisticWishlistIds : [],
       wishlistReady: sessionResolved && (!isLoggedIn || wishlistLoaded),
     }),
-    [handleSetWishlist, isLoggedIn, optimisticWishlistIds, sessionResolved, wishlistLoaded],
+    [
+      handleSetWishlist,
+      isLoggedIn,
+      optimisticWishlistIds,
+      pendingWishlistIds,
+      sessionResolved,
+      wishlistLoaded,
+    ],
   );
 
   return (

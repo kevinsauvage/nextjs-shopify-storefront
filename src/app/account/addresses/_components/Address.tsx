@@ -1,5 +1,6 @@
 'use client';
 
+import { useActionState } from 'react';
 import Link from 'next/link';
 
 import { deleteAddressAction, setDefaultAddressAction } from '@/actions/addressesActions';
@@ -14,11 +15,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import config from '@/config';
-import { reportError } from '@/lib/logger';
+import { useFormToast } from '@/hooks/useFormToast';
 import type { MailingAddress } from '@/shopify/storefront';
+import { emptyFormState, type FormState } from '@/types/formActions';
+import { formError } from '@/utils/form-actions';
 
 import { Edit, Heart, MapPin, MoreVerticalIcon, Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
 
 const Address = ({
   address,
@@ -34,35 +36,46 @@ const Address = ({
 
   const cityLine = [city, province, zip].filter(Boolean).join(', ');
 
-  const handleDelete = async (): Promise<void> => {
-    if (!id) {
-      toast.error('Address ID is missing');
-      return;
+  // Form-action adapters (same pattern as `AddressForm`): the server actions
+  // take a typed id, so the hidden input is extracted here. On success the
+  // actions `redirect()`, which Next.js handles natively for form submissions —
+  // no `NEXT_REDIRECT` rejection ever reaches user code. Failures surface
+  // through the returned state and toast via `useFormToast`.
+  const runDeleteAddress = async (
+    _previousState: FormState,
+    formData: FormData,
+  ): Promise<FormState> => {
+    const addressId = formData.get('addressId');
+    if (typeof addressId !== 'string' || !addressId) {
+      return formError('Address ID is missing');
     }
 
-    const response = await deleteAddressAction(id);
-
-    if (response && !response.ok) {
-      toast.error(response.message || 'Failed to delete address');
-      return;
-    }
-    toast.success('Address deleted successfully');
+    return deleteAddressAction(addressId);
   };
 
-  const handleSetAsDefault = async (): Promise<void> => {
-    if (!id) {
-      toast.error('Address ID is missing');
-      return;
+  const runSetDefaultAddress = async (
+    _previousState: FormState,
+    formData: FormData,
+  ): Promise<FormState> => {
+    const addressId = formData.get('addressId');
+    if (typeof addressId !== 'string' || !addressId) {
+      return formError('Address ID is missing');
     }
 
-    const response = await setDefaultAddressAction(id);
-
-    if (response && !response.ok) {
-      toast.error(response.message || 'Failed to set default address');
-      return;
-    }
-    toast.success('Address set as default successfully');
+    return setDefaultAddressAction(addressId);
   };
+
+  const [deleteState, deleteAction, isDeletePending] = useActionState(
+    runDeleteAddress,
+    emptyFormState,
+  );
+  const [defaultState, defaultAction, isDefaultPending] = useActionState(
+    runSetDefaultAddress,
+    emptyFormState,
+  );
+
+  useFormToast(deleteState);
+  useFormToast(defaultState);
 
   return (
     <Card className="py-0 transition-all duration-200 hover:shadow-md">
@@ -130,27 +143,43 @@ const Address = ({
               {!isDefault && (
                 <DropdownMenuItem
                   className="cursor-pointer"
-                  onClick={() => {
-                    handleSetAsDefault().catch((error) => {
-                      reportError('account/address', error);
-                    });
-                  }}
+                  disabled={isDefaultPending}
+                  // The inner submit button drives the form; keep the menu open
+                  // so the pending state stays visible instead of fighting it.
+                  onSelect={(event) => event.preventDefault()}
                 >
-                  <Heart size={16} />
-                  <span>Set as default</span>
+                  <form action={defaultAction} className="flex items-center gap-2">
+                    <input type="hidden" name="addressId" value={id ?? ''} />
+                    <button
+                      type="submit"
+                      disabled={isDefaultPending}
+                      className="flex cursor-pointer items-center gap-2 disabled:cursor-wait disabled:opacity-60"
+                    >
+                      <Heart size={16} />
+                      <span>{isDefaultPending ? 'Setting default…' : 'Set as default'}</span>
+                    </button>
+                  </form>
                 </DropdownMenuItem>
               )}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="cursor-pointer text-destructive focus:text-destructive"
-                onClick={() => {
-                  handleDelete().catch((error) => {
-                    reportError('account/address', error);
-                  });
-                }}
+                disabled={isDeletePending}
+                onSelect={(event) => event.preventDefault()}
               >
-                <Trash2 size={16} />
-                <span className="whitespace-nowrap">Remove address</span>
+                <form action={deleteAction} className="flex items-center gap-2">
+                  <input type="hidden" name="addressId" value={id ?? ''} />
+                  <button
+                    type="submit"
+                    disabled={isDeletePending}
+                    className="flex cursor-pointer items-center gap-2 disabled:cursor-wait disabled:opacity-60"
+                  >
+                    <Trash2 size={16} />
+                    <span className="whitespace-nowrap">
+                      {isDeletePending ? 'Removing…' : 'Remove address'}
+                    </span>
+                  </button>
+                </form>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

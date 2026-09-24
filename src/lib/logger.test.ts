@@ -45,4 +45,25 @@ describe('logger', () => {
 
     setErrorReporter(undefined);
   });
+
+  it('serializes plain objects and degrades gracefully on circular values', () => {
+    const reporter = vi.fn();
+    setErrorReporter(reporter);
+
+    reportError('unit-test', { code: 500 });
+
+    expect(reporter.mock.calls[0]?.[0]).toMatchObject({
+      error: expect.objectContaining({ message: expect.stringContaining('500') }),
+    });
+
+    const circular: Record<string, unknown> = {};
+    circular.self = circular;
+    reportError('unit-test', circular);
+
+    expect(reporter.mock.calls[1]?.[0]).toMatchObject({
+      error: expect.objectContaining({ message: 'Unknown error' }),
+    });
+
+    setErrorReporter(undefined);
+  });
 });

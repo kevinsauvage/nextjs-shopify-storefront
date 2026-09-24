@@ -168,6 +168,18 @@ describe('setWishlistMembershipAction', () => {
     expect(result.message).toMatch(/full/);
     expect(updateTag).not.toHaveBeenCalled();
   });
+
+  it('returns a generic error when the membership write throws', async () => {
+    getWishlistState.mockRejectedValueOnce(new Error('network down'));
+
+    const result = await setWishlistMembershipAction(false, PRODUCT_ID);
+
+    expect(result).toEqual({
+      message: 'Something went wrong. Please try again.',
+      success: false,
+    });
+    expect(updateTag).not.toHaveBeenCalled();
+  });
 });
 
 describe('wishlist read rate limiting', () => {
@@ -209,5 +221,11 @@ describe('wishlist read rate limiting', () => {
 
     await expect(getWishlistProductsAction([PRODUCT_ID])).resolves.toEqual([]);
     expect(resolveProductsByIds).not.toHaveBeenCalled();
+  });
+
+  it('fails open with an empty list when product resolution throws', async () => {
+    resolveProductsByIds.mockRejectedValueOnce(new Error('network down'));
+
+    await expect(getWishlistProductsAction([PRODUCT_ID])).resolves.toEqual([]);
   });
 });

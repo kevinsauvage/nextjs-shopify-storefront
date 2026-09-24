@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { addLines, getCartId, rateLimited, removeLine, updateDiscountCodes, updateLines } =
+const { addLines, getCart, getCartId, rateLimited, removeLine, updateDiscountCodes, updateLines } =
   vi.hoisted(() => ({
     addLines: vi.fn(),
-    getCartId: vi.fn(async () => 'cart-1'),
+    getCart: vi.fn(),
+    getCartId: vi.fn(async (): Promise<string | null> => 'cart-1'),
     rateLimited: vi.fn(async () => false),
     removeLine: vi.fn(),
     updateDiscountCodes: vi.fn(),
@@ -19,11 +20,12 @@ vi.mock('@/lib/server/rate-limit', () => ({
   isRateLimited: (...args: unknown[]) => rateLimited(...(args as [])),
 }));
 vi.mock('@/services/cart.service', () => ({
-  CartService: { addLines, getCartId, removeLine, updateDiscountCodes, updateLines },
+  CartService: { addLines, getCart, getCartId, removeLine, updateDiscountCodes, updateLines },
 }));
 
 import {
   addCartLinesAction,
+  getCartAction,
   removeCartLineAction,
   updateCartLinesAction,
   updateDiscountCodesAction,
@@ -194,5 +196,32 @@ describe('updateDiscountCodesAction', () => {
     await expect(updateDiscountCodesAction(['x'.repeat(65)])).rejects.toThrow(
       INVALID_DISCOUNT_CODE,
     );
+  });
+});
+
+describe('getCartAction', () => {
+  beforeEach(() => {
+    getCart.mockReset();
+    getCartId.mockReset();
+    getCartId.mockResolvedValue('cart-1');
+    getCart.mockResolvedValue(CART);
+  });
+
+  it('returns null when there is no cart yet', async () => {
+    getCartId.mockResolvedValue(null);
+
+    await expect(getCartAction()).resolves.toBeNull();
+    expect(getCart).not.toHaveBeenCalled();
+  });
+
+  it('returns the hydrated cart', async () => {
+    await expect(getCartAction()).resolves.toEqual(CART);
+    expect(getCart).toHaveBeenCalledWith('cart-1');
+  });
+
+  it('throws so the UI can surface outages instead of an empty cart', async () => {
+    getCart.mockRejectedValue(new Error('network down'));
+
+    await expect(getCartAction()).rejects.toThrow('network down');
   });
 });

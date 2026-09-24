@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 import useUserContext from '@/contexts/UserContext/useUserContext';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
@@ -23,19 +21,17 @@ type ProductCardActionsProps = {
  * stay visible on touch.
  */
 const ProductCardActions = ({ product, productId }: ProductCardActionsProps) => {
-  const { wishlistIds, handleSetWishlist } = useUserContext();
-  const [loading, setLoading] = useState(false);
+  const { pendingWishlistIds, wishlistIds, handleSetWishlist } = useUserContext();
 
   const isWishlisted = wishlistIds.includes(productId);
+  // True for the whole server round-trip (the context clears it at completion),
+  // so the button stays disabled while the write is in flight.
+  const loading = pendingWishlistIds.includes(productId);
 
-  const handleWishlist = async () => {
-    setLoading(true);
-    try {
-      // `handleSetWishlist` reports failures itself and never rejects.
-      await handleSetWishlist(isWishlisted, productId);
-    } finally {
-      setLoading(false);
-    }
+  const handleWishlist = () => {
+    // Fire-and-forget: failures toast from inside the context (it never
+    // rejects) and the optimistic heart flips instantly.
+    handleSetWishlist(isWishlisted, productId);
   };
 
   return (

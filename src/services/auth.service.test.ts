@@ -77,6 +77,28 @@ describe('AuthService', () => {
       });
       expect(setShopifyToken).toHaveBeenCalledWith(CUSTOMER_TOKEN);
     });
+
+    it('attaches the cart to the customer when both exist', async () => {
+      sdk.customerAccessTokenCreate.mockResolvedValue({
+        customerAccessTokenCreate: { customerAccessToken: CUSTOMER_TOKEN, customerUserErrors: [] },
+      });
+      getUser.mockResolvedValue({ email: 'a@b.com', phone: '123' });
+      getCartId.mockResolvedValue('cart-1');
+      sdk.cartBuyerIdentityUpdate.mockResolvedValue({
+        cartBuyerIdentityUpdate: { userErrors: [] },
+      });
+
+      await expect(AuthService.login({ email: 'a@b.com', password: 'secret1' })).resolves.toEqual({
+        success: true,
+        customerAccessToken: CUSTOMER_TOKEN,
+      });
+      expect(sdk.cartBuyerIdentityUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          buyerIdentity: expect.objectContaining({ customerAccessToken: 'access-token' }),
+          cartId: 'cart-1',
+        }),
+      );
+    });
   });
 
   describe('register', () => {
@@ -98,6 +120,80 @@ describe('AuthService', () => {
         }),
       ).resolves.toEqual({ customerUserErrors: [{ message: 'Email has already been taken' }] });
       expect(sdk.customerAccessTokenCreate).not.toHaveBeenCalled();
+    });
+
+    it('auto-logs in and stores the token on success', async () => {
+      sdk.customerCreate.mockResolvedValue({
+        customerCreate: {
+          customer: { id: 'gid://shopify/Customer/1' },
+          customerUserErrors: [],
+          userErrors: [],
+        },
+      });
+      sdk.customerAccessTokenCreate.mockResolvedValue({
+        customerAccessTokenCreate: {
+          customerAccessToken: CUSTOMER_TOKEN,
+          customerUserErrors: [],
+        },
+      });
+
+      await expect(
+        AuthService.register({
+          email: 'a@b.com',
+          firstName: 'A',
+          lastName: 'B',
+          password: 'secret1',
+        }),
+      ).resolves.toEqual({ customerAccessToken: CUSTOMER_TOKEN, success: true });
+      expect(setShopifyToken).toHaveBeenCalledWith(CUSTOMER_TOKEN);
+    });
+
+    it('returns an error when auto-login issues no token', async () => {
+      sdk.customerCreate.mockResolvedValue({
+        customerCreate: {
+          customer: { id: 'gid://shopify/Customer/1' },
+          customerUserErrors: [],
+          userErrors: [],
+        },
+      });
+      sdk.customerAccessTokenCreate.mockResolvedValue({
+        customerAccessTokenCreate: { customerAccessToken: null, customerUserErrors: [] },
+      });
+
+      await expect(
+        AuthService.register({
+          email: 'a@b.com',
+          firstName: 'A',
+          lastName: 'B',
+          password: 'secret1',
+        }),
+      ).resolves.toEqual({ error: 'Failed to create account' });
+      expect(setShopifyToken).not.toHaveBeenCalled();
+    });
+
+    it('surfaces auto-login customer errors', async () => {
+      sdk.customerCreate.mockResolvedValue({
+        customerCreate: {
+          customer: { id: 'gid://shopify/Customer/1' },
+          customerUserErrors: [],
+          userErrors: [],
+        },
+      });
+      sdk.customerAccessTokenCreate.mockResolvedValue({
+        customerAccessTokenCreate: {
+          customerAccessToken: null,
+          customerUserErrors: [{ message: 'Account disabled' }],
+        },
+      });
+
+      await expect(
+        AuthService.register({
+          email: 'a@b.com',
+          firstName: 'A',
+          lastName: 'B',
+          password: 'secret1',
+        }),
+      ).resolves.toEqual({ customerUserErrors: [{ message: 'Account disabled' }] });
     });
   });
 
@@ -130,6 +226,34 @@ describe('AuthService', () => {
       await expect(
         AuthService.resetPassword({ password: 'secret1', resetToken: 'reset-url' }),
       ).resolves.toEqual({ error: 'Failed to reset password' });
+    });
+
+    it('surfaces Shopify customer errors', async () => {
+      sdk.customerResetByUrl.mockResolvedValue({
+        customerResetByUrl: {
+          customerAccessToken: null,
+          customerUserErrors: [{ message: 'Invalid reset link' }],
+        },
+      });
+
+      await expect(
+        AuthService.resetPassword({ password: 'secret1', resetToken: 'reset-url' }),
+      ).resolves.toEqual({ customerUserErrors: [{ message: 'Invalid reset link' }] });
+      expect(setShopifyToken).not.toHaveBeenCalled();
+    });
+
+    it('stores the token on success', async () => {
+      sdk.customerResetByUrl.mockResolvedValue({
+        customerResetByUrl: {
+          customerAccessToken: CUSTOMER_TOKEN,
+          customerUserErrors: [],
+        },
+      });
+
+      await expect(
+        AuthService.resetPassword({ password: 'secret1', resetToken: 'reset-url' }),
+      ).resolves.toEqual({ customerAccessToken: CUSTOMER_TOKEN, success: true });
+      expect(setShopifyToken).toHaveBeenCalledWith(CUSTOMER_TOKEN);
     });
   });
 });

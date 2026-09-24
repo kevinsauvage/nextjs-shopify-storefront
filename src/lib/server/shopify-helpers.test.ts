@@ -13,7 +13,7 @@ vi.mock('next/headers', () => ({
 import config from '@/config';
 import { shouldRenewToken } from '@/lib/token-renewal';
 
-import { clearShopifyToken, getShopifyToken } from './shopify-helpers';
+import { clearShopifyToken, getShopifyToken, setShopifyToken } from './shopify-helpers';
 
 const HOUR_MS = 60 * 60 * 1000;
 
@@ -61,6 +61,33 @@ describe('shopify-helpers', () => {
     expect(cookieDelete).toHaveBeenCalledWith(
       expect.objectContaining({ name: config.cookies.shopifyTokenExpire, path: '/' }),
     );
+  });
+
+  it('stores the token, expiry and session marker on success', async () => {
+    const expiresAt = new Date(Date.now() + HOUR_MS).toISOString();
+
+    await setShopifyToken({ accessToken: 'token-1', expiresAt });
+
+    expect(cookieSet).toHaveBeenCalledTimes(3);
+    expect(cookieSet).toHaveBeenCalledWith(
+      expect.objectContaining({ name: config.cookies.shopifyToken, value: 'token-1' }),
+    );
+    expect(cookieSet).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: config.cookies.shopifyTokenExpire,
+        value: expiresAt,
+      }),
+    );
+    expect(cookieSet).toHaveBeenCalledWith(
+      expect.objectContaining({ name: config.cookies.sessionPresent, value: '1' }),
+    );
+  });
+
+  it('ignores missing or partial tokens without touching cookies', async () => {
+    await setShopifyToken(undefined as never);
+    await setShopifyToken({ accessToken: '', expiresAt: '' } as never);
+
+    expect(cookieSet).not.toHaveBeenCalled();
   });
 });
 

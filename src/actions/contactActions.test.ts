@@ -81,4 +81,28 @@ describe('contactAction', () => {
     expect(state.ok).toBe(true);
     expect(sendMail).not.toHaveBeenCalled();
   });
+
+  it('degrades to a friendly error when mail is unconfigured', async () => {
+    vi.stubEnv('EMAIL_ADDRESS', '');
+    vi.stubEnv('EMAIL_PASSWORD', '');
+    vi.stubEnv('CONTACT_EMAIL', '');
+
+    const state = await contactAction(INPUT);
+
+    expect(state).toEqual({
+      message: 'The contact form is temporarily unavailable. Please try again later.',
+      ok: false,
+    });
+    expect(sendMail).not.toHaveBeenCalled();
+    expect(reportError).toHaveBeenCalledWith('contactAction', expect.any(Error));
+  });
+
+  it('returns a generic error when sending fails', async () => {
+    sendMail.mockRejectedValueOnce(new Error('smtp down'));
+
+    const state = await contactAction(INPUT);
+
+    expect(state).toEqual({ message: 'An error occurred while sending the email', ok: false });
+    expect(reportError).toHaveBeenCalledWith('contactAction', expect.any(Error));
+  });
 });
