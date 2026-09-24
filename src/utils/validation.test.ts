@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import {
   companyField,
   emailField,
@@ -8,6 +6,8 @@ import {
   phoneField,
   shopifyGidField,
 } from './validation';
+
+import { describe, expect, it } from 'vitest';
 
 describe('emailField', () => {
   it('normalizes casing and surrounding whitespace', () => {

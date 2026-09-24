@@ -88,7 +88,7 @@ if (!hookRegistered) {
  * instead of relying on DOMPurify's broader `data:` default.
  */
 const ALLOWED_URI_REGEXP =
-  /^(?:(?:https?|mailto|tel):|data:image\/|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i;
+  /^(?:(?:https?|mailto|tel):|data:image\/|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i;
 
 /**
  * Sanitize store/merchant-provided HTML (product descriptions, Shopify legal
