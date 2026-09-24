@@ -2,6 +2,7 @@ import type { ProductVariantView } from '@/hooks/useProductVariantView';
 import type { GetProductByHandleQuery } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
 import { mapShopifyImagesToImageFields } from '@/utils/images';
+import { isLowStock, isSoldOut } from '@/utils/inventory';
 import { sanitizeHtmlCached } from '@/utils/sanitize';
 
 import { Badge } from './ui/badge';
@@ -80,23 +81,23 @@ const ProductDescription = async ({ product, isModal, className }: ProductDescri
       <div className="relative lg:col-span-7">
         <PhotoGallery images={productImages} />
 
-        {!availableForSale && (
+        {isSoldOut(availableForSale) ? (
           <Badge
             variant="destructive"
             className="absolute right-4 top-4 z-10 px-3 py-1.5 text-body-sm font-medium shadow-md"
           >
             Sold Out
           </Badge>
-        )}
+        ) : null}
 
-        {quantityAvailable && quantityAvailable < 5 && availableForSale && (
+        {isLowStock(quantityAvailable, availableForSale) ? (
           <Badge
             variant="secondary"
             className="absolute right-4 top-4 z-10 px-3 py-1.5 text-body-sm font-medium shadow-md"
           >
             Low Stock: {quantityAvailable} left
           </Badge>
-        )}
+        ) : null}
       </div>
 
       <ProductDescriptionClient

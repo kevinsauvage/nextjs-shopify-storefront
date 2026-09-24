@@ -12,6 +12,7 @@ import {
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const BASE_URL = 'https://shop.example.com';
+const COLLECTIONS_ALL_PATH = '/collections/all';
 
 describe('absoluteUrl', () => {
   afterEach(() => {
@@ -25,8 +26,8 @@ describe('absoluteUrl', () => {
   it('resolves relative paths against the site origin', () => {
     vi.stubEnv('NEXT_PUBLIC_BASE_URL', BASE_URL);
 
-    expect(absoluteUrl('/collections/all')).toBe(`${BASE_URL}/collections/all`);
-    expect(absoluteUrl('collections/all')).toBe(`${BASE_URL}/collections/all`);
+    expect(absoluteUrl(COLLECTIONS_ALL_PATH)).toBe(`${BASE_URL}${COLLECTIONS_ALL_PATH}`);
+    expect(absoluteUrl('collections/all')).toBe(`${BASE_URL}${COLLECTIONS_ALL_PATH}`);
   });
 });
 
@@ -60,22 +61,26 @@ describe('JSON-LD builders', () => {
 
     const list = breadcrumbJsonLd([
       { name: 'Home', url: '/' },
-      { name: 'All', url: '/collections/all' },
+      { name: 'All', url: COLLECTIONS_ALL_PATH },
     ]) as { itemListElement: Array<{ position: number; item: string }> };
 
     expect(list).toMatchObject({ '@type': 'BreadcrumbList' });
     expect(list.itemListElement.map((entry) => entry.position)).toEqual([1, 2]);
-    expect(list.itemListElement[1]?.item).toBe(`${BASE_URL}/collections/all`);
+    expect(list.itemListElement[1]?.item).toBe(`${BASE_URL}${COLLECTIONS_ALL_PATH}`);
   });
 
   it('omits an absent collection description', () => {
     vi.stubEnv('NEXT_PUBLIC_BASE_URL', BASE_URL);
 
-    expect(collectionPageJsonLd({ name: 'All', url: '/collections/all' })).not.toHaveProperty(
+    expect(collectionPageJsonLd({ name: 'All', url: COLLECTIONS_ALL_PATH })).not.toHaveProperty(
       'description',
     );
     expect(
-      collectionPageJsonLd({ description: 'All products', name: 'All', url: '/collections/all' }),
+      collectionPageJsonLd({
+        description: 'All products',
+        name: 'All',
+        url: COLLECTIONS_ALL_PATH,
+      }),
     ).toMatchObject({ description: 'All products' });
   });
 

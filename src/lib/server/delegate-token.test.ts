@@ -14,6 +14,8 @@ afterEach(() => {
   delegateAccessTokenCreate.mockReset();
 });
 
+const DELEGATE_TOKEN = 'delegate-token-1';
+
 // `delegate-token.ts` reads SHOPIFY_SCOPE and caches aggressively at module
 // level, so every case gets a fresh module with its own env.
 const load = async () => {
@@ -21,7 +23,7 @@ const load = async () => {
   return import('./delegate-token');
 };
 
-const granted = (accessToken = 'delegate-token-1') =>
+const granted = (accessToken = DELEGATE_TOKEN) =>
   delegateAccessTokenCreate.mockResolvedValue({
     delegateAccessTokenCreate: { delegateAccessToken: { accessToken }, userErrors: [] },
   });
@@ -40,8 +42,8 @@ describe('getDelegateAccessToken', () => {
     granted();
     const { getDelegateAccessToken } = await load();
 
-    await expect(getDelegateAccessToken()).resolves.toBe('delegate-token-1');
-    await expect(getDelegateAccessToken()).resolves.toBe('delegate-token-1');
+    await expect(getDelegateAccessToken()).resolves.toBe(DELEGATE_TOKEN);
+    await expect(getDelegateAccessToken()).resolves.toBe(DELEGATE_TOKEN);
     expect(delegateAccessTokenCreate).toHaveBeenCalledTimes(1);
   });
 
@@ -52,8 +54,8 @@ describe('getDelegateAccessToken', () => {
 
     const [first, second] = await Promise.all([getDelegateAccessToken(), getDelegateAccessToken()]);
 
-    expect(first).toBe('delegate-token-1');
-    expect(second).toBe('delegate-token-1');
+    expect(first).toBe(DELEGATE_TOKEN);
+    expect(second).toBe(DELEGATE_TOKEN);
     expect(delegateAccessTokenCreate).toHaveBeenCalledTimes(1);
   });
 

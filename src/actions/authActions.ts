@@ -25,6 +25,8 @@ import { z } from 'zod';
 const tooManyAttempts = (): FormState =>
   formError('Too many attempts. Please try again in a few minutes.');
 
+const INVALID_RESET_LINK_MESSAGE = 'Invalid or expired reset link';
+
 const registerSchema = z
   .object({
     email: emailField,
@@ -145,9 +147,9 @@ const resetSchema = z.object({
     .max(128, { message: userFeedback.passwordLength }),
   resetUrl: z
     .string()
-    .url({ message: 'Invalid or expired reset link' })
-    .max(RESET_URL_MAX_LENGTH, { message: 'Invalid or expired reset link' })
-    .refine(isAllowedPasswordResetUrl, { message: 'Invalid or expired reset link' }),
+    .url({ message: INVALID_RESET_LINK_MESSAGE })
+    .max(RESET_URL_MAX_LENGTH, { message: INVALID_RESET_LINK_MESSAGE })
+    .refine(isAllowedPasswordResetUrl, { message: INVALID_RESET_LINK_MESSAGE }),
 });
 
 type ResetPasswordInput = z.infer<typeof resetSchema>;

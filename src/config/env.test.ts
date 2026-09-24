@@ -10,6 +10,10 @@ const validEnv = {
   UPSTASH_REDIS_REST_TOKEN: 'upstash-rest-token',
 };
 
+const EXAMPLE_STORE_NAME = 'Example Store';
+const HELLO_EMAIL = 'hello@example.com';
+const SITE_EMAIL = 'site@example.com';
+
 describe('validateEnv', () => {
   it('accepts a minimal storefront-only configuration', () => {
     expect(() => validateEnv(validEnv)).not.toThrow();
@@ -60,8 +64,8 @@ describe('validateEnv', () => {
     expect(() =>
       validateEnv({
         ...validEnv,
-        NEXT_PUBLIC_SITE_NAME: 'Example Store',
-        NEXT_PUBLIC_SITE_EMAIL: 'hello@example.com',
+        NEXT_PUBLIC_SITE_NAME: EXAMPLE_STORE_NAME,
+        NEXT_PUBLIC_SITE_EMAIL: HELLO_EMAIL,
         NEXT_PUBLIC_SITE_LOGO: 'https://example.com/images/logo.png',
         NEXT_PUBLIC_SITE_INSTAGRAM: 'https://www.instagram.com/example',
       }),
@@ -84,28 +88,28 @@ describe('getContactMailEnv', () => {
   });
 
   it('returns the mail settings when configured', () => {
-    vi.stubEnv('EMAIL_ADDRESS', 'site@example.com');
+    vi.stubEnv('EMAIL_ADDRESS', SITE_EMAIL);
     vi.stubEnv('EMAIL_PASSWORD', 'secret');
     vi.stubEnv('CONTACT_EMAIL', 'support@example.com');
-    vi.stubEnv('NEXT_PUBLIC_SITE_NAME', 'Example Store');
+    vi.stubEnv('NEXT_PUBLIC_SITE_NAME', EXAMPLE_STORE_NAME);
 
     expect(getContactMailEnv()).toEqual({
-      from: 'site@example.com',
+      from: SITE_EMAIL,
       pass: 'secret',
       recipient: 'support@example.com',
-      siteName: 'Example Store',
+      siteName: EXAMPLE_STORE_NAME,
     });
   });
 
   it('falls back to the site email and name when overrides are missing', () => {
-    vi.stubEnv('EMAIL_ADDRESS', 'site@example.com');
+    vi.stubEnv('EMAIL_ADDRESS', SITE_EMAIL);
     vi.stubEnv('EMAIL_PASSWORD', 'secret');
     vi.stubEnv('CONTACT_EMAIL', '');
-    vi.stubEnv('NEXT_PUBLIC_SITE_EMAIL', 'hello@example.com');
+    vi.stubEnv('NEXT_PUBLIC_SITE_EMAIL', HELLO_EMAIL);
     vi.stubEnv('NEXT_PUBLIC_SITE_NAME', '');
 
     expect(getContactMailEnv()).toMatchObject({
-      recipient: 'hello@example.com',
+      recipient: HELLO_EMAIL,
       siteName: 'Website',
     });
   });

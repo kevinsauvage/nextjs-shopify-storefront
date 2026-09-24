@@ -9,8 +9,9 @@ import useProductSelection from '@/hooks/useProductSelection';
 import useProductVariantView from '@/hooks/useProductVariantView';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
-import { formatPrice } from '@/utils/format';
+import { discountPercentOf, formatPrice } from '@/utils/format';
 import { mapShopifyImagesToImageFields } from '@/utils/images';
+import { isLowStock, isSoldOut } from '@/utils/inventory';
 
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -126,22 +127,21 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
 
             {/* Badges */}
             <div className="absolute top-3 left-3 flex flex-col gap-2">
-              {!availableForSale && (
+              {isSoldOut(availableForSale) ? (
                 <Badge variant="destructive" className="px-2.5 py-1">
                   Sold Out
                 </Badge>
-              )}
-              {quantityAvailable && quantityAvailable < 5 && availableForSale && (
+              ) : null}
+              {isLowStock(quantityAvailable, availableForSale) ? (
                 <Badge variant="secondary" className="px-2.5 py-1">
                   Only {quantityAvailable} left
                 </Badge>
-              )}
-              {hasDiscount && compareAtPrice && price && (
+              ) : null}
+              {hasDiscount && compareAtPrice && price ? (
                 <Badge className="px-2.5 py-1 bg-red-500 text-white">
-                  {Math.round((1 - Number(price.amount) / Number(compareAtPrice.amount)) * 100)}%
-                  OFF
+                  {discountPercentOf(price.amount, compareAtPrice.amount)}% OFF
                 </Badge>
-              )}
+              ) : null}
             </div>
           </div>
 

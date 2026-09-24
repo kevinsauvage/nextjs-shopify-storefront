@@ -50,6 +50,30 @@ const testimonials = [
   },
 ];
 
+const MARQUEE_ITEMS = [
+  'Free shipping over $150',
+  'New drop weekly',
+  'Small-batch makers',
+  '30-day returns',
+  'Secure checkout',
+  'Member perks',
+];
+
+// Duplicated for the seamless marquee loop; each half gets a stable suffix so
+// keys stay unique without using the array index.
+const MARQUEE_LOOP = [
+  ...MARQUEE_ITEMS.map((item) => ({ item, id: `${item}-a` })),
+  ...MARQUEE_ITEMS.map((item) => ({ item, id: `${item}-b` })),
+];
+
+const HERO_STATS: Array<[string, string]> = [
+  ['4.9', 'Average rating'],
+  ['12k+', 'Happy customers'],
+  ['30-day', 'Free returns'],
+];
+
+const RATING_STARS = [0, 1, 2, 3, 4];
+
 const Home = async () => {
   const [collections, bestSelling, newArrival] = await Promise.all([
     storefrontSdk().collections({
@@ -111,11 +135,7 @@ const Home = async () => {
               </Button>
             </div>
             <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-4">
-              {[
-                ['4.9', 'Average rating'],
-                ['12k+', 'Happy customers'],
-                ['30-day', 'Free returns'],
-              ].map(([value, label]) => (
+              {HERO_STATS.map(([value, label]) => (
                 <div key={label}>
                   <dt className="sr-only">{label}</dt>
                   <dd className="font-display text-2xl font-semibold">{value}</dd>
@@ -165,27 +185,11 @@ const Home = async () => {
         >
           <div className="flex overflow-hidden">
             <div className="animate-marquee flex shrink-0 items-center gap-10 pr-10 text-[12px] font-semibold uppercase tracking-[0.18em] text-secondary">
-              {[
-                'Free shipping over $150',
-                'New drop weekly',
-                'Small-batch makers',
-                '30-day returns',
-                'Secure checkout',
-                'Member perks',
-              ]
-                .concat([
-                  'Free shipping over $150',
-                  'New drop weekly',
-                  'Small-batch makers',
-                  '30-day returns',
-                  'Secure checkout',
-                  'Member perks',
-                ])
-                .map((item, index) => (
-                  <span key={`${item}-${index}`} className="flex items-center gap-10">
-                    {item} <Star size={12} className="text-[var(--gold)]" aria-hidden="true" />
-                  </span>
-                ))}
+              {MARQUEE_LOOP.map(({ item, id }) => (
+                <span key={id} className="flex items-center gap-10">
+                  {item} <Star size={12} className="text-[var(--gold)]" aria-hidden="true" />
+                </span>
+              ))}
             </div>
           </div>
         </div>
@@ -241,8 +245,8 @@ const Home = async () => {
                   className="lift rounded-[var(--radius)] border border-border/70 bg-card p-6"
                 >
                   <div className="flex gap-1 text-[var(--gold)]" aria-label="5 out of 5 stars">
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <Star key={index} size={14} fill="currentColor" aria-hidden="true" />
+                    {RATING_STARS.map((star) => (
+                      <Star key={star} size={14} fill="currentColor" aria-hidden="true" />
                     ))}
                   </div>
                   <blockquote className="mt-4 text-body-sm leading-relaxed text-foreground">

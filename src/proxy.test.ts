@@ -1,5 +1,7 @@
 import { NextRequest } from 'next/server';
 
+import type * as TokenRenewalModule from './lib/token-renewal';
+
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { renewCustomerToken } = vi.hoisted(() => ({
@@ -7,7 +9,7 @@ const { renewCustomerToken } = vi.hoisted(() => ({
 }));
 
 vi.mock('./lib/token-renewal', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('./lib/token-renewal')>();
+  const actual = await importOriginal<typeof TokenRenewalModule>();
 
   return { ...actual, renewCustomerToken };
 });

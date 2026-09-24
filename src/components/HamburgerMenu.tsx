@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -33,6 +34,217 @@ import {
   User,
 } from 'lucide-react';
 
+type QuickLink = { Icon: typeof Home; id: string; link: Route; text: string };
+
+const getQuickLinks = (isLoggedIn: boolean): QuickLink[] => [
+  { Icon: Home, id: 'home', link: '/', text: 'Home' },
+  { Icon: Search, id: 'search', link: config.routes.search, text: 'Search' },
+  {
+    Icon: User,
+    id: 'account',
+    link: isLoggedIn ? config.routes.account : config.routes.login,
+    text: isLoggedIn ? 'Account' : 'Login',
+  },
+  { Icon: Heart, id: 'wishlist', link: config.routes.wishlist, text: 'Wishlist' },
+  { Icon: ShoppingBag, id: 'cart', link: config.routes.cart, text: 'Cart' },
+  ...(isLoggedIn
+    ? [{ Icon: LogOut, id: 'logout', link: config.routes.logout, text: 'Logout' }]
+    : []),
+];
+
+const isMenuHrefActive = (href: string | null, pathname: string): boolean =>
+  href !== null &&
+  href.length > 0 &&
+  (pathname === href || (href !== '/' && pathname.startsWith(`${href}/`)));
+
+const getMenuHref = (item: MenuItem): Route | null =>
+  typeof item.url === 'string' ? normalizeMenuHref(item.url) : null;
+
+const hasMenuChildren = (item: MenuItem): boolean => Boolean(item.items && item.items.length > 0);
+
+type MenuHref = Route | null;
+
+type MenuItemRowProps = {
+  item: MenuItem;
+  level: number;
+  index: number;
+  pathname: string;
+  isExpanded: boolean;
+  onToggle: (id: string) => void;
+  onNavigate: (href: Route) => void;
+  onClose: () => void;
+  renderChild: (child: MenuItem, childIndex: number, level: number) => React.ReactNode;
+};
+
+const ChildMenuItem = ({
+  item,
+  isActive,
+  href,
+  hasChildren,
+  renderChild,
+  level,
+  onClose,
+}: {
+  item: MenuItem;
+  isActive: boolean;
+  href: MenuHref;
+  hasChildren: boolean;
+  renderChild: MenuItemRowProps['renderChild'];
+  level: number;
+  onClose: () => void;
+}) => (
+  <div key={item.id}>
+    {href ? (
+      <Link
+        href={href}
+        onClick={onClose}
+        className={cn(
+          'group flex w-full items-center justify-between gap-3 rounded-xl border px-4 py-3 text-body-sm transition-all duration-200',
+          isActive
+            ? 'border-[var(--gold)]/40 bg-[var(--gold-soft)] font-semibold text-foreground'
+            : 'border-transparent hover:border-border/70 hover:bg-muted/70',
+        )}
+      >
+        <span className="flex items-center gap-2.5">
+          <span
+            aria-hidden="true"
+            className={cn(
+              'size-1.5 rounded-full transition-colors',
+              isActive ? 'bg-[var(--gold)]' : 'bg-border group-hover:bg-[var(--gold)]/60',
+            )}
+          />
+          {item.title}
+        </span>
+        <ArrowUpRight
+          size={15}
+          aria-hidden="true"
+          className="text-secondary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
+        />
+      </Link>
+    ) : null}
+    {hasChildren && (
+      <div className="mt-1 space-y-1 pl-4">
+        {item.items.map((child, childIndex) =>
+          renderChild(child as MenuItem, childIndex, level + 1),
+        )}
+      </div>
+    )}
+  </div>
+);
+
+const TopLevelMenuItem = ({
+  item,
+  index,
+  isActive,
+  isExpanded,
+  hasChildren,
+  href,
+  renderChild,
+  level,
+  onToggle,
+  onNavigate,
+}: {
+  item: MenuItem;
+  index: number;
+  isActive: boolean;
+  isExpanded: boolean;
+  hasChildren: boolean;
+  href: MenuHref;
+  renderChild: MenuItemRowProps['renderChild'];
+  level: number;
+  onToggle: (id: string) => void;
+  onNavigate: (href: Route) => void;
+}) => {
+  const handleActivate = () => {
+    if (hasChildren) {
+      onToggle(item.id);
+    } else if (href) {
+      onNavigate(href);
+    }
+  };
+
+  return (
+    <div
+      key={item.id}
+      className="group/row overflow-hidden rounded-2xl border border-transparent transition-colors duration-200 hover:border-border/70 hover:bg-card"
+    >
+      <div className="flex items-stretch">
+        <button
+          type="button"
+          aria-expanded={hasChildren ? isExpanded : undefined}
+          onClick={handleActivate}
+          className={cn(
+            'flex min-h-[64px] flex-1 cursor-pointer items-center gap-4 px-4 py-3 text-left transition-colors',
+            isActive && 'bg-[var(--gold-soft)]/60',
+          )}
+        >
+          <span
+            aria-hidden="true"
+            className="w-7 shrink-0 font-display text-caption-sm tabular-nums text-secondary"
+          >
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <span className="flex-1">
+            <span
+              className={cn(
+                'block font-display text-xl leading-tight transition-transform duration-200 group-hover/row:translate-x-0.5',
+                isActive ? 'text-foreground' : 'text-foreground/90',
+              )}
+            >
+              {item.title}
+            </span>
+            {hasChildren && (
+              <span className="mt-0.5 block text-caption text-secondary">
+                {item.items.length} collections
+                <span aria-hidden="true"> · </span>
+                {isExpanded ? 'Tap to collapse' : 'Tap to explore'}
+              </span>
+            )}
+          </span>
+        </button>
+        <span className="flex items-center gap-2 pr-4">
+          {isActive && <span aria-hidden="true" className="size-2 rounded-full bg-[var(--gold)]" />}
+          {hasChildren ? (
+            <span
+              aria-hidden="true"
+              className={cn(
+                'flex size-9 items-center justify-center rounded-full border transition-all duration-300',
+                isExpanded
+                  ? 'rotate-180 border-[var(--gold)]/40 bg-[var(--gold-soft)] text-[var(--gold)]'
+                  : 'border-border/70 text-secondary group-hover/row:border-foreground/20 group-hover/row:text-foreground',
+              )}
+            >
+              <ChevronDown size={16} />
+            </span>
+          ) : (
+            <ArrowRight
+              size={16}
+              aria-hidden="true"
+              className="text-secondary transition-all duration-200 group-hover/row:translate-x-1 group-hover/row:text-foreground"
+            />
+          )}
+        </span>
+      </div>
+
+      <div
+        className={cn(
+          'grid transition-all duration-300 ease-out',
+          isExpanded && hasChildren ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
+        )}
+      >
+        <div className="overflow-hidden">
+          <div className="space-y-1 px-4 pb-4 pl-[60px]">
+            {hasChildren &&
+              item.items.map((child, childIndex) =>
+                renderChild(child as MenuItem, childIndex, level + 1),
+              )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const HamburgerMenu = ({
   headerMenu,
   pathname = '',
@@ -52,164 +264,56 @@ const HamburgerMenu = ({
     }));
   };
 
-  const quickLinks = [
-    { Icon: Home, id: 'home', link: '/', text: 'Home' },
-    { Icon: Search, id: 'search', link: config.routes.search, text: 'Search' },
-    {
-      Icon: User,
-      id: 'account',
-      link: isLoggedIn ? config.routes.account : config.routes.login,
-      text: isLoggedIn ? 'Account' : 'Login',
-    },
-    { Icon: Heart, id: 'wishlist', link: config.routes.wishlist, text: 'Wishlist' },
-    { Icon: ShoppingBag, id: 'cart', link: config.routes.cart, text: 'Cart' },
-    ...(isLoggedIn
-      ? [{ Icon: LogOut, id: 'logout', link: config.routes.logout, text: 'Logout' }]
-      : []),
-  ] as const;
+  const quickLinks = getQuickLinks(isLoggedIn);
 
   const menuItems = headerMenu?.items || [];
 
-  const renderMenuItem = (item: MenuItem, level = 0, index = 0) => {
-    const hasChildren = Boolean(item.items && item.items.length > 0);
-    const isExpanded = Boolean(expandedMenus[item.id]);
-    const href = typeof item.url === 'string' ? normalizeMenuHref(item.url) : null;
+  const handleNavigate = (href: Route) => {
+    router.push(href);
+    setOpen(false);
+  };
 
-    const isActive =
-      href !== null &&
-      href.length > 0 &&
-      (pathname === href || (href !== '/' && pathname.startsWith(`${href}/`)));
+  const handleClose = () => setOpen(false);
+
+  const renderMenuItem = (item: MenuItem, level = 0, index = 0) => {
+    const children = hasMenuChildren(item);
+    const expanded = Boolean(expandedMenus[item.id]);
+    const href = getMenuHref(item);
+    const active = isMenuHrefActive(href, pathname);
 
     if (level > 0) {
       return (
-        <div key={item.id}>
-          {href ? (
-            <Link
-              href={href}
-              onClick={() => setOpen(false)}
-              className={cn(
-                'group flex w-full items-center justify-between gap-3 rounded-xl border px-4 py-3 text-body-sm transition-all duration-200',
-                isActive
-                  ? 'border-[var(--gold)]/40 bg-[var(--gold-soft)] font-semibold text-foreground'
-                  : 'border-transparent hover:border-border/70 hover:bg-muted/70',
-              )}
-            >
-              <span className="flex items-center gap-2.5">
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    'size-1.5 rounded-full transition-colors',
-                    isActive ? 'bg-[var(--gold)]' : 'bg-border group-hover:bg-[var(--gold)]/60',
-                  )}
-                />
-                {item.title}
-              </span>
-              <ArrowUpRight
-                size={15}
-                aria-hidden="true"
-                className="text-secondary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
-              />
-            </Link>
-          ) : null}
-          {hasChildren && (
-            <div className="mt-1 space-y-1 pl-4">
-              {item.items.map((child, childIndex) =>
-                renderMenuItem(child as MenuItem, level + 1, childIndex),
-              )}
-            </div>
-          )}
-        </div>
+        <ChildMenuItem
+          key={item.id}
+          item={item}
+          isActive={active}
+          href={href}
+          hasChildren={children}
+          renderChild={(child, childIndex, childLevel) =>
+            renderMenuItem(child, childLevel, childIndex)
+          }
+          level={level}
+          onClose={handleClose}
+        />
       );
     }
 
     return (
-      <div
+      <TopLevelMenuItem
         key={item.id}
-        className="group/row overflow-hidden rounded-2xl border border-transparent transition-colors duration-200 hover:border-border/70 hover:bg-card"
-      >
-        <div className="flex items-stretch">
-          <button
-            type="button"
-            aria-expanded={hasChildren ? isExpanded : undefined}
-            onClick={() => {
-              if (hasChildren) {
-                toggleMenu(item.id);
-              } else if (href) {
-                router.push(href);
-                setOpen(false);
-              }
-            }}
-            className={cn(
-              'flex min-h-[64px] flex-1 cursor-pointer items-center gap-4 px-4 py-3 text-left transition-colors',
-              isActive && 'bg-[var(--gold-soft)]/60',
-            )}
-          >
-            <span
-              aria-hidden="true"
-              className="w-7 shrink-0 font-display text-caption-sm tabular-nums text-secondary"
-            >
-              {String(index + 1).padStart(2, '0')}
-            </span>
-            <span className="flex-1">
-              <span
-                className={cn(
-                  'block font-display text-xl leading-tight transition-transform duration-200 group-hover/row:translate-x-0.5',
-                  isActive ? 'text-foreground' : 'text-foreground/90',
-                )}
-              >
-                {item.title}
-              </span>
-              {hasChildren && (
-                <span className="mt-0.5 block text-caption text-secondary">
-                  {item.items.length} collections
-                  <span aria-hidden="true"> · </span>
-                  {isExpanded ? 'Tap to collapse' : 'Tap to explore'}
-                </span>
-              )}
-            </span>
-          </button>
-          <span className="flex items-center gap-2 pr-4">
-            {isActive && (
-              <span aria-hidden="true" className="size-2 rounded-full bg-[var(--gold)]" />
-            )}
-            {hasChildren ? (
-              <span
-                aria-hidden="true"
-                className={cn(
-                  'flex size-9 items-center justify-center rounded-full border transition-all duration-300',
-                  isExpanded
-                    ? 'rotate-180 border-[var(--gold)]/40 bg-[var(--gold-soft)] text-[var(--gold)]'
-                    : 'border-border/70 text-secondary group-hover/row:border-foreground/20 group-hover/row:text-foreground',
-                )}
-              >
-                <ChevronDown size={16} />
-              </span>
-            ) : (
-              <ArrowRight
-                size={16}
-                aria-hidden="true"
-                className="text-secondary transition-all duration-200 group-hover/row:translate-x-1 group-hover/row:text-foreground"
-              />
-            )}
-          </span>
-        </div>
-
-        <div
-          className={cn(
-            'grid transition-all duration-300 ease-out',
-            isExpanded && hasChildren ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
-          )}
-        >
-          <div className="overflow-hidden">
-            <div className="space-y-1 px-4 pb-4 pl-[60px]">
-              {hasChildren &&
-                item.items.map((child, childIndex) =>
-                  renderMenuItem(child as MenuItem, level + 1, childIndex),
-                )}
-            </div>
-          </div>
-        </div>
-      </div>
+        item={item}
+        index={index}
+        isActive={active}
+        isExpanded={expanded}
+        hasChildren={children}
+        href={href}
+        renderChild={(child, childIndex, childLevel) =>
+          renderMenuItem(child, childLevel, childIndex)
+        }
+        level={level}
+        onToggle={toggleMenu}
+        onNavigate={handleNavigate}
+      />
     );
   };
 
@@ -296,10 +400,7 @@ const HamburgerMenu = ({
                 <button
                   key={id}
                   type="button"
-                  onClick={() => {
-                    router.push(link);
-                    setOpen(false);
-                  }}
+                  onClick={() => handleNavigate(link)}
                   aria-current={active ? 'page' : undefined}
                   className={cn(
                     'group flex cursor-pointer flex-col items-center gap-1.5 rounded-xl border px-2 py-3 text-caption font-medium transition-all duration-200',

@@ -31,6 +31,8 @@ const CUSTOMER_TOKEN = {
   expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
 };
 
+const CUSTOMER_GID = 'gid://shopify/Customer/1';
+
 describe('AuthService', () => {
   beforeEach(() => {
     Object.values(sdk).forEach((mock) => mock.mockReset());
@@ -125,7 +127,7 @@ describe('AuthService', () => {
     it('auto-logs in and stores the token on success', async () => {
       sdk.customerCreate.mockResolvedValue({
         customerCreate: {
-          customer: { id: 'gid://shopify/Customer/1' },
+          customer: { id: CUSTOMER_GID },
           customerUserErrors: [],
           userErrors: [],
         },
@@ -151,7 +153,7 @@ describe('AuthService', () => {
     it('returns an error when auto-login issues no token', async () => {
       sdk.customerCreate.mockResolvedValue({
         customerCreate: {
-          customer: { id: 'gid://shopify/Customer/1' },
+          customer: { id: CUSTOMER_GID },
           customerUserErrors: [],
           userErrors: [],
         },
@@ -174,7 +176,7 @@ describe('AuthService', () => {
     it('surfaces auto-login customer errors', async () => {
       sdk.customerCreate.mockResolvedValue({
         customerCreate: {
-          customer: { id: 'gid://shopify/Customer/1' },
+          customer: { id: CUSTOMER_GID },
           customerUserErrors: [],
           userErrors: [],
         },

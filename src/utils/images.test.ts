@@ -4,15 +4,17 @@ import { mapShopifyImagesToImageFields, mapShopifyImageToImageFields } from './i
 
 import { describe, expect, it } from 'vitest';
 
+const CDN_BASE = 'https://cdn.shopify.com';
+
 const IMAGE: ImageFieldsFragment = {
   altText: 'Blue dress',
   blurDataURL: 'data:image/jpeg;base64,blur',
   height: 1200,
-  large: 'https://cdn.shopify.com/large.jpg',
-  medium: 'https://cdn.shopify.com/medium.jpg',
-  small: 'https://cdn.shopify.com/small.jpg',
-  src: 'https://cdn.shopify.com/src.jpg',
-  url: 'https://cdn.shopify.com/url.jpg',
+  large: `${CDN_BASE}/large.jpg`,
+  medium: `${CDN_BASE}/medium.jpg`,
+  small: `${CDN_BASE}/small.jpg`,
+  src: `${CDN_BASE}/src.jpg`,
+  url: `${CDN_BASE}/url.jpg`,
   width: 800,
 };
 
@@ -27,10 +29,10 @@ describe('mapShopifyImageToImageFields', () => {
       altText: 'Blue dress',
       blurDataURL: 'data:image/jpeg;base64,blur',
       height: 1200,
-      large: 'https://cdn.shopify.com/large.jpg',
-      medium: 'https://cdn.shopify.com/medium.jpg',
-      small: 'https://cdn.shopify.com/small.jpg',
-      src: 'https://cdn.shopify.com/src.jpg',
+      large: `${CDN_BASE}/large.jpg`,
+      medium: `${CDN_BASE}/medium.jpg`,
+      small: `${CDN_BASE}/small.jpg`,
+      src: `${CDN_BASE}/src.jpg`,
       width: 800,
     });
   });
@@ -40,9 +42,9 @@ describe('mapShopifyImageToImageFields', () => {
 
     expect(mapShopifyImageToImageFields(minimal)).toMatchObject({
       blurDataURL: '',
-      large: 'https://cdn.shopify.com/src.jpg',
-      medium: 'https://cdn.shopify.com/src.jpg',
-      small: 'https://cdn.shopify.com/src.jpg',
+      large: `${CDN_BASE}/src.jpg`,
+      medium: `${CDN_BASE}/src.jpg`,
+      small: `${CDN_BASE}/src.jpg`,
     });
   });
 });

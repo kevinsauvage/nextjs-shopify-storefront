@@ -21,16 +21,18 @@ export const setErrorReporter = (reporter: ErrorReporter | undefined): void => {
   errorReporter = reporter;
 };
 
+const REDACTED = '[REDACTED]';
+
 const REDACTIONS: Array<[RegExp, string]> = [
   // Secret-shaped values, anchored to their scheme/prefix so ordinary long
   // identifiers (order numbers, hashes quoted in prose) survive: JWTs, bearer
   // authorizations, Shopify Admin tokens (`shpat_…`) and Stripe-style keys.
-  [/eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g, '[REDACTED]'],
-  [/\bBearer\s+[a-zA-Z0-9\-._~+/=]+/gi, 'Bearer [REDACTED]'],
-  [/\bshp[a-z]{2}_[a-zA-Z0-9]+/g, '[REDACTED]'],
-  [/\bsk-(?:live|test)-[a-zA-Z0-9]+/g, '[REDACTED]'],
+  [/eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g, REDACTED],
+  [/\bBearer\s+[a-zA-Z0-9\-._~+/=]+/gi, `Bearer ${REDACTED}`],
+  [/\bshp[a-z]{2}_[a-zA-Z0-9]+/g, REDACTED],
+  [/\bsk-(?:live|test)-[a-zA-Z0-9]+/g, REDACTED],
   [/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[EMAIL_REDACTED]'],
-  [/password[=:]\s*[^\s]+/gi, 'password=[REDACTED]'],
+  [/password[=:]\s*[^\s]+/gi, `password=${REDACTED}`],
   [/(api[_-]?key|access[_-]?token|secret|token)[=:]\s*[^\s]+/gi, '$1=[REDACTED]'],
 ];
 
@@ -50,7 +52,7 @@ const sanitizeValue = (value: unknown): unknown => {
     return Object.fromEntries(
       Object.entries(value as Record<string, unknown>).map(([key, entry]) => [
         key,
-        SENSITIVE_KEY.test(key) ? '[REDACTED]' : sanitizeValue(entry),
+        SENSITIVE_KEY.test(key) ? REDACTED : sanitizeValue(entry),
       ]),
     );
   }

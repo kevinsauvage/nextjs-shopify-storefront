@@ -4,16 +4,77 @@ import Link from 'next/link';
 import config from '@/config';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
-import { formatPrice } from '@/utils/format';
+import { discountPercentOf, formatPrice, hasDiscountPrice } from '@/utils/format';
 import { mapShopifyImagesToImageFields } from '@/utils/images';
+import { isLowStock, isSoldOut } from '@/utils/inventory';
 
 import { Badge } from './ui/badge';
 import ProductCardActions from './ProductCardActions';
 
-const discountPercentOf = (price: number, compareAt: number) =>
-  (((compareAt - price) / compareAt) * 100).toFixed(0);
-
 const CARD_SIZES = '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw';
+
+type CardPrice = { amount: string; currencyCode: string } | null | undefined;
+
+const getDiscountPercent = (price: CardPrice, compareAtPrice: CardPrice): string | null =>
+  hasDiscountPrice(price, compareAtPrice) && price && compareAtPrice
+    ? discountPercentOf(price.amount, compareAtPrice.amount)
+    : null;
+
+const CardBadges = ({
+  soldOut,
+  discountPercent,
+  lowStock,
+}: {
+  soldOut: boolean;
+  discountPercent: string | null;
+  lowStock: boolean;
+}) => {
+  if (!soldOut && !discountPercent && !lowStock) return null;
+
+  return (
+    <div className="pointer-events-none absolute left-3 top-3 z-10 flex flex-col items-start gap-1.5">
+      {soldOut ? (
+        <Badge variant="secondary" className="border-border/50 bg-background/90 backdrop-blur-md">
+          Sold out
+        </Badge>
+      ) : null}
+      {discountPercent ? <Badge variant="destructive">-{discountPercent}%</Badge> : null}
+      {lowStock ? (
+        <Badge variant="outline" className="border-border/60 bg-background/90 backdrop-blur-md">
+          Low stock
+        </Badge>
+      ) : null}
+    </div>
+  );
+};
+
+const CardPriceLine = ({
+  price,
+  compareAtPrice,
+  discounted,
+}: {
+  price: CardPrice;
+  compareAtPrice: CardPrice;
+  discounted: boolean;
+}) => (
+  <div className="mt-auto flex items-baseline gap-2 pt-2">
+    {price ? (
+      <span
+        className={cn(
+          'text-body font-semibold tabular-nums',
+          discounted ? 'text-destructive' : 'text-foreground',
+        )}
+      >
+        {formatPrice(price.amount, price.currencyCode)}
+      </span>
+    ) : null}
+    {discounted && compareAtPrice ? (
+      <span className="text-caption text-muted line-through tabular-nums">
+        {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
+      </span>
+    ) : null}
+  </div>
+);
 
 type ProductCardDefaultProps = {
   product: ProductFieldsFragment;
@@ -34,22 +95,15 @@ const ProductCardDefault = ({ product, preload = false, className }: ProductCard
   const firstVariant = variants?.edges?.[0]?.node;
   const price = firstVariant?.price ?? priceRange?.minVariantPrice ?? null;
   const compareAtPrice = firstVariant?.compareAtPrice ?? null;
-  const isSoldOut = availableForSale === false || !firstVariant?.availableForSale;
-  const isLowStock =
-    !isSoldOut &&
-    typeof firstVariant?.quantityAvailable === 'number' &&
-    firstVariant.quantityAvailable > 0 &&
-    firstVariant.quantityAvailable < 5;
+  const soldOut = isSoldOut(availableForSale) || !firstVariant?.availableForSale;
+  const lowStock = isLowStock(firstVariant?.quantityAvailable, !soldOut);
 
   const productImages = mapShopifyImagesToImageFields(images?.edges);
   const primary = productImages[0];
   const secondary = productImages[1];
 
-  const hasDiscount =
-    !!compareAtPrice && !!price && Number(compareAtPrice.amount) > Number(price.amount);
-  const discountPercentage = hasDiscount
-    ? discountPercentOf(Number(price?.amount), Number(compareAtPrice?.amount))
-    : null;
+  const discounted = hasDiscountPrice(price, compareAtPrice);
+  const discountPercentage = getDiscountPercent(price, compareAtPrice);
 
   // Template shape matches the dynamic product route, so `typedRoutes`
   // validates it at each `Link` call site.
@@ -76,13 +130,13 @@ const ProductCardDefault = ({ product, preload = false, className }: ProductCard
                 blurDataURL={primary.blurDataURL || undefined}
                 className={cn(
                   'object-cover transition-all duration-700 ease-out',
-                  !isSoldOut && 'group-hover/card:scale-[1.05]',
-                  secondary && !isSoldOut && 'group-hover/card:opacity-0',
+                  !soldOut && 'group-hover/card:scale-[1.05]',
+                  secondary && !soldOut && 'group-hover/card:opacity-0',
                 )}
               />
             ) : null}
 
-            {secondary && !isSoldOut ? (
+            {secondary && !soldOut ? (
               <Image
                 src={secondary.medium || secondary.src}
                 alt=""
@@ -100,24 +154,7 @@ const ProductCardDefault = ({ product, preload = false, className }: ProductCard
           </div>
         </Link>
 
-        <div className="pointer-events-none absolute left-3 top-3 z-10 flex flex-col items-start gap-1.5">
-          {isSoldOut ? (
-            <Badge
-              variant="secondary"
-              className="border-border/50 bg-background/90 backdrop-blur-md"
-            >
-              Sold out
-            </Badge>
-          ) : null}
-          {hasDiscount && discountPercentage ? (
-            <Badge variant="destructive">-{discountPercentage}%</Badge>
-          ) : null}
-          {isLowStock ? (
-            <Badge variant="outline" className="border-border/60 bg-background/90 backdrop-blur-md">
-              Low stock
-            </Badge>
-          ) : null}
-        </div>
+        <CardBadges soldOut={soldOut} discountPercent={discountPercentage} lowStock={lowStock} />
 
         <ProductCardActions product={product} productId={id} />
       </div>
@@ -131,23 +168,7 @@ const ProductCardDefault = ({ product, preload = false, className }: ProductCard
             {title}
           </Link>
         </h3>
-        <div className="mt-auto flex items-baseline gap-2 pt-2">
-          {price ? (
-            <span
-              className={cn(
-                'text-body font-semibold tabular-nums',
-                hasDiscount ? 'text-destructive' : 'text-foreground',
-              )}
-            >
-              {formatPrice(price.amount, price.currencyCode)}
-            </span>
-          ) : null}
-          {hasDiscount && compareAtPrice ? (
-            <span className="text-caption text-muted line-through tabular-nums">
-              {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
-            </span>
-          ) : null}
-        </div>
+        <CardPriceLine price={price} compareAtPrice={compareAtPrice} discounted={discounted} />
       </div>
     </div>
   );

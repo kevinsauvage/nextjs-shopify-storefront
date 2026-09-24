@@ -63,7 +63,10 @@ const LineItem: React.FC<{
             <div className="flex flex-wrap items-center gap-1.5 mt-1.5 mb-2">
               {node.merchandise.selectedOptions.map(
                 (option: { name: string; value: string }, index: number) => (
-                  <span key={`${option.name}-${index}`} className="text-body-sm text-secondary">
+                  <span
+                    key={`${option.name}-${option.value}`}
+                    className="text-body-sm text-secondary"
+                  >
                     {option.name}: <span className="font-medium">{option.value}</span>
                     {index < node.merchandise.selectedOptions.length - 1 && (
                       <span className="mx-1.5">•</span>

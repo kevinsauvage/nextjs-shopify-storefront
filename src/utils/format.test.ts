@@ -1,4 +1,4 @@
-import { formatDate, formatPrice } from './format';
+import { discountPercentOf, formatDate, formatPrice, hasDiscountPrice } from './format';
 
 import { describe, expect, it } from 'vitest';
 
@@ -13,6 +13,27 @@ describe('formatPrice', () => {
 
   it('falls back to plain formatting for invalid currency codes', () => {
     expect(formatPrice('5.5', 'not-a-currency')).toBe('not-a-currency 5.50');
+  });
+});
+
+describe('hasDiscountPrice', () => {
+  it('detects a compare-at price above the sale price', () => {
+    expect(hasDiscountPrice({ amount: '80' }, { amount: '100' })).toBe(true);
+    expect(hasDiscountPrice({ amount: '100' }, { amount: '100' })).toBe(false);
+    expect(hasDiscountPrice({ amount: '120' }, { amount: '100' })).toBe(false);
+  });
+
+  it('returns false when either price is missing', () => {
+    expect(hasDiscountPrice(null, { amount: '100' })).toBe(false);
+    expect(hasDiscountPrice({ amount: '80' }, null)).toBe(false);
+    expect(hasDiscountPrice()).toBe(false);
+  });
+});
+
+describe('discountPercentOf', () => {
+  it('returns the whole-percent discount', () => {
+    expect(discountPercentOf(80, 100)).toBe('20');
+    expect(discountPercentOf('75', '100')).toBe('25');
   });
 });
 

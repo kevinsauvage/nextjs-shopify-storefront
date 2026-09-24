@@ -1,3 +1,5 @@
+import type * as ClientIpModule from '@/lib/server/client-ip';
+
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { createAddress, deleteAddress, rateLimited, redirect, setDefaultAddress, updateAddress } =
@@ -12,7 +14,7 @@ const { createAddress, deleteAddress, rateLimited, redirect, setDefaultAddress, 
 
 vi.mock('next/navigation', () => ({ redirect }));
 vi.mock('@/lib/server/client-ip', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/lib/server/client-ip')>();
+  const actual = await importOriginal<typeof ClientIpModule>();
 
   return { ...actual, getClientIp: async () => '1.2.3.4' };
 });
@@ -44,6 +46,10 @@ const INPUT = {
 };
 
 const addressBucket = expect.stringMatching(/^1\.2\.3\.4:[0-9a-f]{16}$/);
+
+const ADDRESS_GID = 'gid://shopify/MailingAddress/1';
+const NOT_A_GID = 'not-a-gid';
+const NETWORK_DOWN_MESSAGE = 'network down';
 
 describe('createAddressAction', () => {
   beforeEach(() => {
@@ -103,7 +109,7 @@ describe('deleteAddressAction', () => {
   it('is rate limited before reaching the service', async () => {
     rateLimited.mockResolvedValueOnce(true);
 
-    const state = await deleteAddressAction('gid://shopify/MailingAddress/1');
+    const state = await deleteAddressAction(ADDRESS_GID);
 
     expect(state.ok).toBe(false);
     expect(deleteAddress).not.toHaveBeenCalled();
@@ -113,7 +119,7 @@ describe('deleteAddressAction', () => {
   });
 
   it('rejects a malformed address id without touching the limiter or service', async () => {
-    const state = await deleteAddressAction('not-a-gid');
+    const state = await deleteAddressAction(NOT_A_GID);
 
     expect(state.ok).toBe(false);
     expect(rateLimited).not.toHaveBeenCalled();
@@ -122,25 +128,25 @@ describe('deleteAddressAction', () => {
   });
 
   it('deletes the address and redirects on success', async () => {
-    await deleteAddressAction('gid://shopify/MailingAddress/1');
+    await deleteAddressAction(ADDRESS_GID);
 
-    expect(deleteAddress).toHaveBeenCalledWith('gid://shopify/MailingAddress/1');
+    expect(deleteAddress).toHaveBeenCalledWith(ADDRESS_GID);
     expect(redirect).toHaveBeenCalledWith(config.routes.addresses);
   });
 
   it('returns the service error without redirecting when deletion fails', async () => {
     deleteAddress.mockResolvedValue({ customerUserErrors: [{ message: 'Address not found' }] });
 
-    const state = await deleteAddressAction('gid://shopify/MailingAddress/1');
+    const state = await deleteAddressAction(ADDRESS_GID);
 
     expect(state).toMatchObject({ message: 'Address not found', ok: false });
     expect(redirect).not.toHaveBeenCalled();
   });
 
-  it('returns a generic error when the service throws', async () => {
-    deleteAddress.mockRejectedValue(new Error('network down'));
+  it('returns a generic error when deletion throws', async () => {
+    deleteAddress.mockRejectedValue(new Error(NETWORK_DOWN_MESSAGE));
 
-    const state = await deleteAddressAction('gid://shopify/MailingAddress/1');
+    const state = await deleteAddressAction(ADDRESS_GID);
 
     expect(state).toMatchObject({ message: 'Failed to delete address', ok: false });
     expect(redirect).not.toHaveBeenCalled();
@@ -148,8 +154,6 @@ describe('deleteAddressAction', () => {
 });
 
 describe('setDefaultAddressAction', () => {
-  const ADDRESS_ID = 'gid://shopify/MailingAddress/1';
-
   beforeEach(() => {
     setDefaultAddress.mockReset();
     setDefaultAddress.mockResolvedValue({ success: true });
@@ -159,14 +163,14 @@ describe('setDefaultAddressAction', () => {
   });
 
   it('sets the default address and redirects on success', async () => {
-    await setDefaultAddressAction(ADDRESS_ID);
+    await setDefaultAddressAction(ADDRESS_GID);
 
-    expect(setDefaultAddress).toHaveBeenCalledWith(ADDRESS_ID);
+    expect(setDefaultAddress).toHaveBeenCalledWith(ADDRESS_GID);
     expect(redirect).toHaveBeenCalledWith(config.routes.addresses);
   });
 
   it('rejects a malformed address id without touching the limiter or service', async () => {
-    const state = await setDefaultAddressAction('not-a-gid');
+    const state = await setDefaultAddressAction(NOT_A_GID);
 
     expect(state.ok).toBe(false);
     expect(rateLimited).not.toHaveBeenCalled();
@@ -174,10 +178,10 @@ describe('setDefaultAddressAction', () => {
     expect(redirect).not.toHaveBeenCalled();
   });
 
-  it('returns a generic error when the service throws', async () => {
-    setDefaultAddress.mockRejectedValue(new Error('network down'));
+  it('returns a generic error when setting the default throws', async () => {
+    setDefaultAddress.mockRejectedValue(new Error(NETWORK_DOWN_MESSAGE));
 
-    const state = await setDefaultAddressAction(ADDRESS_ID);
+    const state = await setDefaultAddressAction(ADDRESS_GID);
 
     expect(state).toMatchObject({ message: 'Failed to set default address', ok: false });
     expect(redirect).not.toHaveBeenCalled();
@@ -209,8 +213,8 @@ describe('updateAddressAction', () => {
     expect(redirect).not.toHaveBeenCalled();
   });
 
-  it('returns a generic error when the service throws', async () => {
-    updateAddress.mockRejectedValue(new Error('network down'));
+  it('returns a generic error when the update throws', async () => {
+    updateAddress.mockRejectedValue(new Error(NETWORK_DOWN_MESSAGE));
 
     const state = await updateAddressAction(INPUT);
 

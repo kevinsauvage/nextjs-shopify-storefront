@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 
 import type { ProductVariant } from '@/hooks/useProductSelection';
+import { discountPercentOf, hasDiscountPrice } from '@/utils/format';
 import { getQuantityCap } from '@/utils/inventory';
 
 export type ProductVariantView = {
@@ -39,12 +40,16 @@ const useProductVariantView = (
 
   const quantityCap = useMemo(() => getQuantityCap(quantityAvailable), [quantityAvailable]);
 
-  const hasDiscount =
-    !!compareAtPrice && !!price && Number(compareAtPrice.amount) > Number(price.amount);
+  const hasDiscount = hasDiscountPrice(price, compareAtPrice);
+  const discountPercent =
+    hasDiscount && price && compareAtPrice
+      ? discountPercentOf(price.amount, compareAtPrice.amount)
+      : null;
 
   return {
     availableForSale,
     compareAtPrice,
+    discountPercent,
     hasDiscount,
     price,
     quantityAvailable,

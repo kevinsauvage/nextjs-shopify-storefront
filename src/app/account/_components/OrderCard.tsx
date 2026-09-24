@@ -261,11 +261,10 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
 
                     if (!trackingInfo || trackingInfo.length === 0) return null;
 
+                    const fulfillmentKey = `${trackingCompany ?? DEFAULTS.carrier}-${trackingInfo[0]?.number ?? `group-${trackingInfo.length}`}`;
+
                     return (
-                      <div
-                        key={`${fulfillment.trackingCompany ?? 'carrier'}-${index}`}
-                        className="space-y-2"
-                      >
+                      <div key={fulfillmentKey} className="space-y-2">
                         <div className="flex justify-between border-b border-border/70 py-1">
                           <span className="text-body-sm text-secondary">
                             {trackingCompany || DEFAULTS.carrier}
@@ -276,9 +275,9 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
                           </span>
                         </div>
 
-                        {trackingInfo.map((trackInfo, trackingIndex) => (
+                        {trackingInfo.map((trackInfo) => (
                           <div
-                            key={trackInfo.number ?? `tracking-${trackingIndex}`}
+                            key={`${trackInfo.number ?? DEFAULTS.trackingNumber}-${typeof trackInfo.url === 'string' ? trackInfo.url : DEFAULTS.link}`}
                             className="flex justify-between border-b border-border/70 py-1"
                           >
                             <span className="text-body-sm text-secondary">

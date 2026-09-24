@@ -73,7 +73,7 @@ describe('safeInternalPath', () => {
   const FALLBACK = '/account';
 
   it('keeps same-origin relative paths', () => {
-    expect(safeInternalPath('/collections/sale', FALLBACK)).toBe('/collections/sale');
+    expect(safeInternalPath(RELATIVE_PATH, FALLBACK)).toBe(RELATIVE_PATH);
     expect(safeInternalPath('/account/orders?after=1', FALLBACK)).toBe('/account/orders?after=1');
   });
 

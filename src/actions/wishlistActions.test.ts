@@ -1,3 +1,5 @@
+import type * as ClientIpModule from '@/lib/server/client-ip';
+
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const {
@@ -18,7 +20,7 @@ const {
 
 vi.mock('next/cache', () => ({ cacheLife: vi.fn(), cacheTag: vi.fn(), updateTag }));
 vi.mock('@/lib/server/client-ip', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/lib/server/client-ip')>();
+  const actual = await importOriginal<typeof ClientIpModule>();
 
   return { ...actual, getClientIp: async () => '1.2.3.4' };
 });
