@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { z } from 'zod';
 
 /**
@@ -88,4 +90,39 @@ export const validateEnv = (
     .join('\n');
 
   throw new Error(`Invalid environment configuration:\n${problems}`);
+};
+
+export type ContactMailEnv = {
+  from: string;
+  pass: string;
+  recipient: string;
+  siteName: string;
+};
+
+/**
+ * Contact delivery settings for the contact form. Shape is validated by
+ * `envSchema` at boot; presence is checked here so the form degrades to a
+ * friendly error instead of throwing when mail is unconfigured.
+ *
+ * Server-only (reads secrets): never import from client components. Client
+ * code needing public values reads `process.env.NEXT_PUBLIC_*` directly.
+ */
+export const getContactMailEnv = (): ContactMailEnv | null => {
+  const {
+    CONTACT_EMAIL,
+    EMAIL_ADDRESS,
+    EMAIL_PASSWORD,
+    NEXT_PUBLIC_SITE_EMAIL,
+    NEXT_PUBLIC_SITE_NAME,
+  } = process.env;
+  const recipient = CONTACT_EMAIL || NEXT_PUBLIC_SITE_EMAIL || EMAIL_ADDRESS;
+
+  if (!EMAIL_ADDRESS || !EMAIL_PASSWORD || !recipient) return null;
+
+  return {
+    from: EMAIL_ADDRESS,
+    pass: EMAIL_PASSWORD,
+    recipient,
+    siteName: NEXT_PUBLIC_SITE_NAME || 'Website',
+  };
 };

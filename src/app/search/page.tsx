@@ -143,7 +143,8 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
             />
             <Filters filters={filters} query={searchParameters} />
           </ListingHeader>
-          <ProductsList layout="grid" products={products} />
+          <h2 className="sr-only">Search results</h2>
+          <ProductsList layout="grid" products={products} />{' '}
           <PageInfoPagination
             pageInfo={pageInfo}
             searchParameters={searchParameters}

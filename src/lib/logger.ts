@@ -22,10 +22,16 @@ export const setErrorReporter = (reporter: ErrorReporter | undefined): void => {
 };
 
 const REDACTIONS: Array<[RegExp, string]> = [
-  [/[a-zA-Z0-9]{32,}/g, '[REDACTED]'],
+  // Secret-shaped values, anchored to their scheme/prefix so ordinary long
+  // identifiers (order numbers, hashes quoted in prose) survive: JWTs, bearer
+  // authorizations, Shopify Admin tokens (`shpat_…`) and Stripe-style keys.
+  [/eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g, '[REDACTED]'],
+  [/\bBearer\s+[a-zA-Z0-9\-._~+/=]+/gi, 'Bearer [REDACTED]'],
+  [/\bshp[a-z]{2}_[a-zA-Z0-9]+/g, '[REDACTED]'],
+  [/\bsk-(?:live|test)-[a-zA-Z0-9]+/g, '[REDACTED]'],
   [/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[EMAIL_REDACTED]'],
   [/password[=:]\s*[^\s]+/gi, 'password=[REDACTED]'],
-  [/(api[_-]?key|access[_-]?token|secret)[=:]\s*[^\s]+/gi, '$1=[REDACTED]'],
+  [/(api[_-]?key|access[_-]?token|secret|token)[=:]\s*[^\s]+/gi, '$1=[REDACTED]'],
 ];
 
 export const sanitizeErrorMessage = (message: string): string =>

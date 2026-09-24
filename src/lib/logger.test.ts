@@ -17,6 +17,19 @@ describe('logger', () => {
     expect(message).toContain('[EMAIL_REDACTED]');
   });
 
+  it('redacts secret-shaped values but preserves ordinary long identifiers', () => {
+    expect(
+      sanitizeErrorMessage(
+        'jwt eyJhbGciOiJIUzI1NiJ9.cGF5bG9hZA.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+      ),
+    ).toBe('jwt [REDACTED]');
+    expect(sanitizeErrorMessage('auth Bearer abcDEF123-_')).toBe('auth Bearer [REDACTED]');
+    expect(sanitizeErrorMessage('key shpat_abc123DEF456')).toBe('key [REDACTED]');
+    expect(sanitizeErrorMessage('order 550e8400e29b41d4a716446655440000 shipped')).toBe(
+      'order 550e8400e29b41d4a716446655440000 shipped',
+    );
+  });
+
   it('forwards normalized errors to a registered reporter', () => {
     const reporter = vi.fn();
     setErrorReporter(reporter);

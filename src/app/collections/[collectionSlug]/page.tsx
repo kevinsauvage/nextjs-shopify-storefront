@@ -281,8 +281,8 @@ const CollectionProducts = async ({
               </div>
             </ListingHeader>
           </div>
-
-          <ProductsList products={safeEdges.map((edge) => edge.node)} layout="grid" />
+          <h2 className="sr-only">Products in {collection.title || 'this collection'}</h2>
+          <ProductsList products={safeEdges.map((edge) => edge.node)} layout="grid" />{' '}
           <PageInfoPagination
             pageInfo={safePageInfo}
             searchParameters={safeSearchParameters}

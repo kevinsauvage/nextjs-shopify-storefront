@@ -1,6 +1,6 @@
-import { validateEnv } from './env';
+import { getContactMailEnv, validateEnv } from './env';
 
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const validEnv = {
   NEXT_PUBLIC_BASE_URL: 'https://shop.example.com',
@@ -75,5 +75,47 @@ describe('validateEnv', () => {
     expect(() => validateEnv({ ...validEnv, NEXT_PUBLIC_SITE_EMAIL: 'not-an-email' })).toThrow(
       /NEXT_PUBLIC_SITE_EMAIL/,
     );
+  });
+});
+
+describe('getContactMailEnv', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it('returns the mail settings when configured', () => {
+    vi.stubEnv('EMAIL_ADDRESS', 'site@example.com');
+    vi.stubEnv('EMAIL_PASSWORD', 'secret');
+    vi.stubEnv('CONTACT_EMAIL', 'support@example.com');
+    vi.stubEnv('NEXT_PUBLIC_SITE_NAME', 'Example Store');
+
+    expect(getContactMailEnv()).toEqual({
+      from: 'site@example.com',
+      pass: 'secret',
+      recipient: 'support@example.com',
+      siteName: 'Example Store',
+    });
+  });
+
+  it('falls back to the site email and name when overrides are missing', () => {
+    vi.stubEnv('EMAIL_ADDRESS', 'site@example.com');
+    vi.stubEnv('EMAIL_PASSWORD', 'secret');
+    vi.stubEnv('CONTACT_EMAIL', '');
+    vi.stubEnv('NEXT_PUBLIC_SITE_EMAIL', 'hello@example.com');
+    vi.stubEnv('NEXT_PUBLIC_SITE_NAME', '');
+
+    expect(getContactMailEnv()).toMatchObject({
+      recipient: 'hello@example.com',
+      siteName: 'Website',
+    });
+  });
+
+  it('returns null when mail is unconfigured', () => {
+    vi.stubEnv('EMAIL_ADDRESS', '');
+    vi.stubEnv('EMAIL_PASSWORD', '');
+    vi.stubEnv('CONTACT_EMAIL', '');
+    vi.stubEnv('NEXT_PUBLIC_SITE_EMAIL', '');
+
+    expect(getContactMailEnv()).toBeNull();
   });
 });

@@ -127,48 +127,49 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
       <Collapsible open={open} onOpenChange={setOpen}>
         <Card className="w-full py-0 transition-all duration-200 hover:shadow-md">
           <CardHeader className="flex flex-row items-center justify-between gap-4 p-4 md:p-6">
+            <div className="min-w-0 flex-1 space-y-2">
+              <div className="flex flex-wrap items-center gap-3">
+                <h3 className="text-heading-4">Order {order.name}</h3>
+                {fulfillmentStatus && (
+                  <Badge variant={getStatusBadgeVariant(fulfillmentStatus)}>
+                    {formatStatus(fulfillmentStatus)}
+                  </Badge>
+                )}
+                {financialStatus && (
+                  <Badge variant={getStatusBadgeVariant(financialStatus)}>
+                    {formatStatus(financialStatus)}
+                  </Badge>
+                )}
+              </div>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-body-sm text-secondary">
+                {typeof order.processedAt === 'string' && (
+                  <span>{formatDate(order.processedAt)}</span>
+                )}
+                {totalPrice && (
+                  <span className="font-medium text-foreground tabular-nums">
+                    {formatPrice(totalPrice.amount, totalPrice.currencyCode)}
+                  </span>
+                )}
+                {itemsCount > 0 && (
+                  <span className="inline-flex items-center gap-1">
+                    <Package size={14} aria-hidden="true" />
+                    {itemsCount} {itemsCount === 1 ? 'item' : 'items'}
+                  </span>
+                )}
+              </div>
+            </div>
+            {/* The heading sits outside the trigger (headings are not valid
+                button content); only the chevron toggles, with its own label. */}
             <CollapsibleTrigger asChild>
               <button
                 type="button"
                 aria-expanded={open}
-                className="group flex w-full items-center justify-between gap-4 rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                aria-label={open ? `Collapse order ${order.name}` : `Expand order ${order.name}`}
+                className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border/70 text-secondary transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
-                <div className="flex-1 space-y-2">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h3 className="text-heading-4">Order {order.name}</h3>
-                    {fulfillmentStatus && (
-                      <Badge variant={getStatusBadgeVariant(fulfillmentStatus)}>
-                        {formatStatus(fulfillmentStatus)}
-                      </Badge>
-                    )}
-                    {financialStatus && (
-                      <Badge variant={getStatusBadgeVariant(financialStatus)}>
-                        {formatStatus(financialStatus)}
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-body-sm text-secondary">
-                    {typeof order.processedAt === 'string' && (
-                      <span>{formatDate(order.processedAt)}</span>
-                    )}
-                    {totalPrice && (
-                      <span className="font-medium text-foreground tabular-nums">
-                        {formatPrice(totalPrice.amount, totalPrice.currencyCode)}
-                      </span>
-                    )}
-                    {itemsCount > 0 && (
-                      <span className="inline-flex items-center gap-1">
-                        <Package size={14} />
-                        {itemsCount} {itemsCount === 1 ? 'item' : 'items'}
-                      </span>
-                    )}
-                  </div>
-                </div>
                 <ChevronDown
-                  className={cn(
-                    'size-5 shrink-0 text-secondary transition-transform duration-200 group-hover:text-foreground',
-                    open && 'rotate-180',
-                  )}
+                  aria-hidden="true"
+                  className={cn('size-5 transition-transform duration-200', open && 'rotate-180')}
                 />
               </button>
             </CollapsibleTrigger>

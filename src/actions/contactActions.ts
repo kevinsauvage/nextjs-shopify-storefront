@@ -1,5 +1,6 @@
 'use server';
 
+import { getContactMailEnv } from '@/config/env';
 import { reportError } from '@/lib/logger';
 import { getClientIp } from '@/lib/server/client-ip';
 import { isRateLimited } from '@/lib/server/rate-limit';
@@ -54,38 +55,6 @@ const contactSchema = z.object({
 
 type ContactInput = z.infer<typeof contactSchema>;
 
-type ContactMailConfig = {
-  from: string;
-  pass: string;
-  recipient: string;
-  siteName: string;
-};
-
-/**
- * Contact delivery settings. The fields are validated for shape by
- * `src/config/env.ts`; presence is checked here so the form degrades to a
- * friendly error instead of throwing when mail is unconfigured.
- */
-const getContactMailConfig = (): ContactMailConfig | null => {
-  const {
-    CONTACT_EMAIL,
-    EMAIL_ADDRESS,
-    EMAIL_PASSWORD,
-    NEXT_PUBLIC_SITE_EMAIL,
-    NEXT_PUBLIC_SITE_NAME,
-  } = process.env;
-  const recipient = CONTACT_EMAIL || NEXT_PUBLIC_SITE_EMAIL || EMAIL_ADDRESS;
-
-  if (!EMAIL_ADDRESS || !EMAIL_PASSWORD || !recipient) return null;
-
-  return {
-    from: EMAIL_ADDRESS,
-    pass: EMAIL_PASSWORD,
-    recipient,
-    siteName: NEXT_PUBLIC_SITE_NAME || 'Website',
-  };
-};
-
 /**
  * Process-wide Gmail transporter, created once per credential set instead of
  * on every request. Keyed by credentials so a rotation (or a test env change)
@@ -134,7 +103,7 @@ export const contactAction = async (input: ContactInput): Promise<FormState> => 
     return formError('Too many messages sent. Please try again later.');
   }
 
-  const mailConfig = getContactMailConfig();
+  const mailConfig = getContactMailEnv();
 
   if (!mailConfig) {
     reportError('contactAction', new Error('Contact email is not configured'));
