@@ -10,7 +10,7 @@ import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { AddressService } from '@/services/address.service';
 import type { FormState } from '@/types/formActions';
 import { formError, serviceErrorsToFormState, zodErrorsToFormState } from '@/utils/form-actions';
-import { companyField, phoneField, shopifyGidField } from '@/utils/validation';
+import { companyField, phoneField, shopifyCustomerAddressIdField } from '@/utils/validation';
 
 import { z } from 'zod';
 
@@ -73,7 +73,11 @@ export async function createAddressAction(input: AddressInput): Promise<FormStat
 }
 
 export async function deleteAddressAction(addressId: string): Promise<FormState> {
-  if (!shopifyGidField.safeParse(addressId).success) {
+  // Customer address IDs arrive with Shopify's `?model_name=…&customer_access_token=…`
+  // suffix (~350 chars). Validate with the address-aware bound, and forward the
+  // FULL id: Shopify resolves the address from the suffixed form and answers
+  // RESOURCE_NOT_FOUND for the stripped GID.
+  if (!shopifyCustomerAddressIdField.safeParse(addressId).success) {
     return formError('Invalid address');
   }
 
@@ -95,7 +99,8 @@ export async function deleteAddressAction(addressId: string): Promise<FormState>
 }
 
 export async function setDefaultAddressAction(addressId: string): Promise<FormState> {
-  if (!shopifyGidField.safeParse(addressId).success) {
+  // See `deleteAddressAction`: validate the suffixed id, forward it untouched.
+  if (!shopifyCustomerAddressIdField.safeParse(addressId).success) {
     return formError('Invalid address');
   }
 

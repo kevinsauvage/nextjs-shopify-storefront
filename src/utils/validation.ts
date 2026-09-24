@@ -34,3 +34,26 @@ export const shopifyGidField = z
   .min(1)
   .max(255)
   .regex(/^gid:\/\/shopify\/[A-Za-z]+\/\S+$/, 'Invalid ID');
+
+/**
+ * Strip the `?...` suffix Shopify appends to customer-scoped IDs
+ * (`gid://shopify/MailingAddress/<id>?model_name=CustomerAddress&customer_access_token=…`).
+ *
+ * For display/comparison only — never for Shopify calls: customer address
+ * mutations resolve the address from the FULL suffixed ID and answer
+ * `RESOURCE_NOT_FOUND` for the bare GID.
+ */
+export const normalizeShopifyGid = (id: string | null | undefined): string =>
+  id?.split('?')[0] ?? '';
+
+/**
+ * Customer address IDs as Shopify returns them, suffix included. Same shape
+ * as `shopifyGidField` (`\S+` already covers `?`, `=` and `&`) but with room
+ * for the embedded `customer_access_token` (~350 chars in practice): the
+ * 255 bound would reject every real address ID before any Shopify call.
+ */
+export const shopifyCustomerAddressIdField = z
+  .string()
+  .min(1)
+  .max(2048)
+  .regex(/^gid:\/\/shopify\/[A-Za-z]+\/\S+$/, 'Invalid ID');

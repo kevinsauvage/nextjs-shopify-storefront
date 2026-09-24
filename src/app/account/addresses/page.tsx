@@ -15,6 +15,7 @@ import { adjustPaginationVariables } from '@/shopify/helpers';
 import { storefrontSdk } from '@/shopify/index';
 import type { MailingAddress } from '@/shopify/storefront';
 import { getUser } from '@/utils/users';
+import { normalizeShopifyGid } from '@/utils/validation';
 
 import BackButton from '../_components/BackButton';
 
@@ -57,7 +58,7 @@ const Addresses = async ({
   const user = await getUser();
 
   const isDefault = (address: MailingAddress) =>
-    address.id?.split('?')?.[0] === user?.defaultAddress?.id?.split('?')?.[0];
+    normalizeShopifyGid(address.id) === normalizeShopifyGid(user?.defaultAddress?.id);
 
   const hasAddresses = Array.isArray(addresses) && addresses.length > 0;
 

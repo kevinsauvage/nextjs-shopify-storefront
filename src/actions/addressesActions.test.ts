@@ -48,6 +48,7 @@ const INPUT = {
 const addressBucket = expect.stringMatching(/^1\.2\.3\.4:[0-9a-f]{16}$/);
 
 const ADDRESS_GID = 'gid://shopify/MailingAddress/1';
+const SUFFIXED_ADDRESS_GID = `${ADDRESS_GID}?model_name=CustomerAddress&customer_access_token=${'t'.repeat(300)}`;
 const NOT_A_GID = 'not-a-gid';
 const NETWORK_DOWN_MESSAGE = 'network down';
 
@@ -134,6 +135,13 @@ describe('deleteAddressAction', () => {
     expect(redirect).toHaveBeenCalledWith(config.routes.addresses);
   });
 
+  it('accepts the token-suffixed ids Shopify returns and forwards them untouched', async () => {
+    await deleteAddressAction(SUFFIXED_ADDRESS_GID);
+
+    expect(deleteAddress).toHaveBeenCalledWith(SUFFIXED_ADDRESS_GID);
+    expect(redirect).toHaveBeenCalledWith(config.routes.addresses);
+  });
+
   it('returns the service error without redirecting when deletion fails', async () => {
     deleteAddress.mockResolvedValue({ customerUserErrors: [{ message: 'Address not found' }] });
 
@@ -169,6 +177,13 @@ describe('setDefaultAddressAction', () => {
     expect(redirect).toHaveBeenCalledWith(config.routes.addresses);
   });
 
+  it('accepts the token-suffixed ids Shopify returns and forwards them untouched', async () => {
+    await setDefaultAddressAction(SUFFIXED_ADDRESS_GID);
+
+    expect(setDefaultAddress).toHaveBeenCalledWith(SUFFIXED_ADDRESS_GID);
+    expect(redirect).toHaveBeenCalledWith(config.routes.addresses);
+  });
+
   it('rejects a malformed address id without touching the limiter or service', async () => {
     const state = await setDefaultAddressAction(NOT_A_GID);
 
@@ -201,6 +216,13 @@ describe('updateAddressAction', () => {
     await updateAddressAction(INPUT);
 
     expect(updateAddress).toHaveBeenCalledWith(INPUT);
+    expect(redirect).toHaveBeenCalledWith(config.routes.addresses);
+  });
+
+  it('forwards the round-tripped address id untouched', async () => {
+    await updateAddressAction({ ...INPUT, id: SUFFIXED_ADDRESS_GID });
+
+    expect(updateAddress).toHaveBeenCalledWith({ ...INPUT, id: SUFFIXED_ADDRESS_GID });
     expect(redirect).toHaveBeenCalledWith(config.routes.addresses);
   });
 

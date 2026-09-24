@@ -11,6 +11,7 @@ import seo from '@/data/seo';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { storefrontSdk } from '@/shopify';
+import { normalizeShopifyGid } from '@/utils/validation';
 
 import { ArrowLeft } from 'lucide-react';
 
@@ -28,10 +29,6 @@ type PageProperties = {
     id: string;
     customer_access_token: string;
   }>;
-};
-
-const normalizeAddressId = (id: string | null | undefined): string => {
-  return id?.split('?')[0] || '';
 };
 
 const mapAddressNodeToFormData = (addressNode: {
@@ -53,6 +50,8 @@ const mapAddressNodeToFormData = (addressNode: {
   company: addressNode.company ?? undefined,
   country: addressNode.country ?? '',
   firstName: addressNode.firstName ?? '',
+  // Forward the full Shopify id (token suffix included): customer address
+  // mutations resolve the address from the suffixed form.
   id: addressNode.id ?? '',
   lastName: addressNode.lastName ?? '',
   phone: addressNode.phone ?? undefined,
@@ -89,10 +88,10 @@ const findAddressById = (
     return null;
   }
 
-  const normalizedId = normalizeAddressId(id);
+  const normalizedId = normalizeShopifyGid(id);
   const node = addresses.edges
     .map((item) => item.node)
-    .find((n) => normalizeAddressId(n.id) === normalizedId);
+    .find((n) => normalizeShopifyGid(n.id) === normalizedId);
 
   return node || null;
 };
