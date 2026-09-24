@@ -6,7 +6,9 @@
  * `https://your-store.myshopify.com/collections/sale`). On a headless storefront
  * those links send users to Shopify's password-protected domain, so any URL on
  * a store-owned origin is rewritten to a relative path that keeps the user on
- * the custom storefront. Genuinely external URLs are left untouched.
+ * the custom storefront. Genuinely external URLs on safe protocols
+ * (`http:`, `https:`, `mailto:`, `tel:`) are left untouched; anything else
+ * (`javascript:`, `data:`, unparseable) normalizes to `''`.
  */
 import type { Route } from 'next';
 
@@ -36,11 +38,20 @@ const isShopifyHost = (hostname: string): boolean =>
 const isInternalOrigin = (origin: string, hostname: string): boolean =>
   internalOrigins.has(origin) || isShopifyHost(hostname);
 
+/** Navigation protocols a CMS menu value is allowed to keep. Anything else
+ * (`javascript:`, `data:`, `vbscript:`, …) normalizes to `''` so it can never
+ * reach a `<Link href>`. `new URL` resolves those schemes as absolute URLs
+ * against the placeholder base, so the check must run after parsing. */
+const EXTERNAL_PROTOCOLS = new Set(['http:', 'https:', 'mailto:', 'tel:']);
+
 export const normalizeMenuHref = (url?: string | null): Route => {
   if (!url) return '' as Route;
 
+  const trimmed = url.trim();
+  if (!trimmed) return '' as Route;
+
   try {
-    const parsed = new URL(url, PLACEHOLDER_ORIGIN);
+    const parsed = new URL(trimmed, PLACEHOLDER_ORIGIN);
     const path = `${parsed.pathname}${parsed.search}${parsed.hash}`;
 
     // Relative URL - already internal.
@@ -53,13 +64,23 @@ export const normalizeMenuHref = (url?: string | null): Route => {
     }
 
     // Absolute store URL - strip the origin so navigation stays on this site.
-    if (isInternalOrigin(parsed.origin, parsed.hostname)) {
+    if (
+      (parsed.protocol === 'http:' || parsed.protocol === 'https:') &&
+      isInternalOrigin(parsed.origin, parsed.hostname)
+    ) {
       return path as Route;
     }
 
-    return url as Route;
+    // Genuinely external URL: only safe navigation protocols pass through.
+    // Anything else (e.g. `javascript:`, `data:`) is rejected even though
+    // merchants, not end users, author menu values.
+    if (EXTERNAL_PROTOCOLS.has(parsed.protocol)) {
+      return trimmed as Route;
+    }
+
+    return '' as Route;
   } catch {
-    return url as Route;
+    return '' as Route;
   }
 };
 

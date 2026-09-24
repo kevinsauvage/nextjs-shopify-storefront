@@ -57,18 +57,27 @@ const Footer = ({ menuItems }: FooterProps) => {
                   <li key={item.id}>
                     <h3 className="text-eyebrow mb-4">{item.title}</h3>
                     <ul className="space-y-2.5">
-                      {item?.items?.map((element) => (
-                        <li key={element.id}>
-                          {typeof element?.url === 'string' && (
-                            <Link
-                              href={normalizeMenuHref(element?.url)}
-                              className="link-underline text-body-sm text-secondary transition-colors hover:text-foreground"
-                            >
-                              {element?.title}
-                            </Link>
-                          )}
-                        </li>
-                      ))}
+                      {item?.items?.map((element) => {
+                        // Rejected menu URLs (e.g. unsafe protocols) normalize to
+                        // `''` and render as plain text instead of a dead link.
+                        const href =
+                          typeof element?.url === 'string' ? normalizeMenuHref(element.url) : '';
+
+                        return (
+                          <li key={element.id}>
+                            {href ? (
+                              <Link
+                                href={href}
+                                className="link-underline text-body-sm text-secondary transition-colors hover:text-foreground"
+                              >
+                                {element?.title}
+                              </Link>
+                            ) : (
+                              <span className="text-body-sm text-secondary">{element?.title}</span>
+                            )}
+                          </li>
+                        );
+                      })}
                     </ul>
                   </li>
                 ))}

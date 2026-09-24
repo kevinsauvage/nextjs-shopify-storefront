@@ -37,6 +37,9 @@ describe('normalizeMenuHref', () => {
 
   it('leaves absolute external URLs untouched', () => {
     expect(normalizeMenuHref('https://example.com/support')).toBe('https://example.com/support');
+    expect(normalizeMenuHref('http://example.com/support')).toBe('http://example.com/support');
+    expect(normalizeMenuHref('mailto:hello@example.com')).toBe('mailto:hello@example.com');
+    expect(normalizeMenuHref('tel:+15551234567')).toBe('tel:+15551234567');
   });
 
   it('does not treat lookalike domains as Shopify hosts', () => {
@@ -50,6 +53,19 @@ describe('normalizeMenuHref', () => {
     expect(normalizeMenuHref(undefined)).toBe('');
     expect(normalizeMenuHref(null)).toBe('');
     expect(normalizeMenuHref('')).toBe('');
+    expect(normalizeMenuHref('   ')).toBe('');
+  });
+
+  it('rejects scriptable protocols so they can never reach a Link href', () => {
+    expect(normalizeMenuHref('javascript:alert(1)')).toBe('');
+    expect(normalizeMenuHref('JaVaScRiPt:alert(1)')).toBe('');
+    expect(normalizeMenuHref('  javascript:alert(1)')).toBe('');
+    expect(normalizeMenuHref('data:text/html,<script>alert(1)</script>')).toBe('');
+    expect(normalizeMenuHref('vbscript:msgbox(1)')).toBe('');
+  });
+
+  it('returns an empty string for unparseable URLs', () => {
+    expect(normalizeMenuHref('http://[:::1')).toBe('');
   });
 });
 
