@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   Sheet,
   SheetContent,
@@ -25,7 +24,7 @@ import type { Filter } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
 import { withQuery } from '@/utils/url';
 
-import { RotateCcw, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { Check, RotateCcw, SlidersHorizontal, Sparkles } from 'lucide-react';
 
 // IMPORTANT: do not import runtime enums from `@/shopify/storefront` in client components.
 // The generated Storefront SDK pulls in `graphql-request`/`graphql-tag` and will bloat the client bundle.
@@ -308,17 +307,16 @@ const Filters = ({
                                   : 'border-transparent hover:border-border/70 hover:bg-muted/60',
                               )}
                             >
-                              <Checkbox
-                                id={value.id}
-                                checked={checked}
-                                tabIndex={-1}
+                              <span
                                 aria-hidden="true"
                                 className={cn(
-                                  'pointer-events-none',
+                                  'flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input shadow-xs transition-shadow dark:bg-input/30',
                                   checked &&
                                     'border-[var(--gold)] bg-[var(--gold)] text-[var(--gold-foreground)]',
                                 )}
-                              />
+                              >
+                                {checked ? <Check className="size-3.5" /> : null}
+                              </span>
                               <span className="flex flex-1 items-center justify-between gap-2 text-body-sm font-medium leading-none">
                                 {value.label}
                                 <span className="text-caption tabular-nums text-secondary">
