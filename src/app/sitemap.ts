@@ -56,6 +56,12 @@ const getAllCollections = (): Promise<SitemapItem[]> =>
     return collections;
   });
 
+const getAllPages = (): Promise<SitemapItem[]> =>
+  paginate(async (after) => {
+    const { pages } = await storefrontSdk().getPagesForSitemap({ after, first: PAGE_SIZE });
+    return pages;
+  });
+
 const getStaticEntries = (baseUrl: string, now: Date): MetadataRoute.Sitemap =>
   sitemapConfig.map((entry) => ({
     ...entry,
@@ -71,13 +77,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getBaseUrl();
   const now = new Date();
 
-  const [products, collections] = await Promise.all([
+  const [products, collections, pages] = await Promise.all([
     getAllProducts().catch((error) => {
       reportError('sitemap/products', error);
       return [] as SitemapItem[];
     }),
     getAllCollections().catch((error) => {
       reportError('sitemap/collections', error);
+      return [] as SitemapItem[];
+    }),
+    getAllPages().catch((error) => {
+      reportError('sitemap/pages', error);
       return [] as SitemapItem[];
     }),
   ]);
@@ -96,5 +106,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${baseUrl}${config.routes.collection}/products/${item.handle}`,
   }));
 
-  return [...getStaticEntries(baseUrl, now), ...collectionEntries, ...productEntries];
+  const pageEntries: MetadataRoute.Sitemap = pages.map((item) => ({
+    changeFrequency: 'monthly',
+    lastModified: item.updatedAt ? new Date(item.updatedAt) : now,
+    priority: 0.5,
+    url: `${baseUrl}/pages/${item.handle}`,
+  }));
+
+  return [
+    ...getStaticEntries(baseUrl, now),
+    ...collectionEntries,
+    ...productEntries,
+    ...pageEntries,
+  ];
 }

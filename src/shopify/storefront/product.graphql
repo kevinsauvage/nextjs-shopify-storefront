@@ -8,19 +8,6 @@ query getProductByHandle(
   }
 }
 
-query getProductSeoByHandle($handle: String, $language: LanguageCode)
-@inContext(language: $language) {
-  product(handle: $handle) {
-    id
-    title
-    description
-    seo {
-      description
-      title
-    }
-  }
-}
-
 query productRecommendations(
   $productId: ID!
   $language: LanguageCode
@@ -57,26 +44,6 @@ query getProducts(
       node {
         ...ProductFields
       }
-    }
-  }
-}
-
-query getProductWithVariant(
-  $handle: String!
-  $selectedOptions: [SelectedOptionInput!]
-  $ignoreUnknownOptions: Boolean = true
-  $caseInsensitiveMatch: Boolean = false
-  $identifiers: [HasMetafieldsIdentifier!]!
-  $language: LanguageCode
-) @inContext(language: $language) {
-  product(handle: $handle) {
-    ...ProductFields
-    selectedOrFirstAvailableVariant(
-      selectedOptions: $selectedOptions
-      ignoreUnknownOptions: $ignoreUnknownOptions
-      caseInsensitiveMatch: $caseInsensitiveMatch
-    ) {
-      ...ProductVariantFields
     }
   }
 }

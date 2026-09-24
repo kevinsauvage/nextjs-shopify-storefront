@@ -75,4 +75,21 @@ describe('updateUserAction', () => {
 
     expect(state).toMatchObject({ message: 'Failed to update user', ok: false });
   });
+
+  it.each(['true', 'false'] as const)(
+    'forwards acceptsMarketing=%s to the service',
+    async (value) => {
+      const state = await updateUserAction({ ...INPUT, acceptsMarketing: value });
+
+      expect(state.ok).toBe(true);
+      expect(updateUser).toHaveBeenCalledWith(expect.objectContaining({ acceptsMarketing: value }));
+    },
+  );
+
+  it('rejects a null marketing flag (unchecked checkbox submits nothing)', async () => {
+    const state = await updateUserAction({ ...INPUT, acceptsMarketing: null as never });
+
+    expect(state.ok).toBe(false);
+    expect(updateUser).not.toHaveBeenCalled();
+  });
 });

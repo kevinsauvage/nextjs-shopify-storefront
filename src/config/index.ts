@@ -42,6 +42,7 @@ const config = {
     register: '/register',
     search: '/search',
     shipping: '/shipping',
+    subscription: '/subscription',
     terms: '/terms',
     // Literal types so `Link href`/`redirect` stay type-checked with
     // `typedRoutes`; `satisfies` proves every entry is a real route.
@@ -89,6 +90,11 @@ export const sitemap: MetadataRoute.Sitemap = [
     changeFrequency: 'monthly',
     priority: 0.3,
     url: config.routes.shipping,
+  },
+  {
+    changeFrequency: 'monthly',
+    priority: 0.3,
+    url: config.routes.subscription,
   },
   {
     changeFrequency: 'monthly',

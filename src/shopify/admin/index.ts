@@ -6158,6 +6158,8 @@ export enum CurrencyCode {
   Xaf = 'XAF',
   /** East Caribbean Dollar (XCD). */
   Xcd = 'XCD',
+  /** Caribbean Guilder (XCG). */
+  Xcg = 'XCG',
   /** West African CFA franc (XOF). */
   Xof = 'XOF',
   /** CFP Franc (XPF). */
@@ -24535,6 +24537,13 @@ export type MetafieldsSetMutationVariables = Exact<{
 
 export type MetafieldsSetMutation = { __typename?: 'Mutation', metafieldsSet?: { __typename?: 'MetafieldsSetPayload', metafields?: Array<{ __typename?: 'Metafield', key: string, namespace: string, value: string, createdAt: string, updatedAt: string }> | null, userErrors: Array<{ __typename?: 'MetafieldsSetUserError', field?: Array<string> | null, message: string }> } | null };
 
+export type NewsletterSubscribeMutationVariables = Exact<{
+  input: CustomerInput;
+}>;
+
+
+export type NewsletterSubscribeMutation = { __typename?: 'Mutation', customerCreate?: { __typename?: 'CustomerCreatePayload', customer?: { __typename?: 'Customer', id: string, email?: string | null } | null, userErrors: Array<{ __typename?: 'UserError', field?: Array<string> | null, message: string }> } | null };
+
 export type UserErrorsFieldsFragment = { __typename?: 'UserError', field?: Array<string> | null, message: string };
 
 export const UserErrorsFieldsFragmentDoc = gql`
@@ -24574,6 +24583,20 @@ export const MetafieldsSetDocument = gql`
   }
 }
     `;
+export const NewsletterSubscribeDocument = gql`
+    mutation NewsletterSubscribe($input: CustomerInput!) {
+  customerCreate(input: $input) {
+    customer {
+      id
+      email
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
 
@@ -24587,6 +24610,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     MetafieldsSet(variables: MetafieldsSetMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<MetafieldsSetMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<MetafieldsSetMutation>({ document: MetafieldsSetDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'MetafieldsSet', 'mutation', variables);
+    },
+    NewsletterSubscribe(variables: NewsletterSubscribeMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<NewsletterSubscribeMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<NewsletterSubscribeMutation>({ document: NewsletterSubscribeDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'NewsletterSubscribe', 'mutation', variables);
     }
   };
 }

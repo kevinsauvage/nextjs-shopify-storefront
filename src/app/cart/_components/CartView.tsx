@@ -13,6 +13,7 @@ import CartHeader from './CartHeader';
 import CartItemsList from './CartItemsList';
 import CartPromoCode from './CartPromoCode';
 import CartSummary from './CartSummary';
+import OrderNoteForm from './OrderNoteForm';
 
 import { ChevronLeft, Lock, RotateCcw, Truck } from 'lucide-react';
 
@@ -124,6 +125,7 @@ const CartView = () => {
           <div className="space-y-6 lg:col-span-1">
             <CartSummary />
             <CartPromoCode />
+            <OrderNoteForm />
             <div className="flex flex-wrap gap-x-5 gap-y-2 text-caption text-secondary">
               <span className="inline-flex items-center gap-1.5">
                 <Lock size={13} aria-hidden="true" /> Secure checkout

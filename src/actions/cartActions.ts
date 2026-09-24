@@ -45,6 +45,21 @@ const lineIdSchema = shopifyGidField;
 
 const discountCodesSchema = z.array(z.string().trim().min(1).max(64)).max(MAX_DISCOUNT_CODES);
 
+const giftCardCodesSchema = z.array(z.string().trim().min(1).max(64)).max(MAX_DISCOUNT_CODES);
+
+const cartNoteSchema = z.string().trim().max(2000);
+
+const MAX_ATTRIBUTES = 10;
+
+const cartAttributesSchema = z
+  .array(
+    z.object({
+      key: z.string().trim().min(1).max(64),
+      value: z.string().trim().max(1024),
+    }),
+  )
+  .max(MAX_ATTRIBUTES);
+
 /** Throttle public cart writes per client IP (plus cart id when known). Fail closed: cart writes burn Storefront quota, so an Upstash outage must deny writes rather than allow unlimited mutations. */
 const assertNotRateLimited = async (): Promise<void> => {
   const [ip, cartId] = await Promise.all([getClientIp(), CartService.getCartId()]);
@@ -118,6 +133,70 @@ export async function updateDiscountCodesAction(
 
   const cart = await CartService.updateDiscountCodes(parsed.data);
   return { data: cart, message: 'Discount codes updated successfully' };
+}
+
+export async function updateGiftCardCodesAction(
+  giftCardCodes: string[],
+): Promise<CartActionResult> {
+  const parsed = giftCardCodesSchema.safeParse(giftCardCodes);
+  if (!parsed.success) {
+    throw new Error('Invalid gift card code');
+  }
+
+  await assertNotRateLimited();
+
+  const cart = await CartService.updateGiftCardCodes(parsed.data);
+
+  // Shopify silently ignores unrecognized codes (no userErrors, nothing
+  // applied), so an empty applied list after sending codes means the code
+  // was not recognized — surface it instead of reporting success.
+  if (parsed.data.length > 0 && cart.appliedGiftCards.length === 0) {
+    throw new Error('That gift card code was not recognized');
+  }
+
+  return { data: cart, message: 'Gift cards updated successfully' };
+}
+
+const appliedGiftCardIdSchema = shopifyGidField;
+
+export async function removeGiftCardCodeAction(
+  appliedGiftCardId: string,
+): Promise<CartActionResult> {
+  const parsed = appliedGiftCardIdSchema.safeParse(appliedGiftCardId);
+  if (!parsed.success) {
+    throw new Error('Invalid gift card');
+  }
+
+  await assertNotRateLimited();
+
+  const cart = await CartService.removeGiftCardCode(parsed.data);
+  return { data: cart, message: 'Gift card removed' };
+}
+
+export async function updateCartNoteAction(note: string): Promise<CartActionResult> {
+  const parsed = cartNoteSchema.safeParse(note);
+  if (!parsed.success) {
+    throw new Error('Invalid order note');
+  }
+
+  await assertNotRateLimited();
+
+  const cart = await CartService.updateNote(parsed.data);
+  return { data: cart, message: 'Order note saved' };
+}
+
+export async function updateCartAttributesAction(
+  attributes: Array<{ key: string; value: string }>,
+): Promise<CartActionResult> {
+  const parsed = cartAttributesSchema.safeParse(attributes);
+  if (!parsed.success) {
+    throw new Error('Invalid cart attributes');
+  }
+
+  await assertNotRateLimited();
+
+  const cart = await CartService.updateAttributes(parsed.data);
+  return { data: cart, message: 'Cart updated successfully' };
 }
 
 const reorderSchema = z.object({

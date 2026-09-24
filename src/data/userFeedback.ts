@@ -16,6 +16,10 @@ export const userFeedback = {
     success: 'Signed out successfully',
   },
   missingFields: 'Please fill in all required fields',
+  newsletter: {
+    error: 'Unable to subscribe. Please try again.',
+    success: 'Thanks — you are on the list.',
+  },
   passwordDifferent: 'Passwords do not match',
   passwordLength: 'Password must be at least 8 characters',
   register: {

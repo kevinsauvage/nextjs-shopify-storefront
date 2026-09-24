@@ -1,6 +1,41 @@
 # Minimal queries for sitemap generation - only fetch handle and updatedAt
 # This avoids the 2MB Next.js cache limit by requesting minimal data
 
+query getPagesForSitemap(
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+  $reverse: Boolean
+  $sortKey: PageSortKeys
+  $query: String
+  $language: LanguageCode
+) @inContext(language: $language) {
+  pages(
+    first: $first
+    last: $last
+    after: $after
+    before: $before
+    reverse: $reverse
+    sortKey: $sortKey
+    query: $query
+  ) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    edges {
+      cursor
+      node {
+        handle
+        updatedAt
+      }
+    }
+  }
+}
+
 query getProductsForSitemap(
   $first: Int
   $last: Int

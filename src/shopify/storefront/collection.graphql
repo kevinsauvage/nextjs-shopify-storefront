@@ -35,23 +35,6 @@ query collection(
   }
 }
 
-query getCollectionSeoByHandle($handle: String!) {
-  collection(handle: $handle) {
-    id
-    title
-    description
-    image {
-      id
-      originalSrc
-      altText
-    }
-    seo {
-      title
-      description
-    }
-  }
-}
-
 query collections(
   $first: Int
   $after: String

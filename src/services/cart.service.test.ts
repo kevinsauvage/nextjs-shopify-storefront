@@ -5,11 +5,15 @@ const { sdk, cookieGet, cookieSet, cookieDelete } = vi.hoisted(() => ({
   cookieGet: vi.fn(),
   cookieSet: vi.fn(),
   sdk: {
+    cartAttributesUpdate: vi.fn(),
     cartCreate: vi.fn(),
     cartDiscountCodesUpdate: vi.fn(),
+    cartGiftCardCodesRemove: vi.fn(),
+    cartGiftCardCodesUpdate: vi.fn(),
     cartLinesAdd: vi.fn(),
     cartLinesRemove: vi.fn(),
     cartLinesUpdate: vi.fn(),
+    cartNoteUpdate: vi.fn(),
     getCart: vi.fn(),
   },
 }));
@@ -307,6 +311,74 @@ describe('CartService', () => {
 
       expect(sdk.cartDiscountCodesUpdate).toHaveBeenCalledWith(
         expect.objectContaining({ cartId: EXISTING_CART, discountCodes: ['SAVE10'] }),
+      );
+      expect(cart).toEqual({ id: EXISTING_CART });
+    });
+  });
+
+  describe('updateGiftCardCodes', () => {
+    it('replaces the gift card codes on the stored cart', async () => {
+      cookieGet.mockReturnValue({ value: EXISTING_CART });
+      sdk.cartGiftCardCodesUpdate.mockResolvedValue({
+        cartGiftCardCodesUpdate: { cart: { id: EXISTING_CART }, userErrors: [] },
+      });
+
+      const cart = await CartService.updateGiftCardCodes(['GC-1234']);
+
+      expect(sdk.cartGiftCardCodesUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({ cartId: EXISTING_CART, giftCardCodes: ['GC-1234'] }),
+      );
+      expect(cart).toEqual({ id: EXISTING_CART });
+    });
+  });
+
+  describe('removeGiftCardCode', () => {
+    it('detaches one applied gift card by id', async () => {
+      cookieGet.mockReturnValue({ value: EXISTING_CART });
+      sdk.cartGiftCardCodesRemove.mockResolvedValue({
+        cartGiftCardCodesRemove: { cart: { id: EXISTING_CART }, userErrors: [] },
+      });
+
+      const cart = await CartService.removeGiftCardCode('gid://shopify/AppliedGiftCard/1');
+
+      expect(sdk.cartGiftCardCodesRemove).toHaveBeenCalledWith(
+        expect.objectContaining({
+          appliedGiftCardIds: ['gid://shopify/AppliedGiftCard/1'],
+          cartId: EXISTING_CART,
+        }),
+      );
+      expect(cart).toEqual({ id: EXISTING_CART });
+    });
+  });
+
+  describe('updateNote', () => {
+    it('saves the order note on the stored cart', async () => {
+      cookieGet.mockReturnValue({ value: EXISTING_CART });
+      sdk.cartNoteUpdate.mockResolvedValue({
+        cartNoteUpdate: { cart: { id: EXISTING_CART }, userErrors: [] },
+      });
+
+      const cart = await CartService.updateNote('Leave at the door');
+
+      expect(sdk.cartNoteUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({ cartId: EXISTING_CART, note: 'Leave at the door' }),
+      );
+      expect(cart).toEqual({ id: EXISTING_CART });
+    });
+  });
+
+  describe('updateAttributes', () => {
+    it('replaces the cart attributes on the stored cart', async () => {
+      cookieGet.mockReturnValue({ value: EXISTING_CART });
+      sdk.cartAttributesUpdate.mockResolvedValue({
+        cartAttributesUpdate: { cart: { id: EXISTING_CART }, userErrors: [] },
+      });
+
+      const attributes = [{ key: 'gift_wrap', value: 'true' }];
+      const cart = await CartService.updateAttributes(attributes);
+
+      expect(sdk.cartAttributesUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({ attributes, cartId: EXISTING_CART }),
       );
       expect(cart).toEqual({ id: EXISTING_CART });
     });

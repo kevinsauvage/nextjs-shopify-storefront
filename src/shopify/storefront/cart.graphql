@@ -84,6 +84,49 @@ mutation cartDiscountCodesUpdate(
     }
   }
 }
+mutation cartGiftCardCodesRemove(
+  $appliedGiftCardIds: [ID!]!
+  $cartId: ID!
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+  $language: LanguageCode
+) @inContext(language: $language) {
+  cartGiftCardCodesRemove(cartId: $cartId, appliedGiftCardIds: $appliedGiftCardIds) {
+    cart {
+      ...CartFields
+    }
+    userErrors {
+      ...CartUserErrors
+    }
+    warnings {
+      message
+    }
+  }
+}
+
+mutation cartGiftCardCodesUpdate(
+  $cartId: ID!
+  $giftCardCodes: [String!]!
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+  $language: LanguageCode
+) @inContext(language: $language) {
+  cartGiftCardCodesUpdate(cartId: $cartId, giftCardCodes: $giftCardCodes) {
+    cart {
+      ...CartFields
+    }
+    userErrors {
+      ...CartUserErrors
+    }
+    warnings {
+      message
+    }
+  }
+}
 
 mutation cartLinesAdd(
   $cartId: ID!

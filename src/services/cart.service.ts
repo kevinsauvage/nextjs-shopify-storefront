@@ -234,4 +234,69 @@ export class CartService {
         .then((response) => response?.cartDiscountCodesUpdate),
     );
   }
+
+  /**
+   * Replace the cart gift card codes (Shopify treats the list as the full set,
+   * so callers pass the desired end state, same as discount codes).
+   */
+  static async updateGiftCardCodes(giftCardCodes: string[]): Promise<CartFieldsFragment> {
+    return this.mutate('Failed to update gift cards', (cartId) =>
+      storefrontSdk('private')
+        .cartGiftCardCodesUpdate({
+          cartId,
+          giftCardCodes,
+          ...adjustPaginationVariables({ first: 100 }),
+        })
+        .then((response) => response?.cartGiftCardCodesUpdate),
+    );
+  }
+
+  /**
+   * Detach one applied gift card by its applied id (precise removal that does
+   * not require knowing the other codes on the cart).
+   */
+  static async removeGiftCardCode(appliedGiftCardId: string): Promise<CartFieldsFragment> {
+    return this.mutate('Failed to remove gift card', (cartId) =>
+      storefrontSdk('private')
+        .cartGiftCardCodesRemove({
+          appliedGiftCardIds: [appliedGiftCardId],
+          cartId,
+          ...adjustPaginationVariables({ first: 100 }),
+        })
+        .then((response) => response?.cartGiftCardCodesRemove),
+    );
+  }
+
+  /**
+   * Update the free-text order note attached to the cart.
+   */
+  static async updateNote(note: string): Promise<CartFieldsFragment> {
+    return this.mutate('Failed to update order note', (cartId) =>
+      storefrontSdk('private')
+        .cartNoteUpdate({
+          cartId,
+          note,
+          ...adjustPaginationVariables({ first: 100 }),
+        })
+        .then((response) => response?.cartNoteUpdate),
+    );
+  }
+
+  /**
+   * Replace the custom cart attributes (e.g. gift-wrap flag). Shopify stores
+   * the given list as the full set, so callers pass the desired end state.
+   */
+  static async updateAttributes(
+    attributes: Array<{ key: string; value: string }>,
+  ): Promise<CartFieldsFragment> {
+    return this.mutate('Failed to update cart attributes', (cartId) =>
+      storefrontSdk('private')
+        .cartAttributesUpdate({
+          attributes,
+          cartId,
+          ...adjustPaginationVariables({ first: 100 }),
+        })
+        .then((response) => response?.cartAttributesUpdate),
+    );
+  }
 }

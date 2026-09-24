@@ -26,3 +26,16 @@ mutation MetafieldsSet($metafields: [MetafieldsSetInput!]!) {
     }
   }
 }
+
+mutation NewsletterSubscribe($input: CustomerInput!) {
+  customerCreate(input: $input) {
+    customer {
+      id
+      email
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

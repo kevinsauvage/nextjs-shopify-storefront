@@ -72,6 +72,11 @@ const seo = {
         'Our shipping policy page provides information about our shipping methods, delivery times, and fees. Find out how we ship our products to ensure you receive them on time. Read more now.',
       title: 'Shipping',
     },
+    subscription: {
+      description:
+        'Our subscription policy page explains how subscriptions, renewals, and cancellations work. Read the terms before subscribing.',
+      title: 'Subscription Policy',
+    },
     terms: {
       description:
         'Our terms and conditions page outlines the legal agreement between you and our company when using our website. It includes important information about the use of our website, payment, shipping, and more. Read more now.',

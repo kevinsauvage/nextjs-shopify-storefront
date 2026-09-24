@@ -6,8 +6,12 @@ import {
   addCartLinesAction,
   getCartAction,
   removeCartLineAction,
+  removeGiftCardCodeAction,
+  updateCartAttributesAction,
   updateCartLinesAction,
+  updateCartNoteAction,
   updateDiscountCodesAction,
+  updateGiftCardCodesAction,
 } from '@/actions/cartActions';
 import config from '@/config';
 import { getCookieFront } from '@/lib/client/cookies';
@@ -25,7 +29,11 @@ interface CartContextType {
   handleAddToCart: (variantId: string, quantity?: number) => Promise<void>;
   handleQuantityChange: (id: string, quantity: number) => Promise<void>;
   removeFromCart: (lineItemId: string) => Promise<void>;
+  removeGiftCardCode: (appliedGiftCardId: string) => Promise<void>;
+  updateAttributes: (attributes: Array<{ key: string; value: string }>) => Promise<void>;
   updateDiscountCodes: (discountCodes: string[]) => Promise<void>;
+  updateGiftCardCodes: (giftCardCodes: string[]) => Promise<void>;
+  updateNote: (note: string) => Promise<void>;
 }
 
 export const CartContext = createContext<CartContextType>({
@@ -35,7 +43,11 @@ export const CartContext = createContext<CartContextType>({
   handleAddToCart: async () => {},
   handleQuantityChange: async () => {},
   removeFromCart: async () => {},
+  removeGiftCardCode: async () => {},
+  updateAttributes: async () => {},
   updateDiscountCodes: async () => {},
+  updateGiftCardCodes: async () => {},
+  updateNote: async () => {},
 });
 
 const getErrorMessage = (error: unknown, defaultMessage: string): string => {
@@ -116,6 +128,29 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     [handleMutationError, handleResponse],
   );
 
+  const removeGiftCardCode = useCallback(
+    async (appliedGiftCardId: string) => {
+      if (!appliedGiftCardId) {
+        reportError('cart/gift-card-remove', new Error('Missing gift card ID'));
+        return;
+      }
+
+      const requestId = (requestIdRef.current += 1);
+      try {
+        const response = await removeGiftCardCodeAction(appliedGiftCardId);
+        handleResponse(requestId, response);
+      } catch (caughtError) {
+        handleMutationError(
+          requestId,
+          'cart/gift-card-remove',
+          caughtError,
+          'Failed to remove gift card',
+        );
+      }
+    },
+    [handleMutationError, handleResponse],
+  );
+
   const handleQuantityChange = useCallback(
     async (id: string, quantity: number) => {
       if (!id || !quantity) {
@@ -179,6 +214,69 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     [handleMutationError, handleResponse],
   );
 
+  const updateGiftCardCodes = useCallback(
+    async (giftCardCodes: string[]) => {
+      if (!Array.isArray(giftCardCodes)) {
+        reportError('cart/gift-card', new Error('Invalid gift card codes format'));
+        return;
+      }
+
+      const validCodes = giftCardCodes
+        .map((code) => String(code).trim())
+        .filter((code) => code.length > 0);
+
+      const requestId = (requestIdRef.current += 1);
+      try {
+        const response = await updateGiftCardCodesAction(validCodes);
+        handleResponse(requestId, response);
+      } catch (caughtError) {
+        handleMutationError(
+          requestId,
+          'cart/gift-card',
+          caughtError,
+          'Failed to update gift cards',
+        );
+      }
+    },
+    [handleMutationError, handleResponse],
+  );
+
+  const updateNote = useCallback(
+    async (note: string) => {
+      if (typeof note !== 'string') {
+        reportError('cart/note', new Error('Invalid order note format'));
+        return;
+      }
+
+      const requestId = (requestIdRef.current += 1);
+      try {
+        const response = await updateCartNoteAction(note);
+        handleResponse(requestId, response);
+      } catch (caughtError) {
+        handleMutationError(requestId, 'cart/note', caughtError, 'Failed to save order note');
+      }
+    },
+    [handleMutationError, handleResponse],
+  );
+
+  const updateAttributes = useCallback(
+    async (attributes: Array<{ key: string; value: string }>) => {
+      if (!Array.isArray(attributes)) {
+        reportError('cart/attributes', new Error('Invalid cart attributes format'));
+        return;
+      }
+
+      const requestId = (requestIdRef.current += 1);
+      try {
+        const response = await updateCartAttributesAction(attributes);
+        handleResponse(requestId, response);
+      } catch (caughtError) {
+        handleMutationError(requestId, 'cart/attributes', caughtError, 'Failed to update cart');
+      }
+    },
+    [handleMutationError, handleResponse],
+  );
+
   const value = useMemo<CartContextType>(
     () => ({
       cart,
@@ -187,7 +285,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       handleAddToCart,
       handleQuantityChange,
       removeFromCart,
+      removeGiftCardCode,
+      updateAttributes,
       updateDiscountCodes,
+      updateGiftCardCodes,
+      updateNote,
     }),
     [
       cart,
@@ -196,7 +298,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       handleAddToCart,
       handleQuantityChange,
       removeFromCart,
+      removeGiftCardCode,
+      updateAttributes,
       updateDiscountCodes,
+      updateGiftCardCodes,
+      updateNote,
     ],
   );
 

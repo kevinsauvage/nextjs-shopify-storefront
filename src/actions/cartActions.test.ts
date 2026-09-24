@@ -9,9 +9,13 @@ const {
   getOrderById,
   getShopifyToken,
   rateLimited,
+  removeGiftCardCode,
   removeLine,
+  updateAttributes,
   updateDiscountCodes,
+  updateGiftCards,
   updateLines,
+  updateNote,
 } = vi.hoisted(() => ({
   addLines: vi.fn(),
   getCart: vi.fn(),
@@ -19,9 +23,13 @@ const {
   getOrderById: vi.fn(),
   getShopifyToken: vi.fn(),
   rateLimited: vi.fn(async () => false),
+  removeGiftCardCode: vi.fn(),
   removeLine: vi.fn(),
+  updateAttributes: vi.fn(),
   updateDiscountCodes: vi.fn(),
+  updateGiftCards: vi.fn(),
   updateLines: vi.fn(),
+  updateNote: vi.fn(),
 }));
 
 vi.mock('@/lib/server/client-ip', async (importOriginal) => {
@@ -35,16 +43,31 @@ vi.mock('@/lib/server/rate-limit', () => ({
 vi.mock('@/lib/server/account', () => ({ getOrderById }));
 vi.mock('@/lib/server/shopify-helpers', () => ({ getShopifyToken }));
 vi.mock('@/services/cart.service', () => ({
-  CartService: { addLines, getCart, getCartId, removeLine, updateDiscountCodes, updateLines },
+  CartService: {
+    addLines,
+    getCart,
+    getCartId,
+    removeGiftCardCode,
+    removeLine,
+    updateAttributes,
+    updateDiscountCodes,
+    updateGiftCardCodes: updateGiftCards,
+    updateLines,
+    updateNote,
+  },
 }));
 
 import {
   addCartLinesAction,
   getCartAction,
   removeCartLineAction,
+  removeGiftCardCodeAction,
   reorderAction,
+  updateCartAttributesAction,
   updateCartLinesAction,
+  updateCartNoteAction,
   updateDiscountCodesAction,
+  updateGiftCardCodesAction,
 } from './cartActions';
 
 const CART = { id: 'cart-1' };
@@ -341,5 +364,133 @@ describe('reorderAction', () => {
 
     await expect(reorderAction('12345')).rejects.toThrow('Too many cart updates');
     expect(addLines).not.toHaveBeenCalled();
+  });
+});
+
+describe('updateGiftCardCodesAction', () => {
+  const APPLIED_CART = {
+    appliedGiftCards: [{ id: 'gid://shopify/AppliedGiftCard/1' }],
+    id: 'cart-1',
+  };
+
+  beforeEach(() => {
+    updateGiftCards.mockReset();
+    updateGiftCards.mockResolvedValue(APPLIED_CART);
+    rateLimited.mockReset();
+    rateLimited.mockResolvedValue(false);
+  });
+
+  it('trims and passes valid codes through to the cart service', async () => {
+    const result = await updateGiftCardCodesAction(['  GC-1234  ']);
+
+    expect(updateGiftCards).toHaveBeenCalledWith(['GC-1234']);
+    expect(result).toEqual({ data: APPLIED_CART, message: 'Gift cards updated successfully' });
+  });
+
+  it('rejects blank codes', async () => {
+    await expect(updateGiftCardCodesAction(['   '])).rejects.toThrow('Invalid gift card code');
+    expect(updateGiftCards).not.toHaveBeenCalled();
+  });
+
+  it('reports an unrecognized code instead of false success', async () => {
+    updateGiftCards.mockResolvedValue({ appliedGiftCards: [], id: 'cart-1' });
+
+    await expect(updateGiftCardCodesAction(['BOGUS'])).rejects.toThrow(
+      'That gift card code was not recognized',
+    );
+  });
+
+  it('rejects when rate limited before touching the cart', async () => {
+    rateLimited.mockResolvedValueOnce(true);
+
+    await expect(updateGiftCardCodesAction(['GC-1234'])).rejects.toThrow('Too many cart updates');
+    expect(updateGiftCards).not.toHaveBeenCalled();
+  });
+});
+
+describe('removeGiftCardCodeAction', () => {
+  const APPLIED_ID = 'gid://shopify/AppliedGiftCard/1';
+
+  beforeEach(() => {
+    removeGiftCardCode.mockReset();
+    removeGiftCardCode.mockResolvedValue(CART);
+    rateLimited.mockReset();
+    rateLimited.mockResolvedValue(false);
+  });
+
+  it('passes a valid applied id through to the cart service', async () => {
+    const result = await removeGiftCardCodeAction(APPLIED_ID);
+
+    expect(removeGiftCardCode).toHaveBeenCalledWith(APPLIED_ID);
+    expect(result).toEqual({ data: CART, message: 'Gift card removed' });
+  });
+
+  it('rejects a non-gid id without a Shopify round-trip', async () => {
+    await expect(removeGiftCardCodeAction('gift-card-1')).rejects.toThrow('Invalid gift card');
+    expect(removeGiftCardCode).not.toHaveBeenCalled();
+  });
+});
+
+describe('updateCartNoteAction', () => {
+  beforeEach(() => {
+    updateNote.mockReset();
+    updateNote.mockResolvedValue(CART);
+    rateLimited.mockReset();
+    rateLimited.mockResolvedValue(false);
+  });
+
+  it('trims and passes a valid note through to the cart service', async () => {
+    const result = await updateCartNoteAction('  Leave at the door  ');
+
+    expect(updateNote).toHaveBeenCalledWith('Leave at the door');
+    expect(result).toEqual({ data: CART, message: 'Order note saved' });
+  });
+
+  it('accepts an empty note to clear it', async () => {
+    await updateCartNoteAction('');
+
+    expect(updateNote).toHaveBeenCalledWith('');
+  });
+
+  it('rejects notes longer than 2000 characters', async () => {
+    await expect(updateCartNoteAction('x'.repeat(2001))).rejects.toThrow('Invalid order note');
+    expect(updateNote).not.toHaveBeenCalled();
+  });
+});
+
+describe('updateCartAttributesAction', () => {
+  beforeEach(() => {
+    updateAttributes.mockReset();
+    updateAttributes.mockResolvedValue(CART);
+    rateLimited.mockReset();
+    rateLimited.mockResolvedValue(false);
+  });
+
+  it('passes valid attributes through to the cart service', async () => {
+    const attributes = [{ key: 'gift_wrap', value: 'true' }];
+    const result = await updateCartAttributesAction(attributes);
+
+    expect(updateAttributes).toHaveBeenCalledWith(attributes);
+    expect(result).toEqual({ data: CART, message: 'Cart updated successfully' });
+  });
+
+  it('rejects blank keys and oversized values', async () => {
+    await expect(updateCartAttributesAction([{ key: '  ', value: 'x' }])).rejects.toThrow(
+      'Invalid cart attributes',
+    );
+    await expect(
+      updateCartAttributesAction([{ key: 'k', value: 'x'.repeat(1025) }]),
+    ).rejects.toThrow('Invalid cart attributes');
+    expect(updateAttributes).not.toHaveBeenCalled();
+  });
+
+  it('rejects more than 10 attributes', async () => {
+    const attributes = Array.from({ length: 11 }, (_, index) => ({
+      key: `key-${index}`,
+      value: 'x',
+    }));
+
+    await expect(updateCartAttributesAction(attributes)).rejects.toThrow('Invalid cart attributes');
+    expect(updateAttributes).not.toHaveBeenCalled();
   });
 });

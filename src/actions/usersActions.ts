@@ -15,7 +15,9 @@ import { companyField, emailField, nameField, phoneField } from '@/utils/validat
 import { z } from 'zod';
 
 const userSchema = z.object({
-  acceptsMarketing: z.string().optional(),
+  // Strict 'true'/'false' contract with the account form, which sends React
+  // state (an unchecked checkbox submits nothing via FormData).
+  acceptsMarketing: z.enum(['true', 'false']).optional(),
   company: companyField,
   email: emailField,
   firstName: nameField,
@@ -57,5 +59,11 @@ export async function updateUserAction(input: UpdateUserInput): Promise<FormStat
   const errorState = serviceErrorsToFormState(serviceResult, 'Failed to update user');
   if (errorState) return errorState;
 
+  // Deliberately no revalidatePath here. Invalidating the current route makes
+  // Next.js re-render this page right after the mutation, and the follow-up
+  // read can still return the pre-update customer — resetting the form the
+  // customer just saved. This action is the only mutating action in the app
+  // that needs to keep the user on the page, so it returns state and leaves
+  // the component in charge (matching the redirect-based flows elsewhere).
   return formSuccess('User updated successfully');
 }
