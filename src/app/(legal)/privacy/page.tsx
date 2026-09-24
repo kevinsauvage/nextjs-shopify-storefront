@@ -9,6 +9,7 @@ import { storefrontSdk } from '@/shopify/index';
 import { sanitizeHtmlCached } from '@/utils/sanitize';
 
 import MainContent from '../_components/MainContent';
+import PolicyFallback from '../_components/PolicyFallback';
 
 export const metadata: Metadata = generateMetadataUtil({
   title: seo.pages.privacy.title,
@@ -28,7 +29,11 @@ const PrivacyPage = async () => {
         <Breadcrumbs lastElement={title} />
       </PageBanner>
       <MainContent>
-        {privacyHtml && <div dangerouslySetInnerHTML={{ __html: privacyHtml }} />}
+        {privacyHtml ? (
+          <div dangerouslySetInnerHTML={{ __html: privacyHtml }} />
+        ) : (
+          <PolicyFallback />
+        )}
       </MainContent>
     </div>
   );

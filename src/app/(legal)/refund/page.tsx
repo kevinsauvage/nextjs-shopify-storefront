@@ -9,6 +9,7 @@ import { storefrontSdk } from '@/shopify/index';
 import { sanitizeHtmlCached } from '@/utils/sanitize';
 
 import MainContent from '../_components/MainContent';
+import PolicyFallback from '../_components/PolicyFallback';
 
 export const metadata: Metadata = generateMetadataUtil({
   title: seo.pages.refund.title,
@@ -29,7 +30,7 @@ const RefundPage = async () => {
         <Breadcrumbs lastElement={title} />
       </PageBanner>
       <MainContent>
-        {refundHtml && <div dangerouslySetInnerHTML={{ __html: refundHtml }} />}
+        {refundHtml ? <div dangerouslySetInnerHTML={{ __html: refundHtml }} /> : <PolicyFallback />}
       </MainContent>
     </div>
   );

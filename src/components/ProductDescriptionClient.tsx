@@ -169,7 +169,7 @@ const ProductDescriptionClient = ({
             <AccordionContent>
               {descriptionHtml ? (
                 <div
-                  className="product-description prose prose-sm max-w-none text-secondary dark:prose-invert"
+                  className="product-description max-w-none text-secondary"
                   dangerouslySetInnerHTML={{ __html: descriptionHtml }}
                 />
               ) : (

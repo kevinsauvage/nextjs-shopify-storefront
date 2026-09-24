@@ -9,6 +9,7 @@ import { storefrontSdk } from '@/shopify';
 import { sanitizeHtmlCached } from '@/utils/sanitize';
 
 import MainContent from '../_components/MainContent';
+import PolicyFallback from '../_components/PolicyFallback';
 
 export const metadata: Metadata = generateMetadataUtil({
   title: seo.pages.shipping.title,
@@ -27,7 +28,11 @@ const ShippingPage = async () => {
         <Breadcrumbs lastElement={title} />
       </PageBanner>
       <MainContent>
-        {shippingHtml && <div dangerouslySetInnerHTML={{ __html: shippingHtml }} />}
+        {shippingHtml ? (
+          <div dangerouslySetInnerHTML={{ __html: shippingHtml }} />
+        ) : (
+          <PolicyFallback />
+        )}
       </MainContent>
     </div>
   );

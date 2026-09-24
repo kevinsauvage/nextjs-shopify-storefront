@@ -647,28 +647,207 @@ button[aria-disabled='true'] {
   animation: slideUp 0.3s ease-out;
 }
 
+/**
+ * Store-provided HTML (Shopify policies, product descriptions) rendered via
+ * `dangerouslySetInnerHTML` after `sanitizeHtml`. Merchant markup arrives
+ * unclassed, so every element Shopify can emit gets a complete, self-contained
+ * treatment here — the single source of truth shared by the legal pages
+ * (`MainContent`) and the product accordion (`ProductDescriptionClient`).
+ *
+ * Rhythm: headings open a section (`2em` above), body blocks breathe at `1em`.
+ * Measure and line length are set by the containers; type scales in `em` so
+ * the system adapts to both. Dark mode follows automatically via tokens.
+ */
 .product-description {
-  ul {
-    padding-left: 1rem;
-    margin-bottom: 0.5rem;
-  }
-  li {
-    padding-left: 0.5rem;
-    list-style: disc;
-  }
-  p {
-    margin-bottom: 0.5rem;
-  }
-  table {
-    margin-bottom: 0.5rem;
-  }
+  line-height: 1.7;
+  overflow-wrap: break-word;
+
+  h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
+    margin-top: 2em;
+    margin-bottom: 0.75em;
+    color: var(--foreground);
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-family: var(--font-display), georgia, serif;
+    font-size: 1.75em;
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing-tight);
+    line-height: 1.15;
+  }
+
+  h2 {
+    font-family: var(--font-display), georgia, serif;
+    font-size: 1.4em;
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--letter-spacing-normal);
+    line-height: 1.25;
+  }
+
+  h3,
+  h4 {
+    font-size: 1.15em;
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.4;
+  }
+
+  h5,
+  h6 {
+    font-size: 1em;
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.5;
+  }
+
+  p {
+    margin-bottom: 1em;
+  }
+
+  /* Shopify RTE emits bare `div` blocks as well as paragraphs. */
+  & > div {
+    margin-bottom: 1em;
+  }
+
+  strong,
+  b {
+    color: var(--foreground);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  a {
+    /* Same ink-link treatment as `.link`: distinguishable beyond color alone. */
+    color: var(--foreground);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    @apply hover:underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-sm;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1em;
+  }
+
+  ul {
+    list-style: disc;
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
+  li {
+    padding-left: 0.5rem;
+    margin-bottom: 0.25em;
+  }
+
+  li::marker {
+    color: var(--gold);
+  }
+
+  li > ul,
+  li > ol {
+    margin-top: 0.25em;
+    margin-bottom: 0;
+  }
+
+  blockquote {
+    padding-left: 1rem;
+    border-left: 2px solid var(--gold);
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    color: var(--foreground);
+    font-family: var(--font-display), georgia, serif;
+    font-size: 1.05em;
+    font-style: italic;
+  }
+
+  blockquote p {
+    margin-bottom: 0;
+  }
+
+  img {
+    display: block;
+    border-radius: var(--radius);
+    margin-top: 1.5em;
+    margin-right: auto;
+    margin-bottom: 1.5em;
+    margin-left: auto;
+  }
+
+  table {
+    width: 100%;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    border-collapse: collapse;
+    font-size: 0.9em;
+  }
+
+  caption {
+    padding-top: 0.5rem;
+    color: var(--muted-foreground);
+    font-size: 0.9em;
+    text-align: left;
+  }
+
+  th,
+  td {
+    padding-top: 0.625rem;
+    padding-right: 0.75rem;
+    padding-bottom: 0.625rem;
+    padding-left: 0.75rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  thead th {
+    border-bottom: 2px solid var(--border);
+    color: var(--foreground);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  tbody tr + tr {
+    border-top: 1px solid var(--border);
+  }
+
+  hr {
+    border-color: var(--border);
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+
+  code {
+    padding-top: 0.15em;
+    padding-right: 0.4em;
+    padding-bottom: 0.15em;
+    padding-left: 0.4em;
+    border-radius: calc(var(--radius) - 4px);
+    background-color: var(--muted);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.9em;
+  }
+
+  pre {
+    padding: 1rem;
+    border-radius: var(--radius);
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    background-color: var(--muted);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.85em;
+    overflow-x: auto;
+  }
+
+  pre code {
+    padding: 0;
+    background-color: transparent;
+    font-size: inherit;
   }
 }
 
