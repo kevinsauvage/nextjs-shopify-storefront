@@ -146,10 +146,7 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
   return (
     <div>
       <SearchBanner searchQuery={searchParameters.searchQuery} popularTerms={popularTerms} />
-      <SearchAnalytics
-        searchTerm={searchParameters.searchQuery}
-        resultsCount={products.length}
-      />
+      <SearchAnalytics searchTerm={searchParameters.searchQuery} resultsCount={products.length} />
       {products.length > 0 ? (
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 space-y-6">
           <ListingHeader>

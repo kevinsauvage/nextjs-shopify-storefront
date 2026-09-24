@@ -31,10 +31,7 @@ describe('recently viewed', () => {
     addRecentlyViewed('gid://shopify/Product/1');
     addRecentlyViewed('gid://shopify/Product/2');
 
-    expect(readRecentlyViewed()).toEqual([
-      'gid://shopify/Product/2',
-      'gid://shopify/Product/1',
-    ]);
+    expect(readRecentlyViewed()).toEqual(['gid://shopify/Product/2', 'gid://shopify/Product/1']);
   });
 
   it('moves a re-viewed product to the front without duplicating', () => {

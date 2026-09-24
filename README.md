@@ -209,6 +209,34 @@ back from Shopify are rewritten on-site by `normalizeMenuHref`.
 > content for up to 10 minutes: public Shopify reads are cached (`revalidate.shopify`
 > in `src/config/index.ts`, tag `shopify`) and this repo has no purge webhook yet.
 
+## Popular searches (metaobject)
+
+The "Popular:" chips on `/search` come from a `popular_search_term` metaobject
+(read by `src/lib/server/popularSearches.ts`), falling back to a static list when
+the merchant has not curated any. Each entry needs a `term` field (a
+`query`/`label`/`title` field also works); the definition must expose storefront
+`PUBLIC_READ`.
+
+```bash
+yarn metaobjects:list             # show all metaobject definitions
+yarn metaobjects:ensure           # create the popular_search_term definition if missing
+yarn metaobjects:seed             # upsert terms from content/popular-searches.json
+```
+
+## Device-local state (no account, no server)
+
+Two small client caches make browsing feel continuous without touching Shopify:
+
+- **Recently viewed** — `src/lib/client/recentlyViewed.ts` records product GIDs on
+  the product page (`RecentlyViewedTracker`) and renders them as a rail
+  (`RecentlyViewedProducts`) on product and empty-cart pages.
+- **Recent searches** — `src/lib/client/recentSearches.ts` records terms on the
+  search page and shows them under the search box (`RecentSearches`).
+
+Both are per-browser (`localStorage`), read hydration-safely via
+`useLocalList`/`useSyncExternalStore`, and never sent to the server except as
+product IDs to resolve. Clearing browser storage clears them.
+
 ## GraphQL Code Generation
 
 This project uses [GraphQL Code Generator](https://the-guild.dev/graphql/codegen) to generate TypeScript types and SDK functions from Shopify's GraphQL schema.
