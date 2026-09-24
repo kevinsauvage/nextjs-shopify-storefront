@@ -1,8 +1,8 @@
 import { cache } from 'react';
 
+import { reportError } from '@/lib/logger';
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { storefrontSdk } from '@/shopify';
-import { safeLogError } from '@/utils/api-responses';
 
 /**
  * Resolve the current customer. Memoized per request so repeated calls within
@@ -26,7 +26,7 @@ export const getUser = cache(async () => {
 
     return response?.customer ?? null;
   } catch (error) {
-    safeLogError('getUser', error);
+    reportError('getUser', error);
     return null;
   }
 });

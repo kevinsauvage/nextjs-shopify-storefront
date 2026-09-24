@@ -1,9 +1,9 @@
 'use server';
 
+import { reportError } from '@/lib/logger';
 import { getClientIp } from '@/lib/server/client-ip';
 import { isRateLimited } from '@/lib/server/rate-limit';
 import type { FormState } from '@/types/formActions';
-import { safeLogError } from '@/utils/api-responses';
 import { formError, formSuccess, zodErrorsToFormState } from '@/utils/form-actions';
 
 import nodemailer from 'nodemailer';
@@ -92,7 +92,7 @@ export const contactAction = async (input: ContactInput): Promise<FormState> => 
   const recipient = CONTACT_EMAIL || NEXT_PUBLIC_SITE_EMAIL || EMAIL_ADDRESS;
 
   if (!EMAIL_ADDRESS || !EMAIL_PASSWORD || !recipient) {
-    safeLogError('contactAction', new Error('Contact email is not configured'));
+    reportError('contactAction', new Error('Contact email is not configured'));
     return formError('The contact form is temporarily unavailable. Please try again later.');
   }
 
@@ -115,7 +115,7 @@ export const contactAction = async (input: ContactInput): Promise<FormState> => 
 
     return formSuccess('Email sent successfully');
   } catch (error) {
-    safeLogError('contactAction', error);
+    reportError('contactAction', error);
     return formError('An error occurred while sending the email');
   }
 };

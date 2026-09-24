@@ -33,7 +33,7 @@ vi.mock('@/services/auth.service', () => ({ AuthService: { login, resetPassword 
 vi.mock('@/shopify', () => ({
   storefrontSdk: () => ({ customerAccessTokenDelete }),
 }));
-vi.mock('@/utils/api-responses', () => ({ safeLogError: vi.fn() }));
+vi.mock('@/lib/logger', () => ({ reportError: vi.fn() }));
 
 import config from '@/config';
 

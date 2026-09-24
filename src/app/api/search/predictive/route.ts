@@ -1,14 +1,9 @@
-import { type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
+import { reportError } from '@/lib/logger';
 import { getClientIp } from '@/lib/server/client-ip';
 import { isRateLimited } from '@/lib/server/rate-limit';
 import { storefrontSdk } from '@/shopify';
-import {
-  createErrorResponse,
-  createSuccessResponse,
-  handleApiError,
-  HTTP_STATUS,
-} from '@/utils/api-responses';
 
 const MIN_QUERY_LENGTH = 2;
 const MAX_QUERY_LENGTH = 100;
@@ -19,14 +14,14 @@ export async function GET(request: NextRequest) {
   const query = request.nextUrl.searchParams.get('q')?.trim() ?? '';
 
   if (query.length < MIN_QUERY_LENGTH) {
-    return createSuccessResponse({ predictiveSearch: null });
+    return NextResponse.json({ data: { predictiveSearch: null }, success: true });
   }
 
   if (query.length > MAX_QUERY_LENGTH) {
-    return createErrorResponse('Query too long', {
-      message: 'Search query is too long.',
-      status: HTTP_STATUS.BAD_REQUEST,
-    });
+    return NextResponse.json(
+      { error: 'Query too long', message: 'Search query is too long.' },
+      { status: 400 },
+    );
   }
 
   const ip = await getClientIp();
@@ -38,29 +33,36 @@ export async function GET(request: NextRequest) {
       failClosed: false,
     })
   ) {
-    return createErrorResponse('Rate limit exceeded', {
-      message: 'Rate limit exceeded. Please try again in a moment.',
-      status: HTTP_STATUS.TOO_MANY_REQUESTS,
-    });
+    return NextResponse.json(
+      {
+        error: 'Rate limit exceeded',
+        message: 'Rate limit exceeded. Please try again in a moment.',
+      },
+      { status: 429 },
+    );
   }
 
   try {
     const response = await storefrontSdk().predictiveSearch({ query });
 
     if (!response) {
-      return createSuccessResponse({ predictiveSearch: null });
+      return NextResponse.json({ data: { predictiveSearch: null }, success: true });
     }
 
-    return createSuccessResponse(response, {
-      headers: {
-        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+    return NextResponse.json(
+      { data: response, success: true },
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        },
       },
-    });
+    );
   } catch (error) {
-    return handleApiError(
-      'GET /api/search/predictive',
-      error,
-      'Failed to fetch predictive search results',
+    // Never echo the raw error message: it can leak Shopify/GraphQL internals.
+    reportError('GET /api/search/predictive', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch predictive search results' },
+      { status: 500 },
     );
   }
 }

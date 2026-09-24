@@ -5,13 +5,13 @@ import { redirect } from 'next/navigation';
 
 import config from '@/config';
 import { userFeedback } from '@/data/userFeedback';
+import { reportError } from '@/lib/logger';
 import { getClientIp } from '@/lib/server/client-ip';
 import { isRateLimited } from '@/lib/server/rate-limit';
 import { clearShopifyToken, getShopifyToken } from '@/lib/server/shopify-helpers';
 import { AuthService } from '@/services/auth.service';
 import { storefrontSdk } from '@/shopify';
 import type { FormState } from '@/types/formActions';
-import { safeLogError } from '@/utils/api-responses';
 import { getCookieDeleteOptions } from '@/utils/cookie-security';
 import {
   formError,
@@ -197,7 +197,7 @@ export async function logoutAction(): Promise<void> {
       });
     } catch (error) {
       // Surface the failure instead of swallowing it; the token expires on its own.
-      safeLogError('logoutAction - token revocation', error);
+      reportError('logoutAction - token revocation', error);
     }
   }
 

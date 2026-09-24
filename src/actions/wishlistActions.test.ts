@@ -28,22 +28,26 @@ vi.mock('@/services/wishlist.service', () => ({
   isValidWishlistProductId: (value: unknown): value is string =>
     typeof value === 'string' && /^gid:\/\/shopify\/Product\/\d+$/.test(value),
 }));
-vi.mock('@/utils/api-responses', () => ({ safeLogError: vi.fn() }));
+vi.mock('@/lib/logger', () => ({ reportError: vi.fn() }));
 
-import { addToWishlistAction } from './wishlistActions';
+import { setWishlistMembershipAction } from './wishlistActions';
 
 const PRODUCT_ID = 'gid://shopify/Product/123';
+const OTHER_ID = 'gid://shopify/Product/456';
+const CUSTOMER_ID = 'gid://shopify/Customer/1';
 
-describe('addToWishlistAction', () => {
+describe('setWishlistMembershipAction', () => {
   beforeEach(() => {
     getWishlistState.mockReset();
     mutateWishlist.mockReset();
     rateLimited.mockReset();
     rateLimited.mockResolvedValue(false);
+    getWishlistState.mockResolvedValue({ customerId: CUSTOMER_ID, ids: [] });
+    mutateWishlist.mockResolvedValue({ success: true, data: [PRODUCT_ID] });
   });
 
   it('rejects a malformed product id without touching the limiter', async () => {
-    const result = await addToWishlistAction('not-a-gid');
+    const result = await setWishlistMembershipAction(false, 'not-a-gid');
 
     expect(result.success).toBe(false);
     expect(rateLimited).not.toHaveBeenCalled();
@@ -53,7 +57,7 @@ describe('addToWishlistAction', () => {
   it('fails closed with a session-scoped bucket when rate limited', async () => {
     rateLimited.mockResolvedValueOnce(true);
 
-    const result = await addToWishlistAction(PRODUCT_ID);
+    const result = await setWishlistMembershipAction(false, PRODUCT_ID);
 
     expect(result.success).toBe(false);
     expect(mutateWishlist).not.toHaveBeenCalled();
@@ -64,5 +68,91 @@ describe('addToWishlistAction', () => {
       '1 m',
       { failClosed: true },
     );
+  });
+
+  it('rejects unauthenticated callers without mutating', async () => {
+    getWishlistState.mockResolvedValue({ customerId: null, ids: [] });
+
+    const result = await setWishlistMembershipAction(false, PRODUCT_ID);
+
+    expect(result.success).toBe(false);
+    expect(result.message).toBe('User not authenticated');
+    expect(mutateWishlist).not.toHaveBeenCalled();
+  });
+
+  it('short-circuits adding a product that is already wishlisted', async () => {
+    getWishlistState.mockResolvedValue({ customerId: CUSTOMER_ID, ids: [PRODUCT_ID] });
+
+    const result = await setWishlistMembershipAction(false, PRODUCT_ID);
+
+    expect(result).toEqual({
+      success: true,
+      data: [PRODUCT_ID],
+      message: 'Product already in wishlist',
+    });
+    expect(mutateWishlist).not.toHaveBeenCalled();
+  });
+
+  it('short-circuits removing a product that is already absent', async () => {
+    getWishlistState.mockResolvedValue({ customerId: CUSTOMER_ID, ids: [] });
+
+    const result = await setWishlistMembershipAction(true, PRODUCT_ID);
+
+    expect(result).toEqual({
+      success: true,
+      data: [],
+      message: 'Product already removed from wishlist',
+    });
+    expect(mutateWishlist).not.toHaveBeenCalled();
+  });
+
+  it('adds a product through the service', async () => {
+    getWishlistState.mockResolvedValue({ customerId: CUSTOMER_ID, ids: [OTHER_ID] });
+    mutateWishlist.mockResolvedValue({ success: true, data: [OTHER_ID, PRODUCT_ID] });
+
+    const result = await setWishlistMembershipAction(false, PRODUCT_ID);
+
+    expect(mutateWishlist).toHaveBeenCalledWith(
+      { action: 'add', productId: PRODUCT_ID },
+      CUSTOMER_ID,
+    );
+    expect(result).toEqual({
+      success: true,
+      data: [OTHER_ID, PRODUCT_ID],
+      message: 'Product added to wishlist',
+    });
+    expect(updateTag).toHaveBeenCalledWith('wishlist');
+  });
+
+  it('removes a product through the service', async () => {
+    getWishlistState.mockResolvedValue({ customerId: CUSTOMER_ID, ids: [PRODUCT_ID, OTHER_ID] });
+    mutateWishlist.mockResolvedValue({ success: true, data: [OTHER_ID] });
+
+    const result = await setWishlistMembershipAction(true, PRODUCT_ID);
+
+    expect(mutateWishlist).toHaveBeenCalledWith(
+      { action: 'remove', productId: PRODUCT_ID },
+      CUSTOMER_ID,
+    );
+    expect(result).toEqual({
+      success: true,
+      data: [OTHER_ID],
+      message: 'Product removed from wishlist',
+    });
+    expect(updateTag).toHaveBeenCalledWith('wishlist');
+  });
+
+  it('forwards the service limit error when the wishlist is full', async () => {
+    getWishlistState.mockResolvedValue({ customerId: CUSTOMER_ID, ids: [OTHER_ID] });
+    mutateWishlist.mockResolvedValue({
+      success: false,
+      message: 'Wishlist is full. Maximum 100 items allowed.',
+    });
+
+    const result = await setWishlistMembershipAction(false, PRODUCT_ID);
+
+    expect(result.success).toBe(false);
+    expect(result.message).toMatch(/full/);
+    expect(updateTag).not.toHaveBeenCalled();
   });
 });

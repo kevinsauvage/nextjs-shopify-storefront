@@ -24,9 +24,8 @@ vi.mock('@/shopify/helpers', () => ({
   adjustPaginationVariables: (variables: Record<string, unknown>) => variables,
 }));
 
-vi.mock('@/utils/api-responses', () => ({
-  mapShopifyUserErrors: (userErrors?: unknown[]) => (userErrors?.length ? userErrors : undefined),
-  safeLogError: vi.fn(),
+vi.mock('@/lib/logger', () => ({
+  reportError: vi.fn(),
 }));
 
 import config from '@/config';

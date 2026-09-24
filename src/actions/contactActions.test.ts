@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { createTransport, rateLimited, safeLogError, sendMail } = vi.hoisted(() => ({
+const { createTransport, rateLimited, reportError, sendMail } = vi.hoisted(() => ({
   createTransport: vi.fn(),
   rateLimited: vi.fn(async () => false),
-  safeLogError: vi.fn(),
+  reportError: vi.fn(),
   sendMail: vi.fn(async (_mail: unknown) => ({})),
 }));
 
@@ -12,8 +12,8 @@ vi.mock('@/lib/server/client-ip', () => ({ getClientIp: async () => '1.2.3.4' })
 vi.mock('@/lib/server/rate-limit', () => ({
   isRateLimited: (...args: unknown[]) => rateLimited(...(args as [])),
 }));
-vi.mock('@/utils/api-responses', () => ({
-  safeLogError: (...args: unknown[]) => safeLogError(...args),
+vi.mock('@/lib/logger', () => ({
+  reportError: (...args: unknown[]) => reportError(...args),
 }));
 
 import { contactAction } from './contactActions';
@@ -24,7 +24,7 @@ describe('contactAction', () => {
   beforeEach(() => {
     createTransport.mockReset();
     rateLimited.mockReset();
-    safeLogError.mockReset();
+    reportError.mockReset();
     sendMail.mockReset();
     sendMail.mockResolvedValue({});
     rateLimited.mockResolvedValue(false);

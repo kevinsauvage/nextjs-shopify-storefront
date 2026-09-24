@@ -2,6 +2,7 @@
 
 import { updateTag } from 'next/cache';
 
+import { reportError } from '@/lib/logger';
 import { fingerprintForRateLimit, getClientIp, rateLimitKey } from '@/lib/server/client-ip';
 import { isRateLimited } from '@/lib/server/rate-limit';
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
@@ -13,7 +14,6 @@ import {
   WishlistService,
 } from '@/services/wishlist.service';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
-import { safeLogError } from '@/utils/api-responses';
 
 export type WishlistActionResult = {
   success: boolean;
@@ -45,7 +45,7 @@ export async function getWishlistIdsAction(): Promise<string[]> {
   try {
     return await getWishlistIdsCached();
   } catch (error) {
-    safeLogError('getWishlistIdsAction', error);
+    reportError('getWishlistIdsAction', error);
     return [];
   }
 }
@@ -61,12 +61,25 @@ export async function getWishlistProductsAction(
     // reach the Storefront API even though this action is unauthenticated.
     return await WishlistService.resolveProductsByIds(ids);
   } catch (error) {
-    safeLogError('getWishlistProductsAction', error);
+    reportError('getWishlistProductsAction', error);
     return [];
   }
 }
 
-export async function addToWishlistAction(productId: string): Promise<WishlistActionResult> {
+/**
+ * Add or remove a product from the wishlist.
+ *
+ * @param isWishlisted whether the product is currently wishlisted:
+ * `true` removes it, `false` adds it (mirrors `handleSetWishlist`).
+ *
+ * Membership and limit rules live in `WishlistService.mutateWishlist`, which
+ * re-reads the list inside the customer lock; the only check kept here is the
+ * cheap already-in-desired-state fast path that avoids a write entirely.
+ */
+export async function setWishlistMembershipAction(
+  isWishlisted: boolean,
+  productId: string,
+): Promise<WishlistActionResult> {
   if (!isValidWishlistProductId(productId)) {
     return { success: false, message: 'Invalid product ID' };
   }
@@ -82,57 +95,20 @@ export async function addToWishlistAction(productId: string): Promise<WishlistAc
       return { success: false, message: UNAUTHENTICATED_ERROR };
     }
 
-    if (ids.includes(productId)) {
-      return { success: true, data: ids, message: 'Product already in wishlist' };
-    }
-
-    if (ids.length >= WISHLIST_MAX_ITEMS) {
+    if (isWishlisted ? !ids.includes(productId) : ids.includes(productId)) {
       return {
-        success: false,
-        message: `Wishlist is full. Maximum ${WISHLIST_MAX_ITEMS} items allowed.`,
+        success: true,
+        data: ids,
+        message: isWishlisted
+          ? 'Product already removed from wishlist'
+          : 'Product already in wishlist',
       };
     }
 
     // Re-read the current list and apply the change in a single write so a
     // concurrent add/remove is merged instead of being overwritten.
-    const result = await WishlistService.mutateWishlist({ action: 'add', productId }, customerId);
-
-    if (!result.success) {
-      return { success: false, message: result.message || GENERIC_ERROR };
-    }
-
-    // Read-your-own-writes: expire the cached ids so the header/UI reflect the add.
-    updateTag(WISHLIST_TAG);
-
-    return { success: true, data: result.data, message: 'Product added to wishlist' };
-  } catch (error) {
-    safeLogError('addToWishlistAction', error);
-    return { success: false, message: GENERIC_ERROR };
-  }
-}
-
-export async function removeFromWishlistAction(productId: string): Promise<WishlistActionResult> {
-  if (!isValidWishlistProductId(productId)) {
-    return { success: false, message: 'Invalid product ID' };
-  }
-
-  if (await assertNotRateLimited()) {
-    return { success: false, message: 'Too many wishlist updates. Please slow down.' };
-  }
-
-  try {
-    const { customerId, ids } = await WishlistService.getWishlistState();
-
-    if (!customerId) {
-      return { success: false, message: UNAUTHENTICATED_ERROR };
-    }
-
-    if (!ids.includes(productId)) {
-      return { success: true, data: ids, message: 'Product already removed from wishlist' };
-    }
-
     const result = await WishlistService.mutateWishlist(
-      { action: 'remove', productId },
+      { action: isWishlisted ? 'remove' : 'add', productId },
       customerId,
     );
 
@@ -140,12 +116,16 @@ export async function removeFromWishlistAction(productId: string): Promise<Wishl
       return { success: false, message: result.message || GENERIC_ERROR };
     }
 
-    // Read-your-own-writes: expire the cached ids so the header/UI reflect the removal.
+    // Read-your-own-writes: expire the cached ids so the header/UI reflect the change.
     updateTag(WISHLIST_TAG);
 
-    return { success: true, data: result.data, message: 'Product removed from wishlist' };
+    return {
+      success: true,
+      data: result.data,
+      message: isWishlisted ? 'Product removed from wishlist' : 'Product added to wishlist',
+    };
   } catch (error) {
-    safeLogError('removeFromWishlistAction', error);
+    reportError('setWishlistMembershipAction', error);
     return { success: false, message: GENERIC_ERROR };
   }
 }

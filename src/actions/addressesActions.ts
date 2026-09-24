@@ -3,12 +3,12 @@
 import { redirect } from 'next/navigation';
 
 import config from '@/config';
+import { reportError } from '@/lib/logger';
 import { fingerprintForRateLimit, getClientIp, rateLimitKey } from '@/lib/server/client-ip';
 import { isRateLimited } from '@/lib/server/rate-limit';
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { AddressService } from '@/services/address.service';
 import type { FormState } from '@/types/formActions';
-import { safeLogError } from '@/utils/api-responses';
 import { formError, serviceErrorsToFormState, zodErrorsToFormState } from '@/utils/form-actions';
 
 import { z } from 'zod';
@@ -61,7 +61,7 @@ export async function createAddressAction(input: AddressInput): Promise<FormStat
   try {
     serviceResult = await AddressService.createAddress(result.data);
   } catch (error) {
-    safeLogError('createAddressAction', error);
+    reportError('createAddressAction', error);
     return formError('Failed to create address');
   }
 
@@ -79,7 +79,7 @@ export async function deleteAddressAction(addressId: string): Promise<FormState>
   try {
     serviceResult = await AddressService.deleteAddress(addressId);
   } catch (error) {
-    safeLogError('deleteAddressAction', error);
+    reportError('deleteAddressAction', error);
     return formError('Failed to delete address');
   }
 
@@ -97,7 +97,7 @@ export async function setDefaultAddressAction(addressId: string): Promise<FormSt
   try {
     serviceResult = await AddressService.setDefaultAddress(addressId);
   } catch (error) {
-    safeLogError('setDefaultAddressAction', error);
+    reportError('setDefaultAddressAction', error);
     return formError('Failed to set default address');
   }
 
@@ -120,7 +120,7 @@ export async function updateAddressAction(input: AddressInput): Promise<FormStat
   try {
     serviceResult = await AddressService.updateAddress(result.data);
   } catch (error) {
-    safeLogError('updateAddressAction', error);
+    reportError('updateAddressAction', error);
     return formError('Failed to update address');
   }
 

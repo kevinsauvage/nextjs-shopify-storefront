@@ -12,11 +12,7 @@ import {
 } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-import {
-  addToWishlistAction,
-  getWishlistIdsAction,
-  removeFromWishlistAction,
-} from '@/actions/wishlistActions';
+import { getWishlistIdsAction, setWishlistMembershipAction } from '@/actions/wishlistActions';
 import config from '@/config';
 import { getCookieFront } from '@/lib/client/cookies';
 import { reportError } from '@/lib/logger';
@@ -134,9 +130,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         addOptimisticWishlist({ isWishlisted, productId });
 
         try {
-          const result = isWishlisted
-            ? await removeFromWishlistAction(productId)
-            : await addToWishlistAction(productId);
+          const result = await setWishlistMembershipAction(isWishlisted, productId);
 
           if (result?.success && result.data) {
             setWishlistIds(result.data);

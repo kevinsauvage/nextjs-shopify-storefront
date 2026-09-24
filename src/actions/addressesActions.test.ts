@@ -21,7 +21,7 @@ vi.mock('@/lib/server/shopify-helpers', () => ({ getShopifyToken: async () => 't
 vi.mock('@/services/address.service', () => ({
   AddressService: { createAddress, deleteAddress, updateAddress },
 }));
-vi.mock('@/utils/api-responses', () => ({ safeLogError: vi.fn() }));
+vi.mock('@/lib/logger', () => ({ reportError: vi.fn() }));
 
 import config from '@/config';
 

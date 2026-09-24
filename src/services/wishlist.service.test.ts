@@ -11,7 +11,7 @@ const { adminSdk, getCustomer, getProductsByIds, getShopifyToken, metafieldsSet 
 );
 
 vi.mock('@/lib/server/shopify-helpers', () => ({ getShopifyToken }));
-vi.mock('@/utils/api-responses', () => ({ safeLogError: vi.fn() }));
+vi.mock('@/lib/logger', () => ({ reportError: vi.fn() }));
 vi.mock('@/shopify', () => ({
   adminSdk: () => ({ MetafieldsSet: metafieldsSet }),
   storefrontSdk: () => ({ getCustomer, getProductsByIds }),

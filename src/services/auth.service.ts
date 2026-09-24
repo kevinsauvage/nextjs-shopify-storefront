@@ -1,11 +1,11 @@
 import 'server-only';
 
+import { reportError } from '@/lib/logger';
 import { setShopifyToken } from '@/lib/server/shopify-helpers';
 import { CartService } from '@/services/cart.service';
 import { storefrontSdk } from '@/shopify';
 import { adjustPaginationVariables } from '@/shopify/helpers';
 import type { CustomerAccessToken } from '@/shopify/storefront';
-import { safeLogError } from '@/utils/api-responses';
 import { handleCustomerUserErrors, handleUserErrors } from '@/utils/form-actions';
 import { getUser } from '@/utils/users';
 
@@ -177,10 +177,10 @@ export class AuthService {
       const { userErrors } = response?.cartBuyerIdentityUpdate || {};
 
       if (userErrors && userErrors.length > 0) {
-        safeLogError('AuthService.updateCartBuyerIdentity - user errors', userErrors);
+        reportError('AuthService.updateCartBuyerIdentity - user errors', userErrors);
       }
     } catch (error) {
-      safeLogError('AuthService.updateCartBuyerIdentity', error);
+      reportError('AuthService.updateCartBuyerIdentity', error);
     }
   }
 }

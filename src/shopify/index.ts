@@ -1,7 +1,7 @@
 import 'server-only';
 
 import config from '@/config';
-import { safeLogError } from '@/utils/api-responses';
+import { reportError } from '@/lib/logger';
 
 import type { SdkFunctionWrapper } from './storefront/index';
 import { getSdk as getStorefrontSdk } from './storefront/index';
@@ -93,7 +93,7 @@ const logRequestError = (
   variables: Record<string, unknown> | undefined,
   error: unknown,
 ) => {
-  safeLogError(`GraphQL request - ${operationName}`, {
+  reportError(`GraphQL request - ${operationName}`, {
     operationType,
     variables: variables ? redactVariables(variables) : undefined,
     error: error instanceof Error ? error.message : String(error),

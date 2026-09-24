@@ -1,8 +1,8 @@
 import 'server-only';
 
+import { reportError } from '@/lib/logger';
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { storefrontSdk } from '@/shopify';
-import { safeLogError } from '@/utils/api-responses';
 import { handleCustomerUserErrors } from '@/utils/form-actions';
 
 type AddressInput = {
@@ -43,7 +43,7 @@ export class AddressService {
         customerAccessToken,
       });
     } catch (error) {
-      safeLogError('AddressService.createAddress', error);
+      reportError('AddressService.createAddress', error);
       return { error: 'Failed to create address' };
     }
 
@@ -81,7 +81,7 @@ export class AddressService {
         customerAccessToken,
       });
     } catch (error) {
-      safeLogError('AddressService.updateAddress', error);
+      reportError('AddressService.updateAddress', error);
       return { error: 'Failed to update address' };
     }
 
@@ -113,7 +113,7 @@ export class AddressService {
         customerAccessToken,
       });
     } catch (error) {
-      safeLogError('AddressService.deleteAddress', error);
+      reportError('AddressService.deleteAddress', error);
       return { error: 'Failed to delete address' };
     }
 
@@ -145,7 +145,7 @@ export class AddressService {
         customerAccessToken,
       });
     } catch (error) {
-      safeLogError('AddressService.setDefaultAddress', error);
+      reportError('AddressService.setDefaultAddress', error);
       return { error: 'Failed to set default address' };
     }
 

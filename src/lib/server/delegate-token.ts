@@ -1,8 +1,8 @@
 import 'server-only';
 
 import config from '@/config';
+import { reportError } from '@/lib/logger';
 import { adminSdk } from '@/shopify/admin-client';
-import { safeLogError } from '@/utils/api-responses';
 
 const delegateAccessScope = process.env.SHOPIFY_SCOPE;
 const expiresIn = config.constants.delegateTokenExpirySeconds;
@@ -24,7 +24,7 @@ const isUsable = (token: CachedToken | null): token is CachedToken =>
 
 const createDelegateAccessToken = async (): Promise<string | null> => {
   if (!delegateAccessScope) {
-    safeLogError('getDelegateAccessToken', new Error('SHOPIFY_SCOPE is not set'));
+    reportError('getDelegateAccessToken', new Error('SHOPIFY_SCOPE is not set'));
     return null;
   }
 
@@ -40,7 +40,7 @@ const createDelegateAccessToken = async (): Promise<string | null> => {
   );
 
   if (requestedScopes.length === 0) {
-    safeLogError('getDelegateAccessToken', new Error('SHOPIFY_SCOPE is empty'));
+    reportError('getDelegateAccessToken', new Error('SHOPIFY_SCOPE is empty'));
     return null;
   }
 
@@ -56,7 +56,7 @@ const createDelegateAccessToken = async (): Promise<string | null> => {
 
     if (userErrors && userErrors.length > 0) {
       failedAt = Date.now();
-      safeLogError('getDelegateAccessToken - user errors', userErrors, {
+      reportError('getDelegateAccessToken - user errors', userErrors, {
         delegateAccessScope: requestedScopes,
       });
     }
@@ -74,7 +74,7 @@ const createDelegateAccessToken = async (): Promise<string | null> => {
   } catch (error) {
     // Admin may be unconfigured; degrade gracefully instead of failing the request.
     failedAt = Date.now();
-    safeLogError('getDelegateAccessToken', error);
+    reportError('getDelegateAccessToken', error);
     return null;
   }
 };

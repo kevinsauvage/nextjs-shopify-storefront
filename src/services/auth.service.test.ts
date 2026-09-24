@@ -19,7 +19,7 @@ vi.mock('@/shopify/helpers', () => ({
 }));
 vi.mock('@/lib/server/shopify-helpers', () => ({ setShopifyToken }));
 vi.mock('@/utils/users', () => ({ getUser }));
-vi.mock('@/utils/api-responses', () => ({ safeLogError: vi.fn() }));
+vi.mock('@/lib/logger', () => ({ reportError: vi.fn() }));
 vi.mock('@/services/cart.service', () => ({
   CartService: { getCartId },
 }));

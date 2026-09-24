@@ -2,10 +2,10 @@ import 'server-only';
 
 import { cacheLife, cacheTag } from 'next/cache';
 
+import { reportError } from '@/lib/logger';
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { adminSdk, storefrontSdk } from '@/shopify';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
-import { safeLogError } from '@/utils/api-responses';
 
 export const WISHLIST_MAX_ITEMS = 100;
 
@@ -36,13 +36,18 @@ export type WishlistMutation =
   | { action: 'remove'; productId: string };
 
 /**
- * Per-customer serialization of wishlist writes.
+ * Per-customer serialization of wishlist writes, within this server instance only.
  *
  * The wishlist lives in a single JSON metafield, so two concurrent
  * read-modify-write cycles would otherwise lose one of the updates. Mutations
  * for the same customer are chained so each one reads the value the previous
  * one wrote. Keyed on the customer id, so requests for different customers are
  * unaffected.
+ *
+ * Note: the queue is module-local, so it does not serialize across horizontally
+ * scaled instances — concurrent writes on different instances can still race.
+ * Shopify offers no atomic list-append for this metafield; the re-read inside
+ * `mutateWishlist` only narrows the window.
  */
 const customerQueues = new Map<string, Promise<unknown>>();
 
@@ -68,7 +73,7 @@ const parseWishlistValue = (value?: string | null): string[] => {
       ? parsed.filter(isValidWishlistProductId).slice(0, WISHLIST_MAX_ITEMS)
       : [];
   } catch (error) {
-    safeLogError('WishlistService - parse error', error);
+    reportError('WishlistService - parse error', error);
     return [];
   }
 };
@@ -143,7 +148,7 @@ export class WishlistService {
         .map((id) => productMap.get(id))
         .filter((product): product is ProductFieldsFragment => product !== undefined);
     } catch (error) {
-      safeLogError('WishlistService.resolveProductsByIds', error);
+      reportError('WishlistService.resolveProductsByIds', error);
       return [];
     }
   }
@@ -175,7 +180,7 @@ export class WishlistService {
         ],
       });
     } catch (error) {
-      safeLogError('WishlistService.updateWishlist - admin unavailable', error);
+      reportError('WishlistService.updateWishlist - admin unavailable', error);
       return {
         success: false,
         message: 'Wishlist is unavailable: the Shopify Admin API is not configured.',
@@ -184,7 +189,7 @@ export class WishlistService {
 
     const errors = responseMetafield?.metafieldsSet?.userErrors;
     if (errors && errors.length > 0) {
-      safeLogError('WishlistService.updateWishlist - MetafieldsSet errors', errors);
+      reportError('WishlistService.updateWishlist - MetafieldsSet errors', errors);
       return { success: false, message: 'Something went wrong updating the wishlist' };
     }
 
@@ -196,8 +201,9 @@ export class WishlistService {
    *
    * The metafield is re-read inside the customer lock, immediately before the
    * write, so the update is applied to the freshest value instead of a list
-   * passed in by the caller. Concurrent requests for the same customer are
-   * serialized, which prevents lost updates.
+   * passed in by the caller. Concurrent requests for the same customer on this
+   * instance are serialized, which prevents lost updates between them (but not
+   * across scaled instances — see `customerQueues`).
    */
   static async mutateWishlist(
     mutation: WishlistMutation,

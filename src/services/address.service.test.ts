@@ -12,7 +12,7 @@ const { getShopifyToken, sdk } = vi.hoisted(() => ({
 
 vi.mock('@/lib/server/shopify-helpers', () => ({ getShopifyToken }));
 vi.mock('@/shopify', () => ({ storefrontSdk: () => sdk }));
-vi.mock('@/utils/api-responses', () => ({ safeLogError: vi.fn() }));
+vi.mock('@/lib/logger', () => ({ reportError: vi.fn() }));
 
 import { AddressService } from './address.service';
 

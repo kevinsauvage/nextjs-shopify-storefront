@@ -3,10 +3,10 @@ import 'server-only';
 import { cookies } from 'next/headers';
 
 import config from '@/config';
+import { reportError } from '@/lib/logger';
 import { storefrontSdk } from '@/shopify';
 import { adjustPaginationVariables } from '@/shopify/helpers';
 import type { CartFieldsFragment, CartLineInput, CartLineUpdateInput } from '@/shopify/storefront';
-import { mapShopifyUserErrors, safeLogError } from '@/utils/api-responses';
 import {
   getCookieDeleteOptions,
   getReadableCookieOptions,
@@ -58,12 +58,14 @@ export class CartService {
     const { cart, userErrors, warnings } = createCartResponse.cartCreate || {};
 
     if (warnings && Array.isArray(warnings) && warnings.length) {
-      safeLogError('CartService.createCart - warnings', warnings);
+      reportError('CartService.createCart - warnings', warnings);
     }
 
-    const mappedUserErrors = mapShopifyUserErrors(userErrors);
+    const mappedUserErrors = userErrors?.length
+      ? userErrors.map((err) => ({ ...err, message: err.message || 'An error occurred' }))
+      : undefined;
     if (mappedUserErrors) {
-      safeLogError('CartService.createCart - user errors', mappedUserErrors);
+      reportError('CartService.createCart - user errors', mappedUserErrors);
       if (!cart?.id) {
         throw new Error(
           mappedUserErrors[0]?.message || 'Failed to create cart due to validation errors',
@@ -130,7 +132,7 @@ export class CartService {
     try {
       return (await this.getCart(cartId)) === null;
     } catch (error) {
-      safeLogError('CartService.cartIsGone', error);
+      reportError('CartService.cartIsGone', error);
       return false;
     }
   }
