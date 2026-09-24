@@ -480,6 +480,13 @@ fragment OrderFields on Order {
   customerUrl
   email
   financialStatus
+  lineItems(first: 100) {
+    edges {
+      node {
+        ...OrderLineItemFields
+      }
+    }
+  }
   orderNumber
   phone
   processedAt

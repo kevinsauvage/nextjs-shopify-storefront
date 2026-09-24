@@ -24,7 +24,14 @@
     "lint:css": "stylelint **/*.{scss,css}",
     "lint:css:fix": "stylelint --fix **/*.{scss,css}",
     "codegen": "ts-node --project ./src/shopify/tsconfig.codegen.json bin/run-codegen.ts",
-    "codegen:watch": "ts-node --project ./src/shopify/tsconfig.codegen.json --transpile-only --esm bin/run-codegen.ts --watch"
+    "codegen:watch": "ts-node --project ./src/shopify/tsconfig.codegen.json --transpile-only --esm bin/run-codegen.ts --watch",
+    "content:list": "node bin/shopify-content.mjs list",
+    "content:seed": "node bin/shopify-content.mjs seed",
+    "content:pull": "node bin/shopify-content.mjs pull",
+    "content:upsert": "node bin/shopify-content.mjs upsert",
+    "navigation:list": "node bin/shopify-navigation.mjs list",
+    "navigation:show": "node bin/shopify-navigation.mjs show",
+    "navigation:sync": "node bin/shopify-navigation.mjs sync"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",

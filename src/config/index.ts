@@ -23,6 +23,7 @@ const config = {
   },
   routes: {
     home: '/',
+    activate: '/activate',
     cart: '/cart',
     login: '/login',
     collection: '/collections',

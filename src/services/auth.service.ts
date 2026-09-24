@@ -30,6 +30,11 @@ type ResetPasswordInput = {
   resetToken: string;
 };
 
+type ActivateAccountInput = {
+  activationUrl: string;
+  password: string;
+};
+
 /**
  * Authentication service
  * Handles all authentication-related business logic
@@ -143,6 +148,32 @@ export class AuthService {
 
     if (!customerAccessToken) {
       return { error: 'Failed to reset password' };
+    }
+
+    await setShopifyToken(customerAccessToken);
+
+    return { success: true, customerAccessToken };
+  }
+
+  /**
+   * Activate an invited customer with the activation URL from the invite email.
+   * Signs the customer in on success, mirroring the reset-password flow.
+   */
+  static async activate(input: ActivateAccountInput) {
+    const { activationUrl, password } = input;
+
+    const response = await storefrontSdk('private').customerActivateByUrl({
+      activationUrl,
+      password,
+    });
+
+    const { customerAccessToken, customerUserErrors } = response?.customerActivateByUrl || {};
+
+    const errorResult = handleCustomerUserErrors(customerUserErrors);
+    if (errorResult) return errorResult;
+
+    if (!customerAccessToken) {
+      return { error: 'Failed to activate account' };
     }
 
     await setShopifyToken(customerAccessToken);

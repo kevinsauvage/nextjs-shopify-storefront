@@ -2,16 +2,27 @@ import type * as ClientIpModule from '@/lib/server/client-ip';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { addLines, getCart, getCartId, rateLimited, removeLine, updateDiscountCodes, updateLines } =
-  vi.hoisted(() => ({
-    addLines: vi.fn(),
-    getCart: vi.fn(),
-    getCartId: vi.fn(async (): Promise<string | null> => 'cart-1'),
-    rateLimited: vi.fn(async () => false),
-    removeLine: vi.fn(),
-    updateDiscountCodes: vi.fn(),
-    updateLines: vi.fn(),
-  }));
+const {
+  addLines,
+  getCart,
+  getCartId,
+  getOrderById,
+  getShopifyToken,
+  rateLimited,
+  removeLine,
+  updateDiscountCodes,
+  updateLines,
+} = vi.hoisted(() => ({
+  addLines: vi.fn(),
+  getCart: vi.fn(),
+  getCartId: vi.fn(async (): Promise<string | null> => 'cart-1'),
+  getOrderById: vi.fn(),
+  getShopifyToken: vi.fn(),
+  rateLimited: vi.fn(async () => false),
+  removeLine: vi.fn(),
+  updateDiscountCodes: vi.fn(),
+  updateLines: vi.fn(),
+}));
 
 vi.mock('@/lib/server/client-ip', async (importOriginal) => {
   const actual = await importOriginal<typeof ClientIpModule>();
@@ -21,6 +32,8 @@ vi.mock('@/lib/server/client-ip', async (importOriginal) => {
 vi.mock('@/lib/server/rate-limit', () => ({
   isRateLimited: (...args: unknown[]) => rateLimited(...(args as [])),
 }));
+vi.mock('@/lib/server/account', () => ({ getOrderById }));
+vi.mock('@/lib/server/shopify-helpers', () => ({ getShopifyToken }));
 vi.mock('@/services/cart.service', () => ({
   CartService: { addLines, getCart, getCartId, removeLine, updateDiscountCodes, updateLines },
 }));
@@ -29,6 +42,7 @@ import {
   addCartLinesAction,
   getCartAction,
   removeCartLineAction,
+  reorderAction,
   updateCartLinesAction,
   updateDiscountCodesAction,
 } from './cartActions';
@@ -225,5 +239,107 @@ describe('getCartAction', () => {
     getCart.mockRejectedValue(new Error('network down'));
 
     await expect(getCartAction()).rejects.toThrow('network down');
+  });
+});
+
+describe('reorderAction', () => {
+  const lineItem = (variantId: string | null, quantity: number, availableForSale = true) => ({
+    quantity,
+    variant: variantId ? { availableForSale, id: variantId } : null,
+  });
+
+  const orderWith = (items: Array<ReturnType<typeof lineItem>>) => ({
+    lineItems: { edges: items.map((node) => ({ node })) },
+  });
+
+  beforeEach(() => {
+    addLines.mockReset();
+    addLines.mockResolvedValue(CART);
+    getOrderById.mockReset();
+    getShopifyToken.mockReset();
+    getShopifyToken.mockResolvedValue('customer-token');
+    rateLimited.mockReset();
+    rateLimited.mockResolvedValue(false);
+  });
+
+  it('re-adds every available line and reports the count', async () => {
+    getOrderById.mockResolvedValue(
+      orderWith([
+        lineItem('gid://shopify/ProductVariant/1', 2),
+        lineItem('gid://shopify/ProductVariant/2', 1),
+      ]),
+    );
+
+    const result = await reorderAction('12345');
+
+    expect(getOrderById).toHaveBeenCalledWith('customer-token', '12345');
+    expect(addLines).toHaveBeenCalledWith([
+      { merchandiseId: 'gid://shopify/ProductVariant/1', quantity: 2 },
+      { merchandiseId: 'gid://shopify/ProductVariant/2', quantity: 1 },
+    ]);
+    expect(result).toEqual({ data: CART, message: '2 items added back to your cart' });
+  });
+
+  it('skips unavailable variants and reports the skip count', async () => {
+    getOrderById.mockResolvedValue(
+      orderWith([
+        lineItem('gid://shopify/ProductVariant/1', 1),
+        lineItem('gid://shopify/ProductVariant/2', 1, false),
+        lineItem(null, 1),
+      ]),
+    );
+
+    const result = await reorderAction('12345');
+
+    expect(addLines).toHaveBeenCalledWith([
+      { merchandiseId: 'gid://shopify/ProductVariant/1', quantity: 1 },
+    ]);
+    expect(result.message).toContain('1 items added back to your cart (2 unavailable skipped)');
+  });
+
+  it('clamps quantities to the 99 maximum', async () => {
+    getOrderById.mockResolvedValue(orderWith([lineItem('gid://shopify/ProductVariant/1', 500)]));
+
+    await reorderAction('12345');
+
+    expect(addLines).toHaveBeenCalledWith([
+      { merchandiseId: 'gid://shopify/ProductVariant/1', quantity: 99 },
+    ]);
+  });
+
+  it('rejects a non-numeric order id without a Shopify round-trip', async () => {
+    await expect(reorderAction('../../evil')).rejects.toThrow('Invalid order');
+    expect(getOrderById).not.toHaveBeenCalled();
+    expect(addLines).not.toHaveBeenCalled();
+  });
+
+  it('requires a signed-in customer', async () => {
+    getShopifyToken.mockResolvedValue(null);
+
+    await expect(reorderAction('12345')).rejects.toThrow('Please sign in to reorder');
+    expect(getOrderById).not.toHaveBeenCalled();
+  });
+
+  it('throws when the order does not belong to the customer', async () => {
+    getOrderById.mockResolvedValue(null);
+
+    await expect(reorderAction('12345')).rejects.toThrow('Order not found');
+    expect(addLines).not.toHaveBeenCalled();
+  });
+
+  it('throws when nothing from the order is available anymore', async () => {
+    getOrderById.mockResolvedValue(
+      orderWith([lineItem('gid://shopify/ProductVariant/2', 1, false)]),
+    );
+
+    await expect(reorderAction('12345')).rejects.toThrow('None of the items');
+    expect(addLines).not.toHaveBeenCalled();
+  });
+
+  it('rejects when rate limited before touching the cart', async () => {
+    rateLimited.mockResolvedValueOnce(true);
+
+    await expect(reorderAction('12345')).rejects.toThrow('Too many cart updates');
+    expect(addLines).not.toHaveBeenCalled();
   });
 });

@@ -162,6 +162,53 @@ src/
 └── utils/                 # Utility functions
 ```
 
+## Shopify content (Pages)
+
+Marketing pages (`/pages/<handle>`) are authored in Shopify Admin → Content → Pages
+and rendered by `src/app/pages/[handle]/page.tsx` — no deploy needed to publish copy.
+
+`bin/shopify-content.mjs` (Admin API, needs `SHOPIFY_ADMIN_URL` +
+`SHOPIFY_STORE_FRONT_ADMIN_TOKEN`) manages them from the repo:
+
+```bash
+yarn content:list    # show all Shopify pages (handle, title, published)
+yarn content:seed    # create/update every entry of content/pages.json and publish
+node bin/shopify-content.mjs upsert --handle size-guide --title "Size guide" --file content/pages/size-guide.html [--draft]
+node bin/shopify-content.mjs pull --handle faq [--file content/pages/faq.html]
+```
+
+Workflow for a new page: add the HTML file under `content/pages/`, register it in
+`content/pages.json`, run `yarn content:seed`. Re-running seed updates the page in
+place (safe to re-run). Internal links in the HTML should use storefront paths
+(`/contact`, `/pages/size-guide`, …).
+
+Sync is explicit both ways: edits made directly in Shopify Admin do **not** flow
+back on their own — and the next seed would overwrite them. Run
+`node bin/shopify-content.mjs pull --handle <handle>` first to bring Admin edits
+into the repo (`--file` targets a path outside the manifest). Note `content/` is
+Prettier-ignored on purpose: Shopify normalizes page HTML on save, so `pull` keeps
+the files byte-identical to the store instead of reformatted.
+
+## Shopify navigation (menus)
+
+The header (`main-menu`) and footer (`footer`) are Shopify menus read via
+`getMenuByHandle` — edit them declaratively instead of clicking through Admin.
+
+```bash
+yarn navigation:list              # show all menu handles
+node bin/shopify-navigation.mjs show --handle footer
+yarn navigation:sync              # create/update every menu in content/navigation.json
+```
+
+`sync` rewrites each listed menu wholesale (title + full item tree) and never
+touches menus outside the manifest (e.g. the customer-account menu). Item URLs are
+storefront paths (`/collections/sale`, `/pages/faq`); absolute myshopify URLs coming
+back from Shopify are rewritten on-site by `normalizeMenuHref`.
+
+> After `content:seed` / `navigation:sync`, storefront pages can show stale menus or
+> content for up to 10 minutes: public Shopify reads are cached (`revalidate.shopify`
+> in `src/config/index.ts`, tag `shopify`) and this repo has no purge webhook yet.
+
 ## GraphQL Code Generation
 
 This project uses [GraphQL Code Generator](https://the-guild.dev/graphql/codegen) to generate TypeScript types and SDK functions from Shopify's GraphQL schema.

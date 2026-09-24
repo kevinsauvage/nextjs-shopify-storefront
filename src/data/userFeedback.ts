@@ -1,4 +1,8 @@
 export const userFeedback = {
+  activateAccount: {
+    error: 'Unable to activate account. Please try again.',
+    success: 'Account activated successfully. You are now signed in.',
+  },
   addLinesToCart: {
     error: 'Unable to add item to cart. Please try again.',
     success: 'Item added to cart',

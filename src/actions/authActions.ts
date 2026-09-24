@@ -175,6 +175,45 @@ export const resetPasswordAction = async (input: ResetPasswordInput): Promise<Fo
   redirect(config.routes.account);
 };
 
+const INVALID_ACTIVATION_LINK_MESSAGE = 'Invalid or expired activation link';
+
+const activateSchema = z.object({
+  password: z
+    .string()
+    .min(8, { message: userFeedback.passwordLength })
+    .max(128, { message: userFeedback.passwordLength }),
+  activationUrl: z
+    .string()
+    .url({ message: INVALID_ACTIVATION_LINK_MESSAGE })
+    .max(RESET_URL_MAX_LENGTH, { message: INVALID_ACTIVATION_LINK_MESSAGE })
+    // Activation links are Shopify-hosted account URLs with the same shape as
+    // password-reset links, so they share the store-origin allowlist.
+    .refine(isAllowedPasswordResetUrl, { message: INVALID_ACTIVATION_LINK_MESSAGE }),
+});
+
+type ActivateAccountInput = z.infer<typeof activateSchema>;
+
+export const activateAccountAction = async (input: ActivateAccountInput): Promise<FormState> => {
+  const result = activateSchema.safeParse(input);
+  if (!result.success) {
+    return zodErrorsToFormState(result.error);
+  }
+
+  const { password, activationUrl } = result.data;
+
+  const ip = await getClientIp();
+  if (await isRateLimited('auth:activate', ip, 5, '15 m', { failClosed: true })) {
+    return tooManyAttempts();
+  }
+
+  const serviceResult = await AuthService.activate({ activationUrl, password });
+
+  const errorState = serviceErrorsToFormState(serviceResult, userFeedback.activateAccount.error);
+  if (errorState) return errorState;
+
+  redirect(config.routes.account);
+};
+
 /**
  * Log out: revoke the customer access token, clear the session cookies and
  * redirect to the login page. Meant to be invoked as a form action.

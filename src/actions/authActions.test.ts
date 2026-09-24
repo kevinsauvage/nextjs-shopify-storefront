@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const {
+  activate,
   clearShopifyToken,
   customerAccessTokenDelete,
   getShopifyToken,
@@ -11,6 +12,7 @@ const {
   register,
   resetPassword,
 } = vi.hoisted(() => ({
+  activate: vi.fn(),
   clearShopifyToken: vi.fn(),
   customerAccessTokenDelete: vi.fn(),
   getShopifyToken: vi.fn(),
@@ -29,7 +31,7 @@ vi.mock('@/lib/server/rate-limit', () => ({
 }));
 vi.mock('@/lib/server/shopify-helpers', () => ({ clearShopifyToken, getShopifyToken }));
 vi.mock('@/services/auth.service', () => ({
-  AuthService: { login, recoverPassword: recover, register, resetPassword },
+  AuthService: { activate, login, recoverPassword: recover, register, resetPassword },
 }));
 vi.mock('@/shopify', () => ({
   storefrontSdk: () => ({ customerAccessTokenDelete }),
@@ -40,6 +42,7 @@ import config from '@/config';
 import { userFeedback } from '@/data/userFeedback';
 
 import {
+  activateAccountAction,
   loginAction,
   logoutAction,
   recoverPasswordAction,
@@ -289,6 +292,66 @@ describe('resetPasswordAction', () => {
 
     expect(state).toMatchObject({ message: TOO_MANY_MESSAGE, ok: false });
     expect(resetPassword).not.toHaveBeenCalled();
+    expect(redirect).not.toHaveBeenCalled();
+  });
+});
+
+describe('activateAccountAction', () => {
+  const NEW_PASSWORD = 'new-password-1';
+  const ACTIVATION_URL = 'https://ecomfashionstore.myshopify.com/account/activate/abc';
+
+  beforeEach(() => {
+    activate.mockReset();
+    redirect.mockReset();
+    rateLimited.mockReset();
+    rateLimited.mockResolvedValue(false);
+  });
+
+  it('forwards a store-owned activation link to the service and redirects to account', async () => {
+    activate.mockResolvedValue({ success: true });
+
+    await activateAccountAction({ password: NEW_PASSWORD, activationUrl: ACTIVATION_URL });
+
+    expect(activate).toHaveBeenCalledWith({
+      activationUrl: ACTIVATION_URL,
+      password: NEW_PASSWORD,
+    });
+    expect(redirect).toHaveBeenCalledWith(config.routes.account);
+  });
+
+  it('rejects an off-store activation URL without calling the service', async () => {
+    const state = await activateAccountAction({
+      password: NEW_PASSWORD,
+      activationUrl: 'https://evil.com/activate/abc',
+    });
+
+    expect(state.ok).toBe(false);
+    expect(activate).not.toHaveBeenCalled();
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it('returns the service error and does not redirect when activation fails', async () => {
+    activate.mockResolvedValue({ error: 'Unable to activate account. Please try again.' });
+
+    const state = await activateAccountAction({
+      password: NEW_PASSWORD,
+      activationUrl: ACTIVATION_URL,
+    });
+
+    expect(state.ok).toBe(false);
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it('fails closed with a generic message when the limiter trips', async () => {
+    rateLimited.mockResolvedValue(true);
+
+    const state = await activateAccountAction({
+      password: NEW_PASSWORD,
+      activationUrl: ACTIVATION_URL,
+    });
+
+    expect(state).toMatchObject({ message: TOO_MANY_MESSAGE, ok: false });
+    expect(activate).not.toHaveBeenCalled();
     expect(redirect).not.toHaveBeenCalled();
   });
 });

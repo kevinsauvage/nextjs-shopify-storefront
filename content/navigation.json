@@ -1,0 +1,97 @@
+{
+  "menus": [
+    {
+      "handle": "main-menu",
+      "title": "Main menu",
+      "items": [
+        { "title": "Shop All", "url": "/collections/all-products" },
+        { "title": "Dresses", "url": "/collections/dresses" },
+        { "title": "Tops", "url": "/collections/tops" },
+        {
+          "title": "Activewear",
+          "url": "/collections/activewear",
+          "items": [
+            { "title": "All Activewear", "url": "/collections/activewear" },
+            { "title": "Active Tops", "url": "/collections/activewear-tops" },
+            { "title": "Active Bottoms", "url": "/collections/activewear-bottoms" },
+            { "title": "Active Sets", "url": "/collections/activewear-sets" }
+          ]
+        },
+        {
+          "title": "Bottoms",
+          "url": "/collections/bottoms",
+          "items": [
+            { "title": "All Bottoms", "url": "/collections/bottoms" },
+            { "title": "Pants", "url": "/collections/pants" },
+            { "title": "Leggings", "url": "/collections/leggings" },
+            { "title": "Shorts", "url": "/collections/shorts" },
+            { "title": "Skirts", "url": "/collections/skirts" },
+            { "title": "Denim", "url": "/collections/denim" }
+          ]
+        },
+        {
+          "title": "Outerwear",
+          "url": "/collections/outerwear",
+          "items": [
+            { "title": "All Outerwear", "url": "/collections/outerwear" },
+            { "title": "Jackets", "url": "/collections/jackets" },
+            { "title": "Cardigans", "url": "/collections/cardigans" },
+            { "title": "Sweaters", "url": "/collections/sweaters" }
+          ]
+        },
+        { "title": "Swim & Beachwear", "url": "/collections/swim-beachwear" },
+        { "title": "Accessories", "url": "/collections/accessories" },
+        { "title": "Sale", "url": "/collections/sale" }
+      ]
+    },
+    {
+      "handle": "footer",
+      "title": "Footer menu",
+      "items": [
+        {
+          "title": "Shop",
+          "url": "#",
+          "items": [
+            { "title": "Shop All", "url": "/collections/all-products" },
+            { "title": "Dresses", "url": "/collections/dresses" },
+            { "title": "Activewear", "url": "/collections/activewear" },
+            { "title": "Bottoms", "url": "/collections/bottoms" },
+            { "title": "Outerwear", "url": "/collections/outerwear" },
+            { "title": "Sale", "url": "/collections/sale" }
+          ]
+        },
+        {
+          "title": "Help",
+          "url": "#",
+          "items": [
+            { "title": "Contact", "url": "/contact" },
+            { "title": "Search", "url": "/search" },
+            { "title": "Shipping", "url": "/shipping" },
+            { "title": "Refund policy", "url": "/refund" },
+            { "title": "Size guide", "url": "/pages/size-guide" },
+            { "title": "FAQ", "url": "/pages/faq" },
+            { "title": "About us", "url": "/pages/about-us" }
+          ]
+        },
+        {
+          "title": "Account",
+          "url": "#",
+          "items": [
+            { "title": "Log in", "url": "/login" },
+            { "title": "Register", "url": "/register" },
+            { "title": "My account", "url": "/account" },
+            { "title": "My orders", "url": "/account/orders" }
+          ]
+        },
+        {
+          "title": "Legal",
+          "url": "#",
+          "items": [
+            { "title": "Privacy policy", "url": "/privacy" },
+            { "title": "Terms of service", "url": "/terms" }
+          ]
+        }
+      ]
+    }
+  ]
+}

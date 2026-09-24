@@ -1,0 +1,7 @@
+{
+  "pages": [
+    { "handle": "about-us", "title": "About us", "file": "content/pages/about-us.html" },
+    { "handle": "size-guide", "title": "Size guide", "file": "content/pages/size-guide.html" },
+    { "handle": "faq", "title": "Frequently asked questions", "file": "content/pages/faq.html" }
+  ]
+}

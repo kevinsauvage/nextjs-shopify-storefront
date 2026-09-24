@@ -5,46 +5,20 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import config from '@/config';
 import { DEFAULTS } from '@/config/constants';
-import type {
-  OrderFieldsFragment,
-  OrderFinancialStatus,
-  OrderFulfillmentStatus,
-} from '@/shopify/storefront';
+import type { OrderFieldsFragment } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
 import { formatDate, formatPrice } from '@/utils/format';
+import { getNumericOrderId } from '@/utils/order';
+
+import { formatStatus, getStatusBadgeVariant } from './orderDisplay';
+import TrackingInfo from './TrackingInfo';
 
 import { ChevronDown, Package } from 'lucide-react';
-
-function formatStatus(status?: OrderFulfillmentStatus | OrderFinancialStatus | null) {
-  return status
-    ? status
-        .toLowerCase()
-        .replace(/_/g, ' ')
-        .replace(/\b\w/g, (match) => match.toUpperCase())
-    : DEFAULTS.na;
-}
-
-const getStatusBadgeVariant = (
-  status?: OrderFulfillmentStatus | OrderFinancialStatus | null,
-): 'default' | 'secondary' | 'outline' => {
-  if (!status) return 'outline';
-
-  const statusLower = status.toLowerCase();
-
-  if (statusLower.includes('fulfilled') || statusLower.includes('paid')) {
-    return 'default';
-  }
-
-  if (statusLower.includes('pending') || statusLower.includes('unfulfilled')) {
-    return 'secondary';
-  }
-
-  return 'outline';
-};
 
 const Detail = ({ label, value }: { label: string; value: string | number | null }) => (
   <div className="flex items-baseline justify-between gap-4 border-b border-border/70 py-2">
@@ -78,6 +52,7 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
       .filter(Boolean) || [];
 
   const itemsCount = orderItems.reduce((sum, item) => sum + (item?.quantity || 0), 0);
+  const numericId = getNumericOrderId(order.id);
 
   const details: Array<{ label: string; value: string | number | null }> = [];
 
@@ -160,19 +135,26 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
             </div>
             {/* The heading sits outside the trigger (headings are not valid
                 button content); only the chevron toggles, with its own label. */}
-            <CollapsibleTrigger asChild>
-              <button
-                type="button"
-                aria-expanded={open}
-                aria-label={open ? `Collapse order ${order.name}` : `Expand order ${order.name}`}
-                className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border/70 text-secondary transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              >
-                <ChevronDown
-                  aria-hidden="true"
-                  className={cn('size-5 transition-transform duration-200', open && 'rotate-180')}
-                />
-              </button>
-            </CollapsibleTrigger>
+            <div className="flex shrink-0 items-center gap-2">
+              {numericId && (
+                <Button variant="outline" size="sm" asChild>
+                  <Link href={`${config.routes.orders}/${numericId}`}>View details</Link>
+                </Button>
+              )}
+              <CollapsibleTrigger asChild>
+                <button
+                  type="button"
+                  aria-expanded={open}
+                  aria-label={open ? `Collapse order ${order.name}` : `Expand order ${order.name}`}
+                  className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border/70 text-secondary transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <ChevronDown
+                    aria-hidden="true"
+                    className={cn('size-5 transition-transform duration-200', open && 'rotate-180')}
+                  />
+                </button>
+              </CollapsibleTrigger>
+            </div>
           </CardHeader>
 
           <CollapsibleContent>
@@ -253,56 +235,7 @@ const OrderCard = ({ order }: { order: OrderFieldsFragment }) => {
               </div>
 
               {successfulFulfillments && successfulFulfillments.length > 0 && (
-                <div className="space-y-3">
-                  <h4 className="text-heading-4">Tracking information</h4>
-
-                  {successfulFulfillments.map((fulfillment, index) => {
-                    const { trackingInfo, trackingCompany } = fulfillment;
-
-                    if (!trackingInfo || trackingInfo.length === 0) return null;
-
-                    const fulfillmentKey = `${trackingCompany ?? DEFAULTS.carrier}-${trackingInfo[0]?.number ?? `group-${trackingInfo.length}`}`;
-
-                    return (
-                      <div key={fulfillmentKey} className="space-y-2">
-                        <div className="flex justify-between border-b border-border/70 py-1">
-                          <span className="text-body-sm text-secondary">
-                            {trackingCompany || DEFAULTS.carrier}
-                            {successfulFulfillments.length > 1 ? ` (${index + 1})` : ''}
-                          </span>
-                          <span className="text-body-sm font-medium">
-                            {trackingInfo.length} items
-                          </span>
-                        </div>
-
-                        {trackingInfo.map((trackInfo) => (
-                          <div
-                            key={`${trackInfo.number ?? DEFAULTS.trackingNumber}-${typeof trackInfo.url === 'string' ? trackInfo.url : DEFAULTS.link}`}
-                            className="flex justify-between border-b border-border/70 py-1"
-                          >
-                            <span className="text-body-sm text-secondary">
-                              {trackInfo.number || DEFAULTS.trackingNumber}
-                            </span>
-                            {typeof trackInfo.url === 'string' ? (
-                              <a
-                                href={trackInfo.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-body-sm font-medium link"
-                              >
-                                Track
-                              </a>
-                            ) : (
-                              <span className="text-body-sm font-medium text-muted">
-                                {DEFAULTS.link}
-                              </span>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  })}
-                </div>
+                <TrackingInfo fulfillments={successfulFulfillments} />
               )}
             </CardContent>
           </CollapsibleContent>

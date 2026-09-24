@@ -6,6 +6,7 @@ const { getCartId, getUser, sdk, setShopifyToken } = vi.hoisted(() => ({
   sdk: {
     cartBuyerIdentityUpdate: vi.fn(),
     customerAccessTokenCreate: vi.fn(),
+    customerActivateByUrl: vi.fn(),
     customerCreate: vi.fn(),
     customerRecover: vi.fn(),
     customerResetByUrl: vi.fn(),
@@ -368,6 +369,49 @@ describe('AuthService', () => {
       await expect(
         AuthService.resetPassword({ password: 'secret1', resetToken: 'reset-url' }),
       ).resolves.toEqual({ error: 'Failed to reset password' });
+    });
+  });
+
+  describe('activate', () => {
+    const ACTIVATION_URL = 'https://ecomfashionstore.myshopify.com/account/activate/abc';
+
+    it('returns an error when Shopify issues no token', async () => {
+      sdk.customerActivateByUrl.mockResolvedValue({
+        customerActivateByUrl: { customerAccessToken: null, customerUserErrors: [] },
+      });
+
+      await expect(
+        AuthService.activate({ activationUrl: ACTIVATION_URL, password: 'secret1' }),
+      ).resolves.toEqual({ error: 'Failed to activate account' });
+      expect(setShopifyToken).not.toHaveBeenCalled();
+    });
+
+    it('surfaces Shopify customer errors', async () => {
+      sdk.customerActivateByUrl.mockResolvedValue({
+        customerActivateByUrl: {
+          customerAccessToken: null,
+          customerUserErrors: [{ message: 'Invalid activation link' }],
+        },
+      });
+
+      await expect(
+        AuthService.activate({ activationUrl: ACTIVATION_URL, password: 'secret1' }),
+      ).resolves.toEqual({ customerUserErrors: [{ message: 'Invalid activation link' }] });
+      expect(setShopifyToken).not.toHaveBeenCalled();
+    });
+
+    it('stores the token on success', async () => {
+      sdk.customerActivateByUrl.mockResolvedValue({
+        customerActivateByUrl: {
+          customerAccessToken: CUSTOMER_TOKEN,
+          customerUserErrors: [],
+        },
+      });
+
+      await expect(
+        AuthService.activate({ activationUrl: ACTIVATION_URL, password: 'secret1' }),
+      ).resolves.toEqual({ customerAccessToken: CUSTOMER_TOKEN, success: true });
+      expect(setShopifyToken).toHaveBeenCalledWith(CUSTOMER_TOKEN);
     });
   });
 

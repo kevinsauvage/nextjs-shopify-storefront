@@ -1,7 +1,9 @@
 'use server';
 
+import { getOrderById } from '@/lib/server/account';
 import { getClientIp, rateLimitKey } from '@/lib/server/client-ip';
 import { isRateLimited } from '@/lib/server/rate-limit';
+import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { CartService } from '@/services/cart.service';
 import type { CartFieldsFragment, CartLineInput, CartLineUpdateInput } from '@/shopify/storefront';
 import { shopifyGidField } from '@/utils/validation';
@@ -116,4 +118,71 @@ export async function updateDiscountCodesAction(
 
   const cart = await CartService.updateDiscountCodes(parsed.data);
   return { data: cart, message: 'Discount codes updated successfully' };
+}
+
+const reorderSchema = z.object({
+  orderId: z.string().trim().regex(/^\d+$/, 'Invalid order').max(20),
+});
+
+/**
+ * Re-add every currently purchasable line of a past order to the cart.
+ * Requires the customer session (orders are customer-scoped), so guests are
+ * asked to sign in. Variants that no longer exist or are not for sale are
+ * skipped and reported in the returned message.
+ */
+export async function reorderAction(orderId: string): Promise<CartActionResult> {
+  const parsed = reorderSchema.safeParse({ orderId });
+  if (!parsed.success) {
+    throw new Error('Invalid order');
+  }
+
+  await assertNotRateLimited();
+
+  const token = await getShopifyToken();
+  if (!token) {
+    throw new Error('Please sign in to reorder');
+  }
+
+  const order = await getOrderById(token, parsed.data.orderId);
+  if (!order) {
+    throw new Error('Order not found');
+  }
+
+  const lines: CartLineInput[] = [];
+  let skipped = 0;
+
+  for (const edge of order.lineItems.edges) {
+    const variantId = edge.node.variant?.id;
+
+    if (!variantId || edge.node.quantity < 1) {
+      skipped += 1;
+      continue;
+    }
+
+    if (edge.node.variant?.availableForSale === false) {
+      skipped += 1;
+      continue;
+    }
+
+    lines.push({
+      merchandiseId: variantId,
+      quantity: Math.min(edge.node.quantity, MAX_QUANTITY),
+    });
+
+    if (lines.length >= MAX_LINES_PER_REQUEST) break;
+  }
+
+  if (lines.length === 0) {
+    throw new Error('None of the items in this order are available anymore');
+  }
+
+  const cart = await CartService.addLines(lines);
+
+  return {
+    data: cart,
+    message:
+      skipped > 0
+        ? `${lines.length} items added back to your cart (${skipped} unavailable skipped)`
+        : `${lines.length} items added back to your cart`,
+  };
 }

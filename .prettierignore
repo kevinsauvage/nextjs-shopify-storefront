@@ -40,6 +40,10 @@ next-env.d.ts
 /src/shopify/admin/index.ts
 
 
+# Shopify CMS content: Shopify normalizes page HTML on save, so formatting these
+# files would create perpetual repo-vs-Shopify diffs. `pull` keeps them byte-identical.
+content/
+
 /public/sitemap*
 .dccache
 

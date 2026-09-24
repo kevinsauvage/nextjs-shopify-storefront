@@ -105,9 +105,15 @@ query getMenuByHandle($handle: String!, $language: LanguageCode) @inContext(lang
 
 query getPageByHandle($handle: String!, $language: LanguageCode) @inContext(language: $language) {
   page(handle: $handle) {
+    body
     bodySummary
     handle
     id
+    title
+    seo {
+      description
+      title
+    }
     data: metafield(namespace: "custom", key: "data") {
       value
       type

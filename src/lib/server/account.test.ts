@@ -9,7 +9,7 @@ vi.mock('@/shopify', () => ({
   storefrontSdk: () => ({ getCustomerAddresses, getCustomerOrders }),
 }));
 
-import { getAccountStats } from './account';
+import { getAccountStats, getOrderById } from './account';
 
 const CUSTOMER_TOKEN = 'customer-token';
 
@@ -50,5 +50,53 @@ describe('getAccountStats', () => {
       ordersCount: 0,
       recentOrders: [],
     });
+  });
+});
+
+describe('getOrderById', () => {
+  const ORDER_GID = 'gid://shopify/Order/12345';
+
+  beforeEach(() => {
+    getCustomerOrders.mockReset();
+  });
+
+  it('returns the matching order from the customer order list', async () => {
+    const order = { id: ORDER_GID, name: '#1001' };
+    getCustomerOrders.mockResolvedValue({
+      customer: { orders: { edges: [{ node: { id: 'gid://shopify/Order/1' } }, { node: order }] } },
+    });
+
+    await expect(getOrderById(CUSTOMER_TOKEN, '12345')).resolves.toEqual(order);
+    expect(getCustomerOrders).toHaveBeenCalledWith(
+      expect.objectContaining({ customerAccessToken: CUSTOMER_TOKEN, first: 100 }),
+    );
+  });
+
+  it('matches suffixed Shopify ids against the bare global id', async () => {
+    const order = { id: `${ORDER_GID}?model_name=Order`, name: '#1001' };
+    getCustomerOrders.mockResolvedValue({
+      customer: { orders: { edges: [{ node: order }] } },
+    });
+
+    await expect(getOrderById(CUSTOMER_TOKEN, '12345')).resolves.toEqual(order);
+  });
+
+  it('returns null when no order matches', async () => {
+    getCustomerOrders.mockResolvedValue({
+      customer: { orders: { edges: [{ node: { id: 'gid://shopify/Order/1' } }] } },
+    });
+
+    await expect(getOrderById(CUSTOMER_TOKEN, '12345')).resolves.toBeNull();
+  });
+
+  it('returns null for a non-numeric id without a Shopify round-trip', async () => {
+    await expect(getOrderById(CUSTOMER_TOKEN, '../../evil')).resolves.toBeNull();
+    expect(getCustomerOrders).not.toHaveBeenCalled();
+  });
+
+  it('returns null when the customer is gone', async () => {
+    getCustomerOrders.mockResolvedValue({ customer: null });
+
+    await expect(getOrderById(CUSTOMER_TOKEN, '12345')).resolves.toBeNull();
   });
 });

@@ -31,6 +31,11 @@ const seo = {
       title: 'Wishlist',
     },
   },
+  activate: {
+    description:
+      'You are one step away. Choose a password to activate your account and start tracking orders, saving addresses, and checking out faster.',
+    title: 'Activate your account',
+  },
   cart: {
     description:
       'Browse and manage items in your cart with ease. Our cart page makes it simple to view and adjust your order before checkout. Start shopping now.',
