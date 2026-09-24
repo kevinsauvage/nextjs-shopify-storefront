@@ -3,8 +3,10 @@
 import Link from 'next/link';
 
 import CartLoading from '@/app/cart/loading';
+import BestSellersRail from '@/components/BestSellersRail';
 import EmptyState from '@/components/EmptyState';
 import PageBanner from '@/components/PageBanner';
+import RecentlyViewedProducts from '@/components/RecentlyViewedProducts';
 import { Button } from '@/components/ui/button';
 import useCartContext from '@/contexts/CartContext/useCartContext';
 
@@ -112,7 +114,11 @@ const CartView = () => {
       )}
 
       {isEmpty ? (
-        <CartEmptyState />
+        <>
+          <CartEmptyState />
+          <RecentlyViewedProducts />
+          <BestSellersRail />
+        </>
       ) : (
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
           <div className="space-y-6 lg:col-span-2">

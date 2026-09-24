@@ -33,3 +33,28 @@ export const dispatchConsentUpdated = (): void => {
     window.dispatchEvent(new Event(CONSENT_UPDATED_EVENT));
   }
 };
+
+/**
+ * Push a GA4-style `search` event onto the GTM dataLayer.
+ *
+ * `dataLayer` is created by the GTM stub during `beforeInteractive`, so pushing
+ * here is a no-op when GTM is absent and is buffered (not lost) when consent
+ * arrives later. Callers must not include PII beyond the search term.
+ */
+export const trackSearch = ({
+  searchTerm,
+  resultsCount,
+}: {
+  searchTerm: string;
+  resultsCount?: number;
+}): void => {
+  if (typeof window === 'undefined') return;
+
+  const payload: Record<string, unknown> = { event: 'search', search_term: searchTerm };
+
+  if (typeof resultsCount === 'number') {
+    payload.results_count = resultsCount;
+  }
+
+  (window.dataLayer ??= []).push(payload);
+};

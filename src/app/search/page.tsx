@@ -1,18 +1,22 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import BestSellersRail from '@/components/BestSellersRail';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import EmptyState from '@/components/EmptyState';
 import ListingHeader from '@/components/ListingHeader';
 import PageBanner from '@/components/PageBanner';
 import PageInfoPagination from '@/components/PageInfoPagination';
 import ProductsList from '@/components/ProductsList';
+import RecentSearches from '@/components/RecentSearches';
 import Search from '@/components/Search';
+import SearchAnalytics from '@/components/SearchAnalytics';
 import { Button } from '@/components/ui/button';
 import config from '@/config';
 import seo from '@/data/seo';
 import { normalizeSortKey } from '@/lib/server/collection';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
+import { getPopularSearchTerms } from '@/lib/server/popularSearches';
 import {
   adjustPaginationVariables,
   buildShopifySearchQuery,
@@ -54,7 +58,13 @@ type SearchParameters = {
 };
 
 /** Shared banner so the empty-query early return below duplicates no markup. */
-const SearchBanner = ({ searchQuery }: { searchQuery?: string }) => (
+const SearchBanner = ({
+  searchQuery,
+  popularTerms,
+}: {
+  searchQuery?: string;
+  popularTerms: string[];
+}) => (
   <PageBanner
     title={seo.search.title}
     eyebrow="Search the store"
@@ -64,7 +74,7 @@ const SearchBanner = ({ searchQuery }: { searchQuery?: string }) => (
     <Search key={searchQuery ?? ''} searchQuery={searchQuery ?? ''} />
     <div className="flex flex-wrap items-center justify-center gap-2">
       <span className="text-caption text-secondary">Popular:</span>
-      {['Linen', 'Denim', 'Dress', 'Knit', 'Boots'].map((term) => (
+      {popularTerms.map((term) => (
         <Button key={term} variant="outline" size="sm" asChild className="rounded-full">
           <Link href={`${config.routes.search}?searchQuery=${encodeURIComponent(term)}`}>
             {term}
@@ -72,18 +82,20 @@ const SearchBanner = ({ searchQuery }: { searchQuery?: string }) => (
         </Button>
       ))}
     </div>
+    <RecentSearches />
   </PageBanner>
 );
 
 const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> }) => {
   const searchParameters = await searchParams;
   const hasQuery = Boolean(searchParameters.searchQuery?.trim());
+  const popularTerms = await getPopularSearchTerms();
 
   // Never burn a Storefront request on the empty state.
   if (!hasQuery) {
     return (
       <div>
-        <SearchBanner searchQuery={searchParameters.searchQuery} />
+        <SearchBanner searchQuery={searchParameters.searchQuery} popularTerms={popularTerms} />
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 space-y-6">
           <EmptyState
             variant="search"
@@ -133,7 +145,11 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
 
   return (
     <div>
-      <SearchBanner searchQuery={searchParameters.searchQuery} />
+      <SearchBanner searchQuery={searchParameters.searchQuery} popularTerms={popularTerms} />
+      <SearchAnalytics
+        searchTerm={searchParameters.searchQuery}
+        resultsCount={products.length}
+      />
       {products.length > 0 ? (
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 space-y-6">
           <ListingHeader>
@@ -156,7 +172,7 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
           <EmptyState
             variant="search"
             title="No results found"
-            subtitle="We couldn't find any products matching your search. Try different keywords or browse our collections."
+            subtitle="We couldn't find any products matching your search. Try different keywords, browse our collections, or explore our best sellers below."
             altText="No search results"
             primaryAction={
               <Button variant="default" asChild>
@@ -164,13 +180,14 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
               </Button>
             }
             secondaryAction={
-              <Link href="/" className="link">
-                Clear search and try again
+              <Link href={config.routes.contact} className="link">
+                Need help? Contact us
               </Link>
             }
           />
         </div>
       )}
+      {products.length === 0 && <BestSellersRail />}
     </div>
   );
 };

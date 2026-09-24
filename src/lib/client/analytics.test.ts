@@ -1,74 +1,37 @@
-import { CONSENT_UPDATED_EVENT, dispatchConsentUpdated, withGtag } from './analytics';
+import { trackSearch } from './analytics';
 
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-type TestWindow = {
-  dispatchEvent?: (event: Event) => boolean;
-  gtag?: (...args: Array<unknown>) => void;
-};
-
-const setWindow = (value: TestWindow | undefined): void => {
-  (globalThis as unknown as { window?: TestWindow }).window = value;
-};
-
-afterEach(() => {
-  setWindow(undefined);
+beforeEach(() => {
+  vi.stubGlobal('window', { dataLayer: [] });
 });
 
-describe('CONSENT_UPDATED_EVENT', () => {
-  it('is the stable event name listeners subscribe to', () => {
-    expect(CONSENT_UPDATED_EVENT).toBe('localConsentUpdated');
-  });
-});
+describe('trackSearch', () => {
+  it('pushes a GA4 search event with the term and result count', () => {
+    trackSearch({ searchTerm: 'linen dress', resultsCount: 3 });
 
-describe('withGtag', () => {
-  it('does nothing when window is unavailable', () => {
-    setWindow(undefined);
-    const callback = vi.fn();
-
-    withGtag(callback);
-
-    expect(callback).not.toHaveBeenCalled();
+    expect(window.dataLayer).toEqual([
+      { event: 'search', search_term: 'linen dress', results_count: 3 },
+    ]);
   });
 
-  it('does nothing when gtag is not installed', () => {
-    setWindow({});
-    const callback = vi.fn();
+  it('omits the result count when not provided', () => {
+    trackSearch({ searchTerm: 'linen' });
 
-    withGtag(callback);
-
-    expect(callback).not.toHaveBeenCalled();
+    expect(window.dataLayer).toEqual([{ event: 'search', search_term: 'linen' }]);
   });
 
-  it('invokes the callback with gtag when available', () => {
-    const gtag = vi.fn();
-    setWindow({ gtag });
-    const callback = vi.fn();
+  it('creates the dataLayer when GTM has not initialised it', () => {
+    vi.stubGlobal('window', {});
 
-    withGtag(callback);
+    trackSearch({ searchTerm: 'denim' });
 
-    expect(callback).toHaveBeenCalledTimes(1);
-    expect(callback).toHaveBeenCalledWith(gtag);
-  });
-});
-
-describe('dispatchConsentUpdated', () => {
-  it('does nothing when window is unavailable', () => {
-    setWindow(undefined);
-
-    expect(() => dispatchConsentUpdated()).not.toThrow();
+    expect(window.dataLayer).toEqual([{ event: 'search', search_term: 'denim' }]);
   });
 
-  it('dispatches the consent-updated event on window', () => {
-    const dispatchEvent = vi.fn();
-    setWindow({ dispatchEvent });
+  it('no-ops without a window (SSR)', () => {
+    vi.stubGlobal('window', undefined);
 
-    dispatchConsentUpdated();
-
-    expect(dispatchEvent).toHaveBeenCalledTimes(1);
-    const event = dispatchEvent.mock.calls[0]?.[0] as Event | undefined;
-
-    expect(event).toBeInstanceOf(Event);
-    expect(event?.type).toBe(CONSENT_UPDATED_EVENT);
+    expect(() => trackSearch({ searchTerm: 'x' })).not.toThrow();
   });
 });

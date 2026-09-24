@@ -7,6 +7,8 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import ProductDescription from '@/components/ProductDescription';
 import ProductRecommendations from '@/components/ProductRecommendations';
+import RecentlyViewedProducts from '@/components/RecentlyViewedProducts';
+import RecentlyViewedTracker from '@/components/RecentlyViewedTracker';
 import config from '@/config';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
 import { breadcrumbJsonLd, productJsonLd } from '@/lib/server/structured-data';
@@ -152,6 +154,7 @@ const ProductPage = async ({ params }: PageProperties) => {
   return (
     <div className="min-h-[calc(100vh-76px)]">
       <JsonLd data={structuredData} />
+      <RecentlyViewedTracker productId={product.id} />
       <div className="hero-mesh border-b border-border/60">
         <div className="container mx-auto px-4 py-3 md:px-6">
           <Breadcrumbs lastElement={title} />
@@ -171,6 +174,8 @@ const ProductPage = async ({ params }: PageProperties) => {
           </div>
         </section>
       ) : null}
+
+      <RecentlyViewedProducts excludeId={product.id} />
     </div>
   );
 };
