@@ -3,6 +3,9 @@
 import { redirect } from 'next/navigation';
 
 import config from '@/config';
+import { fingerprintForRateLimit, getClientIp, rateLimitKey } from '@/lib/server/client-ip';
+import { isRateLimited } from '@/lib/server/rate-limit';
+import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { AddressService } from '@/services/address.service';
 import type { FormState } from '@/types/formActions';
 import { safeLogError } from '@/utils/api-responses';
@@ -26,11 +29,33 @@ const addressSchema = z.object({
 
 type AddressInput = z.infer<typeof addressSchema>;
 
+/**
+ * Throttle address writes (each is a Shopify Admin mutation). Fail closed, and
+ * key by IP plus the fingerprinted session token so off-Vercel `unknown`-IP
+ * traffic does not share one global bucket. Returns an error state when
+ * limited, `null` when the caller may proceed.
+ */
+const assertNotRateLimited = async (): Promise<FormState | null> => {
+  const [ip, token] = await Promise.all([getClientIp(), getShopifyToken()]);
+  const limited = await isRateLimited(
+    'address:write',
+    rateLimitKey(ip, token ? fingerprintForRateLimit(token) : null),
+    30,
+    '1 m',
+    { failClosed: true },
+  );
+
+  return limited ? formError('Too many address updates. Please try again later.') : null;
+};
+
 export async function createAddressAction(input: AddressInput): Promise<FormState> {
   const result = addressSchema.safeParse(input);
   if (!result.success) {
     return zodErrorsToFormState(result.error);
   }
+
+  const limited = await assertNotRateLimited();
+  if (limited) return limited;
 
   let serviceResult;
   try {
@@ -47,6 +72,9 @@ export async function createAddressAction(input: AddressInput): Promise<FormStat
 }
 
 export async function deleteAddressAction(addressId: string): Promise<FormState> {
+  const limited = await assertNotRateLimited();
+  if (limited) return limited;
+
   let serviceResult;
   try {
     serviceResult = await AddressService.deleteAddress(addressId);
@@ -62,6 +90,9 @@ export async function deleteAddressAction(addressId: string): Promise<FormState>
 }
 
 export async function setDefaultAddressAction(addressId: string): Promise<FormState> {
+  const limited = await assertNotRateLimited();
+  if (limited) return limited;
+
   let serviceResult;
   try {
     serviceResult = await AddressService.setDefaultAddress(addressId);
@@ -81,6 +112,9 @@ export async function updateAddressAction(input: AddressInput): Promise<FormStat
   if (!result.success) {
     return zodErrorsToFormState(result.error);
   }
+
+  const limited = await assertNotRateLimited();
+  if (limited) return limited;
 
   let serviceResult;
   try {

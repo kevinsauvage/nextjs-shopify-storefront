@@ -2,8 +2,9 @@
 
 import { updateTag } from 'next/cache';
 
-import { getClientIp } from '@/lib/server/client-ip';
+import { fingerprintForRateLimit, getClientIp, rateLimitKey } from '@/lib/server/client-ip';
 import { isRateLimited } from '@/lib/server/rate-limit';
+import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import {
   getWishlistIdsCached,
   isValidWishlistProductId,
@@ -24,10 +25,16 @@ export type WishlistActionResult = {
 const GENERIC_ERROR = 'Something went wrong. Please try again.';
 const UNAUTHENTICATED_ERROR = 'User not authenticated';
 
-/** Throttle wishlist writes, which each trigger an Admin API mutation. */
+/** Throttle wishlist writes, which each trigger an Admin API mutation. Fail closed, and key by IP plus the fingerprinted session token so off-Vercel `unknown`-IP traffic does not share one global bucket. */
 const assertNotRateLimited = async (): Promise<boolean> => {
-  const ip = await getClientIp();
-  return isRateLimited('wishlist:write', ip, 30, '1 m');
+  const [ip, token] = await Promise.all([getClientIp(), getShopifyToken()]);
+  return isRateLimited(
+    'wishlist:write',
+    rateLimitKey(ip, token ? fingerprintForRateLimit(token) : null),
+    30,
+    '1 m',
+    { failClosed: true },
+  );
 };
 
 /** Cap the client-supplied id list before any validation or fetching. */

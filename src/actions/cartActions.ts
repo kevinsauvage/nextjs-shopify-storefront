@@ -1,6 +1,6 @@
 'use server';
 
-import { getClientIp } from '@/lib/server/client-ip';
+import { getClientIp, rateLimitKey } from '@/lib/server/client-ip';
 import { isRateLimited } from '@/lib/server/rate-limit';
 import { CartService } from '@/services/cart.service';
 import type { CartFieldsFragment, CartLineInput, CartLineUpdateInput } from '@/shopify/storefront';
@@ -42,10 +42,12 @@ const lineIdSchema = z.string().min(1).max(255);
 
 const discountCodesSchema = z.array(z.string().trim().min(1).max(64)).max(MAX_DISCOUNT_CODES);
 
-/** Throttle public cart writes per client IP. */
+/** Throttle public cart writes per client IP (plus cart id when known). Fail closed: cart writes burn Storefront quota, so an Upstash outage must deny writes rather than allow unlimited mutations. */
 const assertNotRateLimited = async (): Promise<void> => {
-  const ip = await getClientIp();
-  if (await isRateLimited('cart:write', ip, 60, '1 m')) {
+  const [ip, cartId] = await Promise.all([getClientIp(), CartService.getCartId()]);
+  if (
+    await isRateLimited('cart:write', rateLimitKey(ip, cartId), 60, '1 m', { failClosed: true })
+  ) {
     throw new Error('Too many cart updates. Please slow down and try again.');
   }
 };

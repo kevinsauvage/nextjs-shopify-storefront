@@ -1,8 +1,15 @@
 'use server';
 
+import { getClientIp, rateLimitKey } from '@/lib/server/client-ip';
+import { isRateLimited } from '@/lib/server/rate-limit';
 import { UserService } from '@/services/user.service';
 import type { FormState } from '@/types/formActions';
-import { formSuccess, serviceErrorsToFormState, zodErrorsToFormState } from '@/utils/form-actions';
+import {
+  formError,
+  formSuccess,
+  serviceErrorsToFormState,
+  zodErrorsToFormState,
+} from '@/utils/form-actions';
 
 import { z } from 'zod';
 
@@ -24,6 +31,19 @@ export async function updateUserAction(input: UpdateUserInput): Promise<FormStat
   }
 
   const { email, firstName, lastName, acceptsMarketing, company, phone } = result.data;
+
+  const ip = await getClientIp();
+  // Fail closed: profile writes hit the Shopify API on every call, so an
+  // Upstash outage must deny writes rather than allow unlimited mutations.
+  // The normalized email keeps NAT-shared IPs from sharing one bucket.
+  if (
+    await isRateLimited('user:update', rateLimitKey(ip, email.trim().toLowerCase()), 10, '10 m', {
+      failClosed: true,
+    })
+  ) {
+    return formError('Too many attempts. Please try again in a few minutes.');
+  }
+
   const serviceResult = await UserService.updateUser({
     acceptsMarketing,
     company,

@@ -1,19 +1,25 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { addLines, rateLimited, removeLine, updateDiscountCodes, updateLines } = vi.hoisted(() => ({
-  addLines: vi.fn(),
-  rateLimited: vi.fn(async () => false),
-  removeLine: vi.fn(),
-  updateDiscountCodes: vi.fn(),
-  updateLines: vi.fn(),
-}));
+const { addLines, getCartId, rateLimited, removeLine, updateDiscountCodes, updateLines } =
+  vi.hoisted(() => ({
+    addLines: vi.fn(),
+    getCartId: vi.fn(async () => 'cart-1'),
+    rateLimited: vi.fn(async () => false),
+    removeLine: vi.fn(),
+    updateDiscountCodes: vi.fn(),
+    updateLines: vi.fn(),
+  }));
 
-vi.mock('@/lib/server/client-ip', () => ({ getClientIp: async () => '1.2.3.4' }));
+vi.mock('@/lib/server/client-ip', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/server/client-ip')>();
+
+  return { ...actual, getClientIp: async () => '1.2.3.4' };
+});
 vi.mock('@/lib/server/rate-limit', () => ({
   isRateLimited: (...args: unknown[]) => rateLimited(...(args as [])),
 }));
 vi.mock('@/services/cart.service', () => ({
-  CartService: { addLines, removeLine, updateDiscountCodes, updateLines },
+  CartService: { addLines, getCartId, removeLine, updateDiscountCodes, updateLines },
 }));
 
 import {
@@ -83,6 +89,14 @@ describe('addCartLinesAction', () => {
 
     await expect(addCartLinesAction([line(1)])).rejects.toThrow('Too many cart updates');
     expect(addLines).not.toHaveBeenCalled();
+  });
+
+  it('keys the cart bucket by ip and cart id and fails closed', async () => {
+    await addCartLinesAction([line(1)]);
+
+    expect(rateLimited).toHaveBeenCalledWith('cart:write', '1.2.3.4:cart-1', 60, '1 m', {
+      failClosed: true,
+    });
   });
 });
 

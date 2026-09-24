@@ -30,7 +30,14 @@ export async function GET(request: NextRequest) {
   }
 
   const ip = await getClientIp();
-  if (await isRateLimited('search:predictive', ip, RATE_LIMIT_TOKENS, RATE_LIMIT_WINDOW)) {
+  // Deliberately fail-open: this is a read-only catalog path, so an Upstash
+  // outage must degrade to unthrottled search rather than break browsing.
+  // (All mutation buckets use `{ failClosed: true }` instead.)
+  if (
+    await isRateLimited('search:predictive', ip, RATE_LIMIT_TOKENS, RATE_LIMIT_WINDOW, {
+      failClosed: false,
+    })
+  ) {
     return createErrorResponse('Rate limit exceeded', {
       message: 'Rate limit exceeded. Please try again in a moment.',
       status: HTTP_STATUS.TOO_MANY_REQUESTS,
