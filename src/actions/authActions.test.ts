@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const {
   clearShopifyToken,
-  cookieDelete,
   customerAccessTokenDelete,
   getShopifyToken,
   login,
@@ -11,7 +10,6 @@ const {
   resetPassword,
 } = vi.hoisted(() => ({
   clearShopifyToken: vi.fn(),
-  cookieDelete: vi.fn(),
   customerAccessTokenDelete: vi.fn(),
   getShopifyToken: vi.fn(),
   login: vi.fn(),
@@ -20,9 +18,6 @@ const {
   resetPassword: vi.fn(),
 }));
 
-vi.mock('next/headers', () => ({
-  cookies: async () => ({ delete: cookieDelete }),
-}));
 vi.mock('next/navigation', () => ({ redirect }));
 vi.mock('@/lib/server/client-ip', () => ({ getClientIp: async () => '1.2.3.4' }));
 vi.mock('@/lib/server/rate-limit', () => ({
@@ -146,7 +141,6 @@ describe('resetPasswordAction', () => {
 describe('logoutAction', () => {
   beforeEach(() => {
     clearShopifyToken.mockReset();
-    cookieDelete.mockReset();
     customerAccessTokenDelete.mockReset();
     getShopifyToken.mockReset();
     redirect.mockReset();
@@ -158,9 +152,6 @@ describe('logoutAction', () => {
     await logoutAction();
 
     expect(clearShopifyToken).toHaveBeenCalledTimes(1);
-    expect(cookieDelete).toHaveBeenCalledWith(
-      expect.objectContaining({ name: config.cookies.delegateToken, path: '/' }),
-    );
     expect(customerAccessTokenDelete).toHaveBeenCalledWith({ customerAccessToken: 'token-1' });
     expect(redirect).toHaveBeenCalledWith(config.routes.login);
   });

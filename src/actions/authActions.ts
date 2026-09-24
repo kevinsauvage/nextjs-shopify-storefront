@@ -1,6 +1,5 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import config from '@/config';
@@ -12,7 +11,6 @@ import { clearShopifyToken, getShopifyToken } from '@/lib/server/shopify-helpers
 import { AuthService } from '@/services/auth.service';
 import { storefrontSdk } from '@/shopify';
 import type { FormState } from '@/types/formActions';
-import { getCookieDeleteOptions } from '@/utils/cookie-security';
 import {
   formError,
   formSuccess,
@@ -186,9 +184,6 @@ export async function logoutAction(): Promise<void> {
   // revocation call is unavailable. The cookies are deleted with the same
   // domain they were set with, otherwise a `Domain=` cookie would survive.
   await clearShopifyToken();
-
-  const cookieStore = await cookies();
-  cookieStore.delete({ name: config.cookies.delegateToken, ...getCookieDeleteOptions() });
 
   if (token) {
     try {

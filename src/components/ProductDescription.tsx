@@ -1,3 +1,4 @@
+import type { ProductVariantView } from '@/hooks/useProductVariantView';
 import type { GetProductByHandleQuery } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
 import { mapShopifyImagesToImageFields } from '@/utils/images';
@@ -13,6 +14,47 @@ type ProductDescriptionProps = {
   className?: string;
 };
 
+const FALLBACK_VARIANT: ProductVariantView = {
+  quantityAvailable: null,
+  availableForSale: false,
+  price: undefined,
+  compareAtPrice: undefined,
+  sku: null,
+  title: undefined,
+  weight: null,
+  weightUnit: undefined,
+};
+
+/** Project the first variant edge onto the shared `ProductVariantView` shape. */
+const getDefaultVariant = (
+  product: NonNullable<GetProductByHandleQuery['product']>,
+): ProductVariantView => {
+  const node = product.variants?.edges?.[0]?.node;
+  if (!node) return FALLBACK_VARIANT;
+
+  const {
+    quantityAvailable,
+    availableForSale,
+    price,
+    compareAtPrice,
+    sku,
+    title,
+    weight,
+    weightUnit,
+  } = node;
+
+  return {
+    quantityAvailable,
+    availableForSale,
+    price,
+    compareAtPrice,
+    sku,
+    title,
+    weight,
+    weightUnit,
+  };
+};
+
 const ProductDescription = async ({ product, isModal, className }: ProductDescriptionProps) => {
   if (!product) return null;
 
@@ -21,28 +63,8 @@ const ProductDescription = async ({ product, isModal, className }: ProductDescri
     typeof product.descriptionHtml === 'string' ? product.descriptionHtml : '',
   );
 
-  // Get default variant data for initial render (server-side)
-  const defaultVariant = product.variants?.edges?.[0]?.node
-    ? {
-        quantityAvailable: product.variants.edges[0].node.quantityAvailable,
-        availableForSale: product.variants.edges[0].node.availableForSale,
-        price: product.variants.edges[0].node.price,
-        compareAtPrice: product.variants.edges[0].node.compareAtPrice,
-        sku: product.variants.edges[0].node.sku,
-        title: product.variants.edges[0].node.title,
-        weight: product.variants.edges[0].node.weight,
-        weightUnit: product.variants.edges[0].node.weightUnit,
-      }
-    : {
-        quantityAvailable: null,
-        availableForSale: false,
-        price: undefined,
-        compareAtPrice: undefined,
-        sku: null,
-        title: undefined,
-        weight: null,
-        weightUnit: undefined,
-      };
+  // Default variant data for initial render (server-side)
+  const defaultVariant = getDefaultVariant(product);
 
   const productImages = mapShopifyImagesToImageFields(images?.edges);
 

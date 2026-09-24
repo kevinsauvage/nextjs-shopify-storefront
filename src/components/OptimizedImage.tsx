@@ -41,7 +41,6 @@ const OptimizedImage = ({
 }: OptimizedImageProps) => {
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
-  const [errorSrc, setErrorSrc] = useState<string | null>(null);
   const prevSrcRef = useRef(src);
 
   // Reset state when src changes (using startTransition to avoid cascading renders)
@@ -51,7 +50,6 @@ const OptimizedImage = ({
       startTransition(() => {
         setImageLoading(true);
         setImageError(false);
-        setErrorSrc(null);
       });
     }
   }, [src]);
@@ -59,14 +57,12 @@ const OptimizedImage = ({
   const handleError = () => {
     setImageError(true);
     setImageLoading(false);
-    setErrorSrc(fallbackSrc);
     onError?.();
   };
 
   const handleLoad = () => {
     setImageLoading(false);
     setImageError(false);
-    setErrorSrc(null);
   };
 
   // Generate responsive sizes if not provided
@@ -102,7 +98,7 @@ const OptimizedImage = ({
       )}
       <Image
         key={src}
-        src={errorSrc || src}
+        src={imageError ? fallbackSrc : src}
         alt={alt}
         width={fill ? undefined : defaultWidth}
         height={fill ? undefined : defaultHeight}

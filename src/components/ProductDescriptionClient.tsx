@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import config from '@/config';
 import useProductSelection from '@/hooks/useProductSelection';
+import type { ProductVariantView } from '@/hooks/useProductVariantView';
 import useProductVariantView from '@/hooks/useProductVariantView';
 import type { GetProductByHandleQuery } from '@/shopify/storefront';
 import { cn } from '@/utils/cn';
@@ -22,16 +23,7 @@ import { RotateCcw, ShieldCheck } from 'lucide-react';
 type ProductDescriptionClientProps = {
   product: NonNullable<GetProductByHandleQuery['product']>;
   isModal?: boolean;
-  defaultVariant: {
-    quantityAvailable?: number | null;
-    availableForSale?: boolean;
-    price?: { amount: string; currencyCode: string } | null | undefined;
-    compareAtPrice?: { amount: string; currencyCode: string } | null | undefined;
-    sku?: string | null;
-    title?: string;
-    weight?: number | null;
-    weightUnit?: string;
-  };
+  defaultVariant: ProductVariantView;
   descriptionHtml: string;
   productId: string;
 };

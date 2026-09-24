@@ -13,7 +13,7 @@ vi.mock('next/headers', () => ({
 import config from '@/config';
 import { shouldRenewToken } from '@/lib/token-renewal';
 
-import { clearShopifyToken, getShopifyToken, hasShopifySession } from './shopify-helpers';
+import { clearShopifyToken, getShopifyToken } from './shopify-helpers';
 
 const HOUR_MS = 60 * 60 * 1000;
 
@@ -50,14 +50,6 @@ describe('shopify-helpers', () => {
 
     await expect(getShopifyToken()).resolves.toBe('token-1');
     expect(cookieSet).not.toHaveBeenCalled();
-  });
-
-  it('reports session presence from the token cookie', async () => {
-    cookieGet.mockReturnValue({ value: 'token-1' });
-    await expect(hasShopifySession()).resolves.toBe(true);
-
-    cookieGet.mockReturnValue(undefined);
-    await expect(hasShopifySession()).resolves.toBe(false);
   });
 
   it('clears both token cookies with delete options (survives a Domain cookie)', async () => {

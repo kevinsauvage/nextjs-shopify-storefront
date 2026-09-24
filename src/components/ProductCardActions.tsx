@@ -31,9 +31,8 @@ const ProductCardActions = ({ product, productId }: ProductCardActionsProps) => 
   const handleWishlist = async () => {
     setLoading(true);
     try {
+      // `handleSetWishlist` reports failures itself and never rejects.
       await handleSetWishlist(isWishlisted, productId);
-    } catch (error) {
-      console.error('Error updating wishlist:', error);
     } finally {
       setLoading(false);
     }

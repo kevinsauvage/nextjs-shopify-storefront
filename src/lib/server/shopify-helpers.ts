@@ -63,13 +63,3 @@ export const clearShopifyToken = async (): Promise<void> => {
   cookieStore.delete({ name: config.cookies.shopifyTokenExpire, ...options });
   cookieStore.delete({ name: config.cookies.sessionPresent, ...options });
 };
-
-/**
- * Cheap, network-free check for a customer session, based only on the presence
- * of the Shopify token cookie. Use this for UI decisions (e.g. showing
- * "Account" vs "Login") instead of fetching the full customer on every render.
- */
-export const hasShopifySession = async (): Promise<boolean> => {
-  const cookieStore = await cookies();
-  return Boolean(cookieStore.get(config.cookies.shopifyToken)?.value);
-};

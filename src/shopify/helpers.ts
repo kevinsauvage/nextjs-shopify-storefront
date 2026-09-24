@@ -17,19 +17,16 @@ export const adjustPaginationVariables = ({
   first,
   ...rest
 }: PaginationVariables): PaginationVariables => {
-  const variables: PaginationVariables = {
+  const count = first || 10;
+
+  return {
     ...rest,
     after: after || undefined, // Cursor for next page
     before: before || undefined, // Cursor for previous page
-    first: after ? first || 10 : undefined, // Forward pagination
-    last: before ? first || 10 : undefined, // Backward pagination
+    // Forward unless paging backward from a `before` cursor.
+    first: before && !after ? undefined : count,
+    last: before ? count : undefined,
   };
-
-  if (!after && !before) {
-    variables.first = first || 10; // Default to forward pagination
-  }
-
-  return variables;
 };
 
 const parseFilterValue = (value: string | undefined): ProductFilter | undefined => {

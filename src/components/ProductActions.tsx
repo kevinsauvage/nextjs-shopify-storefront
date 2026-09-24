@@ -55,7 +55,7 @@ const ProductActions = ({
         size="lg"
         className={compact ? 'h-12 w-12' : 'gap-2'}
         onClick={() => {
-          handleSetWishlist(isWishlisted, productId).catch((error) => console.error(error));
+          handleSetWishlist(isWishlisted, productId);
         }}
         aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
       >
