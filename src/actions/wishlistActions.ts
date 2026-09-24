@@ -37,11 +37,26 @@ const assertNotRateLimited = async (): Promise<boolean> => {
   );
 };
 
+/** Throttle wishlist reads, which each trigger a Storefront request. Fail open:
+ * a limiter outage (or a tripped bucket) degrades to an empty list rather
+ * than breaking the wishlist UI. Keyed like writes so off-Vercel `unknown`-IP
+ * traffic does not share one global bucket. */
+const assertReadsNotRateLimited = async (): Promise<boolean> => {
+  const [ip, token] = await Promise.all([getClientIp(), getShopifyToken()]);
+  return isRateLimited(
+    'wishlist:read',
+    rateLimitKey(ip, token ? fingerprintForRateLimit(token) : null),
+    60,
+    '1 m',
+  );
+};
 /** Cap the client-supplied id list before any validation or fetching. */
 const normalizeIds = (productIds: unknown): string[] =>
   Array.isArray(productIds) ? productIds.slice(0, WISHLIST_MAX_ITEMS) : [];
 
 export async function getWishlistIdsAction(): Promise<string[]> {
+  if (await assertReadsNotRateLimited()) return [];
+
   try {
     return await getWishlistIdsCached();
   } catch (error) {
@@ -55,6 +70,8 @@ export async function getWishlistProductsAction(
 ): Promise<ProductFieldsFragment[]> {
   const ids = normalizeIds(productIds);
   if (ids.length === 0) return [];
+
+  if (await assertReadsNotRateLimited()) return [];
 
   try {
     // `resolveProductsByIds` re-validates every id, so malformed input cannot

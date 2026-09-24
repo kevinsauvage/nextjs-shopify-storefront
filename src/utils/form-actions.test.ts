@@ -25,6 +25,26 @@ describe('form-actions', () => {
     });
   });
 
+  it('surfaces object-level errors as the form message instead of failing silently', () => {
+    const schema = z
+      .object({ password: z.string(), passwordConfirm: z.string() })
+      .superRefine(({ password, passwordConfirm }, context) => {
+        if (password !== passwordConfirm) {
+          context.addIssue({ code: 'custom', message: 'Passwords do not match' });
+        }
+      });
+    const parsed = schema.safeParse({ password: 'a', passwordConfirm: 'b' });
+
+    expect(parsed.success).toBe(false);
+    if (parsed.success) return;
+
+    expect(zodErrorsToFormState(parsed.error)).toEqual({
+      errors: {},
+      message: 'Passwords do not match',
+      ok: false,
+    });
+  });
+
   it('builds error and success states', () => {
     expect(formError('boom')).toEqual({ message: 'boom', ok: false });
     expect(formSuccess('ok')).toEqual({ message: 'ok', ok: true });

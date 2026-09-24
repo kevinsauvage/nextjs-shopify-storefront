@@ -42,7 +42,7 @@ const Footer = ({ menuItems }: FooterProps) => {
             <div className="mt-6 flex items-center gap-2">
               {socials.map(({ label, href, Icon }) => (
                 <Button key={label} variant="outline" size="icon" asChild className="rounded-full">
-                  <a href={href} aria-label={label} target="_blank" rel="noreferrer">
+                  <a href={href} aria-label={label} target="_blank" rel="noopener noreferrer">
                     <Icon className="size-4" aria-hidden="true" />
                   </a>
                 </Button>

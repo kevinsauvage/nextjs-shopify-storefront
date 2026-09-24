@@ -3,6 +3,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import useCartContext from '@/contexts/CartContext/useCartContext';
+import { reportError } from '@/lib/logger';
 
 import { X } from 'lucide-react';
 
@@ -39,7 +40,7 @@ const DiscountCodes = () => {
                     <Button
                       onClick={() => {
                         handleRemoveCode(code.code).catch((error) => {
-                          console.error('Error removing discount code:', error);
+                          reportError('cart/discount', error);
                         });
                       }}
                       className="cursor-pointer"
@@ -69,7 +70,7 @@ const DiscountCodes = () => {
                     <Button
                       onClick={() => {
                         handleRemoveCode(code.code).catch((error) => {
-                          console.error('Error removing discount code:', error);
+                          reportError('cart/discount', error);
                         });
                       }}
                       className="cursor-pointer"

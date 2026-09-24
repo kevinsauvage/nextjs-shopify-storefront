@@ -30,7 +30,17 @@ const ResetPasswordPage = async ({
     redirect(config.routes.login);
   }
 
-  const resetUrl = `${reset_url}?syclid=${syclid}`;
+  // Build the reset URL with the URL API so a crafted `syclid` cannot inject
+  // extra query params (or break the link when `reset_url` already has its own).
+  // An unparseable `reset_url` bounces to login via the allowlist check below.
+  let resetUrl: string;
+  try {
+    const url = new URL(reset_url);
+    url.searchParams.set('syclid', syclid);
+    resetUrl = url.toString();
+  } catch {
+    redirect(config.routes.login);
+  }
 
   // Never render the form (or forward the URL to `customerResetByUrl`) for a
   // reset link outside the store-owned origins: a crafted `reset_url` could

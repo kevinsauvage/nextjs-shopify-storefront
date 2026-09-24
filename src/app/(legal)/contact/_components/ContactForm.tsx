@@ -38,11 +38,7 @@ const ContactForm = () => {
   useFormToast(state);
 
   return (
-    <form
-      action={action}
-      title="Contact Us"
-      className="space-y-6 py-8 md:py-12 max-w-md mx-auto w-full px-4 md:px-6"
-    >
+    <form action={action} className="space-y-6 py-8 md:py-12 max-w-md mx-auto w-full px-4 md:px-6">
       <div className="space-y-2">
         <Label htmlFor="email">Email address</Label>
         <Input

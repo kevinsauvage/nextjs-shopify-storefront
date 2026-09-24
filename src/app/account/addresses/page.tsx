@@ -85,8 +85,27 @@ const Addresses = async ({
     );
   }
 
+  // A missing `pageInfo` means the customer payload did not come back (e.g.
+  // revoked token mid-render): show an error instead of a blank page.
   if (!pageInfo) {
-    return null;
+    return (
+      <Card>
+        <CardContent className="py-8">
+          <EmptyState
+            variant="addresses"
+            image={NoAddressIllustration}
+            title="We couldn't load your addresses"
+            subtitle="Please try again in a moment. If the problem persists, contact support."
+            altText="Addresses unavailable"
+            primaryAction={
+              <Button variant="default" asChild>
+                <Link href={config.routes.account}>Back to account</Link>
+              </Button>
+            }
+          />
+        </CardContent>
+      </Card>
+    );
   }
 
   return (

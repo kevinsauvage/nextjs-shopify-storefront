@@ -151,6 +151,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
               {productImages.map((image, index) => (
                 <button
                   key={image.src || `image-${index}`}
+                  type="button"
                   onClick={() => setCurrentImageIndex(index)}
                   className={cn(
                     'w-2 h-2 rounded-full transition-all duration-200',
@@ -179,7 +180,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
                     : 'border-transparent hover:border-muted-foreground/30',
                 )}
                 aria-label={`View product image ${index + 1} of ${productImages.length}`}
-                aria-current={index === currentImageIndex ? 'true' : 'false'}
+                aria-pressed={index === currentImageIndex}
               >
                 <Image
                   src={image.small || image.src || ''}
@@ -236,9 +237,9 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
 
           {/* Quantity Selector */}
           <div className="space-y-2">
-            <label htmlFor="quantity" className="text-label">
-              Quantity
-            </label>
+            {/* Plain text, not a label: `QuantityStepper` renders buttons (already
+                labelled) and a live-region value, not a labelled input. */}
+            <span className="text-label">Quantity</span>
             <QuantityStepper
               quantity={quantity}
               onChange={handleChangeInput}

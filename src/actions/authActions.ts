@@ -32,7 +32,6 @@ const registerSchema = z
     lastName: nameField,
     password: passwordField,
     passwordConfirm: passwordField,
-    redirectUrl: z.string().optional(),
   })
   .superRefine(({ passwordConfirm, password }, context) => {
     if (passwordConfirm !== password) {

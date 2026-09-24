@@ -1,9 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { getWishlistState, mutateWishlist, rateLimited, updateTag } = vi.hoisted(() => ({
+const {
+  getWishlistIdsCached,
+  getWishlistState,
+  mutateWishlist,
+  rateLimited,
+  resolveProductsByIds,
+  updateTag,
+} = vi.hoisted(() => ({
+  getWishlistIdsCached: vi.fn(async (): Promise<string[]> => []),
   getWishlistState: vi.fn(),
   mutateWishlist: vi.fn(),
   rateLimited: vi.fn(async () => false),
+  resolveProductsByIds: vi.fn(async () => []),
   updateTag: vi.fn(),
 }));
 
@@ -23,14 +32,18 @@ vi.mock('@/lib/server/shopify-helpers', () => ({ getShopifyToken: async () => 't
 vi.mock('@/services/wishlist.service', () => ({
   WISHLIST_MAX_ITEMS: 100,
   WISHLIST_TAG: 'wishlist',
-  WishlistService: { getWishlistState, mutateWishlist },
-  getWishlistIdsCached: vi.fn(async () => []),
+  WishlistService: { getWishlistState, mutateWishlist, resolveProductsByIds },
+  getWishlistIdsCached,
   isValidWishlistProductId: (value: unknown): value is string =>
     typeof value === 'string' && /^gid:\/\/shopify\/Product\/\d+$/.test(value),
 }));
 vi.mock('@/lib/logger', () => ({ reportError: vi.fn() }));
 
-import { setWishlistMembershipAction } from './wishlistActions';
+import {
+  getWishlistIdsAction,
+  getWishlistProductsAction,
+  setWishlistMembershipAction,
+} from './wishlistActions';
 
 const PRODUCT_ID = 'gid://shopify/Product/123';
 const OTHER_ID = 'gid://shopify/Product/456';
@@ -154,5 +167,47 @@ describe('setWishlistMembershipAction', () => {
     expect(result.success).toBe(false);
     expect(result.message).toMatch(/full/);
     expect(updateTag).not.toHaveBeenCalled();
+  });
+});
+
+describe('wishlist read rate limiting', () => {
+  beforeEach(() => {
+    getWishlistIdsCached.mockReset();
+    resolveProductsByIds.mockReset();
+    rateLimited.mockReset();
+    rateLimited.mockResolvedValue(false);
+    getWishlistIdsCached.mockResolvedValue([PRODUCT_ID]);
+    resolveProductsByIds.mockResolvedValue([]);
+  });
+
+  it('serves cached ids under the limit with a fail-open read bucket', async () => {
+    await expect(getWishlistIdsAction()).resolves.toEqual([PRODUCT_ID]);
+
+    expect(rateLimited).toHaveBeenCalledWith(
+      'wishlist:read',
+      expect.stringMatching(/^1\.2\.3\.4:[0-9a-f]{16}$/),
+      60,
+      '1 m',
+    );
+    expect(getWishlistIdsCached).toHaveBeenCalledTimes(1);
+  });
+
+  it('fails open with an empty list when id reads are rate limited', async () => {
+    rateLimited.mockResolvedValueOnce(true);
+
+    await expect(getWishlistIdsAction()).resolves.toEqual([]);
+
+    expect(getWishlistIdsCached).not.toHaveBeenCalled();
+  });
+
+  it('resolves products under the limit and skips the service when limited', async () => {
+    await expect(getWishlistProductsAction([PRODUCT_ID])).resolves.toEqual([]);
+    expect(resolveProductsByIds).toHaveBeenCalledWith([PRODUCT_ID]);
+
+    resolveProductsByIds.mockClear();
+    rateLimited.mockResolvedValueOnce(true);
+
+    await expect(getWishlistProductsAction([PRODUCT_ID])).resolves.toEqual([]);
+    expect(resolveProductsByIds).not.toHaveBeenCalled();
   });
 });

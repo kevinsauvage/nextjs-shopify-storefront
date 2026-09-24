@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import useUserContext from '@/contexts/UserContext/useUserContext';
+import { reportError } from '@/lib/logger';
 import type { ProductFieldsFragment } from '@/shopify/storefront';
 
 import BackButton from '../../_components/BackButton';
@@ -31,10 +32,13 @@ const WishlistContent = () => {
       .then((items) => {
         if (cancelled) return;
         setFetched(items);
-        setProductsLoaded(true);
       })
       .catch((error) => {
-        console.error('Failed to load wishlist products:', error);
+        reportError('wishlist/products', error);
+      })
+      .finally(() => {
+        if (cancelled) return;
+        setProductsLoaded(true);
       });
 
     return () => {

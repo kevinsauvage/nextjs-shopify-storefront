@@ -37,6 +37,15 @@ describe('adjustPaginationVariables', () => {
       last: 5,
     });
   });
+
+  it('honours an explicit first: 0 instead of defaulting', () => {
+    expect(adjustPaginationVariables({ first: 0 })).toEqual({
+      after: undefined,
+      before: undefined,
+      first: 0,
+      last: undefined,
+    });
+  });
 });
 
 describe('buildShopifySearchQuery', () => {

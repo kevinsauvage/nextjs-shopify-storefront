@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { cacheLife, cacheTag } from 'next/cache';
 
 import config, { sitemap as sitemapConfig } from '@/config';
+import { reportError } from '@/lib/logger';
 import { getBaseUrl } from '@/lib/server/metadata';
 import { storefrontSdk } from '@/shopify';
 
@@ -72,11 +73,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const [products, collections] = await Promise.all([
     getAllProducts().catch((error) => {
-      console.error('Failed to fetch products for sitemap:', error);
+      reportError('sitemap/products', error);
       return [] as SitemapItem[];
     }),
     getAllCollections().catch((error) => {
-      console.error('Failed to fetch collections for sitemap:', error);
+      reportError('sitemap/collections', error);
       return [] as SitemapItem[];
     }),
   ]);

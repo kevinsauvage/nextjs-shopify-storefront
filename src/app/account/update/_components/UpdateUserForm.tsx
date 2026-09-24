@@ -118,7 +118,6 @@ const UpdateUserForm = ({ user }: { user: GetCustomerQuery['customer'] | null | 
           >
             <Checkbox
               name="acceptsMarketing"
-              defaultChecked={acceptsMarketing}
               value={acceptsMarketing ? 'true' : 'false'}
               checked={acceptsMarketing}
               onCheckedChange={(checked) => {

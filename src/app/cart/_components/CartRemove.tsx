@@ -17,6 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import useCartContext from '@/contexts/CartContext/useCartContext';
+import { reportError } from '@/lib/logger';
 
 import { Trash2 } from 'lucide-react';
 
@@ -26,7 +27,10 @@ const CartRemove = ({ id, productTitle }: { id: string; productTitle?: string })
   const { removeFromCart } = useCartContext();
 
   const handleRemove = async () => {
-    if (!id) return console.error('Missing line item to delete');
+    if (!id) {
+      reportError('cart/remove', 'Missing line item to delete');
+      return;
+    }
     setLoading(true);
     try {
       await removeFromCart(id);

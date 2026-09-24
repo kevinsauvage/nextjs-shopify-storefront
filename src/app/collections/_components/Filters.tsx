@@ -96,10 +96,18 @@ const Filters = ({
   const pathname = usePathname();
   const router = useRouter();
 
-  const toSearchParameters = useCallback(
-    () => new URLSearchParams(query as Record<string, string>),
-    [query],
-  );
+  const toSearchParameters = useCallback(() => {
+    const parameters = new URLSearchParams();
+    for (const [key, value] of Object.entries(query)) {
+      if (value === undefined) continue;
+      if (Array.isArray(value)) {
+        for (const entry of value) parameters.append(key, entry);
+      } else {
+        parameters.append(key, value);
+      }
+    }
+    return parameters;
+  }, [query]);
 
   const isSelected = useCallback(
     (filterId: string, input: string) =>
@@ -273,6 +281,7 @@ const Filters = ({
                           step={0.1}
                           value={priceRange}
                           onValueChange={handlePriceChange}
+                          thumbLabels={['Minimum price', 'Maximum price']}
                         />
                         <div className="flex items-center justify-between gap-2">
                           <span className="rounded-full border border-border/70 bg-card px-3 py-1 text-body-sm font-semibold tabular-nums">

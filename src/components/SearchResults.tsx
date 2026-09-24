@@ -124,7 +124,10 @@ const SearchResults = ({
   }
 
   return (
-    <div className="absolute border z-50 w-full mt-2 shadow-lg text-start overflow-hidden bg-background rounded-lg animate-fadeSlideDown">
+    <div
+      role="status"
+      className="absolute border z-50 w-full mt-2 shadow-lg text-start overflow-hidden bg-background rounded-lg animate-fadeSlideDown"
+    >
       <div className="p-2">
         {queries.length > 0 && (
           <>

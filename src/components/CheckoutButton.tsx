@@ -13,7 +13,7 @@ const CheckoutButton = ({ checkoutUrl }: { checkoutUrl: string }) => {
           so the App Router does not attempt a client-side transition. */}
       <a href={checkoutUrl} rel="noopener noreferrer">
         Proceed to Checkout
-        <ArrowRight className="ml-2 h-5 w-5" />
+        <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
       </a>
     </Button>
   );

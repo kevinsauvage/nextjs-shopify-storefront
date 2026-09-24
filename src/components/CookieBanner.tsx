@@ -17,6 +17,7 @@ import { Label } from '@/components/ui/label';
 import config from '@/config';
 import { dispatchConsentUpdated, withGtag } from '@/lib/client/analytics';
 import { getCookieFront, setCookieFront } from '@/lib/client/cookies';
+import { reportError } from '@/lib/logger';
 import type { originalSettingsType } from '@/utils/consents';
 import { transformedSettings } from '@/utils/consents';
 
@@ -34,9 +35,17 @@ const CookieBanner = () => {
   const handleCookies = useCallback(() => {
     const consent = getCookieFront('localConsent');
     if (consent && typeof consent === 'string') {
-      withGtag((gtag) => {
-        gtag('consent', 'update', transformedSettings(JSON.parse(consent) as originalSettingsType));
-      });
+      try {
+        const settings = JSON.parse(consent) as originalSettingsType;
+        withGtag((gtag) => {
+          gtag('consent', 'update', transformedSettings(settings));
+        });
+      } catch (error) {
+        // A malformed cookie must not break the banner: treat it as no
+        // consent and let the visitor choose again.
+        reportError('CookieBanner/consent', error);
+        setShow(true);
+      }
     } else {
       setShow(true);
     }

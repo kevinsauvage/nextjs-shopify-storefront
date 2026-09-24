@@ -21,13 +21,13 @@ const RecentOrdersPreview = ({ orders }: RecentOrdersPreviewProps) => {
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
-          <Package size={18} className="text-secondary" />
+          <Package size={18} className="text-secondary" aria-hidden="true" />
           <h3 className="text-heading-4">Recent orders</h3>
         </div>
         <Button variant="ghost" size="sm" asChild>
           <Link href={config.routes.orders}>
             View all
-            <ArrowRight size={16} />
+            <ArrowRight size={16} aria-hidden="true" />
           </Link>
         </Button>
       </div>
@@ -60,6 +60,7 @@ const RecentOrdersPreview = ({ orders }: RecentOrdersPreviewProps) => {
                     )}
                     <ChevronRight
                       size={18}
+                      aria-hidden="true"
                       className="text-secondary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-foreground"
                     />
                   </div>

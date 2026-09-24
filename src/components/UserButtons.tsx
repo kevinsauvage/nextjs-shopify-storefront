@@ -42,7 +42,7 @@ const UserButtons = ({ className }: { className?: string }) => {
       <Link
         className="group relative cursor-pointer flex items-center justify-center min-h-11 min-w-11"
         href={config.routes.cart}
-        aria-label={'Toggle Checkout'}
+        aria-label="Cart"
       >
         <ShoppingBag
           size={22}

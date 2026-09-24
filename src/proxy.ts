@@ -24,7 +24,10 @@ async function proxy(request: NextRequest) {
   const cookieShopify = cookies.get(globalConfig.cookies.shopifyToken);
   const tokenExpiresAt = cookies.get(globalConfig.cookies.shopifyTokenExpire)?.value;
 
-  const isAccountRoute = pathname.startsWith(globalConfig.routes.account);
+  // Exact match: `startsWith('/account')` alone also matches `/accounting`.
+  const isAccountRoute =
+    pathname === globalConfig.routes.account ||
+    pathname.startsWith(`${globalConfig.routes.account}/`);
   const isAuthRoute =
     pathname.startsWith(globalConfig.routes.login) ||
     pathname.startsWith(globalConfig.routes.register);

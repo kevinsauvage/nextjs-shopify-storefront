@@ -25,7 +25,10 @@ const Crumbs = ({ title, href, last }: { title: string; href: Route; last: boole
       .replace('gid://shopify/MailingAddress/', '')
       .split('?')[0];
     return (
-      <strong className="text-body-sm text-secondary text-ellipsis whitespace-nowrap font-semibold">
+      <strong
+        aria-current="page"
+        className="text-body-sm text-secondary text-ellipsis whitespace-nowrap font-semibold"
+      >
         {t}
       </strong>
     );
@@ -75,7 +78,7 @@ const Breadcrumbs = ({ lastElement }: { lastElement?: string }) => {
   return (
     breadcrumbs.length > 1 && (
       <div>
-        <nav className="md:block container mx-auto">
+        <nav aria-label="Breadcrumb" className="md:block container mx-auto">
           <ol className="flex items-center space-x-1">
             {breadcrumbs.map((crumb, index) => (
               <li
@@ -83,7 +86,10 @@ const Breadcrumbs = ({ lastElement }: { lastElement?: string }) => {
                 className="flex items-center space-x-1 overflow-ellipsis overflow-hidden"
               >
                 {lastElement && index === breadcrumbs.length - 1 ? (
-                  <p className="text-body-sm text-secondary font-medium text-ellipsis whitespace-nowrap overflow-hidden">
+                  <p
+                    aria-current="page"
+                    className="text-body-sm text-secondary font-medium text-ellipsis whitespace-nowrap overflow-hidden"
+                  >
                     {lastElement}
                   </p>
                 ) : (

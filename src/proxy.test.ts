@@ -57,6 +57,13 @@ describe('proxy', () => {
     expect(renewCustomerToken).not.toHaveBeenCalled();
   });
 
+  it('does not treat lookalike paths as account routes', async () => {
+    const response = await proxy(request('/accounting'));
+
+    expect(response.headers.get('location')).toBeNull();
+    expect(renewCustomerToken).not.toHaveBeenCalled();
+  });
+
   it('bounces signed-in visitors away from auth routes', async () => {
     renewCustomerToken.mockResolvedValue({ accessToken: 'new-1', expiresAt: hourFromNow() });
 

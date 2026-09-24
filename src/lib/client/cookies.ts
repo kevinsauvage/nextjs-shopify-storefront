@@ -1,5 +1,7 @@
 'use client';
 
+import { reportError } from '@/lib/logger';
+
 /**
  * Client-side cookie utilities
  * Browser cookie manipulation helpers
@@ -48,6 +50,6 @@ export const setCookieFront = (
       document.cookie = cookie;
     }
   } catch (error) {
-    console.error(`Failed to set cookie: ${JSON.stringify(error, undefined, 2)}`);
+    reportError('cookies/set', error);
   }
 };

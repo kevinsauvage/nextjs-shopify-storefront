@@ -17,7 +17,7 @@ export const adjustPaginationVariables = ({
   first,
   ...rest
 }: PaginationVariables): PaginationVariables => {
-  const count = first || 10;
+  const count = first ?? 10;
 
   return {
     ...rest,

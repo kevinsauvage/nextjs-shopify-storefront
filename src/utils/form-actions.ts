@@ -5,7 +5,11 @@ import type { ZodError } from 'zod';
 
 /** Convert Zod validation errors into field-level form state. */
 export function zodErrorsToFormState(zodError: ZodError): FormState {
-  return { errors: zodError.formErrors.fieldErrors as FormFieldErrors, ok: false };
+  const fieldErrors = zodError.formErrors.fieldErrors as FormFieldErrors;
+  const formMessages = zodError.formErrors.formErrors;
+  const message = formMessages.length > 0 ? formMessages.join(' ') : undefined;
+
+  return { errors: fieldErrors, message, ok: false };
 }
 
 export function formError(message: string): FormState {

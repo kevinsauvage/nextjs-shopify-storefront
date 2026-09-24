@@ -15,7 +15,15 @@ const LogoutClientEffect = () => {
     formReference.current?.requestSubmit();
   }, []);
 
-  return <form ref={formReference} action={logoutAction} />;
+  // The effect auto-submits for JS users; the `<noscript>` button keeps the
+  // logout usable with JS disabled.
+  return (
+    <form ref={formReference} action={logoutAction}>
+      <noscript>
+        <button type="submit">Log out</button>
+      </noscript>
+    </form>
+  );
 };
 
 export default LogoutClientEffect;

@@ -11,6 +11,7 @@ import Search from '@/components/Search';
 import { Button } from '@/components/ui/button';
 import config from '@/config';
 import seo from '@/data/seo';
+import { normalizeSortKey } from '@/lib/server/collection';
 import { generateMetadata as generateMetadataUtil } from '@/lib/server/metadata';
 import {
   adjustPaginationVariables,
@@ -29,8 +30,6 @@ import Sort from '../collections/_components/Sort';
 
 /** Valid `SearchSortKeys` values, for runtime query-param parsing. */
 const SEARCH_SORT_KEYS = ['PRICE', 'RELEVANCE'] as const satisfies readonly SearchSortKeys[];
-
-const normalizeSortKey = (value: string): string => value.toLowerCase().replace(/[^a-z0-9]/g, '');
 
 const resolveSearchSortKey = (raw?: string): SearchSortKeys => {
   const normalized = raw ? normalizeSortKey(raw) : '';
@@ -54,9 +53,53 @@ type SearchParameters = {
   reverse?: boolean;
 };
 
+/** Shared banner so the empty-query early return below duplicates no markup. */
+const SearchBanner = ({ searchQuery }: { searchQuery?: string }) => (
+  <PageBanner
+    title={seo.search.title}
+    eyebrow="Search the store"
+    description={seo.search.description}
+  >
+    <Breadcrumbs />
+    <Search key={searchQuery ?? ''} searchQuery={searchQuery ?? ''} />
+    <div className="flex flex-wrap items-center justify-center gap-2">
+      <span className="text-caption text-secondary">Popular:</span>
+      {['Linen', 'Denim', 'Dress', 'Knit', 'Boots'].map((term) => (
+        <Button key={term} variant="outline" size="sm" asChild className="rounded-full">
+          <Link href={`${config.routes.search}?searchQuery=${encodeURIComponent(term)}`}>
+            {term}
+          </Link>
+        </Button>
+      ))}
+    </div>
+  </PageBanner>
+);
+
 const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> }) => {
   const searchParameters = await searchParams;
   const hasQuery = Boolean(searchParameters.searchQuery?.trim());
+
+  // Never burn a Storefront request on the empty state.
+  if (!hasQuery) {
+    return (
+      <div>
+        <SearchBanner searchQuery={searchParameters.searchQuery} />
+        <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 space-y-6">
+          <EmptyState
+            variant="search"
+            title="Search our store"
+            subtitle="Enter a keyword to find products. Try a material, category, or product name — or pick a popular search above."
+            altText="Search our store"
+            primaryAction={
+              <Button variant="default" asChild>
+                <Link href="/collections">Browse Collections</Link>
+              </Button>
+            }
+          />
+        </div>
+      </div>
+    );
+  }
 
   const response: SearchProductsQuery = await storefrontSdk().searchProducts({
     ...adjustPaginationVariables({
@@ -90,42 +133,8 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParameters> 
 
   return (
     <div>
-      <PageBanner
-        title={seo.search.title}
-        eyebrow="Search the store"
-        description={seo.search.description}
-      >
-        <Breadcrumbs />
-        <Search
-          key={searchParameters.searchQuery ?? ''}
-          searchQuery={searchParameters.searchQuery ?? ''}
-        />
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          <span className="text-caption text-secondary">Popular:</span>
-          {['Linen', 'Denim', 'Dress', 'Knit', 'Boots'].map((term) => (
-            <Button key={term} variant="outline" size="sm" asChild className="rounded-full">
-              <Link href={`${config.routes.search}?searchQuery=${encodeURIComponent(term)}`}>
-                {term}
-              </Link>
-            </Button>
-          ))}
-        </div>
-      </PageBanner>
-      {!hasQuery ? (
-        <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 space-y-6">
-          <EmptyState
-            variant="search"
-            title="Search our store"
-            subtitle="Enter a keyword to find products. Try a material, category, or product name — or pick a popular search above."
-            altText="Search our store"
-            primaryAction={
-              <Button variant="default" asChild>
-                <Link href="/collections">Browse Collections</Link>
-              </Button>
-            }
-          />
-        </div>
-      ) : products.length > 0 ? (
+      <SearchBanner searchQuery={searchParameters.searchQuery} />
+      {products.length > 0 ? (
         <div className="container mx-auto px-4 md:px-6 py-8 md:py-12 space-y-6">
           <ListingHeader>
             <Sort

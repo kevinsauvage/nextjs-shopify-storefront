@@ -74,7 +74,11 @@ const HamburgerMenu = ({
     const hasChildren = Boolean(item.items && item.items.length > 0);
     const isExpanded = Boolean(expandedMenus[item.id]);
     const href = typeof item.url === 'string' ? normalizeMenuHref(item.url) : null;
-    const isActive = href !== null && pathname === href;
+
+    const isActive =
+      href !== null &&
+      href.length > 0 &&
+      (pathname === href || (href !== '/' && pathname.startsWith(`${href}/`)));
 
     if (level > 0) {
       return (

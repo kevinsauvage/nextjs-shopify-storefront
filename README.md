@@ -30,8 +30,8 @@ A modern, full-featured e-commerce application built with Next.js and Shopify St
 
 ## Prerequisites
 
-- Node.js 20.9+ (recommended: 22+)
-- npm or yarn
+- Node.js 24.x (see `.nvmrc`)
+- yarn 1.22.22 (`yarn`, never `npm`/`pnpm`/`bun`)
 - Shopify store with Storefront API access
 - Shopify Storefront API access token
 

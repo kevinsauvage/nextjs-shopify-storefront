@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import config from '@/config';
+import { reportError } from '@/lib/logger';
 import type { MailingAddress } from '@/shopify/storefront';
 
 import { Edit, Heart, MapPin, MoreVerticalIcon, Trash2 } from 'lucide-react';
@@ -68,7 +69,7 @@ const Address = ({
       <CardContent className="flex items-start justify-between gap-4 p-4 md:p-5">
         <div className="flex min-w-0 flex-1 items-start gap-3">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-secondary">
-            <MapPin size={18} />
+            <MapPin size={18} aria-hidden="true" />
           </span>
           <div className="min-w-0 flex-1 space-y-1.5">
             <div className="flex flex-wrap items-center gap-2">
@@ -131,7 +132,7 @@ const Address = ({
                   className="cursor-pointer"
                   onClick={() => {
                     handleSetAsDefault().catch((error) => {
-                      console.error('Error setting address as default:', error);
+                      reportError('account/address', error);
                     });
                   }}
                 >
@@ -144,7 +145,7 @@ const Address = ({
                 className="cursor-pointer text-destructive focus:text-destructive"
                 onClick={() => {
                   handleDelete().catch((error) => {
-                    console.error('Error deleting address:', error);
+                    reportError('account/address', error);
                   });
                 }}
               >
