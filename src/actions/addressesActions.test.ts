@@ -65,6 +65,14 @@ describe('createAddressAction', () => {
     expect(createAddress).not.toHaveBeenCalled();
   });
 
+  it('rejects oversized input without touching the limiter or service', async () => {
+    const state = await createAddressAction({ ...INPUT, address1: 'x'.repeat(256) });
+
+    expect(state.ok).toBe(false);
+    expect(rateLimited).not.toHaveBeenCalled();
+    expect(createAddress).not.toHaveBeenCalled();
+  });
+
   it('returns an error when rate limited without calling the service', async () => {
     rateLimited.mockResolvedValueOnce(true);
 
@@ -95,5 +103,14 @@ describe('deleteAddressAction', () => {
     expect(rateLimited).toHaveBeenCalledWith('address:write', addressBucket, 30, '1 m', {
       failClosed: true,
     });
+  });
+
+  it('rejects a malformed address id without touching the limiter or service', async () => {
+    const state = await deleteAddressAction('not-a-gid');
+
+    expect(state.ok).toBe(false);
+    expect(rateLimited).not.toHaveBeenCalled();
+    expect(deleteAddress).not.toHaveBeenCalled();
+    expect(redirect).not.toHaveBeenCalled();
   });
 });

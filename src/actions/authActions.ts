@@ -18,6 +18,7 @@ import {
   zodErrorsToFormState,
 } from '@/utils/form-actions';
 import { isAllowedPasswordResetUrl, RESET_URL_MAX_LENGTH, safeInternalPath } from '@/utils/url';
+import { emailField, nameField, passwordField } from '@/utils/validation';
 
 import { z } from 'zod';
 
@@ -26,11 +27,11 @@ const tooManyAttempts = (): FormState =>
 
 const registerSchema = z
   .object({
-    email: z.string().email(),
-    firstName: z.string(),
-    lastName: z.string(),
-    password: z.string().min(6),
-    passwordConfirm: z.string().min(6),
+    email: emailField,
+    firstName: nameField,
+    lastName: nameField,
+    password: passwordField,
+    passwordConfirm: passwordField,
     redirectUrl: z.string().optional(),
   })
   .superRefine(({ passwordConfirm, password }, context) => {
@@ -67,8 +68,8 @@ export async function registerAction(input: RegisterInput): Promise<FormState> {
 }
 
 const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
+  email: emailField,
+  password: passwordField,
   redirectUrl: z.string().optional(),
 });
 
@@ -105,7 +106,7 @@ export async function loginAction(input: LoginInput): Promise<FormState> {
 }
 
 const recoverSchema = z.object({
-  email: z.string().email(),
+  email: emailField,
 });
 
 type RecoverPasswordInput = z.infer<typeof recoverSchema>;

@@ -86,6 +86,24 @@ describe('loginAction', () => {
     expect(login).not.toHaveBeenCalled();
     expect(redirect).not.toHaveBeenCalled();
   });
+
+  it('rejects oversized passwords instead of hashing them against Shopify', async () => {
+    const state = await loginAction({ email: 'a@b.com', password: 'p'.repeat(129) });
+
+    expect(state.ok).toBe(false);
+    expect(login).not.toHaveBeenCalled();
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it('normalizes the email before the service call', async () => {
+    login.mockResolvedValue({ success: true });
+
+    await loginAction({ email: '  A@B.com  ', password: 'secret1' });
+
+    expect(login).toHaveBeenCalledWith(
+      expect.objectContaining({ email: 'a@b.com', password: 'secret1' }),
+    );
+  });
 });
 
 describe('resetPasswordAction', () => {

@@ -10,16 +10,17 @@ import {
   serviceErrorsToFormState,
   zodErrorsToFormState,
 } from '@/utils/form-actions';
+import { companyField, emailField, nameField, phoneField } from '@/utils/validation';
 
 import { z } from 'zod';
 
 const userSchema = z.object({
   acceptsMarketing: z.string().optional(),
-  company: z.string().optional(),
-  email: z.string().email(),
-  firstName: z.string(),
-  lastName: z.string(),
-  phone: z.string().optional(),
+  company: companyField,
+  email: emailField,
+  firstName: nameField,
+  lastName: nameField,
+  phone: phoneField,
 });
 
 type UpdateUserInput = z.infer<typeof userSchema>;

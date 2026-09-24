@@ -36,7 +36,12 @@ const INVALID_CART_UPDATE = 'Invalid cart update';
 const INVALID_CART_LINE = 'Invalid cart line';
 const INVALID_DISCOUNT_CODE = 'Invalid discount code';
 
-const line = (quantity: number) => ({ merchandiseId: 'gid://variant/1', quantity });
+const line = (quantity: number) => ({
+  merchandiseId: 'gid://shopify/ProductVariant/1',
+  quantity,
+});
+
+const LINE_ID = 'gid://shopify/CartLine/1';
 
 describe('addCartLinesAction', () => {
   beforeEach(() => {
@@ -49,7 +54,9 @@ describe('addCartLinesAction', () => {
   it('passes a valid line through to the cart service', async () => {
     const result = await addCartLinesAction([line(1)]);
 
-    expect(addLines).toHaveBeenCalledWith([{ merchandiseId: 'gid://variant/1', quantity: 1 }]);
+    expect(addLines).toHaveBeenCalledWith([
+      { merchandiseId: 'gid://shopify/ProductVariant/1', quantity: 1 },
+    ]);
     expect(result).toEqual({ data: CART, message: 'Product added successfully' });
   });
 
@@ -70,11 +77,18 @@ describe('addCartLinesAction', () => {
 
   it('rejects more than 50 lines in a single request', async () => {
     const lines = Array.from({ length: 51 }, (_, index) => ({
-      merchandiseId: `gid://variant/${index}`,
+      merchandiseId: `gid://shopify/ProductVariant/${index}`,
       quantity: 1,
     }));
 
     await expect(addCartLinesAction(lines)).rejects.toThrow(INVALID_CART_ITEM);
+    expect(addLines).not.toHaveBeenCalled();
+  });
+
+  it('rejects a non-gid merchandise id without a Shopify round-trip', async () => {
+    await expect(addCartLinesAction([{ merchandiseId: 'variant-1', quantity: 1 }])).rejects.toThrow(
+      INVALID_CART_ITEM,
+    );
     expect(addLines).not.toHaveBeenCalled();
   });
 
@@ -109,14 +123,21 @@ describe('updateCartLinesAction', () => {
   });
 
   it('passes a valid update through to the cart service', async () => {
-    const result = await updateCartLinesAction([{ id: 'line-1', quantity: 2 }]);
+    const result = await updateCartLinesAction([{ id: LINE_ID, quantity: 2 }]);
 
-    expect(updateLines).toHaveBeenCalledWith([{ id: 'line-1', quantity: 2 }]);
+    expect(updateLines).toHaveBeenCalledWith([{ id: LINE_ID, quantity: 2 }]);
     expect(result).toEqual({ data: CART, message: 'Cart updated successfully' });
   });
 
   it('rejects an out-of-range quantity', async () => {
-    await expect(updateCartLinesAction([{ id: 'line-1', quantity: 0 }])).rejects.toThrow(
+    await expect(updateCartLinesAction([{ id: LINE_ID, quantity: 0 }])).rejects.toThrow(
+      INVALID_CART_UPDATE,
+    );
+    expect(updateLines).not.toHaveBeenCalled();
+  });
+
+  it('rejects a non-gid line id without a Shopify round-trip', async () => {
+    await expect(updateCartLinesAction([{ id: 'line-1', quantity: 2 }])).rejects.toThrow(
       INVALID_CART_UPDATE,
     );
     expect(updateLines).not.toHaveBeenCalled();
@@ -132,9 +153,9 @@ describe('removeCartLineAction', () => {
   });
 
   it('passes a valid line id through to the cart service', async () => {
-    const result = await removeCartLineAction('line-1');
+    const result = await removeCartLineAction(LINE_ID);
 
-    expect(removeLine).toHaveBeenCalledWith('line-1');
+    expect(removeLine).toHaveBeenCalledWith(LINE_ID);
     expect(result).toEqual({ data: CART, message: 'Product removed successfully' });
   });
 

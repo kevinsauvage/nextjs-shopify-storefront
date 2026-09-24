@@ -35,7 +35,12 @@ const envSchema = z
 
     // Optional: site configuration
     NEXT_PUBLIC_SITE_DOMAIN: optionalString,
-    NEXT_PUBLIC_GTM_ID: optionalString,
+    // Rendered into an inline GTM snippet: constrain to the container-ID shape
+    // so a malformed value can never become script content.
+    NEXT_PUBLIC_GTM_ID: z
+      .string()
+      .regex(/^GTM-[A-Z0-9]+$/, 'NEXT_PUBLIC_GTM_ID must look like GTM-ABC1234')
+      .optional(),
 
     // Optional: site metadata (SEO / Open Graph fallbacks in data/siteMetadata.ts)
     NEXT_PUBLIC_SITE_NAME: optionalString,

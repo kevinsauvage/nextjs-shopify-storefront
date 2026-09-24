@@ -10,21 +10,22 @@ import { getShopifyToken } from '@/lib/server/shopify-helpers';
 import { AddressService } from '@/services/address.service';
 import type { FormState } from '@/types/formActions';
 import { formError, serviceErrorsToFormState, zodErrorsToFormState } from '@/utils/form-actions';
+import { companyField, phoneField, shopifyGidField } from '@/utils/validation';
 
 import { z } from 'zod';
 
 const addressSchema = z.object({
-  address1: z.string().min(1, 'Address is required'),
-  address2: z.string().optional(),
-  city: z.string().min(1, 'City is required'),
-  company: z.string().optional(),
-  country: z.string().min(1, 'Country is required'),
-  firstName: z.string().min(1, 'First name is required'),
+  address1: z.string().trim().min(1, 'Address is required').max(255),
+  address2: z.string().trim().max(255).optional(),
+  city: z.string().trim().min(1, 'City is required').max(100),
+  company: companyField,
+  country: z.string().trim().min(1, 'Country is required').max(100),
+  firstName: z.string().trim().min(1, 'First name is required').max(100),
   id: z.string().optional(),
-  lastName: z.string().min(1, 'Last name is required'),
-  phone: z.string().optional(),
-  province: z.string().optional(),
-  zip: z.string().min(1, 'Zip is required'),
+  lastName: z.string().trim().min(1, 'Last name is required').max(100),
+  phone: phoneField,
+  province: z.string().trim().max(100).optional(),
+  zip: z.string().trim().min(1, 'Zip is required').max(20),
 });
 
 type AddressInput = z.infer<typeof addressSchema>;
@@ -72,6 +73,10 @@ export async function createAddressAction(input: AddressInput): Promise<FormStat
 }
 
 export async function deleteAddressAction(addressId: string): Promise<FormState> {
+  if (!shopifyGidField.safeParse(addressId).success) {
+    return formError('Invalid address');
+  }
+
   const limited = await assertNotRateLimited();
   if (limited) return limited;
 
@@ -90,6 +95,10 @@ export async function deleteAddressAction(addressId: string): Promise<FormState>
 }
 
 export async function setDefaultAddressAction(addressId: string): Promise<FormState> {
+  if (!shopifyGidField.safeParse(addressId).success) {
+    return formError('Invalid address');
+  }
+
   const limited = await assertNotRateLimited();
   if (limited) return limited;
 

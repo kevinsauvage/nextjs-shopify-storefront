@@ -69,13 +69,26 @@ const ALLOWED_ATTR = [
 ];
 
 // Harden outbound links after sanitization (adds rel, drops unsafe targets).
-if (typeof window === 'undefined') {
+// Registered unconditionally so server and client output match; the flag
+// guards against double registration under HMR or repeated module evaluation.
+let hookRegistered = false;
+
+if (!hookRegistered) {
   DOMPurify.addHook('afterSanitizeAttributes', (node) => {
     if (node.tagName === 'A' && node.getAttribute('href')) {
       node.setAttribute('rel', 'noopener noreferrer nofollow');
     }
   });
+  hookRegistered = true;
 }
+
+/**
+ * Explicit URI allowlist: http/https/mailto/tel, inline images, and relative
+ * URLs/anchors. Notably blocks `javascript:`, `vbscript:` and `data:text/html`
+ * instead of relying on DOMPurify's broader `data:` default.
+ */
+const ALLOWED_URI_REGEXP =
+  /^(?:(?:https?|mailto|tel):|data:image\/|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i;
 
 /**
  * Sanitize store/merchant-provided HTML (product descriptions, Shopify legal
@@ -91,6 +104,7 @@ export const sanitizeHtml = (html: string | null | undefined): string => {
     ALLOW_DATA_ATTR: false,
     ALLOWED_ATTR,
     ALLOWED_TAGS,
+    ALLOWED_URI_REGEXP,
   });
 };
 

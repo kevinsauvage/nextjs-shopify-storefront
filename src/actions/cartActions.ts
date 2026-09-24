@@ -4,6 +4,7 @@ import { getClientIp, rateLimitKey } from '@/lib/server/client-ip';
 import { isRateLimited } from '@/lib/server/rate-limit';
 import { CartService } from '@/services/cart.service';
 import type { CartFieldsFragment, CartLineInput, CartLineUpdateInput } from '@/shopify/storefront';
+import { shopifyGidField } from '@/utils/validation';
 
 import { z } from 'zod';
 
@@ -21,7 +22,7 @@ const quantitySchema = z.number().int().min(1).max(MAX_QUANTITY);
 const addLinesSchema = z
   .array(
     z.object({
-      merchandiseId: z.string().min(1).max(255),
+      merchandiseId: shopifyGidField,
       quantity: quantitySchema,
     }),
   )
@@ -31,14 +32,14 @@ const addLinesSchema = z
 const updateLinesSchema = z
   .array(
     z.object({
-      id: z.string().min(1).max(255),
+      id: shopifyGidField,
       quantity: quantitySchema,
     }),
   )
   .min(1)
   .max(MAX_LINES_PER_REQUEST);
 
-const lineIdSchema = z.string().min(1).max(255);
+const lineIdSchema = shopifyGidField;
 
 const discountCodesSchema = z.array(z.string().trim().min(1).max(64)).max(MAX_DISCOUNT_CODES);
 

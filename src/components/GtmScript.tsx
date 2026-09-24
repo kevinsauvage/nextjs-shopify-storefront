@@ -6,7 +6,12 @@ import Script from 'next/script';
 import { CONSENT_UPDATED_EVENT } from '@/lib/client/analytics';
 import { getCookieFront } from '@/lib/client/cookies';
 
-const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
+const GTM_ID_PATTERN = /^GTM-[A-Z0-9]+$/;
+
+// Mirrors the `src/config/env.ts` constraint so a malformed ID is never
+// interpolated into the inline snippet, even if env validation was skipped.
+const rawGtmId = process.env.NEXT_PUBLIC_GTM_ID;
+const GTM_ID = rawGtmId && GTM_ID_PATTERN.test(rawGtmId) ? rawGtmId : undefined;
 
 const GtmScript = () => {
   const [hasConsent, setHasConsent] = useState(false);

@@ -34,6 +34,22 @@ describe('sanitizeHtml', () => {
     expect(output).not.toContain('javascript:');
   });
 
+  it('blocks data:text/html payloads while keeping inline images', () => {
+    expect(sanitizeHtml('<a href="data:text/html,<script>alert(1)</script>">x</a>')).not.toContain(
+      'data:text/html',
+    );
+    expect(sanitizeHtml('<img src="data:image/png;base64,iVBORw0KGgo=" />')).toContain(
+      'data:image/png',
+    );
+  });
+
+  it('keeps safe and relative links with rel hardening', () => {
+    expect(sanitizeHtml('<a href="/collections/all">all</a>')).toContain('href="/collections/all"');
+    expect(sanitizeHtml('<a href="mailto:hello@example.com">mail</a>')).toContain(
+      'href="mailto:hello@example.com"',
+    );
+  });
+
   it('adds rel hardening to safe links', () => {
     const output = sanitizeHtml('<a href="https://example.com">link</a>');
 

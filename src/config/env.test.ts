@@ -46,6 +46,16 @@ describe('validateEnv', () => {
     ).toThrow(/set together/);
   });
 
+  it('accepts a well-formed GTM container ID', () => {
+    expect(() => validateEnv({ ...validEnv, NEXT_PUBLIC_GTM_ID: 'GTM-ABC1234' })).not.toThrow();
+  });
+
+  it('rejects a malformed GTM container ID instead of rendering it into a script', () => {
+    expect(() => validateEnv({ ...validEnv, NEXT_PUBLIC_GTM_ID: "x');alert(1);//" })).toThrow(
+      /NEXT_PUBLIC_GTM_ID/,
+    );
+  });
+
   it('accepts optional site metadata overrides', () => {
     expect(() =>
       validateEnv({

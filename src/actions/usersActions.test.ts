@@ -49,6 +49,14 @@ describe('updateUserAction', () => {
     expect(updateUser).not.toHaveBeenCalled();
   });
 
+  it('rejects oversized names without touching the limiter or service', async () => {
+    const state = await updateUserAction({ ...INPUT, firstName: 'x'.repeat(101) });
+
+    expect(state.ok).toBe(false);
+    expect(rateLimited).not.toHaveBeenCalled();
+    expect(updateUser).not.toHaveBeenCalled();
+  });
+
   it('returns an error when rate limited without calling the service', async () => {
     rateLimited.mockResolvedValueOnce(true);
 
