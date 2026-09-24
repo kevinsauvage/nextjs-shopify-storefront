@@ -19,33 +19,50 @@ type AddressInput = {
   zip: string;
 };
 
+const UNAUTHENTICATED_ERROR = 'User not authenticated';
+const DEFAULT_ERROR = 'Something went wrong';
+
+/**
+ * Run a customer-scoped Storefront mutation: check the session token,
+ * report + map transport failures, and let the caller map user errors.
+ */
+const withCustomerToken = async <T>(
+  context: string,
+  failureMessage: string,
+  run: (customerAccessToken: string) => Promise<T>,
+): Promise<T | { error: string }> => {
+  const customerAccessToken = await getShopifyToken();
+  if (!customerAccessToken) {
+    return { error: UNAUTHENTICATED_ERROR };
+  }
+
+  try {
+    return await run(customerAccessToken);
+  } catch (error) {
+    reportError(context, error);
+    return { error: failureMessage };
+  }
+};
+
 /**
  * Address service
  * Handles all address-related business logic
  */
 export class AddressService {
-  private static readonly UNAUTHENTICATED_ERROR = 'User not authenticated';
-  private static readonly DEFAULT_ERROR = 'Something went wrong';
-
   /**
    * Create a new address
    */
   static async createAddress(input: AddressInput) {
-    const customerAccessToken = await getShopifyToken();
-    if (!customerAccessToken) {
-      return { error: this.UNAUTHENTICATED_ERROR };
-    }
-
-    let response;
-    try {
-      response = await storefrontSdk('private').customerAddressCreate({
-        address: input,
-        customerAccessToken,
-      });
-    } catch (error) {
-      reportError('AddressService.createAddress', error);
-      return { error: 'Failed to create address' };
-    }
+    const response = await withCustomerToken(
+      'AddressService.createAddress',
+      'Failed to create address',
+      (customerAccessToken) =>
+        storefrontSdk('private').customerAddressCreate({
+          address: input,
+          customerAccessToken,
+        }),
+    );
+    if ('error' in response) return response;
 
     const { customerUserErrors, customerAddress } = response?.customerAddressCreate || {};
 
@@ -56,34 +73,29 @@ export class AddressService {
     const errorResult = handleCustomerUserErrors(customerUserErrors);
     if (errorResult) return errorResult;
 
-    return { error: this.DEFAULT_ERROR };
+    return { error: DEFAULT_ERROR };
   }
 
   /**
    * Update an existing address
    */
   static async updateAddress(input: AddressInput) {
-    const customerAccessToken = await getShopifyToken();
-    if (!customerAccessToken) {
-      return { error: this.UNAUTHENTICATED_ERROR };
-    }
-
     const { id, ...address } = input;
     if (!id) {
       return { error: 'Address ID is required for update' };
     }
 
-    let response;
-    try {
-      response = await storefrontSdk('private').customerAddressUpdate({
-        address,
-        addressId: id,
-        customerAccessToken,
-      });
-    } catch (error) {
-      reportError('AddressService.updateAddress', error);
-      return { error: 'Failed to update address' };
-    }
+    const response = await withCustomerToken(
+      'AddressService.updateAddress',
+      'Failed to update address',
+      (customerAccessToken) =>
+        storefrontSdk('private').customerAddressUpdate({
+          address,
+          addressId: id,
+          customerAccessToken,
+        }),
+    );
+    if ('error' in response) return response;
 
     const { customerUserErrors, customerAddress } = response?.customerAddressUpdate || {};
 
@@ -94,28 +106,23 @@ export class AddressService {
       return { success: true, customerAddress };
     }
 
-    return { error: this.DEFAULT_ERROR };
+    return { error: DEFAULT_ERROR };
   }
 
   /**
    * Delete an address
    */
   static async deleteAddress(addressId: string) {
-    const customerAccessToken = await getShopifyToken();
-    if (!customerAccessToken) {
-      return { error: this.UNAUTHENTICATED_ERROR };
-    }
-
-    let response;
-    try {
-      response = await storefrontSdk('private').customerAddressDelete({
-        addressId,
-        customerAccessToken,
-      });
-    } catch (error) {
-      reportError('AddressService.deleteAddress', error);
-      return { error: 'Failed to delete address' };
-    }
+    const response = await withCustomerToken(
+      'AddressService.deleteAddress',
+      'Failed to delete address',
+      (customerAccessToken) =>
+        storefrontSdk('private').customerAddressDelete({
+          addressId,
+          customerAccessToken,
+        }),
+    );
+    if ('error' in response) return response;
 
     const { customerUserErrors, deletedCustomerAddressId } = response?.customerAddressDelete || {};
 
@@ -126,28 +133,23 @@ export class AddressService {
     const errorResult = handleCustomerUserErrors(customerUserErrors);
     if (errorResult) return errorResult;
 
-    return { error: this.DEFAULT_ERROR };
+    return { error: DEFAULT_ERROR };
   }
 
   /**
    * Set default address
    */
   static async setDefaultAddress(addressId: string) {
-    const customerAccessToken = await getShopifyToken();
-    if (!customerAccessToken) {
-      return { error: this.UNAUTHENTICATED_ERROR };
-    }
-
-    let response;
-    try {
-      response = await storefrontSdk('private').customerDefaultAddressUpdate({
-        addressId,
-        customerAccessToken,
-      });
-    } catch (error) {
-      reportError('AddressService.setDefaultAddress', error);
-      return { error: 'Failed to set default address' };
-    }
+    const response = await withCustomerToken(
+      'AddressService.setDefaultAddress',
+      'Failed to set default address',
+      (customerAccessToken) =>
+        storefrontSdk('private').customerDefaultAddressUpdate({
+          addressId,
+          customerAccessToken,
+        }),
+    );
+    if ('error' in response) return response;
 
     const { customerUserErrors, customer } = response?.customerDefaultAddressUpdate || {};
 
@@ -158,6 +160,6 @@ export class AddressService {
       return { success: true, customer };
     }
 
-    return { error: this.DEFAULT_ERROR };
+    return { error: DEFAULT_ERROR };
   }
 }

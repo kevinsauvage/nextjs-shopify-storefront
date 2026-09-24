@@ -56,6 +56,24 @@ const getPriceBounds = (filters: Filter[]): [number, number] | undefined => {
   }
 };
 
+type SelectedFilter = { filterId: string; input: string };
+
+/** Parse the `filters` URL params (`<filterId>:<input>`) back into selections. */
+const parseSelectedFilters = (filters?: string | string[]): SelectedFilter[] => {
+  const current = typeof filters === 'string' ? [filters] : filters;
+
+  return (
+    current
+      ?.map((filter) => {
+        const [filterId, input] = filter.split(/:(.+)/);
+        return { filterId: filterId || '', input: input || '' };
+      })
+      .filter(
+        (item): item is SelectedFilter => item.filterId !== undefined && item.input !== undefined,
+      ) || []
+  );
+};
+
 const Filters = ({
   filters,
   query,
@@ -69,7 +87,7 @@ const Filters = ({
   };
 }) => {
   const priceBounds = getPriceBounds(filters);
-  const [selectedFilters, setSelectedFilters] = useState<{ filterId: string; input: string }[]>([]);
+  const [selectedFilters, setSelectedFilters] = useState<SelectedFilter[]>([]);
   const [open, setOpen] = useState(false);
   const [priceRange, setPriceRange] = useState<number[]>(() =>
     priceBounds ? [...priceBounds] : [0, 0],
@@ -150,22 +168,11 @@ const Filters = ({
     setOpen(false);
   }, [filters, pathname, priceRange, priceTouched, router, selectedFilters, toSearchParameters]);
 
+  // The sheet is a draft: toggles only touch local state until Apply pushes
+  // them to the URL, so the URL params are synced back into state here.
   useEffect(() => {
-    const currentFilters_ = typeof query.filters === 'string' ? [query.filters] : query.filters;
-
-    const f = currentFilters_
-      ?.map((filter) => {
-        const [filterId, input] = filter.split(/:(.+)/);
-        return { filterId: filterId || '', input: input || '' };
-      })
-      .filter(
-        (item): item is { filterId: string; input: string } =>
-          item.filterId !== undefined && item.input !== undefined,
-      );
-
-    setTimeout(() => {
-      setSelectedFilters(f || []);
-    }, 0);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing URL params into draft state
+    setSelectedFilters(parseSelectedFilters(query.filters));
   }, [query.filters]);
 
   // Keep the slider in sync when the collection (and therefore its price span)
@@ -175,10 +182,8 @@ const Filters = ({
 
   useEffect(() => {
     if (boundMin === undefined || boundMax === undefined) return;
-    // Defer so the reset happens after the render triggered by the new props.
-    setTimeout(() => {
-      setPriceRange([boundMin, boundMax]);
-    }, 0);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing catalog price span into slider state
+    setPriceRange([boundMin, boundMax]);
   }, [boundMin, boundMax]);
 
   const countFor = (filterId: string) =>

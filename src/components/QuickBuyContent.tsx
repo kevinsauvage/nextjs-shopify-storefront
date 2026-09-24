@@ -18,6 +18,7 @@ import { Separator } from './ui/separator';
 import { SheetFooter } from './ui/sheet';
 import Options from './Options';
 import ProductActions from './ProductActions';
+import ProductPrice from './ProductPrice';
 import QuantityStepper from './QuantityStepper';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -46,7 +47,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
 
   const productImages = mapShopifyImagesToImageFields(product.images?.edges);
 
-  const { quantityAvailable, availableForSale, price, compareAtPrice, quantityCap } =
+  const { quantityAvailable, availableForSale, price, compareAtPrice, quantityCap, hasDiscount } =
     useProductVariantView(selectedVariant);
 
   const nextImage = useCallback(() => {
@@ -135,7 +136,7 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
                   Only {quantityAvailable} left
                 </Badge>
               )}
-              {compareAtPrice && price && Number(price.amount) < Number(compareAtPrice.amount) && (
+              {hasDiscount && compareAtPrice && price && (
                 <Badge className="px-2.5 py-1 bg-red-500 text-white">
                   {Math.round((1 - Number(price.amount) / Number(compareAtPrice.amount)) * 100)}%
                   OFF
@@ -204,16 +205,13 @@ const QuickBuyContent = ({ product, onClose }: QuickBuyContentProps) => {
             )}
             <h2 className="text-heading-4 mt-1">{product.title}</h2>
             <div className="flex items-baseline gap-2 mt-2">
-              {price && (
-                <span className="text-heading-3 text-primary">
-                  {formatPrice(price.amount, price.currencyCode)}
-                </span>
-              )}
-              {compareAtPrice && price && Number(price.amount) < Number(compareAtPrice.amount) && (
-                <span className="text-body text-muted line-through">
-                  {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
-                </span>
-              )}
+              <ProductPrice
+                price={price}
+                compareAtPrice={compareAtPrice}
+                hasDiscount={hasDiscount}
+                priceClassName="text-heading-3 text-primary"
+                compareAtPriceClassName="text-body text-muted line-through"
+              />
             </div>
             {quantity > 1 && price && (
               <p className="text-body-sm text-secondary mt-1">

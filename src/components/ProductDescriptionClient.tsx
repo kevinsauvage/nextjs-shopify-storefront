@@ -14,6 +14,7 @@ import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import Options from './Options';
 import ProductActions from './ProductActions';
+import ProductPrice from './ProductPrice';
 import QuantityStepper from './QuantityStepper';
 
 import { RotateCcw, ShieldCheck } from 'lucide-react';
@@ -143,16 +144,13 @@ const ProductDescriptionClient = ({
 
         <div className="flex flex-col gap-2">
           <div className="flex flex-wrap items-baseline gap-3">
-            {price ? (
-              <span className="text-heading-3 font-semibold tabular-nums text-foreground">
-                {formatPrice(price.amount, price.currencyCode)}
-              </span>
-            ) : null}
-            {hasDiscount && compareAtPrice ? (
-              <span className="text-body text-muted line-through tabular-nums">
-                {formatPrice(compareAtPrice.amount, compareAtPrice.currencyCode)}
-              </span>
-            ) : null}
+            <ProductPrice
+              price={price}
+              compareAtPrice={compareAtPrice}
+              hasDiscount={hasDiscount}
+              priceClassName="text-heading-3 font-semibold tabular-nums text-foreground"
+              compareAtPriceClassName="text-body text-muted line-through tabular-nums"
+            />
             {hasDiscount ? <Badge variant="destructive">Sale</Badge> : null}
           </div>
           {quantity > 1 && price ? (

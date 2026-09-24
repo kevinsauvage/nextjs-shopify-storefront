@@ -54,6 +54,58 @@ const contactSchema = z.object({
 
 type ContactInput = z.infer<typeof contactSchema>;
 
+type ContactMailConfig = {
+  from: string;
+  pass: string;
+  recipient: string;
+  siteName: string;
+};
+
+/**
+ * Contact delivery settings. The fields are validated for shape by
+ * `src/config/env.ts`; presence is checked here so the form degrades to a
+ * friendly error instead of throwing when mail is unconfigured.
+ */
+const getContactMailConfig = (): ContactMailConfig | null => {
+  const {
+    CONTACT_EMAIL,
+    EMAIL_ADDRESS,
+    EMAIL_PASSWORD,
+    NEXT_PUBLIC_SITE_EMAIL,
+    NEXT_PUBLIC_SITE_NAME,
+  } = process.env;
+  const recipient = CONTACT_EMAIL || NEXT_PUBLIC_SITE_EMAIL || EMAIL_ADDRESS;
+
+  if (!EMAIL_ADDRESS || !EMAIL_PASSWORD || !recipient) return null;
+
+  return {
+    from: EMAIL_ADDRESS,
+    pass: EMAIL_PASSWORD,
+    recipient,
+    siteName: NEXT_PUBLIC_SITE_NAME || 'Website',
+  };
+};
+
+/**
+ * Process-wide Gmail transporter, created once per credential set instead of
+ * on every request. Keyed by credentials so a rotation (or a test env change)
+ * transparently rebuilds it.
+ */
+let cachedTransportKey: string | null = null;
+let cachedTransporter: ReturnType<typeof nodemailer.createTransport> | null = null;
+
+const getTransporter = (from: string, pass: string) => {
+  const key = `${from}\n${pass}`;
+  if (!cachedTransporter || cachedTransportKey !== key) {
+    cachedTransporter = nodemailer.createTransport({
+      auth: { pass, user: from },
+      service: 'gmail',
+    });
+    cachedTransportKey = key;
+  }
+  return cachedTransporter;
+};
+
 export const contactAction = async (input: ContactInput): Promise<FormState> => {
   const formData = contactSchema.safeParse(input);
   if (!formData.success) {
@@ -82,35 +134,25 @@ export const contactAction = async (input: ContactInput): Promise<FormState> => 
     return formError('Too many messages sent. Please try again later.');
   }
 
-  const {
-    EMAIL_ADDRESS,
-    EMAIL_PASSWORD,
-    NEXT_PUBLIC_SITE_NAME,
-    NEXT_PUBLIC_SITE_EMAIL,
-    CONTACT_EMAIL,
-  } = process.env;
-  const recipient = CONTACT_EMAIL || NEXT_PUBLIC_SITE_EMAIL || EMAIL_ADDRESS;
+  const mailConfig = getContactMailConfig();
 
-  if (!EMAIL_ADDRESS || !EMAIL_PASSWORD || !recipient) {
+  if (!mailConfig) {
     reportError('contactAction', new Error('Contact email is not configured'));
     return formError('The contact form is temporarily unavailable. Please try again later.');
   }
 
-  const transporter = nodemailer.createTransport({
-    auth: { pass: EMAIL_PASSWORD, user: EMAIL_ADDRESS },
-    service: 'gmail',
-  });
+  const transporter = getTransporter(mailConfig.from, mailConfig.pass);
 
   try {
     // Belt and braces: validation already rejects line breaks, but the values
     // below become mail headers, so strip them again at construction.
     const safeName = singleLine(name);
     await transporter.sendMail({
-      from: { address: EMAIL_ADDRESS, name: NEXT_PUBLIC_SITE_NAME || 'Website' },
+      from: { address: mailConfig.from, name: mailConfig.siteName },
       replyTo: { address: email, name: safeName },
       subject: `New contact message from ${safeName}`,
       text: `From: ${safeName} <${email}>\n\n${message}`,
-      to: recipient,
+      to: mailConfig.recipient,
     });
 
     return formSuccess('Email sent successfully');

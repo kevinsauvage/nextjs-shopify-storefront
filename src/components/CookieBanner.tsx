@@ -43,9 +43,8 @@ const CookieBanner = () => {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
-      handleCookies();
-    }, 0);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing external cookie state on mount
+    handleCookies();
   }, [handleCookies]);
 
   const acceptAllCookie = useCallback(() => {

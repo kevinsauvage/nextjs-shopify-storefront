@@ -60,13 +60,13 @@ export function getCookieDeleteOptions(): { domain?: string; path: string } {
   return domain ? { domain, path: '/' } : { path: '/' };
 }
 
-export function getSecureCookieOptions(
-  options: {
-    maxAge?: number;
-    expires?: Date;
-    path?: string;
-  } = {},
-): {
+type CookieOptionsInput = {
+  maxAge?: number;
+  expires?: Date;
+  path?: string;
+};
+
+type CookieOptions = {
   domain?: string;
   expires?: Date;
   httpOnly: boolean;
@@ -74,16 +74,23 @@ export function getSecureCookieOptions(
   path: string;
   sameSite: 'lax' | 'strict' | 'none';
   secure: boolean;
-} {
-  return {
-    domain: getCookieDomain(),
-    httpOnly: true,
-    path: options.path || '/',
-    sameSite: 'lax',
-    secure: shouldUseSecureCookies(),
-    ...(options.maxAge && { maxAge: options.maxAge }),
-    ...(options.expires && { expires: options.expires }),
-  };
+};
+
+const buildCookieOptions = (
+  httpOnly: boolean,
+  { maxAge, expires, path }: CookieOptionsInput = {},
+): CookieOptions => ({
+  domain: getCookieDomain(),
+  httpOnly,
+  path: path || '/',
+  sameSite: 'lax',
+  secure: shouldUseSecureCookies(),
+  ...(maxAge && { maxAge }),
+  ...(expires && { expires }),
+});
+
+export function getSecureCookieOptions(options: CookieOptionsInput = {}): CookieOptions {
+  return buildCookieOptions(true, options);
 }
 
 /**
@@ -94,28 +101,6 @@ export function getSecureCookieOptions(
  * to resolve. They use the same domain/path/secure flags as the cookie they
  * mirror so both expire together.
  */
-export function getReadableCookieOptions(
-  options: {
-    maxAge?: number;
-    expires?: Date;
-    path?: string;
-  } = {},
-): {
-  domain?: string;
-  expires?: Date;
-  httpOnly: boolean;
-  maxAge?: number;
-  path: string;
-  sameSite: 'lax' | 'strict' | 'none';
-  secure: boolean;
-} {
-  return {
-    domain: getCookieDomain(),
-    httpOnly: false,
-    path: options.path || '/',
-    sameSite: 'lax',
-    secure: shouldUseSecureCookies(),
-    ...(options.maxAge && { maxAge: options.maxAge }),
-    ...(options.expires && { expires: options.expires }),
-  };
+export function getReadableCookieOptions(options: CookieOptionsInput = {}): CookieOptions {
+  return buildCookieOptions(false, options);
 }
