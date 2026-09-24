@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import AuthShell from '@/app/(auth)/_components/AuthShell';
 import config from '@/config';
 import seo from '@/data/seo';
+import { isAllowedPasswordResetUrl } from '@/utils/url';
 
 import ResetForm from './_components/ResetPasswordForm';
 
@@ -30,6 +31,13 @@ const ResetPasswordPage = async ({
   }
 
   const resetUrl = `${reset_url}?syclid=${syclid}`;
+
+  // Never render the form (or forward the URL to `customerResetByUrl`) for a
+  // reset link outside the store-owned origins: a crafted `reset_url` could
+  // otherwise drive the victim's reset flow from a lookalike host.
+  if (!isAllowedPasswordResetUrl(resetUrl)) {
+    redirect(config.routes.login);
+  }
   const { title, description } = seo.reset || {};
 
   return (

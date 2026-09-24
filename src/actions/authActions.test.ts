@@ -8,6 +8,7 @@ const {
   login,
   rateLimited,
   redirect,
+  resetPassword,
 } = vi.hoisted(() => ({
   clearShopifyToken: vi.fn(),
   cookieDelete: vi.fn(),
@@ -16,6 +17,7 @@ const {
   login: vi.fn(),
   rateLimited: vi.fn(async () => false),
   redirect: vi.fn(),
+  resetPassword: vi.fn(),
 }));
 
 vi.mock('next/headers', () => ({
@@ -27,7 +29,7 @@ vi.mock('@/lib/server/rate-limit', () => ({
   isRateLimited: (...args: unknown[]) => rateLimited(...(args as [])),
 }));
 vi.mock('@/lib/server/shopify-helpers', () => ({ clearShopifyToken, getShopifyToken }));
-vi.mock('@/services/auth.service', () => ({ AuthService: { login } }));
+vi.mock('@/services/auth.service', () => ({ AuthService: { login, resetPassword } }));
 vi.mock('@/shopify', () => ({
   storefrontSdk: () => ({ customerAccessTokenDelete }),
 }));
@@ -35,7 +37,7 @@ vi.mock('@/utils/api-responses', () => ({ safeLogError: vi.fn() }));
 
 import config from '@/config';
 
-import { loginAction, logoutAction } from './authActions';
+import { loginAction, logoutAction, resetPasswordAction } from './authActions';
 
 const CREDENTIALS = { email: 'a@b.com', password: 'secret1' };
 
@@ -87,6 +89,56 @@ describe('loginAction', () => {
 
     expect(state.ok).toBe(false);
     expect(login).not.toHaveBeenCalled();
+    expect(redirect).not.toHaveBeenCalled();
+  });
+});
+
+describe('resetPasswordAction', () => {
+  const RESET_URL = 'https://ecomfashionstore.myshopify.com/account/reset/abc?syclid=token-1';
+
+  beforeEach(() => {
+    resetPassword.mockReset();
+    redirect.mockReset();
+    rateLimited.mockReset();
+    rateLimited.mockResolvedValue(false);
+  });
+
+  it('forwards a store-owned reset link to the service and redirects to account', async () => {
+    resetPassword.mockResolvedValue({ success: true });
+
+    await resetPasswordAction({ password: 'new-password-1', resetUrl: RESET_URL });
+
+    expect(resetPassword).toHaveBeenCalledWith({
+      password: 'new-password-1',
+      resetToken: RESET_URL,
+    });
+    expect(redirect).toHaveBeenCalledWith(config.routes.account);
+  });
+
+  it('rejects an off-store reset URL without calling the service', async () => {
+    const state = await resetPasswordAction({
+      password: 'new-password-1',
+      resetUrl: 'https://evil.com/reset?syclid=token-1',
+    });
+
+    expect(state.ok).toBe(false);
+    expect(resetPassword).not.toHaveBeenCalled();
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it('rejects oversized passwords instead of hashing them against Shopify', async () => {
+    const state = await resetPasswordAction({ password: 'p'.repeat(129), resetUrl: RESET_URL });
+
+    expect(state.ok).toBe(false);
+    expect(resetPassword).not.toHaveBeenCalled();
+  });
+
+  it('returns the service error and does not redirect when reset fails', async () => {
+    resetPassword.mockResolvedValue({ error: 'Unable to reset password. Please try again.' });
+
+    const state = await resetPasswordAction({ password: 'new-password-1', resetUrl: RESET_URL });
+
+    expect(state.ok).toBe(false);
     expect(redirect).not.toHaveBeenCalled();
   });
 });

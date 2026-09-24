@@ -32,20 +32,27 @@ async function proxy(request: NextRequest) {
   const hasToken = Boolean(cookieShopify?.value);
   const tokenExpired = isTokenExpired(tokenExpiresAt);
 
-  // Validate/renew the token only where the result changes behaviour:
-  //  - account routes, once the token is inside its renewal window; and
-  //  - auth routes, to bounce signed-in visitors and to catch revoked tokens.
+  // Validate/renew the token everywhere the result changes behaviour:
+  //  - account routes, on every visit (a revoked token must not keep access
+  //    just because its expiry cookie still looks fresh);
+  //  - auth routes, to bounce signed-in visitors and to catch revoked tokens;
+  //  - anywhere, once the token is inside its renewal window.
   // Anonymous catalog requests never pay for this round-trip.
-  const shouldValidate = hasToken && (isAuthRoute || shouldRenewToken(tokenExpiresAt));
+  const shouldValidate =
+    hasToken && (isAuthRoute || isAccountRoute || shouldRenewToken(tokenExpiresAt));
 
   const renewedToken = shouldValidate
     ? await renewCustomerToken(cookieShopify?.value as string)
     : null;
 
   const validationFailed = shouldValidate && !renewedToken;
-  // A rejected token is unusable when it has already expired, or when we only
-  // learned it was rejected because an auth decision required checking it.
-  const hasStaleSession = hasToken && validationFailed && (tokenExpired || isAuthRoute);
+  // A rejected token is unusable when it has already expired, or when an auth
+  // decision required checking it (auth + account routes fail closed: a token
+  // that cannot be renewed there is treated as stale so its cookies are
+  // deleted and the visitor is bounced to login). Catalog requests stay
+  // fail-open so a Shopify blip never breaks browsing.
+  const hasStaleSession =
+    hasToken && validationFailed && (tokenExpired || isAuthRoute || isAccountRoute);
   const hasSession = hasToken && !hasStaleSession;
 
   let response: NextResponse;

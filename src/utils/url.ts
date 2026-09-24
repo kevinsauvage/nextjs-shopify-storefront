@@ -78,6 +78,33 @@ export const safeInternalPath = (value: string | null | undefined, fallback: Rou
   return fallback;
 };
 
+export const RESET_URL_MAX_LENGTH = 2048;
+
+/**
+ * True only when `value` is an `https:` URL on a store-owned origin, i.e. a
+ * plausible Shopify password-reset link.
+ *
+ * The reset page builds its `resetUrl` from `?reset_url=` + `?syclid=` query
+ * params and the reset action forwards it to `customerResetByUrl`, so an
+ * attacker-controlled value must never reach Shopify: it would let a crafted
+ * link drive the victim's reset flow (or leak the flow to a lookalike host).
+ * Both layers share this check so validation cannot be skipped from either.
+ */
+export const isAllowedPasswordResetUrl = (value: string | null | undefined): boolean => {
+  if (!value || value.length > RESET_URL_MAX_LENGTH) return false;
+
+  let parsed: URL;
+  try {
+    parsed = new URL(value);
+  } catch {
+    return false;
+  }
+
+  if (parsed.protocol !== 'https:') return false;
+
+  return isInternalOrigin(parsed.origin, parsed.hostname);
+};
+
 /**
  * Appends query parameters to a known route. Centralizes the single `Route`
  * assertion for programmatically built URLs (filters, sort, pagination) so

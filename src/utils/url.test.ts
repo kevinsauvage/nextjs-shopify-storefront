@@ -1,4 +1,4 @@
-import { normalizeMenuHref, safeInternalPath } from './url';
+import { isAllowedPasswordResetUrl, normalizeMenuHref, safeInternalPath } from './url';
 
 import { describe, expect, it } from 'vitest';
 
@@ -67,5 +67,31 @@ describe('safeInternalPath', () => {
     expect(safeInternalPath('/\\evil.com', FALLBACK)).toBe(FALLBACK);
     expect(safeInternalPath(undefined, FALLBACK)).toBe(FALLBACK);
     expect(safeInternalPath('', FALLBACK)).toBe(FALLBACK);
+  });
+});
+
+describe('isAllowedPasswordResetUrl', () => {
+  const RESET_URL = `${STORE_ORIGIN}/account/reset/abc123?syclid=token-1`;
+
+  it('accepts an https reset link on the Shopify store host', () => {
+    expect(isAllowedPasswordResetUrl(RESET_URL)).toBe(true);
+  });
+
+  it('rejects off-store hosts so crafted links cannot drive the reset flow', () => {
+    expect(isAllowedPasswordResetUrl('https://evil.com/reset?syclid=token-1')).toBe(false);
+    expect(isAllowedPasswordResetUrl('https://myshopify.com.evil.com/reset?syclid=x')).toBe(false);
+    expect(isAllowedPasswordResetUrl('https://not-myshopify.com/reset?syclid=x')).toBe(false);
+  });
+
+  it('rejects non-https URLs, garbage and missing values', () => {
+    expect(isAllowedPasswordResetUrl('http://ecomfashionstore.myshopify.com/reset')).toBe(false);
+    expect(isAllowedPasswordResetUrl('not-a-url')).toBe(false);
+    expect(isAllowedPasswordResetUrl('/account/reset?syclid=x')).toBe(false);
+    expect(isAllowedPasswordResetUrl(undefined)).toBe(false);
+    expect(isAllowedPasswordResetUrl('')).toBe(false);
+  });
+
+  it('rejects oversized URLs instead of forwarding them to Shopify', () => {
+    expect(isAllowedPasswordResetUrl(`${STORE_ORIGIN}/${'a'.repeat(2048)}?syclid=x`)).toBe(false);
   });
 });

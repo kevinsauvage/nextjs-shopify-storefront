@@ -9,6 +9,9 @@
  */
 
 const RENEWAL_WINDOW_MS = 5 * 60 * 1000;
+// Bound the renewal round-trip so a slow Shopify response cannot hang
+// navigation in `src/proxy.ts` (which awaits this on account/auth routes).
+const RENEWAL_TIMEOUT_MS = 5_000;
 
 export type RenewedCustomerToken = {
   accessToken: string;
@@ -67,11 +70,16 @@ export const renewCustomerToken = async (token: string): Promise<RenewedCustomer
         }`,
         variables: { token },
       }),
+      // Never serve a cached renewal and never wait longer than the timeout:
+      // callers treat `null` as "could not validate" and fail closed on auth
+      // routes, fail open on anonymous catalog requests.
+      cache: 'no-store',
       headers: {
         'Content-Type': 'application/json',
         'X-Shopify-Storefront-Access-Token': accessToken,
       },
       method: 'POST',
+      signal: AbortSignal.timeout(RENEWAL_TIMEOUT_MS),
     });
 
     if (!response.ok) return null;

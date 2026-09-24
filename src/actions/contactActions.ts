@@ -11,8 +11,23 @@ import { z } from 'zod';
 
 const CONTACT_RATE_LIMIT = { key: 'contact', tokens: 5, window: '10 m' } as const;
 
+// Email headers (subject, reply-to display name) are built from these fields:
+// carriage returns / line feeds would let a sender inject extra headers
+// (`Bcc:`, ...), so they are rejected at validation AND stripped when sending.
+const hasLineBreak = (value: string): boolean => /[\r\n]/.test(value);
+
+const singleLine = (value: string): string => value.replace(/[\r\n]+/g, ' ').trim();
+
 const contactSchema = z.object({
-  email: z.string().email(),
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .email()
+    .max(254)
+    .refine((value) => !hasLineBreak(value), {
+      message: 'Invalid email address',
+    }),
   message: z
     .string()
     .min(3, {
@@ -23,11 +38,15 @@ const contactSchema = z.object({
     }),
   name: z
     .string()
+    .trim()
     .min(3, {
       message: 'Name must be at least 3 characters long',
     })
     .max(255, {
       message: 'Name must be at most 255 characters long',
+    })
+    .refine((value) => !hasLineBreak(value), {
+      message: 'Name must not contain line breaks',
     }),
   // Honeypot: real visitors never fill this field.
   website: z.string().nullish(),
@@ -49,12 +68,15 @@ export const contactAction = async (input: ContactInput): Promise<FormState> => 
   }
 
   const ip = await getClientIp();
+  // Fail closed: this endpoint sends mail from the site's identity, so an
+  // Upstash outage must deny sends rather than allow unlimited spam relay.
   if (
     await isRateLimited(
       CONTACT_RATE_LIMIT.key,
       ip,
       CONTACT_RATE_LIMIT.tokens,
       CONTACT_RATE_LIMIT.window,
+      { failClosed: true },
     )
   ) {
     return formError('Too many messages sent. Please try again later.');
@@ -80,11 +102,14 @@ export const contactAction = async (input: ContactInput): Promise<FormState> => 
   });
 
   try {
+    // Belt and braces: validation already rejects line breaks, but the values
+    // below become mail headers, so strip them again at construction.
+    const safeName = singleLine(name);
     await transporter.sendMail({
       from: { address: EMAIL_ADDRESS, name: NEXT_PUBLIC_SITE_NAME || 'Website' },
-      replyTo: { address: email, name },
-      subject: `New contact message from ${name}`,
-      text: `From: ${name} <${email}>\n\n${message}`,
+      replyTo: { address: email, name: safeName },
+      subject: `New contact message from ${safeName}`,
+      text: `From: ${safeName} <${email}>\n\n${message}`,
       to: recipient,
     });
 

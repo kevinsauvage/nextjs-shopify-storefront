@@ -19,7 +19,7 @@ import {
   serviceErrorsToFormState,
   zodErrorsToFormState,
 } from '@/utils/form-actions';
-import { safeInternalPath } from '@/utils/url';
+import { isAllowedPasswordResetUrl, RESET_URL_MAX_LENGTH, safeInternalPath } from '@/utils/url';
 
 import { z } from 'zod';
 
@@ -141,8 +141,15 @@ export const recoverPasswordAction = async (input: RecoverPasswordInput): Promis
 };
 
 const resetSchema = z.object({
-  password: z.string().min(8, { message: userFeedback.passwordLength }),
-  resetUrl: z.string(),
+  password: z
+    .string()
+    .min(8, { message: userFeedback.passwordLength })
+    .max(128, { message: userFeedback.passwordLength }),
+  resetUrl: z
+    .string()
+    .url({ message: 'Invalid or expired reset link' })
+    .max(RESET_URL_MAX_LENGTH, { message: 'Invalid or expired reset link' })
+    .refine(isAllowedPasswordResetUrl, { message: 'Invalid or expired reset link' }),
 });
 
 type ResetPasswordInput = z.infer<typeof resetSchema>;
