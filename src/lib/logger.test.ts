@@ -6,6 +6,8 @@ describe('logger', () => {
   beforeEach(() => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
     vi.spyOn(console, 'warn').mockImplementation(() => {});
+    setErrorReporter(undefined);
+    vi.unstubAllEnvs();
   });
 
   it('redacts tokens and emails from messages', () => {
@@ -76,6 +78,68 @@ describe('logger', () => {
     expect(reporter.mock.calls[1]?.[0]).toMatchObject({
       error: expect.objectContaining({ message: 'Unknown error' }),
     });
+
+    setErrorReporter(undefined);
+  });
+
+  it('redacts sensitive meta keys and sanitizes arrays and primitives', () => {
+    const reporter = vi.fn();
+    setErrorReporter(reporter);
+
+    reportError('unit-test', new Error('boom'), {
+      count: 42,
+      empty: null,
+      password: 'hunter2',
+      tags: ['a', 'token=secret-value'],
+      nested: { accessToken: 'abc', ok: 'fine' },
+    });
+
+    const meta = reporter.mock.calls[0]?.[0] as { meta?: Record<string, unknown> };
+    expect(meta.meta).toMatchObject({
+      count: 42,
+      empty: null,
+      nested: { ok: 'fine' },
+      password: '[REDACTED]',
+    });
+    expect((meta.meta?.nested as Record<string, unknown>)?.accessToken).toBe('[REDACTED]');
+    expect(meta.meta?.tags).toEqual(['a', expect.stringContaining('[REDACTED]')]);
+
+    setErrorReporter(undefined);
+  });
+
+  it('reports without a registered reporter', () => {
+    setErrorReporter(undefined);
+
+    expect(() => reportError('unit-test', new Error('no-reporter'))).not.toThrow();
+    expect(console.error).toHaveBeenCalled();
+  });
+
+  it('handles errors without a stack trace', () => {
+    const reporter = vi.fn();
+    setErrorReporter(reporter);
+    const stackless = new Error('no-stack');
+    stackless.stack = undefined;
+
+    reportError('unit-test', stackless);
+
+    expect(reporter).toHaveBeenCalledTimes(1);
+
+    setErrorReporter(undefined);
+  });
+
+  it('logs the sanitized stack in development', () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const reporter = vi.fn();
+    setErrorReporter(reporter);
+    const errorSpy = vi.mocked(console.error);
+    errorSpy.mockClear();
+
+    reportError('unit-test', new Error('dev-boom'));
+
+    expect(errorSpy).toHaveBeenCalledWith(
+      expect.stringContaining('[unit-test] Stack:'),
+      expect.any(String),
+    );
 
     setErrorReporter(undefined);
   });

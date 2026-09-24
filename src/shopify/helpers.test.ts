@@ -1,9 +1,17 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+vi.mock('@/lib/server/client-ip', () => ({
+  UNKNOWN_IP: 'unknown',
+  getClientIp: vi.fn(async () => 'unknown'),
+}));
 vi.mock('@/lib/server/delegate-token', () => ({ getDelegateAccessToken: vi.fn(async () => null) }));
+
+import { getClientIp } from '@/lib/server/client-ip';
+import { getDelegateAccessToken } from '@/lib/server/delegate-token';
 
 import {
   adjustPaginationVariables,
+  buildExtraHeaders,
   buildShopifySearchQuery,
   getNextPath,
   getPreviousPath,
@@ -46,6 +54,15 @@ describe('adjustPaginationVariables', () => {
       last: undefined,
     });
   });
+
+  it('defaults the page size when first is missing', () => {
+    expect(adjustPaginationVariables({})).toEqual({
+      after: undefined,
+      before: undefined,
+      first: 10,
+      last: undefined,
+    });
+  });
 });
 
 describe('buildShopifySearchQuery', () => {
@@ -80,6 +97,16 @@ describe('parseFiltersQuery', () => {
     expect(parseFiltersQuery('price:{not-json}')).toEqual([]);
     expect(parseFiltersQuery(['price:{not-json}', 'size:{"size":"M"}'])).toEqual([{ size: 'M' }]);
     expect(parseFiltersQuery('')).toEqual([]);
+  });
+
+  it('drops empty entries inside an array', () => {
+    expect(parseFiltersQuery([''])).toEqual([]);
+  });
+
+  it('drops non-object JSON payloads', () => {
+    expect(parseFiltersQuery('price:123')).toEqual([]);
+    expect(parseFiltersQuery('price:null')).toEqual([]);
+    expect(parseFiltersQuery('price:"hello"')).toEqual([]);
   });
 });
 
@@ -118,5 +145,52 @@ describe('pagination paths (cookie-free)', () => {
   it('returns an empty string when there is no next or previous page', () => {
     expect(getNextPath(none, {}, '/search')).toBe('');
     expect(getPreviousPath(none, {}, '/search')).toBe('');
+  });
+});
+
+describe('buildExtraHeaders', () => {
+  beforeEach(() => {
+    vi.mocked(getClientIp).mockReset();
+    vi.mocked(getClientIp).mockResolvedValue('unknown');
+    vi.mocked(getDelegateAccessToken).mockReset();
+    vi.mocked(getDelegateAccessToken).mockResolvedValue(null);
+  });
+
+  it('returns only the content type without request context', async () => {
+    await expect(buildExtraHeaders({})).resolves.toEqual({
+      'Content-Type': 'application/json',
+    });
+  });
+
+  it('attaches the buyer IP when a real IP is available', async () => {
+    vi.mocked(getClientIp).mockResolvedValue('1.2.3.4');
+
+    await expect(buildExtraHeaders({})).resolves.toEqual({
+      'Content-Type': 'application/json',
+      'Shopify-Storefront-Buyer-IP': '1.2.3.4',
+    });
+  });
+
+  it('attaches the delegate token when available', async () => {
+    vi.mocked(getDelegateAccessToken).mockResolvedValue('delegate-1');
+
+    await expect(buildExtraHeaders({})).resolves.toEqual({
+      'Content-Type': 'application/json',
+      'Shopify-Storefront-Private-Token': 'delegate-1',
+    });
+  });
+
+  it('combines IP, token and caller headers while forcing JSON content type', async () => {
+    vi.mocked(getClientIp).mockResolvedValue('1.2.3.4');
+    vi.mocked(getDelegateAccessToken).mockResolvedValue('delegate-1');
+
+    await expect(
+      buildExtraHeaders({ 'X-Custom': 'yes', 'Content-Type': 'text/plain' }),
+    ).resolves.toEqual({
+      'Content-Type': 'application/json',
+      'Shopify-Storefront-Buyer-IP': '1.2.3.4',
+      'Shopify-Storefront-Private-Token': 'delegate-1',
+      'X-Custom': 'yes',
+    });
   });
 });

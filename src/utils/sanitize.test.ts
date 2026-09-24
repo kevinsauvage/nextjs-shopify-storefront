@@ -1,6 +1,8 @@
-import { sanitizeHtml } from './sanitize';
+import { sanitizeHtml, sanitizeHtmlCached } from './sanitize';
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('next/cache', () => ({ cacheLife: vi.fn(), cacheTag: vi.fn() }));
 
 describe('sanitizeHtml', () => {
   it('returns an empty string for nullish input', () => {
@@ -60,5 +62,25 @@ describe('sanitizeHtml', () => {
     const output = sanitizeHtml('<p data-evil="1">text</p>');
 
     expect(output).not.toContain('data-evil');
+  });
+});
+
+describe('sanitizeHtmlCached', () => {
+  it('sanitizes markup through the cacheable wrapper', async () => {
+    await expect(sanitizeHtmlCached('<p>Hello <strong>world</strong></p>')).resolves.toBe(
+      '<p>Hello <strong>world</strong></p>',
+    );
+  });
+
+  it('returns an empty string for nullish input', async () => {
+    await expect(sanitizeHtmlCached(null)).resolves.toBe('');
+    await expect(sanitizeHtmlCached(undefined)).resolves.toBe('');
+  });
+
+  it('strips active content like the sync sanitizer', async () => {
+    const output = await sanitizeHtmlCached('<p>Hi</p><script>alert(1)</script>');
+
+    expect(output).toContain('<p>Hi</p>');
+    expect(output).not.toContain('script');
   });
 });

@@ -80,6 +80,12 @@ describe('validateEnv', () => {
       /NEXT_PUBLIC_SITE_EMAIL/,
     );
   });
+
+  it('falls back to a generic path label for top-level issues', () => {
+    expect(() => validateEnv(null as unknown as Record<string, string | undefined>)).toThrow(
+      /env:/,
+    );
+  });
 });
 
 describe('getContactMailEnv', () => {

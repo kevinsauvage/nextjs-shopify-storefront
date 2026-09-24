@@ -89,6 +89,24 @@ describe('shopify-helpers', () => {
 
     expect(cookieSet).not.toHaveBeenCalled();
   });
+
+  it('ignores tokens missing only the expiry', async () => {
+    await setShopifyToken({
+      accessToken: 'token-1',
+      expiresAt: '',
+    } as unknown as Parameters<typeof setShopifyToken>[0]);
+
+    expect(cookieSet).not.toHaveBeenCalled();
+  });
+
+  it('ignores tokens missing only the access token', async () => {
+    await setShopifyToken({
+      accessToken: '',
+      expiresAt: new Date(Date.now() + HOUR_MS).toISOString(),
+    } as unknown as Parameters<typeof setShopifyToken>[0]);
+
+    expect(cookieSet).not.toHaveBeenCalled();
+  });
 });
 
 describe('shouldRenewToken', () => {

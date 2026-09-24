@@ -11,6 +11,12 @@ describe('formatPrice', () => {
     expect(formatPrice(10, 'USD')).toBe('$10.00');
   });
 
+  it('falls back to zero for non-finite amounts', () => {
+    expect(formatPrice('not-a-number', 'USD')).toBe('$0.00');
+    expect(formatPrice(Number.NaN, 'USD')).toBe('$0.00');
+    expect(formatPrice(Number.POSITIVE_INFINITY, 'USD')).toBe('$0.00');
+  });
+
   it('falls back to plain formatting for invalid currency codes', () => {
     expect(formatPrice('5.5', 'not-a-currency')).toBe('not-a-currency 5.50');
   });

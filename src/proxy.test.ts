@@ -84,6 +84,37 @@ describe('proxy', () => {
     expect(response.cookies.get(MARKER)?.value).toBe('');
   });
 
+  it('treats a fresh but unrenewable token as stale on account routes', async () => {
+    renewCustomerToken.mockResolvedValue(null);
+
+    const response = await proxy(request('/account', sessionCookies('token-1', hourFromNow())));
+
+    expect(renewCustomerToken).toHaveBeenCalledWith('token-1');
+    expect(response.headers.get('location')).toBe('https://example.com/login');
+    expect(response.cookies.get(TOKEN)?.value).toBe('');
+  });
+
+  it('clears fresh but unrenewable tokens on auth routes without redirecting', async () => {
+    renewCustomerToken.mockResolvedValue(null);
+
+    const response = await proxy(request('/login', sessionCookies('token-1', hourFromNow())));
+
+    expect(renewCustomerToken).toHaveBeenCalledWith('token-1');
+    expect(response.headers.get('location')).toBeNull();
+    expect(response.cookies.get(TOKEN)?.value).toBe('');
+    expect(response.cookies.get(MARKER)?.value).toBe('');
+  });
+
+  it('lets catalog requests through fail-open when renewal fails on an expired token', async () => {
+    renewCustomerToken.mockResolvedValue(null);
+
+    const response = await proxy(request('/collections/all', sessionCookies('token-1', hourAgo())));
+
+    expect(renewCustomerToken).toHaveBeenCalledWith('token-1');
+    expect(response.headers.get('location')).toBeNull();
+    expect(response.cookies.get(TOKEN)?.value).toBe('');
+  });
+
   it('stores the renewed token when renewal succeeds', async () => {
     renewCustomerToken.mockResolvedValue({ accessToken: 'new-1', expiresAt: hourFromNow() });
 

@@ -30,6 +30,11 @@ describe('findVariantForSelection', () => {
     expect(findVariantForSelection(variants, { Color: 'Red', Size: 'M' })).toBeUndefined();
   });
 
+  it('returns undefined when there are no variants', () => {
+    expect(findVariantForSelection([], { Color: 'Red', Size: 'S' })).toBeUndefined();
+    expect(findVariantForSelection([], {})).toBeUndefined();
+  });
+
   it('falls back to the first variant only when nothing is selected', () => {
     expect(findVariantForSelection(variants, {})).toBe(variants[0]);
   });

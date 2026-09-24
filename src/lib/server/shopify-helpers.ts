@@ -17,7 +17,7 @@ import {
  */
 export const setShopifyToken = async (customerAccessToken: CustomerAccessToken): Promise<void> => {
   if (!customerAccessToken) return;
-  const { accessToken, expiresAt } = customerAccessToken || {};
+  const { accessToken, expiresAt } = customerAccessToken;
   if (!accessToken || !expiresAt) return;
 
   const expiresAtDate = new Date(expiresAt as string);

@@ -67,4 +67,12 @@ describe('updateUserAction', () => {
     expect(state.ok).toBe(false);
     expect(updateUser).not.toHaveBeenCalled();
   });
+
+  it('returns the service error when the update fails', async () => {
+    updateUser.mockResolvedValue({ error: 'Failed to update user' });
+
+    const state = await updateUserAction(INPUT);
+
+    expect(state).toMatchObject({ message: 'Failed to update user', ok: false });
+  });
 });

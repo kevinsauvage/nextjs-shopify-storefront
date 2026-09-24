@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const {
   getWishlistIdsCached,
   getWishlistState,
+  getShopifyTokenValue,
   mutateWishlist,
   rateLimited,
   resolveProductsByIds,
@@ -12,6 +13,7 @@ const {
 } = vi.hoisted(() => ({
   getWishlistIdsCached: vi.fn(async (): Promise<string[]> => []),
   getWishlistState: vi.fn(),
+  getShopifyTokenValue: { current: 'token-9' as string | null },
   mutateWishlist: vi.fn(),
   rateLimited: vi.fn(async () => false),
   resolveProductsByIds: vi.fn(async () => []),
@@ -27,7 +29,9 @@ vi.mock('@/lib/server/client-ip', async (importOriginal) => {
 vi.mock('@/lib/server/rate-limit', () => ({
   isRateLimited: (...args: unknown[]) => rateLimited(...(args as [])),
 }));
-vi.mock('@/lib/server/shopify-helpers', () => ({ getShopifyToken: async () => 'token-9' }));
+vi.mock('@/lib/server/shopify-helpers', () => ({
+  getShopifyToken: async () => getShopifyTokenValue.current,
+}));
 // Fully mocked: the real service pulls `@/shopify`, which throws without
 // Storefront credentials at import time. ID shape is covered by
 // `wishlist.service.test.ts`; here a faithful subset suffices.
@@ -59,6 +63,8 @@ describe('setWishlistMembershipAction', () => {
     rateLimited.mockResolvedValue(false);
     getWishlistState.mockResolvedValue({ customerId: CUSTOMER_ID, ids: [] });
     mutateWishlist.mockResolvedValue({ success: true, data: [PRODUCT_ID] });
+    getShopifyTokenValue.current = 'token-9';
+    updateTag.mockClear();
   });
 
   it('rejects a malformed product id without touching the limiter', async () => {
@@ -182,6 +188,19 @@ describe('setWishlistMembershipAction', () => {
     });
     expect(updateTag).not.toHaveBeenCalled();
   });
+
+  it('falls back to a generic message when the service fails without one', async () => {
+    getWishlistState.mockResolvedValue({ customerId: CUSTOMER_ID, ids: [OTHER_ID] });
+    mutateWishlist.mockResolvedValue({ success: false });
+
+    const result = await setWishlistMembershipAction(false, PRODUCT_ID);
+
+    expect(result).toEqual({
+      message: 'Something went wrong. Please try again.',
+      success: false,
+    });
+    expect(updateTag).not.toHaveBeenCalled();
+  });
 });
 
 describe('wishlist read rate limiting', () => {
@@ -192,6 +211,7 @@ describe('wishlist read rate limiting', () => {
     rateLimited.mockResolvedValue(false);
     getWishlistIdsCached.mockResolvedValue([PRODUCT_ID]);
     resolveProductsByIds.mockResolvedValue([]);
+    getShopifyTokenValue.current = 'token-9';
   });
 
   it('serves cached ids under the limit with a fail-open read bucket', async () => {
@@ -229,5 +249,45 @@ describe('wishlist read rate limiting', () => {
     resolveProductsByIds.mockRejectedValueOnce(new Error('network down'));
 
     await expect(getWishlistProductsAction([PRODUCT_ID])).resolves.toEqual([]);
+  });
+
+  it('fails open with an empty list when cached id reads throw', async () => {
+    getWishlistIdsCached.mockRejectedValueOnce(new Error('network down'));
+
+    await expect(getWishlistIdsAction()).resolves.toEqual([]);
+  });
+
+  it('returns empty without touching the limiter for an empty id list', async () => {
+    await expect(getWishlistProductsAction([])).resolves.toEqual([]);
+
+    expect(rateLimited).not.toHaveBeenCalled();
+    expect(resolveProductsByIds).not.toHaveBeenCalled();
+  });
+
+  it('returns empty for non-array input without touching the service', async () => {
+    await expect(getWishlistProductsAction(undefined as unknown as string[])).resolves.toEqual([]);
+
+    expect(resolveProductsByIds).not.toHaveBeenCalled();
+  });
+
+  it('scopes read buckets globally when there is no session token', async () => {
+    getShopifyTokenValue.current = null;
+
+    await expect(getWishlistIdsAction()).resolves.toEqual([PRODUCT_ID]);
+
+    expect(rateLimited).toHaveBeenCalledWith('wishlist:read', '1.2.3.4', 60, '1 m');
+  });
+
+  it('scopes write buckets globally when there is no session token', async () => {
+    getShopifyTokenValue.current = null;
+    getWishlistState.mockResolvedValue({ customerId: CUSTOMER_ID, ids: [OTHER_ID] });
+    mutateWishlist.mockResolvedValue({ success: true, data: [OTHER_ID, PRODUCT_ID] });
+
+    const result = await setWishlistMembershipAction(false, PRODUCT_ID);
+
+    expect(result.success).toBe(true);
+    expect(rateLimited).toHaveBeenCalledWith('wishlist:write', '1.2.3.4', 30, '1 m', {
+      failClosed: true,
+    });
   });
 });

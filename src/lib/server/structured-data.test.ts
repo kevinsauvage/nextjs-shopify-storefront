@@ -116,4 +116,36 @@ describe('JSON-LD builders', () => {
 
     expect(product).not.toHaveProperty('offers');
   });
+
+  it('marks unavailable products as OutOfStock', () => {
+    vi.stubEnv('NEXT_PUBLIC_BASE_URL', BASE_URL);
+
+    const product = productJsonLd({
+      availableForSale: false,
+      currency: 'USD',
+      images: [],
+      name: 'Dress',
+      price: '49.00',
+      url: '/products/dress',
+    }) as { offers?: { availability?: string } };
+
+    expect(product.offers?.availability).toContain('OutOfStock');
+  });
+
+  it('omits optional product fields when absent', () => {
+    vi.stubEnv('NEXT_PUBLIC_BASE_URL', BASE_URL);
+
+    const product = productJsonLd({
+      availableForSale: true,
+      currency: 'USD',
+      images: [],
+      name: 'Dress',
+      price: '49.00',
+      url: '/products/dress',
+    });
+
+    expect(product).not.toHaveProperty('description');
+    expect(product).not.toHaveProperty('sku');
+    expect(product).not.toHaveProperty('brand');
+  });
 });

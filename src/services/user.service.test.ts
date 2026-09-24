@@ -88,4 +88,27 @@ describe('UserService.updateUser', () => {
       error: 'Failed to update user',
     });
   });
+
+  it('returns an error when the mutation payload is missing', async () => {
+    customerUpdate.mockResolvedValue({});
+
+    await expect(UserService.updateUser(INPUT)).resolves.toEqual({
+      error: 'Failed to update user',
+    });
+    expect(setShopifyToken).not.toHaveBeenCalled();
+  });
+
+  it('maps phone to undefined when blank and keeps marketing opt-in', async () => {
+    const customer = { id: 'gid://shopify/Customer/1' };
+    customerUpdate.mockResolvedValue({ customerUpdate: { customer, customerUserErrors: [] } });
+
+    await expect(
+      UserService.updateUser({ ...INPUT, acceptsMarketing: 'true', phone: '' }),
+    ).resolves.toMatchObject({ success: expect.any(String) });
+    expect(customerUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        customer: expect.objectContaining({ acceptsMarketing: true, phone: undefined }),
+      }),
+    );
+  });
 });

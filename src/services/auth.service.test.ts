@@ -24,6 +24,8 @@ vi.mock('@/services/cart.service', () => ({
   CartService: { getCartId },
 }));
 
+import { reportError } from '@/lib/logger';
+
 import { AuthService } from './auth.service';
 
 const CUSTOMER_TOKEN = {
@@ -39,6 +41,7 @@ describe('AuthService', () => {
     getCartId.mockReset();
     getUser.mockReset();
     setShopifyToken.mockReset();
+    vi.mocked(reportError).mockClear();
     getCartId.mockResolvedValue(null);
     getUser.mockResolvedValue(undefined);
   });
@@ -197,6 +200,99 @@ describe('AuthService', () => {
         }),
       ).resolves.toEqual({ customerUserErrors: [{ message: 'Account disabled' }] });
     });
+
+    it('surfaces generic user errors from customer creation', async () => {
+      sdk.customerCreate.mockResolvedValue({
+        customerCreate: {
+          customerUserErrors: [],
+          userErrors: [{ message: 'Too many requests' }],
+        },
+      });
+
+      await expect(
+        AuthService.register({
+          email: 'a@b.com',
+          firstName: 'A',
+          lastName: 'B',
+          password: 'secret1',
+        }),
+      ).resolves.toEqual({ userErrors: [{ message: 'Too many requests' }] });
+      expect(sdk.customerAccessTokenCreate).not.toHaveBeenCalled();
+    });
+
+    it('handles a missing customerCreate payload without crashing', async () => {
+      sdk.customerCreate.mockResolvedValue({});
+      sdk.customerAccessTokenCreate.mockResolvedValue({
+        customerAccessTokenCreate: { customerAccessToken: CUSTOMER_TOKEN, customerUserErrors: [] },
+      });
+
+      await expect(
+        AuthService.register({
+          email: 'a@b.com',
+          firstName: 'A',
+          lastName: 'B',
+          password: 'secret1',
+        }),
+      ).resolves.toMatchObject({ success: true });
+    });
+
+    it('handles a missing auto-login payload as a failed account creation', async () => {
+      sdk.customerCreate.mockResolvedValue({
+        customerCreate: { customerUserErrors: [], userErrors: [] },
+      });
+      sdk.customerAccessTokenCreate.mockResolvedValue({});
+
+      await expect(
+        AuthService.register({
+          email: 'a@b.com',
+          firstName: 'A',
+          lastName: 'B',
+          password: 'secret1',
+        }),
+      ).resolves.toEqual({ error: 'Failed to create account' });
+    });
+
+    it('skips cart attach when no user is resolved after register', async () => {
+      sdk.customerCreate.mockResolvedValue({
+        customerCreate: { customerUserErrors: [], userErrors: [] },
+      });
+      sdk.customerAccessTokenCreate.mockResolvedValue({
+        customerAccessTokenCreate: { customerAccessToken: CUSTOMER_TOKEN, customerUserErrors: [] },
+      });
+      getUser.mockResolvedValue(undefined);
+      getCartId.mockResolvedValue('cart-1');
+
+      await expect(
+        AuthService.register({
+          email: 'a@b.com',
+          firstName: 'A',
+          lastName: 'B',
+          password: 'secret1',
+        }),
+      ).resolves.toMatchObject({ success: true });
+      expect(sdk.cartBuyerIdentityUpdate).not.toHaveBeenCalled();
+    });
+
+    it('skips cart attach when there is no cart after register', async () => {
+      sdk.customerCreate.mockResolvedValue({
+        customerCreate: { customerUserErrors: [], userErrors: [] },
+      });
+      sdk.customerAccessTokenCreate.mockResolvedValue({
+        customerAccessTokenCreate: { customerAccessToken: CUSTOMER_TOKEN, customerUserErrors: [] },
+      });
+      getUser.mockResolvedValue({ email: 'a@b.com', phone: '123' });
+      getCartId.mockResolvedValue(null);
+
+      await expect(
+        AuthService.register({
+          email: 'a@b.com',
+          firstName: 'A',
+          lastName: 'B',
+          password: 'secret1',
+        }),
+      ).resolves.toMatchObject({ success: true });
+      expect(sdk.cartBuyerIdentityUpdate).not.toHaveBeenCalled();
+    });
   });
 
   describe('recoverPassword', () => {
@@ -212,6 +308,14 @@ describe('AuthService', () => {
 
     it('succeeds when Shopify accepts the request', async () => {
       sdk.customerRecover.mockResolvedValue({ customerRecover: { customerUserErrors: [] } });
+
+      await expect(AuthService.recoverPassword({ email: 'a@b.com' })).resolves.toEqual({
+        success: true,
+      });
+    });
+
+    it('succeeds when the payload is missing', async () => {
+      sdk.customerRecover.mockResolvedValue({});
 
       await expect(AuthService.recoverPassword({ email: 'a@b.com' })).resolves.toEqual({
         success: true,
@@ -256,6 +360,92 @@ describe('AuthService', () => {
         AuthService.resetPassword({ password: 'secret1', resetToken: 'reset-url' }),
       ).resolves.toEqual({ customerAccessToken: CUSTOMER_TOKEN, success: true });
       expect(setShopifyToken).toHaveBeenCalledWith(CUSTOMER_TOKEN);
+    });
+
+    it('handles a missing payload as a failed reset', async () => {
+      sdk.customerResetByUrl.mockResolvedValue({});
+
+      await expect(
+        AuthService.resetPassword({ password: 'secret1', resetToken: 'reset-url' }),
+      ).resolves.toEqual({ error: 'Failed to reset password' });
+    });
+  });
+
+  describe('updateCartBuyerIdentity', () => {
+    const loginSuccess = () => {
+      sdk.customerAccessTokenCreate.mockResolvedValue({
+        customerAccessTokenCreate: { customerAccessToken: CUSTOMER_TOKEN, customerUserErrors: [] },
+      });
+    };
+
+    it('reports Shopify user errors without blocking login', async () => {
+      loginSuccess();
+      getUser.mockResolvedValue({ email: 'a@b.com', phone: '123' });
+      getCartId.mockResolvedValue('cart-1');
+      sdk.cartBuyerIdentityUpdate.mockResolvedValue({
+        cartBuyerIdentityUpdate: { userErrors: [{ message: 'Bad cart' }] },
+      });
+
+      await expect(
+        AuthService.login({ email: 'a@b.com', password: 'secret1' }),
+      ).resolves.toMatchObject({
+        success: true,
+      });
+      expect(reportError).toHaveBeenCalledWith(
+        'AuthService.updateCartBuyerIdentity - user errors',
+        expect.anything(),
+      );
+    });
+
+    it('reports transport failures without blocking login', async () => {
+      loginSuccess();
+      getUser.mockResolvedValue({ email: 'a@b.com', phone: '123' });
+      getCartId.mockResolvedValue('cart-1');
+      sdk.cartBuyerIdentityUpdate.mockRejectedValue(new Error('network down'));
+
+      await expect(
+        AuthService.login({ email: 'a@b.com', password: 'secret1' }),
+      ).resolves.toMatchObject({
+        success: true,
+      });
+      expect(reportError).toHaveBeenCalledWith(
+        'AuthService.updateCartBuyerIdentity',
+        expect.any(Error),
+      );
+    });
+
+    it('tolerates a missing mutation payload', async () => {
+      loginSuccess();
+      getUser.mockResolvedValue({ email: 'a@b.com', phone: '123' });
+      getCartId.mockResolvedValue('cart-1');
+      sdk.cartBuyerIdentityUpdate.mockResolvedValue({});
+
+      await expect(
+        AuthService.login({ email: 'a@b.com', password: 'secret1' }),
+      ).resolves.toMatchObject({
+        success: true,
+      });
+    });
+
+    it('skips the mutation when there is no cart', async () => {
+      loginSuccess();
+      getUser.mockResolvedValue({ email: 'a@b.com', phone: '123' });
+      getCartId.mockResolvedValue(null);
+
+      await expect(
+        AuthService.login({ email: 'a@b.com', password: 'secret1' }),
+      ).resolves.toMatchObject({
+        success: true,
+      });
+      expect(sdk.cartBuyerIdentityUpdate).not.toHaveBeenCalled();
+    });
+
+    it('handles a missing login payload as invalid credentials', async () => {
+      sdk.customerAccessTokenCreate.mockResolvedValue({});
+
+      await expect(AuthService.login({ email: 'a@b.com', password: 'secret1' })).resolves.toEqual({
+        error: 'Invalid email or password',
+      });
     });
   });
 });

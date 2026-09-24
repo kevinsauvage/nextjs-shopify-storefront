@@ -1,6 +1,15 @@
-import { isAllowedPasswordResetUrl, normalizeMenuHref, safeInternalPath } from './url';
+import { isAllowedPasswordResetUrl, normalizeMenuHref, safeInternalPath, withQuery } from './url';
 
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
+
+const loadUrlModule = async () => {
+  vi.resetModules();
+  return import('./url');
+};
 
 const STORE_ORIGIN = 'https://ecomfashionstore.myshopify.com';
 const RELATIVE_PATH = '/collections/sale';
@@ -109,5 +118,45 @@ describe('isAllowedPasswordResetUrl', () => {
 
   it('rejects oversized URLs instead of forwarding them to Shopify', () => {
     expect(isAllowedPasswordResetUrl(`${STORE_ORIGIN}/${'a'.repeat(2048)}?syclid=x`)).toBe(false);
+  });
+});
+
+describe('parseOrigin via internal origins', () => {
+  it('rewrites absolute URLs on a custom store origin', async () => {
+    vi.stubEnv('NEXT_PUBLIC_BASE_URL', 'https://shop.example.com');
+    vi.stubEnv('NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL', 'https://shop.example.com/api/graphql');
+
+    const fresh = await loadUrlModule();
+
+    expect(fresh.normalizeMenuHref('https://shop.example.com/collections/sale')).toBe(
+      '/collections/sale',
+    );
+    expect(fresh.isAllowedPasswordResetUrl('https://shop.example.com/reset?syclid=x')).toBe(true);
+  });
+
+  it('ignores unparseable origins when building the internal set', async () => {
+    vi.stubEnv('NEXT_PUBLIC_BASE_URL', 'not-a-url');
+    vi.stubEnv('NEXT_PUBLIC_SHOPIFY_STOREFRONT_URL', 'also-not-a-url');
+
+    const fresh = await loadUrlModule();
+
+    expect(fresh.normalizeMenuHref('https://example.com/support')).toBe(
+      'https://example.com/support',
+    );
+    expect(fresh.isAllowedPasswordResetUrl('https://example.com/reset')).toBe(false);
+  });
+});
+
+describe('withQuery', () => {
+  it('appends query parameters to a pathname', () => {
+    expect(withQuery('/search', new URLSearchParams({ q: 'shoes' }))).toBe('/search?q=shoes');
+  });
+
+  it('serializes multiple parameters', () => {
+    const parameters = new URLSearchParams({ page: '2', sort: 'price' });
+
+    expect(withQuery('/collections/sale', parameters)).toBe(
+      `/collections/sale?${parameters.toString()}`,
+    );
   });
 });

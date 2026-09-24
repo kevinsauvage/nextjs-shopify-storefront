@@ -29,3 +29,24 @@ describe('getAdminClient', () => {
     expect(typeof first.request).toBe('function');
   });
 });
+
+describe('adminSdk', () => {
+  it('throws when Admin credentials are missing', async () => {
+    const { adminSdk } = await load();
+
+    expect(() => adminSdk()).toThrow('SHOPIFY_ADMIN_URL');
+  });
+
+  it('returns the SDK bound to the configured client', async () => {
+    vi.stubEnv('SHOPIFY_ADMIN_URL', 'https://shop.example.com/admin/api/graphql.json');
+    vi.stubEnv('SHOPIFY_STORE_FRONT_ADMIN_TOKEN', 'admin-token');
+    const { adminSdk, getAdminClient } = await load();
+
+    const sdk = adminSdk();
+    const operations = Object.values(sdk).filter((entry) => typeof entry === 'function');
+
+    expect(typeof sdk).toBe('object');
+    expect(operations.length).toBeGreaterThan(0);
+    expect(getAdminClient()).toBe(getAdminClient());
+  });
+});

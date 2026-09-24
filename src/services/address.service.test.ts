@@ -75,6 +75,24 @@ describe('AddressService', () => {
 
       await expect(AddressService.createAddress(input)).resolves.toEqual({ customerUserErrors });
     });
+
+    it('returns a default error when Shopify returns nothing usable', async () => {
+      sdk.customerAddressCreate.mockResolvedValue({
+        customerAddressCreate: { customerAddress: null, customerUserErrors: [] },
+      });
+
+      await expect(AddressService.createAddress(input)).resolves.toEqual({
+        error: 'Something went wrong',
+      });
+    });
+
+    it('returns a default error when the payload is missing', async () => {
+      sdk.customerAddressCreate.mockResolvedValue({});
+
+      await expect(AddressService.createAddress(input)).resolves.toEqual({
+        error: 'Something went wrong',
+      });
+    });
   });
 
   describe('updateAddress', () => {
@@ -103,6 +121,43 @@ describe('AddressService', () => {
         error: 'Failed to update address',
       });
     });
+
+    it('returns unauthenticated when there is no token', async () => {
+      getShopifyToken.mockResolvedValue(null);
+
+      await expect(AddressService.updateAddress(inputWithId)).resolves.toEqual({
+        error: 'User not authenticated',
+      });
+    });
+
+    it('bubbles up customer user errors', async () => {
+      const customerUserErrors = [{ message: 'Invalid' }];
+      sdk.customerAddressUpdate.mockResolvedValue({
+        customerAddressUpdate: { customerAddress: null, customerUserErrors },
+      });
+
+      await expect(AddressService.updateAddress(inputWithId)).resolves.toEqual({
+        customerUserErrors,
+      });
+    });
+
+    it('returns a default error when Shopify returns nothing usable', async () => {
+      sdk.customerAddressUpdate.mockResolvedValue({
+        customerAddressUpdate: { customerAddress: null, customerUserErrors: [] },
+      });
+
+      await expect(AddressService.updateAddress(inputWithId)).resolves.toEqual({
+        error: 'Something went wrong',
+      });
+    });
+
+    it('returns a default error when the payload is missing', async () => {
+      sdk.customerAddressUpdate.mockResolvedValue({});
+
+      await expect(AddressService.updateAddress(inputWithId)).resolves.toEqual({
+        error: 'Something went wrong',
+      });
+    });
   });
 
   describe('deleteAddress', () => {
@@ -122,6 +177,43 @@ describe('AddressService', () => {
 
       await expect(AddressService.deleteAddress(ADDRESS_ID)).resolves.toEqual({
         error: 'Failed to delete address',
+      });
+    });
+
+    it('returns unauthenticated when there is no token', async () => {
+      getShopifyToken.mockResolvedValue(null);
+
+      await expect(AddressService.deleteAddress(ADDRESS_ID)).resolves.toEqual({
+        error: 'User not authenticated',
+      });
+    });
+
+    it('bubbles up customer user errors', async () => {
+      const customerUserErrors = [{ message: 'Not found' }];
+      sdk.customerAddressDelete.mockResolvedValue({
+        customerAddressDelete: { deletedCustomerAddressId: null, customerUserErrors },
+      });
+
+      await expect(AddressService.deleteAddress(ADDRESS_ID)).resolves.toEqual({
+        customerUserErrors,
+      });
+    });
+
+    it('returns a default error when Shopify returns nothing usable', async () => {
+      sdk.customerAddressDelete.mockResolvedValue({
+        customerAddressDelete: { deletedCustomerAddressId: null, customerUserErrors: [] },
+      });
+
+      await expect(AddressService.deleteAddress(ADDRESS_ID)).resolves.toEqual({
+        error: 'Something went wrong',
+      });
+    });
+
+    it('returns a default error when the payload is missing', async () => {
+      sdk.customerAddressDelete.mockResolvedValue({});
+
+      await expect(AddressService.deleteAddress(ADDRESS_ID)).resolves.toEqual({
+        error: 'Something went wrong',
       });
     });
   });
@@ -144,6 +236,43 @@ describe('AddressService', () => {
 
       await expect(AddressService.setDefaultAddress(ADDRESS_ID)).resolves.toEqual({
         error: 'Failed to set default address',
+      });
+    });
+
+    it('returns unauthenticated when there is no token', async () => {
+      getShopifyToken.mockResolvedValue(null);
+
+      await expect(AddressService.setDefaultAddress(ADDRESS_ID)).resolves.toEqual({
+        error: 'User not authenticated',
+      });
+    });
+
+    it('bubbles up customer user errors', async () => {
+      const customerUserErrors = [{ message: 'Not found' }];
+      sdk.customerDefaultAddressUpdate.mockResolvedValue({
+        customerDefaultAddressUpdate: { customer: null, customerUserErrors },
+      });
+
+      await expect(AddressService.setDefaultAddress(ADDRESS_ID)).resolves.toEqual({
+        customerUserErrors,
+      });
+    });
+
+    it('returns a default error when Shopify returns nothing usable', async () => {
+      sdk.customerDefaultAddressUpdate.mockResolvedValue({
+        customerDefaultAddressUpdate: { customer: null, customerUserErrors: [] },
+      });
+
+      await expect(AddressService.setDefaultAddress(ADDRESS_ID)).resolves.toEqual({
+        error: 'Something went wrong',
+      });
+    });
+
+    it('returns a default error when the payload is missing', async () => {
+      sdk.customerDefaultAddressUpdate.mockResolvedValue({});
+
+      await expect(AddressService.setDefaultAddress(ADDRESS_ID)).resolves.toEqual({
+        error: 'Something went wrong',
       });
     });
   });

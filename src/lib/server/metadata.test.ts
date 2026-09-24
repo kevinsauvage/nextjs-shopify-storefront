@@ -22,6 +22,16 @@ describe('getBaseUrl', () => {
 
     expect(getBaseUrl()).toBe(siteMetadata.siteUrl);
   });
+
+  it('throws when neither the env var nor site metadata provides a URL', () => {
+    const original = siteMetadata.siteUrl;
+    (siteMetadata as { siteUrl: string }).siteUrl = '';
+    vi.stubEnv('NEXT_PUBLIC_BASE_URL', '');
+
+    expect(() => getBaseUrl()).toThrow(/NEXT_PUBLIC_BASE_URL/);
+
+    (siteMetadata as { siteUrl: string }).siteUrl = original;
+  });
 });
 
 describe('generateMetadata', () => {

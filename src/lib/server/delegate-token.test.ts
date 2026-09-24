@@ -81,4 +81,20 @@ describe('getDelegateAccessToken', () => {
 
     await expect(getDelegateAccessToken()).resolves.toBeNull();
   });
+
+  it('returns null when the scope normalizes to empty', async () => {
+    vi.stubEnv('SHOPIFY_SCOPE', ' , , ');
+    const { getDelegateAccessToken } = await load();
+
+    await expect(getDelegateAccessToken()).resolves.toBeNull();
+    expect(delegateAccessTokenCreate).not.toHaveBeenCalled();
+  });
+
+  it('returns null when the Admin payload is missing', async () => {
+    vi.stubEnv('SHOPIFY_SCOPE', 'read_products');
+    delegateAccessTokenCreate.mockResolvedValue({});
+    const { getDelegateAccessToken } = await load();
+
+    await expect(getDelegateAccessToken()).resolves.toBeNull();
+  });
 });

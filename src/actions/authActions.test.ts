@@ -222,6 +222,14 @@ describe('recoverPasswordAction', () => {
     expect(state.ok).toBe(false);
     expect(recover).not.toHaveBeenCalled();
   });
+
+  it('returns the service error when recovery fails', async () => {
+    recover.mockResolvedValue({ error: 'No account found' });
+
+    const state = await recoverPasswordAction({ email: 'a@b.com' });
+
+    expect(state).toMatchObject({ message: 'No account found', ok: false });
+  });
 });
 
 describe('resetPasswordAction', () => {

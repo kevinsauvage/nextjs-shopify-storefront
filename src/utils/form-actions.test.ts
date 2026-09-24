@@ -60,6 +60,12 @@ describe('form-actions', () => {
     expect(shopifyErrorsToFormState(undefined)).toBeNull();
   });
 
+  it('returns null when Shopify errors carry no message', () => {
+    expect(shopifyErrorsToFormState([{}])).toBeNull();
+    expect(shopifyErrorsToFormState([{ message: '' }, {}])).toBeNull();
+    expect(shopifyErrorsToFormState(null)).toBeNull();
+  });
+
   it('maps service results to form state', () => {
     expect(serviceErrorsToFormState({ error: 'Nope' })).toEqual({ message: 'Nope', ok: false });
     expect(serviceErrorsToFormState({ customerUserErrors: [{ message: 'Bad' }] })).toEqual({
@@ -71,6 +77,17 @@ describe('form-actions', () => {
       ok: false,
     });
     expect(serviceErrorsToFormState({ success: true })).toBeNull();
+  });
+
+  it('uses the fallback message when Shopify errors carry no message', () => {
+    expect(serviceErrorsToFormState({ customerUserErrors: [{}] })).toEqual({
+      message: 'Something went wrong',
+      ok: false,
+    });
+    expect(serviceErrorsToFormState({ userErrors: [{ message: '' }] }, 'Custom fallback')).toEqual({
+      message: 'Custom fallback',
+      ok: false,
+    });
   });
 
   it('returns customer/user errors only when present', () => {

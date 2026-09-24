@@ -2,15 +2,23 @@ import type * as ClientIpModule from '@/lib/server/client-ip';
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { createAddress, deleteAddress, rateLimited, redirect, setDefaultAddress, updateAddress } =
-  vi.hoisted(() => ({
-    createAddress: vi.fn(),
-    deleteAddress: vi.fn(),
-    rateLimited: vi.fn(async () => false),
-    redirect: vi.fn(),
-    setDefaultAddress: vi.fn(),
-    updateAddress: vi.fn(),
-  }));
+const {
+  createAddress,
+  deleteAddress,
+  getShopifyTokenValue,
+  rateLimited,
+  redirect,
+  setDefaultAddress,
+  updateAddress,
+} = vi.hoisted(() => ({
+  createAddress: vi.fn(),
+  deleteAddress: vi.fn(),
+  getShopifyTokenValue: { current: 'token-9' as string | null },
+  rateLimited: vi.fn(async () => false),
+  redirect: vi.fn(),
+  setDefaultAddress: vi.fn(),
+  updateAddress: vi.fn(),
+}));
 
 vi.mock('next/navigation', () => ({ redirect }));
 vi.mock('@/lib/server/client-ip', async (importOriginal) => {
@@ -21,7 +29,9 @@ vi.mock('@/lib/server/client-ip', async (importOriginal) => {
 vi.mock('@/lib/server/rate-limit', () => ({
   isRateLimited: (...args: unknown[]) => rateLimited(...(args as [])),
 }));
-vi.mock('@/lib/server/shopify-helpers', () => ({ getShopifyToken: async () => 'token-9' }));
+vi.mock('@/lib/server/shopify-helpers', () => ({
+  getShopifyToken: async () => getShopifyTokenValue.current,
+}));
 vi.mock('@/services/address.service', () => ({
   AddressService: { createAddress, deleteAddress, setDefaultAddress, updateAddress },
 }));
@@ -59,6 +69,7 @@ describe('createAddressAction', () => {
     rateLimited.mockReset();
     rateLimited.mockResolvedValue(false);
     redirect.mockReset();
+    getShopifyTokenValue.current = 'token-9';
   });
 
   it('creates the address behind a session-scoped fail-closed limiter', async () => {
@@ -96,6 +107,35 @@ describe('createAddressAction', () => {
     expect(createAddress).not.toHaveBeenCalled();
     expect(redirect).not.toHaveBeenCalled();
   });
+
+  it('returns the service error without redirecting when creation fails', async () => {
+    createAddress.mockResolvedValue({ customerUserErrors: [{ message: 'Invalid address' }] });
+
+    const state = await createAddressAction(INPUT);
+
+    expect(state).toMatchObject({ message: 'Invalid address', ok: false });
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it('returns a generic error when creation throws', async () => {
+    createAddress.mockRejectedValue(new Error(NETWORK_DOWN_MESSAGE));
+
+    const state = await createAddressAction(INPUT);
+
+    expect(state).toMatchObject({ message: 'Failed to create address', ok: false });
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it('scopes the limiter globally when there is no session token', async () => {
+    getShopifyTokenValue.current = null;
+
+    await createAddressAction(INPUT);
+
+    expect(rateLimited).toHaveBeenCalledWith('address:write', '1.2.3.4', 30, '1 m', {
+      failClosed: true,
+    });
+    expect(createAddress).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('deleteAddressAction', () => {
@@ -105,6 +145,7 @@ describe('deleteAddressAction', () => {
     rateLimited.mockReset();
     rateLimited.mockResolvedValue(false);
     redirect.mockReset();
+    getShopifyTokenValue.current = 'token-9';
   });
 
   it('is rate limited before reaching the service', async () => {
@@ -168,6 +209,7 @@ describe('setDefaultAddressAction', () => {
     rateLimited.mockReset();
     rateLimited.mockResolvedValue(false);
     redirect.mockReset();
+    getShopifyTokenValue.current = 'token-9';
   });
 
   it('sets the default address and redirects on success', async () => {
@@ -201,6 +243,25 @@ describe('setDefaultAddressAction', () => {
     expect(state).toMatchObject({ message: 'Failed to set default address', ok: false });
     expect(redirect).not.toHaveBeenCalled();
   });
+
+  it('returns the service error without redirecting when setting the default fails', async () => {
+    setDefaultAddress.mockResolvedValue({ customerUserErrors: [{ message: 'Not found' }] });
+
+    const state = await setDefaultAddressAction(ADDRESS_GID);
+
+    expect(state).toMatchObject({ message: 'Not found', ok: false });
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it('is rate limited before reaching the service', async () => {
+    rateLimited.mockResolvedValueOnce(true);
+
+    const state = await setDefaultAddressAction(ADDRESS_GID);
+
+    expect(state.ok).toBe(false);
+    expect(setDefaultAddress).not.toHaveBeenCalled();
+    expect(redirect).not.toHaveBeenCalled();
+  });
 });
 
 describe('updateAddressAction', () => {
@@ -210,6 +271,7 @@ describe('updateAddressAction', () => {
     rateLimited.mockReset();
     rateLimited.mockResolvedValue(false);
     redirect.mockReset();
+    getShopifyTokenValue.current = 'token-9';
   });
 
   it('updates the address and redirects on success', async () => {
@@ -241,6 +303,25 @@ describe('updateAddressAction', () => {
     const state = await updateAddressAction(INPUT);
 
     expect(state).toMatchObject({ message: 'Failed to update address', ok: false });
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it('returns the service error without redirecting when the update fails', async () => {
+    updateAddress.mockResolvedValue({ customerUserErrors: [{ message: 'Invalid address' }] });
+
+    const state = await updateAddressAction(INPUT);
+
+    expect(state).toMatchObject({ message: 'Invalid address', ok: false });
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it('returns an error when rate limited without calling the service', async () => {
+    rateLimited.mockResolvedValueOnce(true);
+
+    const state = await updateAddressAction(INPUT);
+
+    expect(state.ok).toBe(false);
+    expect(updateAddress).not.toHaveBeenCalled();
     expect(redirect).not.toHaveBeenCalled();
   });
 });

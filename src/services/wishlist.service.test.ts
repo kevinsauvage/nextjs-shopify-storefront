@@ -12,12 +12,21 @@ const { adminSdk, getCustomer, getProductsByIds, getShopifyToken, metafieldsSet 
 
 vi.mock('@/lib/server/shopify-helpers', () => ({ getShopifyToken }));
 vi.mock('@/lib/logger', () => ({ reportError: vi.fn() }));
+vi.mock('next/cache', () => ({ cacheLife: vi.fn(), cacheTag: vi.fn(), updateTag: vi.fn() }));
 vi.mock('@/shopify', () => ({
   adminSdk: () => ({ MetafieldsSet: metafieldsSet }),
   storefrontSdk: () => ({ getCustomer, getProductsByIds }),
 }));
 
-import { isValidWishlistProductId, WishlistService } from './wishlist.service';
+import { reportError } from '@/lib/logger';
+
+import {
+  getWishlistIdsCached,
+  isValidWishlistProductId,
+  WISHLIST_MAX_ID_LENGTH,
+  WISHLIST_MAX_ITEMS,
+  WishlistService,
+} from './wishlist.service';
 
 const CUSTOMER_ID = 'gid://shopify/Customer/1';
 const productGid = (id: number) => `gid://shopify/Product/${id}`;
@@ -180,6 +189,168 @@ describe('WishlistService', () => {
 
       // The slower write must have seen the first one's result, not an empty list.
       expect(second.data).toEqual([PRODUCT_A, PRODUCT_B]);
+    });
+  });
+
+  describe('getWishlistState edge cases', () => {
+    it('returns empty when Shopify returns no customer', async () => {
+      getShopifyToken.mockResolvedValue('token');
+      getCustomer.mockResolvedValue({ customer: null });
+
+      await expect(WishlistService.getWishlistState()).resolves.toEqual({
+        customerId: null,
+        ids: [],
+      });
+    });
+
+    it('returns empty for a non-array JSON metafield', async () => {
+      getShopifyToken.mockResolvedValue('token');
+      getCustomer.mockResolvedValue({
+        customer: { id: CUSTOMER_ID, metafields: [{ value: '{"a":1}' }] },
+      });
+
+      await expect(WishlistService.getWishlistIds()).resolves.toEqual([]);
+    });
+
+    it('returns empty when the metafield is missing', async () => {
+      getShopifyToken.mockResolvedValue('token');
+      getCustomer.mockResolvedValue({ customer: { id: CUSTOMER_ID, metafields: [] } });
+
+      await expect(WishlistService.getWishlistIds()).resolves.toEqual([]);
+    });
+  });
+
+  describe('resolveProductsByIds', () => {
+    it('returns empty without calling Shopify for an empty list', async () => {
+      await expect(WishlistService.resolveProductsByIds([])).resolves.toEqual([]);
+      expect(getProductsByIds).not.toHaveBeenCalled();
+    });
+
+    it('resolves products preserving request order and dropping missing', async () => {
+      const nodeA = { id: PRODUCT_A, title: 'A' };
+      const nodeB = { id: PRODUCT_B, title: 'B' };
+      getProductsByIds.mockResolvedValue({ nodes: [nodeB, null, nodeA, undefined] });
+
+      const result = await WishlistService.resolveProductsByIds([
+        PRODUCT_A,
+        PRODUCT_B,
+        productGid(999),
+      ]);
+
+      expect(getProductsByIds).toHaveBeenCalledWith(
+        expect.objectContaining({ ids: [PRODUCT_A, PRODUCT_B, productGid(999)] }),
+      );
+      expect(result.map((p) => p.id)).toEqual([PRODUCT_A, PRODUCT_B]);
+    });
+
+    it('deduplicates ids and caps the request', async () => {
+      const many = Array.from({ length: WISHLIST_MAX_ITEMS + 10 }, (_, i) => productGid(1000 + i));
+      getProductsByIds.mockResolvedValue({ nodes: [] });
+
+      await expect(WishlistService.resolveProductsByIds([...many, ...many])).resolves.toEqual([]);
+      const calledIds = getProductsByIds.mock.calls[0]?.[0] as { ids: string[] } | undefined;
+      expect(calledIds?.ids).toHaveLength(WISHLIST_MAX_ITEMS);
+    });
+
+    it('returns empty when Shopify returns no nodes', async () => {
+      getProductsByIds.mockResolvedValue({ nodes: [] });
+
+      await expect(WishlistService.resolveProductsByIds([PRODUCT_A])).resolves.toEqual([]);
+    });
+
+    it('returns empty when Shopify returns an empty response', async () => {
+      getProductsByIds.mockResolvedValue({});
+
+      await expect(WishlistService.resolveProductsByIds([PRODUCT_A])).resolves.toEqual([]);
+    });
+
+    it('returns empty and reports when Shopify throws', async () => {
+      getProductsByIds.mockRejectedValue(new Error('network down'));
+
+      await expect(WishlistService.resolveProductsByIds([PRODUCT_A])).resolves.toEqual([]);
+      expect(reportError).toHaveBeenCalledWith(
+        'WishlistService.resolveProductsByIds',
+        expect.any(Error),
+      );
+    });
+  });
+
+  describe('updateWishlist errors', () => {
+    it('returns an error when Shopify reports user errors', async () => {
+      metafieldsSet.mockResolvedValue({
+        metafieldsSet: { userErrors: [{ message: 'Invalid' }] },
+      });
+
+      const result = await WishlistService.updateWishlist([PRODUCT_A], CUSTOMER_ID);
+
+      expect(result).toEqual({
+        message: 'Something went wrong updating the wishlist',
+        success: false,
+      });
+      expect(reportError).toHaveBeenCalledWith(
+        'WishlistService.updateWishlist - MetafieldsSet errors',
+        expect.anything(),
+      );
+    });
+  });
+
+  describe('mutateWishlist branches', () => {
+    it('rejects an invalid product id without reading state', async () => {
+      const result = await WishlistService.mutateWishlist(
+        { action: 'add', productId: 'bad' },
+        CUSTOMER_ID,
+      );
+
+      expect(result).toEqual({ message: 'Invalid product ID', success: false });
+      expect(getCustomer).not.toHaveBeenCalled();
+    });
+
+    it('fails when the wishlist is full', async () => {
+      const full = Array.from({ length: WISHLIST_MAX_ITEMS }, (_, i) => productGid(2000 + i));
+      mockWishlist(full);
+
+      const result = await WishlistService.mutateWishlist(
+        { action: 'add', productId: PRODUCT_A },
+        CUSTOMER_ID,
+      );
+
+      expect(result.success).toBe(false);
+      expect(result.message).toMatch(/full/);
+      expect(metafieldsSet).not.toHaveBeenCalled();
+    });
+
+    it('removes an existing item', async () => {
+      mockWishlist([PRODUCT_A, PRODUCT_B]);
+      metafieldsSet.mockResolvedValue({ metafieldsSet: { userErrors: [] } });
+
+      await expect(
+        WishlistService.mutateWishlist({ action: 'remove', productId: PRODUCT_A }, CUSTOMER_ID),
+      ).resolves.toEqual({ data: [PRODUCT_B], success: true });
+    });
+
+    it('is a no-op when removing an item already absent', async () => {
+      mockWishlist([PRODUCT_A]);
+
+      await expect(
+        WishlistService.mutateWishlist({ action: 'remove', productId: PRODUCT_B }, CUSTOMER_ID),
+      ).resolves.toEqual({ data: [PRODUCT_A], success: true });
+      expect(metafieldsSet).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getWishlistIdsCached', () => {
+    it('returns cached ids from state', async () => {
+      mockWishlist([PRODUCT_A]);
+
+      await expect(getWishlistIdsCached()).resolves.toEqual([PRODUCT_A]);
+    });
+  });
+
+  describe('isValidWishlistProductId limits', () => {
+    it('rejects ids longer than the max', () => {
+      const longId = `gid://shopify/Product/${'1'.repeat(WISHLIST_MAX_ID_LENGTH)}`;
+
+      expect(isValidWishlistProductId(longId)).toBe(false);
     });
   });
 });

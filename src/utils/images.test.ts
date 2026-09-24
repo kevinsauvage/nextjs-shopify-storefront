@@ -47,6 +47,49 @@ describe('mapShopifyImageToImageFields', () => {
       small: `${CDN_BASE}/src.jpg`,
     });
   });
+
+  it('nulls optional scalars when absent', () => {
+    const sparse = {
+      ...IMAGE,
+      altText: null,
+      height: null,
+      width: undefined,
+    };
+
+    expect(mapShopifyImageToImageFields(sparse)).toMatchObject({
+      altText: null,
+      height: null,
+      width: null,
+    });
+  });
+
+  it('falls back through src to url and finally to empty strings', () => {
+    const urlOnly = {
+      ...IMAGE,
+      blurDataURL: undefined as never,
+      large: '',
+      medium: '',
+      small: '',
+      src: '',
+    };
+
+    expect(mapShopifyImageToImageFields(urlOnly)).toMatchObject({
+      blurDataURL: '',
+      large: '',
+      medium: '',
+      small: '',
+      src: `${CDN_BASE}/url.jpg`,
+    });
+
+    const empty = { ...IMAGE, large: '', medium: '', small: '', src: '', url: '' };
+
+    expect(mapShopifyImageToImageFields(empty)).toMatchObject({
+      large: '',
+      medium: '',
+      small: '',
+      src: '',
+    });
+  });
 });
 
 describe('mapShopifyImagesToImageFields', () => {
