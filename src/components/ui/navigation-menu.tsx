@@ -8,12 +8,14 @@ import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
 import { cva } from 'class-variance-authority';
 import { ChevronDownIcon } from 'lucide-react';
 
+// Centering the wrapper under the nav root keeps wide mega panels from
+// drifting off-screen when the trigger is not the left-most item.
 const NavigationMenuViewport = ({
   className,
   ...properties
 }: React.ComponentProps<typeof NavigationMenuPrimitive.Viewport>) => {
   return (
-    <div className={cn('absolute top-full left-0 isolate z-50 flex justify-center')}>
+    <div className="absolute top-full left-1/2 isolate z-50 flex -translate-x-1/2 justify-center">
       <NavigationMenuPrimitive.Viewport
         data-slot="navigation-menu-viewport"
         className={cn(
@@ -30,9 +32,11 @@ const NavigationMenu = ({
   className,
   children,
   viewport = true,
+  viewportClassName,
   ...properties
 }: React.ComponentProps<typeof NavigationMenuPrimitive.Root> & {
   viewport?: boolean;
+  viewportClassName?: string;
 }) => {
   return (
     <NavigationMenuPrimitive.Root
@@ -45,7 +49,7 @@ const NavigationMenu = ({
       {...properties}
     >
       {children}
-      {viewport && <NavigationMenuViewport />}
+      {viewport && <NavigationMenuViewport className={viewportClassName} />}
     </NavigationMenuPrimitive.Root>
   );
 };

@@ -14,7 +14,7 @@ const Header = ({
 }: {
   headerMenu: GetMenuByHandleQuery['menu'] | null | undefined;
 }) => {
-  const navItems = (headerMenu?.items ?? []).slice(0, 6);
+  const navItems = headerMenu?.items ?? [];
 
   return (
     <>

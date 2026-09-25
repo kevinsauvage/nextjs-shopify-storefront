@@ -4,43 +4,48 @@
       "handle": "main-menu",
       "title": "Main menu",
       "items": [
-        { "title": "Shop All", "url": "/collections/all-products" },
-        { "title": "Dresses", "url": "/collections/dresses" },
-        { "title": "Tops", "url": "/collections/tops" },
         {
-          "title": "Activewear",
-          "url": "/collections/activewear",
+          "title": "Shop",
+          "url": "/collections/all-products",
           "items": [
-            { "title": "All Activewear", "url": "/collections/activewear" },
-            { "title": "Active Tops", "url": "/collections/activewear-tops" },
-            { "title": "Active Bottoms", "url": "/collections/activewear-bottoms" },
-            { "title": "Active Sets", "url": "/collections/activewear-sets" }
+            { "title": "Dresses", "url": "/collections/dresses" },
+            { "title": "Tops", "url": "/collections/tops" },
+            {
+              "title": "Activewear",
+              "url": "/collections/activewear",
+              "items": [
+                { "title": "Active Tops", "url": "/collections/activewear-tops" },
+                { "title": "Active Bottoms", "url": "/collections/activewear-bottoms" },
+                { "title": "Active Sets", "url": "/collections/activewear-sets" }
+              ]
+            },
+            {
+              "title": "Bottoms",
+              "url": "/collections/bottoms",
+              "items": [
+                { "title": "Pants", "url": "/collections/pants" },
+                { "title": "Leggings", "url": "/collections/leggings" },
+                { "title": "Shorts", "url": "/collections/shorts" },
+                { "title": "Skirts", "url": "/collections/skirts" },
+                { "title": "Denim", "url": "/collections/denim" },
+                { "title": "Jumpsuits & Rompers", "url": "/collections/jumpsuits-rompers" }
+              ]
+            },
+            {
+              "title": "Outerwear",
+              "url": "/collections/outerwear",
+              "items": [
+                { "title": "Jackets", "url": "/collections/jackets" },
+                { "title": "Cardigans", "url": "/collections/cardigans" },
+                { "title": "Sweaters", "url": "/collections/sweaters" },
+                { "title": "Sets", "url": "/collections/sets" }
+              ]
+            },
+            { "title": "Swim & Beachwear", "url": "/collections/swim-beachwear" },
+            { "title": "Accessories", "url": "/collections/accessories" }
           ]
         },
-        {
-          "title": "Bottoms",
-          "url": "/collections/bottoms",
-          "items": [
-            { "title": "All Bottoms", "url": "/collections/bottoms" },
-            { "title": "Pants", "url": "/collections/pants" },
-            { "title": "Leggings", "url": "/collections/leggings" },
-            { "title": "Shorts", "url": "/collections/shorts" },
-            { "title": "Skirts", "url": "/collections/skirts" },
-            { "title": "Denim", "url": "/collections/denim" }
-          ]
-        },
-        {
-          "title": "Outerwear",
-          "url": "/collections/outerwear",
-          "items": [
-            { "title": "All Outerwear", "url": "/collections/outerwear" },
-            { "title": "Jackets", "url": "/collections/jackets" },
-            { "title": "Cardigans", "url": "/collections/cardigans" },
-            { "title": "Sweaters", "url": "/collections/sweaters" }
-          ]
-        },
-        { "title": "Swim & Beachwear", "url": "/collections/swim-beachwear" },
-        { "title": "Accessories", "url": "/collections/accessories" },
+        { "title": "Vacation", "url": "/collections/vacation" },
         { "title": "Sale", "url": "/collections/sale" }
       ]
     },
