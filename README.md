@@ -205,6 +205,22 @@ touches menus outside the manifest (e.g. the customer-account menu). Item URLs a
 storefront paths (`/collections/sale`, `/pages/faq`); absolute myshopify URLs coming
 back from Shopify are rewritten on-site by `normalizeMenuHref`.
 
+The desktop header (`src/components/DesktopNav.tsx`) adapts to the tree shape:
+
+- a top-level item with **no children** renders as a plain link;
+- a top-level item whose children are all leaves renders as a **compact dropdown**;
+- a top-level item with **grandchildren** renders as a wide **mega panel** — the
+  categories that have sub-items render first as their own columns, the remaining
+  categories are grouped into one trailing `More` column, and a footer `Shop all`
+  link points at the parent item's own URL.
+
+The panel only ever renders entries that come from the Shopify menu; it introduces
+no hardcoded links of its own. `content/navigation.json` therefore keeps `main-menu`
+deliberately shallow — `Shop` (mega parent, holding every category and sub-category)
+plus `Vacation` and `Sale` as flat links. Adding a sub-category is a matter of
+nesting one more level under a `Shop` child (Shopify menus support three levels) and
+re-running `navigation:sync`.
+
 > After `content:seed` / `navigation:sync`, storefront pages can show stale menus or
 > content for up to 10 minutes: public Shopify reads are cached (`revalidate.shopify`
 > in `src/config/index.ts`, tag `shopify`) and this repo has no purge webhook yet.
