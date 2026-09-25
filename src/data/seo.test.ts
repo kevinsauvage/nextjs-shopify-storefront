@@ -8,6 +8,7 @@ describe('seo', () => {
     expect(seo.home.description).toContain('curated collection');
     expect(seo.cart.title).toBe('Cart');
     expect(seo.search.title).toBe('Search');
+    expect(seo.wishlist.title).toBe('Wishlist');
   });
 
   it('exposes the account section entries', () => {
@@ -15,7 +16,6 @@ describe('seo', () => {
     expect(seo.account.orders.title).toBe('My orders');
     expect(seo.account.addresses.title).toBe('My addresses');
     expect(seo.account.update.title).toBe('My details');
-    expect(seo.account.wishlist.title).toBe('Wishlist');
     expect(seo.account.logout.title).toBe('Sign out');
   });
 
@@ -40,7 +40,6 @@ describe('seo', () => {
       seo.account.addresses,
       seo.account.orders,
       seo.account.update,
-      seo.account.wishlist,
       seo.cart,
       seo.home,
       seo.login,
@@ -53,6 +52,7 @@ describe('seo', () => {
       seo.register,
       seo.reset,
       seo.search,
+      seo.wishlist,
     ];
 
     for (const section of sections) {

@@ -63,8 +63,7 @@ and do **not** expand scopes without review (`Ask first` in `AGENTS.md`).
 4. **Reviews** — no native Storefront reviews object; standard approach is a Product Reviews app /
    metaobject-backed reviews + aggregate rating JSON-LD. Pick provider before building.
 
-5. **Wishlist hardening** — guest → login merge (server metafield wins vs. union — decide +
-   document), share-wishlist link, move-to-cart.
+5. ~~**Wishlist hardening**~~ — **Shipped**: guest → login merge (union, capped at 100 — documented in the service/README), share-wishlist link (`/wishlist/shared?ids=…`), move-to-cart.
 
 6. **GTM Enhanced Ecommerce** — `view_item`, `add_to_cart`, `begin_checkout`, `purchase`
    (post-checkout thank-you is on Shopify — use web pixels or checkout extensibility note).

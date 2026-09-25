@@ -30,6 +30,7 @@ interface CartContextType {
   handleQuantityChange: (id: string, quantity: number) => Promise<void>;
   removeFromCart: (lineItemId: string) => Promise<void>;
   removeGiftCardCode: (appliedGiftCardId: string) => Promise<void>;
+  setCart: (cart: CartFieldsFragment) => void;
   updateAttributes: (attributes: Array<{ key: string; value: string }>) => Promise<void>;
   updateDiscountCodes: (discountCodes: string[]) => Promise<void>;
   updateGiftCardCodes: (giftCardCodes: string[]) => Promise<void>;
@@ -44,6 +45,7 @@ export const CartContext = createContext<CartContextType>({
   handleQuantityChange: async () => {},
   removeFromCart: async () => {},
   removeGiftCardCode: async () => {},
+  setCart: () => {},
   updateAttributes: async () => {},
   updateDiscountCodes: async () => {},
   updateGiftCardCodes: async () => {},
@@ -55,7 +57,7 @@ const getErrorMessage = (error: unknown, defaultMessage: string): string => {
 };
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [cart, setCart] = useState<CartFieldsFragment | null>(null);
+  const [cart, setCartState] = useState<CartFieldsFragment | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   // Monotonic id so concurrent mutations cannot resolve out of order: only
@@ -75,7 +77,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
     (hasCart ? getCartAction() : Promise.resolve(null))
       .then((initialCart) => {
-        if (!cancelled) setCart(initialCart);
+        if (!cancelled) setCartState(initialCart);
       })
       .catch((loadError) => {
         if (cancelled) return;
@@ -94,7 +96,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleResponse = useCallback((requestId: number, response: CartResponse) => {
     if (requestId !== requestIdRef.current) return;
-    setCart(response.data);
+    setCartState(response.data);
     setError(null);
     if (response.message) {
       toast.success(response.message);
@@ -277,6 +279,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     [handleMutationError, handleResponse],
   );
 
+  // Adopt a cart returned by a mutation outside this context (move-to-cart).
+  const setCart = useCallback((nextCart: CartFieldsFragment) => {
+    setCartState(nextCart);
+    setError(null);
+  }, []);
+
   const value = useMemo<CartContextType>(
     () => ({
       cart,
@@ -286,6 +294,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       handleQuantityChange,
       removeFromCart,
       removeGiftCardCode,
+      setCart,
       updateAttributes,
       updateDiscountCodes,
       updateGiftCardCodes,
@@ -299,6 +308,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       handleQuantityChange,
       removeFromCart,
       removeGiftCardCode,
+      setCart,
       updateAttributes,
       updateDiscountCodes,
       updateGiftCardCodes,

@@ -8,19 +8,40 @@ import {
   useEffect,
   useMemo,
   useOptimistic,
+  useRef,
   useState,
 } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
-import { getWishlistIdsAction, setWishlistMembershipAction } from '@/actions/wishlistActions';
+import {
+  mergeWishlistAction,
+  moveWishlistToCartAction,
+  setWishlistMembershipAction,
+} from '@/actions/wishlistActions';
 import config from '@/config';
+import { useLocalList } from '@/hooks/useLocalList';
 import { getCookieFront } from '@/lib/client/cookies';
+import {
+  addGuestWishlist,
+  clearGuestWishlist,
+  GUEST_WISHLIST_KEY,
+  GUEST_WISHLIST_MAX,
+  readGuestWishlist,
+  removeGuestWishlist,
+} from '@/lib/client/guestWishlist';
 import { reportError } from '@/lib/logger';
+import { mergeWishlistIds } from '@/lib/wishlist';
+import type { CartFieldsFragment } from '@/shopify/storefront';
 
 import { toast } from 'sonner';
 
+/** Client-side fallback toast copy for wishlist failures. */
+const TOAST_ERROR = 'Something went wrong';
+
 type UserContextValue = {
   handleSetWishlist: (isWishlisted: boolean, productId: string) => Promise<void>;
+  /** Move the given wishlisted products to the cart. Resolves when done. */
+  handleMoveToCart: (productIds: string[]) => Promise<CartFieldsFragment | null>;
   isLoggedIn: boolean;
   /** Product IDs with an in-flight wishlist write. Cards derive their loading
    * state from this; the optimistic `wishlistIds` above already flips instantly. */
@@ -33,6 +54,7 @@ export const UserContext = createContext<UserContextValue>({
   handleSetWishlist: async () => {
     // noop
   },
+  handleMoveToCart: async () => null,
   isLoggedIn: false,
   pendingWishlistIds: [],
   wishlistIds: [],
@@ -67,6 +89,14 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   // itself, which only schedules the work).
   const [pendingWishlistIds, setPendingWishlistIds] = useState<string[]>([]);
 
+  // Device-local guest wishlist. `useLocalList` is hydration-safe and keeps the
+  // value in sync across tabs, so a signed-out toggle re-renders instantly.
+  const guestIds = useLocalList(GUEST_WISHLIST_KEY, GUEST_WISHLIST_MAX);
+
+  // Guards the one-time login merge so a re-render (or a navigation) cannot
+  // run it twice and double-fire the "saved to your account" toast.
+  const mergedRef = useRef(false);
+
   // Optimistic view over the last server-confirmed ids. Updated inside a
   // transition before the write lands; React discards it automatically when
   // `wishlistIds` commits, so failures revert without a captured snapshot.
@@ -93,24 +123,42 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     setSessionResolved(true);
   }, [pathname]);
 
-  // Load wishlist ids client-side so the root layout does not block every page
-  // render on a customer-specific Shopify request.
+  // Signed out (or after logout): reset in-memory ids and the merge guard so
+  // the next login re-merges. The UI falls back to the device-local list.
   useEffect(() => {
-    if (!isLoggedIn) return;
+    if (isLoggedIn) return;
+    mergedRef.current = false;
+    setWishlistIds([]);
+    setWishlistLoaded(false);
+    setPendingWishlistIds([]);
+  }, [isLoggedIn]);
+
+  // One-time guest → account merge on first sign-in (union; see mergeWishlistIds).
+  useEffect(() => {
+    if (!isLoggedIn || mergedRef.current) return;
+
+    mergedRef.current = true;
+    const localIds = readGuestWishlist();
 
     let cancelled = false;
 
-    getWishlistIdsAction()
-      .then((ids) => {
+    setPendingWishlistIds(localIds);
+
+    mergeWishlistAction(localIds)
+      .then((result) => {
         if (cancelled) return;
-        setWishlistIds(ids);
+        setWishlistIds(result.success && result.data ? result.data : []);
+        // Clear the device list only once the merge is durable server-side.
+        if (result.success) clearGuestWishlist();
+        if (result.success && result.message) toast.success(result.message);
       })
       .catch((error) => {
-        reportError('wishlist/load', error);
+        if (cancelled) return;
+        reportError('wishlist/merge', error);
       })
-      // Always mark as loaded so a failure cannot pin the wishlist in a skeleton.
       .finally(() => {
         if (cancelled) return;
+        setPendingWishlistIds([]);
         setWishlistLoaded(true);
       });
 
@@ -121,10 +169,15 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleSetWishlist = useCallback(
     async (isWishlisted: boolean, productId: string) => {
+      // Signed out: toggle the device-local list, no server round-trip.
       if (!isLoggedIn) {
-        toast.info('You need to login to add products to your wishlist');
-        const returnTo = typeof window === 'undefined' ? pathname : window.location.pathname;
-        router.push(`${config.routes.login}?redirect=${returnTo}`);
+        if (isWishlisted) {
+          removeGuestWishlist(productId);
+          toast.success('Product removed from wishlist');
+        } else {
+          addGuestWishlist(productId);
+          toast.success('Product added to wishlist');
+        }
         return;
       }
 
@@ -153,11 +206,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
               setWishlistIds(result.data);
               toast.success(result.message);
             } else {
-              toast.error(result?.message || 'Something went wrong');
+              toast.error(result?.message || TOAST_ERROR);
             }
           } catch (error) {
             reportError('wishlist/toggle', error, { productId });
-            toast.error('Something went wrong');
+            toast.error(TOAST_ERROR);
           } finally {
             setPendingWishlistIds((previous) => previous.filter((id) => id !== productId));
             resolve();
@@ -165,27 +218,70 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         });
       });
     },
-    [addOptimisticWishlist, isLoggedIn, pathname, router],
+    [isLoggedIn],
   );
 
-  const values = useMemo(
-    () => ({
-      handleSetWishlist,
-      isLoggedIn,
-      pendingWishlistIds,
-      // Never expose a stale wishlist once the session ends.
-      wishlistIds: isLoggedIn ? optimisticWishlistIds : [],
-      wishlistReady: sessionResolved && (!isLoggedIn || wishlistLoaded),
-    }),
-    [
-      handleSetWishlist,
-      isLoggedIn,
-      optimisticWishlistIds,
-      pendingWishlistIds,
-      sessionResolved,
-      wishlistLoaded,
-    ],
+  const handleMoveToCart = useCallback(
+    async (productIds: string[]): Promise<CartFieldsFragment | null> => {
+      if (!isLoggedIn) {
+        toast.info('You need to login to move items to your cart');
+        router.push(config.routes.login);
+        return null;
+      }
+
+      if (productIds.length === 0) return null;
+
+      setPendingWishlistIds(productIds);
+
+      try {
+        const result = await moveWishlistToCartAction(productIds);
+
+        if (!result.success || !result.cart) {
+          toast.error(result.message || TOAST_ERROR);
+          return null;
+        }
+
+        setWishlistIds(result.data ?? []);
+        toast.success(result.message);
+        return result.cart;
+      } catch (error) {
+        reportError('wishlist/move-to-cart', error);
+        toast.error(TOAST_ERROR);
+        return null;
+      } finally {
+        setPendingWishlistIds([]);
+      }
+    },
+    [isLoggedIn, router],
   );
+
+  const values = useMemo(() => {
+    // Signed in: show the guest union until the merge commits, then the server ids.
+    const visibleWishlistIds = isLoggedIn
+      ? wishlistLoaded
+        ? optimisticWishlistIds
+        : mergeWishlistIds([], guestIds)
+      : guestIds;
+
+    return {
+      handleSetWishlist,
+      handleMoveToCart,
+      isLoggedIn,
+      pendingWishlistIds,
+      wishlistIds: visibleWishlistIds,
+      // Signed in: wait for the login merge so the list does not flash empty.
+      wishlistReady: sessionResolved && (!isLoggedIn || wishlistLoaded),
+    };
+  }, [
+    guestIds,
+    handleMoveToCart,
+    handleSetWishlist,
+    isLoggedIn,
+    optimisticWishlistIds,
+    pendingWishlistIds,
+    sessionResolved,
+    wishlistLoaded,
+  ]);
 
   return (
     <UserContext.Provider value={values}>

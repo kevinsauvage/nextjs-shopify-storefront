@@ -24,12 +24,6 @@ const seo = {
         'Update your user information quickly and easily with our user info update form page. Change your name, email, phone number, and more in just a few clicks.',
       title: 'My details',
     },
-
-    wishlist: {
-      description:
-        'Create a wishlist of your favorite items for future purchases. Our wishlist page makes it easy to save and track items you love. Start building your wishlist now.',
-      title: 'Wishlist',
-    },
   },
   activate: {
     description:
@@ -102,6 +96,11 @@ const seo = {
     description:
       "Looking for something specific? Our search page makes it easy to find what you're looking for. Enter your search terms and browse through relevant results quickly. Start searching now.",
     title: 'Search',
+  },
+  wishlist: {
+    description:
+      'Create a wishlist of your favorite items for future purchases. Our wishlist page makes it easy to save and track items you love. Start building your wishlist now.',
+    title: 'Wishlist',
   },
 };
 

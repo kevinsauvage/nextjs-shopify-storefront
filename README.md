@@ -237,6 +237,56 @@ Both are per-browser (`localStorage`), read hydration-safely via
 `useLocalList`/`useSyncExternalStore`, and never sent to the server except as
 product IDs to resolve. Clearing browser storage clears them.
 
+## Wishlist (guest, merge, share, move to cart)
+
+The wishlist is a `custom.wishlist` JSON metafield on the Shopify customer
+(`WishlistService`), read through the Storefront API and written through the
+optional Admin API. It is capped at `WISHLIST_MAX_ITEMS` (100). The wishlist
+page (`/wishlist`, public — sibling of `/wishlist/shared`) renders for guests
+too, from the device-local list. Signed-out shoppers build that list in
+`localStorage` (`src/lib/client/guestWishlist.ts`); it is merged on login.
+
+### Guest → login merge: **union, capped at 100**
+
+`mergeWishlistIds` (`src/lib/wishlist.ts`) is the single implementation, with a
+deliberate, documented strategy:
+
+- **Union** — every valid id from either side is kept and de-duplicated; guest
+  saves are never silently dropped.
+- **Server order first** — the metafield list is seeded first, so a returning
+  customer's existing order is preserved and server ids win on ties.
+- **Guest ids appended** in their most-recent-first `localStorage` order.
+- **Cap evicts guest ids, never server ids** — if the union exceeds 100, only
+  guest ids are truncated, so an anonymous device can never push a customer's
+  saved items out of the metafield.
+
+The merge runs once, on the first sign-in (`UserContext`), under the same
+per-customer lock as normal mutations. `WishlistService.mergeWishlist` re-reads
+the metafield inside the lock and **skips the Admin write entirely when the
+guest list adds nothing new**, so a plain re-login does not churn the metafield
+or the cache tag. The device list is cleared only after the server merge
+succeeds, so a transient failure retries on the next visit.
+
+### Shared wishlist link
+
+"Share" builds a read-only URL, `/wishlist/shared?ids=<gid,gid,…>`, carrying
+only product ids — no customer data, no stored mapping.
+
+- `createWishlistShareLinkAction` builds the absolute URL (prefers the native
+  share sheet, falls back to the clipboard).
+- `/wishlist/shared` validates every id with the same product-GID rule, resolves
+  the products server-side through the public resolver, and is `noindex` +
+  `robots.ts`-disallowed (user-generated, not a landing page).
+
+### Move to cart
+
+`moveWishlistToCartAction` resolves the first purchasable variant of each
+selected product, **adds the lines to the cart first**, and only then removes
+the moved products from the wishlist. If the cart write fails, the products
+stay wishlisted instead of vanishing from both. Products with no purchasable
+variant (sold out / deleted) are skipped, stay saved, and are reported in the
+result message.
+
 ## GraphQL Code Generation
 
 This project uses [GraphQL Code Generator](https://the-guild.dev/graphql/codegen) to generate TypeScript types and SDK functions from Shopify's GraphQL schema.

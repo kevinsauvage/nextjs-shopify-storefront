@@ -12,7 +12,8 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('@/actions/wishlistActions', () => ({
-  getWishlistIdsAction: vi.fn(),
+  mergeWishlistAction: vi.fn(),
+  moveWishlistToCartAction: vi.fn(),
   setWishlistMembershipAction: vi.fn(),
 }));
 
@@ -40,5 +41,6 @@ describe('useUserContext', () => {
     expect(UserContext).toBeDefined();
 
     await expect(value.handleSetWishlist(false, 'product-1')).resolves.toBeUndefined();
+    await expect(value.handleMoveToCart(['product-1'])).resolves.toBeNull();
   });
 });

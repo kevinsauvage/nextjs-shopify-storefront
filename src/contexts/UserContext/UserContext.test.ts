@@ -12,25 +12,33 @@ type OptimisticReducer = (
 const { captured, mocks, runtime } = vi.hoisted(() => ({
   captured: { reducer: undefined as OptimisticReducer | undefined },
   mocks: {
+    addGuestWishlist: vi.fn(),
     addOptimistic: vi.fn(),
+    clearGuestWishlist: vi.fn(),
     getCookieFront: vi.fn(),
-    getWishlistIdsAction: vi.fn(),
+    mergeWishlistAction: vi.fn(),
+    moveWishlistToCartAction: vi.fn(),
     push: vi.fn(),
+    readGuestWishlist: vi.fn(),
+    removeGuestWishlist: vi.fn(),
     reportError: vi.fn(),
     setWishlistMembershipAction: vi.fn(),
     toastError: vi.fn(),
     toastInfo: vi.fn(),
     toastSuccess: vi.fn(),
+    useLocalList: vi.fn(),
     usePathname: vi.fn(),
   },
   runtime: {
     cleanups: [] as Array<() => void>,
     effectsArmed: true,
-    slots: [] as Array<unknown>,
+    refs: [] as Array<{ current: unknown }>,
+    slots: [] as unknown[],
   },
 }));
 
 let cursor = 0;
+let refCursor = 0;
 
 vi.mock('react', async (importOriginal) => {
   const actual = await importOriginal<typeof React>();
@@ -51,6 +59,14 @@ vi.mock('react', async (importOriginal) => {
     return [runtime.slots[index], setState];
   };
 
+  const useRef = (initial: unknown): { current: unknown } => {
+    const index = refCursor;
+    refCursor += 1;
+    if (index >= runtime.refs.length) runtime.refs.push({ current: initial });
+
+    return runtime.refs[index] as { current: unknown };
+  };
+
   return {
     ...actual,
     useCallback: <T>(callback: T): T => callback,
@@ -68,6 +84,7 @@ vi.mock('react', async (importOriginal) => {
 
       return [state, mocks.addOptimistic];
     },
+    useRef,
     useState,
   };
 });
@@ -78,13 +95,34 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('@/actions/wishlistActions', () => ({
-  getWishlistIdsAction: mocks.getWishlistIdsAction,
+  mergeWishlistAction: mocks.mergeWishlistAction,
+  moveWishlistToCartAction: mocks.moveWishlistToCartAction,
   setWishlistMembershipAction: mocks.setWishlistMembershipAction,
 }));
 
+vi.mock('@/hooks/useLocalList', () => ({ useLocalList: mocks.useLocalList }));
+
 vi.mock('@/lib/client/cookies', () => ({ getCookieFront: mocks.getCookieFront }));
 
+vi.mock('@/lib/client/guestWishlist', () => ({
+  addGuestWishlist: mocks.addGuestWishlist,
+  clearGuestWishlist: mocks.clearGuestWishlist,
+  GUEST_WISHLIST_KEY: 'guest-wishlist',
+  GUEST_WISHLIST_MAX: 50,
+  readGuestWishlist: mocks.readGuestWishlist,
+  removeGuestWishlist: mocks.removeGuestWishlist,
+}));
+
 vi.mock('@/lib/logger', () => ({ reportError: mocks.reportError }));
+
+// Identity merge: this suite tests the provider wiring, not the (separately
+// covered) id validation, so pass both lists through unchanged.
+vi.mock('@/lib/wishlist', () => ({
+  mergeWishlistIds: (server: string[], guest: string[]) => [
+    ...server,
+    ...guest.filter((id) => !server.includes(id)),
+  ],
+}));
 
 vi.mock('sonner', () => ({
   toast: {
@@ -96,6 +134,7 @@ vi.mock('sonner', () => ({
 
 type UserValue = {
   handleSetWishlist: (isWishlisted: boolean, productId: string) => Promise<void>;
+  handleMoveToCart: (productIds: string[]) => Promise<unknown>;
   isLoggedIn: boolean;
   pendingWishlistIds: string[];
   wishlistIds: string[];
@@ -154,12 +193,16 @@ const flush = async (): Promise<void> => {
 beforeEach(() => {
   runtime.slots.length = 0;
   runtime.cleanups.length = 0;
+  runtime.refs.length = 0;
   runtime.effectsArmed = true;
   captured.reducer = undefined;
   cursor = 0;
+  refCursor = 0;
   for (const mock of Object.values(mocks)) mock.mockReset();
   mocks.getCookieFront.mockReturnValue('');
-  mocks.getWishlistIdsAction.mockResolvedValue([]);
+  mocks.readGuestWishlist.mockReturnValue([]);
+  mocks.useLocalList.mockReturnValue([]);
+  mocks.mergeWishlistAction.mockResolvedValue({ success: true, data: [], message: undefined });
   mocks.setWishlistMembershipAction.mockResolvedValue({
     data: ['product-1'],
     message: 'Added to wishlist',
@@ -175,68 +218,95 @@ describe('UserContext defaults', () => {
 });
 
 describe('UserProvider session', () => {
-  it('stays logged out without a session marker and skips the wishlist fetch', async () => {
+  it('stays logged out without a session marker and shows the guest list', async () => {
     mocks.getCookieFront.mockReturnValue('');
+    mocks.useLocalList.mockReturnValue(['guest-1']);
 
     renderUser(true);
     await flush();
     const value = renderUser();
 
     expect(value.isLoggedIn).toBe(false);
-    expect(value.wishlistIds).toEqual([]);
+    expect(value.wishlistIds).toEqual(['guest-1']);
     expect(value.wishlistReady).toBe(true);
-    expect(mocks.getWishlistIdsAction).not.toHaveBeenCalled();
+    expect(mocks.mergeWishlistAction).not.toHaveBeenCalled();
   });
 
-  it('loads the wishlist once logged in', async () => {
+  it('merges the guest list on first sign-in and drops the local copy', async () => {
     mocks.getCookieFront.mockReturnValue('1');
-    mocks.getWishlistIdsAction.mockResolvedValue(['product-1', 'product-2']);
+    mocks.readGuestWishlist.mockReturnValue(['guest-1']);
+    mocks.useLocalList.mockReturnValue(['guest-1']);
+    mocks.mergeWishlistAction.mockResolvedValue({
+      success: true,
+      data: ['guest-1', 'product-1'],
+      message: 'Saved your wishlist items to your account',
+    });
 
     renderWithSession();
     const loading = renderUser();
 
+    // Optimistically shows the union while the merge is in flight.
     expect(loading.wishlistReady).toBe(false);
+    expect(loading.wishlistIds).toEqual(['guest-1']);
 
     await flush();
     const value = renderUser();
 
+    expect(mocks.mergeWishlistAction).toHaveBeenCalledWith(['guest-1']);
+    expect(mocks.clearGuestWishlist).toHaveBeenCalled();
+    expect(mocks.toastSuccess).toHaveBeenCalledWith('Saved your wishlist items to your account');
     expect(value.isLoggedIn).toBe(true);
+    expect(value.wishlistIds).toEqual(['guest-1', 'product-1']);
+    expect(value.wishlistReady).toBe(true);
+  });
+
+  it('loads the server wishlist when there is no guest list (returning shopper)', async () => {
+    mocks.getCookieFront.mockReturnValue('1');
+    mocks.readGuestWishlist.mockReturnValue([]);
+    mocks.useLocalList.mockReturnValue([]);
+    mocks.mergeWishlistAction.mockResolvedValue({
+      success: true,
+      data: ['product-1', 'product-2'],
+    });
+
+    renderWithSession();
+    // Signed in with no guest list: ready waits for the load, no optimistic union.
+    expect(renderUser().wishlistReady).toBe(false);
+
+    await flush();
+    const value = renderUser();
+
+    expect(mocks.mergeWishlistAction).toHaveBeenCalledWith([]);
+    expect(mocks.clearGuestWishlist).toHaveBeenCalled();
     expect(value.wishlistIds).toEqual(['product-1', 'product-2']);
-    expect(value.pendingWishlistIds).toEqual([]);
     expect(value.wishlistReady).toBe(true);
   });
 
-  it('marks the wishlist ready even when the load fails', async () => {
+  it('keeps the guest list when the merge fails', async () => {
     mocks.getCookieFront.mockReturnValue('1');
-    mocks.getWishlistIdsAction.mockRejectedValue(new Error('shopify down'));
+    mocks.readGuestWishlist.mockReturnValue(['guest-1']);
+    mocks.mergeWishlistAction.mockResolvedValue({ success: false, message: 'nope' });
 
     renderWithSession();
     await flush();
     const value = renderUser();
 
-    expect(mocks.reportError).toHaveBeenCalledWith('wishlist/load', expect.any(Error));
+    expect(mocks.clearGuestWishlist).not.toHaveBeenCalled();
     expect(value.wishlistIds).toEqual([]);
     expect(value.wishlistReady).toBe(true);
   });
 
-  it('drops the wishlist result once the effect is cleaned up', async () => {
+  it('marks the wishlist ready even when the merge throws', async () => {
     mocks.getCookieFront.mockReturnValue('1');
-    let resolveIds: ((ids: string[]) => void) | undefined;
-    mocks.getWishlistIdsAction.mockReturnValue(
-      new Promise<string[]>((resolve) => {
-        resolveIds = resolve;
-      }),
-    );
+    mocks.readGuestWishlist.mockReturnValue(['guest-1']);
+    mocks.mergeWishlistAction.mockRejectedValue(new Error('shopify down'));
 
     renderWithSession();
-    for (const cleanup of runtime.cleanups) cleanup();
-    runtime.cleanups.length = 0;
-    resolveIds?.(['product-1']);
     await flush();
     const value = renderUser();
 
-    expect(value.wishlistIds).toEqual([]);
-    expect(value.wishlistReady).toBe(false);
+    expect(mocks.reportError).toHaveBeenCalledWith('wishlist/merge', expect.any(Error));
+    expect(value.wishlistReady).toBe(true);
   });
 
   it('forwards pathname changes from the watcher to the provider', () => {
@@ -281,42 +351,30 @@ describe('UserProvider handleSetWishlist', () => {
     return renderUser();
   };
 
-  it('redirects logged-out visitors to login with a return path', async () => {
+  it('toggles the guest list locally without a server round-trip', async () => {
     mocks.getCookieFront.mockReturnValue('');
-    (globalThis as unknown as { window?: unknown }).window = {
-      location: { pathname: '/products/example' },
-    };
-    try {
-      const value = await (async (): Promise<UserValue> => {
-        renderUser(true);
-        await flush();
-
-        return renderUser();
-      })();
-
-      await value.handleSetWishlist(false, 'product-1');
-
-      expect(mocks.toastInfo).toHaveBeenCalledWith(
-        'You need to login to add products to your wishlist',
-      );
-      expect(mocks.push).toHaveBeenCalledWith('/login?redirect=/products/example');
-      expect(mocks.setWishlistMembershipAction).not.toHaveBeenCalled();
-    } finally {
-      delete (globalThis as unknown as { window?: unknown }).window;
-    }
-  });
-
-  it('falls back to the tracked pathname when window is unavailable', async () => {
-    mocks.getCookieFront.mockReturnValue('');
-    delete (globalThis as unknown as { window?: unknown }).window;
-
     renderUser(true);
     await flush();
     const value = renderUser();
 
     await value.handleSetWishlist(false, 'product-1');
 
-    expect(mocks.push).toHaveBeenCalledWith('/login?redirect=');
+    expect(mocks.addGuestWishlist).toHaveBeenCalledWith('product-1');
+    expect(mocks.toastSuccess).toHaveBeenCalledWith('Product added to wishlist');
+    expect(mocks.setWishlistMembershipAction).not.toHaveBeenCalled();
+    expect(mocks.push).not.toHaveBeenCalled();
+  });
+
+  it('removes a guest item locally', async () => {
+    mocks.getCookieFront.mockReturnValue('');
+    renderUser(true);
+    await flush();
+    const value = renderUser();
+
+    await value.handleSetWishlist(true, 'product-1');
+
+    expect(mocks.removeGuestWishlist).toHaveBeenCalledWith('product-1');
+    expect(mocks.toastSuccess).toHaveBeenCalledWith('Product removed from wishlist');
   });
 
   it('applies a successful toggle with optimistic tracking', async () => {
@@ -393,5 +451,54 @@ describe('UserProvider handleSetWishlist', () => {
     });
     expect(mocks.toastError).toHaveBeenCalledWith('Something went wrong');
     expect(renderUser().pendingWishlistIds).toEqual([]);
+  });
+});
+
+describe('UserProvider handleMoveToCart', () => {
+  it('redirects signed-out visitors to login', async () => {
+    mocks.getCookieFront.mockReturnValue('');
+    renderUser(true);
+    await flush();
+    const value = renderUser();
+
+    await value.handleMoveToCart(['product-1']);
+
+    expect(mocks.toastInfo).toHaveBeenCalledWith('You need to login to move items to your cart');
+    expect(mocks.push).toHaveBeenCalledWith('/login');
+    expect(mocks.moveWishlistToCartAction).not.toHaveBeenCalled();
+  });
+
+  it('returns the cart and syncs the wishlist on success', async () => {
+    mocks.getCookieFront.mockReturnValue('1');
+    renderWithSession();
+    await flush();
+    const value = renderUser();
+    const cart = { id: 'gid://shopify/Cart/1' };
+    mocks.moveWishlistToCartAction.mockResolvedValue({
+      success: true,
+      cart,
+      data: [],
+      message: '1 item moved to your cart',
+    });
+
+    const result = await value.handleMoveToCart(['product-1']);
+
+    expect(result).toEqual(cart);
+    expect(mocks.toastSuccess).toHaveBeenCalledWith('1 item moved to your cart');
+    expect(renderUser().wishlistIds).toEqual([]);
+  });
+
+  it('reports a failed move', async () => {
+    mocks.getCookieFront.mockReturnValue('1');
+    renderWithSession();
+    await flush();
+    const value = renderUser();
+    mocks.moveWishlistToCartAction.mockRejectedValue(new Error('network down'));
+
+    const result = await value.handleMoveToCart(['product-1']);
+
+    expect(result).toBeNull();
+    expect(mocks.reportError).toHaveBeenCalledWith('wishlist/move-to-cart', expect.any(Error));
+    expect(mocks.toastError).toHaveBeenCalledWith('Something went wrong');
   });
 });

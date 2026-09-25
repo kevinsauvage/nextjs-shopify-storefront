@@ -4,22 +4,23 @@ import { cacheLife, cacheTag } from 'next/cache';
 
 import { reportError } from '@/lib/logger';
 import { getShopifyToken } from '@/lib/server/shopify-helpers';
+import {
+  isValidWishlistProductId,
+  mergeWishlistIds,
+  WISHLIST_MAX_ID_LENGTH,
+  WISHLIST_MAX_ITEMS,
+} from '@/lib/wishlist';
 import { adminSdk, storefrontSdk } from '@/shopify';
-import type { ProductFieldsFragment } from '@/shopify/storefront';
+import type { CartLineInput, ProductFieldsFragment } from '@/shopify/storefront';
 
-export const WISHLIST_MAX_ITEMS = 100;
+// Re-exported so existing importers keep a single source of truth.
+export { isValidWishlistProductId, mergeWishlistIds, WISHLIST_MAX_ID_LENGTH, WISHLIST_MAX_ITEMS };
 
-/** Longest a single product GID may be; also caps raw client input. */
-export const WISHLIST_MAX_ID_LENGTH = 255;
+/** Shared copy for a service call whose session rotated/expired mid-flight. */
+const UNAUTHENTICATED_MESSAGE = 'User not authenticated';
 
-/** Shopify product global id, e.g. `gid://shopify/Product/1234567890`. */
-const PRODUCT_GID_PATTERN = /^gid:\/\/shopify\/Product\/\d+$/;
-
-export const isValidWishlistProductId = (value: unknown): value is string =>
-  typeof value === 'string' &&
-  value.length > 0 &&
-  value.length <= WISHLIST_MAX_ID_LENGTH &&
-  PRODUCT_GID_PATTERN.test(value);
+/** Shared copy for a rejected/malformed product id. */
+const INVALID_PRODUCT_ID_MESSAGE = 'Invalid product ID';
 
 const WISHLIST_METAFIELD = { key: 'wishlist', namespace: 'custom' } as const;
 
@@ -210,7 +211,7 @@ export class WishlistService {
     customerId: string,
   ): Promise<{ success: boolean; data?: string[]; message?: string }> {
     if (!isValidWishlistProductId(mutation.productId)) {
-      return { success: false, message: 'Invalid product ID' };
+      return { success: false, message: INVALID_PRODUCT_ID_MESSAGE };
     }
 
     return withCustomerLock(customerId, async () => {
@@ -218,7 +219,7 @@ export class WishlistService {
 
       // The session changed (expired/rotated) while queued: do not write.
       if (currentCustomerId !== customerId) {
-        return { success: false, message: 'User not authenticated' };
+        return { success: false, message: UNAUTHENTICATED_MESSAGE };
       }
 
       const alreadyPresent = ids.includes(mutation.productId);
@@ -239,6 +240,115 @@ export class WishlistService {
         mutation.action === 'add'
           ? [...ids, mutation.productId]
           : ids.filter((id) => id !== mutation.productId);
+
+      return this.updateWishlist(nextIds, customerId);
+    });
+  }
+
+  /**
+   * Merge a guest wishlist on login (union, see `mergeWishlistIds`). Re-reads
+   * inside the customer lock; skips the write when nothing new was added.
+   */
+  static async mergeWishlist(
+    guestIds: string[],
+    customerId: string,
+  ): Promise<{ success: boolean; data?: string[]; merged?: boolean; message?: string }> {
+    const normalizedGuestIds = guestIds
+      .filter(isValidWishlistProductId)
+      .slice(0, WISHLIST_MAX_ITEMS);
+
+    if (normalizedGuestIds.length === 0) {
+      const { customerId: currentCustomerId, ids } = await this.getWishlistState();
+      if (currentCustomerId !== customerId) {
+        return { success: false, message: UNAUTHENTICATED_MESSAGE };
+      }
+      return { success: true, data: ids, merged: false };
+    }
+
+    return withCustomerLock(customerId, async () => {
+      const { customerId: currentCustomerId, ids } = await this.getWishlistState();
+
+      // The session changed while queued: do not write.
+      if (currentCustomerId !== customerId) {
+        return { success: false, message: UNAUTHENTICATED_MESSAGE };
+      }
+
+      const mergedIds = mergeWishlistIds(ids, normalizedGuestIds);
+
+      // Nothing new — keep the metafield (and its cache tag) as-is.
+      if (mergedIds.length === ids.length) {
+        return { success: true, data: ids, merged: false };
+      }
+
+      const result = await this.updateWishlist(mergedIds, customerId);
+      return { ...result, merged: result.success };
+    });
+  }
+
+  /**
+   * First purchasable variant of each product, as cart lines. Pure: the caller
+   * adds to the cart first, then removes from the wishlist.
+   */
+  static async resolveMoveToCart(productIds: string[]): Promise<{
+    success: boolean;
+    lines?: CartLineInput[];
+    movedProductIds?: string[];
+    skipped?: number;
+    message?: string;
+  }> {
+    const ids = Array.from(new Set(productIds.filter(isValidWishlistProductId))).slice(
+      0,
+      WISHLIST_MAX_ITEMS,
+    );
+
+    if (ids.length === 0) return { success: false, message: INVALID_PRODUCT_ID_MESSAGE };
+
+    const products = await this.resolveProductsByIds(ids);
+    const lines: CartLineInput[] = [];
+    const movedProductIds: string[] = [];
+    // Products that no longer exist are skipped along with unavailable ones.
+    let skipped = ids.length - products.length;
+
+    for (const product of products) {
+      const variant = product.variants?.edges?.[0]?.node;
+
+      if (!variant?.id || variant.availableForSale === false) {
+        skipped += 1;
+        continue;
+      }
+
+      lines.push({ merchandiseId: variant.id, quantity: 1 });
+      movedProductIds.push(product.id);
+
+      if (lines.length >= WISHLIST_MAX_ITEMS) break;
+    }
+
+    if (lines.length === 0) {
+      return { success: false, skipped, message: 'No wishlisted items are available to buy' };
+    }
+
+    return { success: true, lines, movedProductIds, skipped };
+  }
+
+  /** Remove ids from the wishlist, re-reading inside the lock. */
+  static async removeFromWishlist(
+    productIds: string[],
+    customerId: string,
+  ): Promise<{ success: boolean; data?: string[]; message?: string }> {
+    const toRemove = new Set(productIds.filter(isValidWishlistProductId));
+
+    if (toRemove.size === 0) return { success: false, message: INVALID_PRODUCT_ID_MESSAGE };
+
+    return withCustomerLock(customerId, async () => {
+      const { customerId: currentCustomerId, ids } = await this.getWishlistState();
+
+      if (currentCustomerId !== customerId) {
+        return { success: false, message: UNAUTHENTICATED_MESSAGE };
+      }
+
+      const nextIds = ids.filter((id) => !toRemove.has(id));
+
+      if (nextIds.length === ids.length) return { success: true, data: ids };
 
       return this.updateWishlist(nextIds, customerId);
     });

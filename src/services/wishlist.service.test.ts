@@ -353,4 +353,153 @@ describe('WishlistService', () => {
       expect(isValidWishlistProductId(longId)).toBe(false);
     });
   });
+
+  describe('mergeWishlist', () => {
+    it('unions the guest list into the metafield and reports a merge', async () => {
+      mockWishlist([PRODUCT_A]);
+      metafieldsSet.mockResolvedValue({ metafieldsSet: { userErrors: [] } });
+
+      await expect(WishlistService.mergeWishlist([PRODUCT_B], CUSTOMER_ID)).resolves.toEqual({
+        success: true,
+        data: [PRODUCT_A, PRODUCT_B],
+        merged: true,
+      });
+      expect(metafieldsSet).toHaveBeenCalledTimes(1);
+    });
+
+    it('skips the write when the guest list adds nothing new', async () => {
+      mockWishlist([PRODUCT_A]);
+
+      await expect(WishlistService.mergeWishlist([PRODUCT_A], CUSTOMER_ID)).resolves.toEqual({
+        success: true,
+        data: [PRODUCT_A],
+        merged: false,
+      });
+      expect(metafieldsSet).not.toHaveBeenCalled();
+    });
+
+    it('reads but never writes for an empty/all-invalid guest list', async () => {
+      mockWishlist([PRODUCT_A]);
+
+      const result = await WishlistService.mergeWishlist(['not-a-gid'], CUSTOMER_ID);
+
+      expect(result).toEqual({ success: true, data: [PRODUCT_A], merged: false });
+      expect(metafieldsSet).not.toHaveBeenCalled();
+    });
+
+    it('refuses to write when the session changed while queued', async () => {
+      getShopifyToken.mockResolvedValue('token');
+      getCustomer.mockResolvedValue({
+        customer: { id: 'gid://shopify/Customer/2', metafields: [{ value: '[]' }] },
+      });
+
+      const result = await WishlistService.mergeWishlist([PRODUCT_B], CUSTOMER_ID);
+
+      expect(result.success).toBe(false);
+      expect(metafieldsSet).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('resolveMoveToCart', () => {
+    const variantProduct = (id: string, availableForSale = true) => ({
+      id,
+      variants: { edges: [{ node: { id: `${id}/Variant/1`, availableForSale } }] },
+    });
+
+    it('rejects an empty/invalid id list', async () => {
+      await expect(WishlistService.resolveMoveToCart(['bad'])).resolves.toEqual({
+        success: false,
+        message: 'Invalid product ID',
+      });
+      expect(getProductsByIds).not.toHaveBeenCalled();
+    });
+
+    it('resolves the first available variant of each product', async () => {
+      getProductsByIds.mockResolvedValue({
+        nodes: [variantProduct(PRODUCT_A), variantProduct(PRODUCT_B)],
+      });
+
+      const result = await WishlistService.resolveMoveToCart([PRODUCT_A, PRODUCT_B]);
+
+      expect(result.success).toBe(true);
+      expect(result.lines).toEqual([
+        { merchandiseId: `${PRODUCT_A}/Variant/1`, quantity: 1 },
+        { merchandiseId: `${PRODUCT_B}/Variant/1`, quantity: 1 },
+      ]);
+      expect(result.movedProductIds).toEqual([PRODUCT_A, PRODUCT_B]);
+      expect(result.skipped).toBe(0);
+      // Pure resolution: nothing is persisted here.
+      expect(metafieldsSet).not.toHaveBeenCalled();
+    });
+
+    it('skips unavailable products and counts them', async () => {
+      getProductsByIds.mockResolvedValue({
+        nodes: [variantProduct(PRODUCT_A), variantProduct(PRODUCT_B, false)],
+      });
+
+      const result = await WishlistService.resolveMoveToCart([PRODUCT_A, PRODUCT_B]);
+
+      expect(result.movedProductIds).toEqual([PRODUCT_A]);
+      expect(result.skipped).toBe(1);
+    });
+
+    it('counts unresolved ids as skipped', async () => {
+      getProductsByIds.mockResolvedValue({ nodes: [variantProduct(PRODUCT_A)] });
+
+      const result = await WishlistService.resolveMoveToCart([PRODUCT_A, PRODUCT_B]);
+
+      // PRODUCT_B no longer exists, so it is skipped rather than an error.
+      expect(result.skipped).toBe(1);
+      expect(result.movedProductIds).toEqual([PRODUCT_A]);
+    });
+
+    it('fails when no item is purchasable', async () => {
+      getProductsByIds.mockResolvedValue({ nodes: [variantProduct(PRODUCT_A, false)] });
+
+      const result = await WishlistService.resolveMoveToCart([PRODUCT_A]);
+
+      expect(result.success).toBe(false);
+      expect(result.message).toMatch(/available/);
+    });
+  });
+
+  describe('removeFromWishlist', () => {
+    it('removes the given ids from the freshly read list', async () => {
+      mockWishlist([PRODUCT_A, PRODUCT_B]);
+      metafieldsSet.mockResolvedValue({ metafieldsSet: { userErrors: [] } });
+
+      const result = await WishlistService.removeFromWishlist([PRODUCT_A], CUSTOMER_ID);
+
+      expect(result).toEqual({ success: true, data: [PRODUCT_B] });
+      expect(metafieldsSet).toHaveBeenCalledTimes(1);
+    });
+
+    it('is a no-op when none of the ids are present', async () => {
+      mockWishlist([PRODUCT_A]);
+
+      const result = await WishlistService.removeFromWishlist([PRODUCT_B], CUSTOMER_ID);
+
+      expect(result).toEqual({ success: true, data: [PRODUCT_A] });
+      expect(metafieldsSet).not.toHaveBeenCalled();
+    });
+
+    it('rejects an invalid id list without reading state', async () => {
+      const result = await WishlistService.removeFromWishlist(['bad'], CUSTOMER_ID);
+
+      expect(result.success).toBe(false);
+      expect(getCustomer).not.toHaveBeenCalled();
+    });
+
+    it('refuses to write when the session changed while queued', async () => {
+      getShopifyToken.mockResolvedValue('token');
+      getCustomer.mockResolvedValue({
+        customer: { id: 'gid://shopify/Customer/2', metafields: [{ value: '[]' }] },
+      });
+
+      const result = await WishlistService.removeFromWishlist([PRODUCT_A], CUSTOMER_ID);
+
+      expect(result.success).toBe(false);
+      expect(metafieldsSet).not.toHaveBeenCalled();
+    });
+  });
 });

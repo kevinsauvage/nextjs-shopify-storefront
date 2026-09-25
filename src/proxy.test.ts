@@ -36,6 +36,15 @@ const sessionCookies = (token: string, expiresAt: string, marker = true) =>
     ...(marker ? [`${MARKER}=1`] : []),
   ].join('; ');
 
+const actionRequest = (path: string, cookieHeader?: string) =>
+  new NextRequest(`https://example.com${path}`, {
+    method: 'POST',
+    headers: {
+      'next-action': 'test-action',
+      ...(cookieHeader ? { cookie: cookieHeader } : {}),
+    },
+  });
+
 describe('proxy', () => {
   beforeEach(() => {
     renewCustomerToken.mockReset();
@@ -64,6 +73,24 @@ describe('proxy', () => {
 
     expect(response.headers.get('location')).toBeNull();
     expect(renewCustomerToken).not.toHaveBeenCalled();
+  });
+
+  it('does not redirect server actions on account routes once the session is gone', async () => {
+    // A duplicate/late logout submit arrives after the cookies were cleared.
+    // Redirecting it would make the client action fetch follow into HTML (E394).
+    const response = await proxy(actionRequest('/account/logout'));
+
+    expect(response.headers.get('location')).toBeNull();
+    expect(renewCustomerToken).not.toHaveBeenCalled();
+  });
+
+  it('does not bounce server actions on auth routes while signed in', async () => {
+    renewCustomerToken.mockResolvedValue({ accessToken: 'new-1', expiresAt: hourFromNow() });
+
+    const response = await proxy(actionRequest('/login', sessionCookies('token-1', hourFromNow())));
+
+    expect(renewCustomerToken).toHaveBeenCalledWith('token-1');
+    expect(response.headers.get('location')).toBeNull();
   });
 
   it('bounces signed-in visitors away from auth routes', async () => {

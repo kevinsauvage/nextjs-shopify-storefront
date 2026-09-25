@@ -32,6 +32,14 @@ async function proxy(request: NextRequest) {
     pathname.startsWith(globalConfig.routes.login) ||
     pathname.startsWith(globalConfig.routes.register);
 
+  // Server Actions are POSTed to the route that declares them and expect an RSC
+  // response. Redirecting one — e.g. a session that was cleared between the page
+  // load and the submit, or a duplicate submit — makes the client's action
+  // `fetch` follow the redirect and receive an HTML page, which surfaces as
+  // "An unexpected response was received from the server" (E394) and skips the
+  // action. Let actions through and let each one enforce its own auth.
+  const isServerAction = request.method === 'POST' && request.headers.has('next-action');
+
   const hasToken = Boolean(cookieShopify?.value);
   const tokenExpired = isTokenExpired(tokenExpiresAt);
 
@@ -60,7 +68,9 @@ async function proxy(request: NextRequest) {
 
   let response: NextResponse;
 
-  if (isAccountRoute && !hasSession) {
+  if (isServerAction) {
+    response = NextResponse.next();
+  } else if (isAccountRoute && !hasSession) {
     response = NextResponse.redirect(new URL(globalConfig.routes.login, url));
   } else if (isAuthRoute && hasSession) {
     response = NextResponse.redirect(new URL(globalConfig.routes.account, url));
